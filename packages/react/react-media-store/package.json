@@ -22,8 +22,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/media-store": "*",
-    "@vjs-10/react-media-elements": "*"
+    "@vjs-10/media-store": "*"
   },
   "peerDependencies": {
     "react": ">=16.8.0"

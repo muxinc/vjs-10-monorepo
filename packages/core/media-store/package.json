@@ -20,6 +20,9 @@
     "player"
   ],
   "license": "Apache-2.0",
+  "dependencies": {
+    "nanostores": "^1.0.1"
+  },
   "devDependencies": {
     "typescript": "^5.3.0"
   },

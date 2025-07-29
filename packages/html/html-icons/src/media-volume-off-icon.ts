@@ -1,0 +1,23 @@
+import { MediaChromeIcon } from './media-chrome-icon.js';
+
+const offIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
+  <path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.18l2.45 2.45a4.22 4.22 0 0 0 .05-.63Zm2.5 0a6.84 6.84 0 0 1-.54 2.64L20 16.15A8.8 8.8 0 0 0 21 12a9 9 0 0 0-7-8.77v2.06A7 7 0 0 1 19 12ZM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25A6.92 6.92 0 0 1 14 18.7v2.06A9 9 0 0 0 17.69 19l2 2.05L21 19.73l-9-9L4.27 3ZM12 4 9.91 6.09 12 8.18V4Z"/>
+</svg>`;
+
+export function getTemplateHTML() {
+  return /* html */ `
+    ${MediaChromeIcon.getTemplateHTML()}
+    <style>
+      :host {
+        display: var(--media-play-icon-display, inline-flex);
+      }
+    </style>
+    ${offIcon}
+  `;
+}
+
+export class MediaVolumeOffIcon extends MediaChromeIcon {
+  static getTemplateHTML = getTemplateHTML;
+}
+
+customElements.define('media-volume-off-icon', MediaVolumeOffIcon);

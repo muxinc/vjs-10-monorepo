@@ -1,0 +1,90 @@
+/** @TODO: Improve/Polish CSS Here */
+/* Media Container UI/Styles */
+.Container {
+  display: inline-block;
+  position: relative;
+  /* NOTE: Setting color here for generic inheritance, including SVG fill: currentColor defaults (CJP) */
+  color: rgb(238 238 238);
+
+  video {
+    width: 100%;
+    height: 100%;
+  }
+
+  .Overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: start;
+    /* pointer-events: none; */
+    background: none;
+  }
+}
+
+/* Generic Media Button Styling */
+.Button {
+  border: none;
+  background: rgb(20 20 30 / 0.7);
+  padding: 4px;
+  cursor: pointer;
+  color: rgb(238 238 238);
+
+  /* @TODO Currently, the web component version of icons "bakes in" these styles. Determine which approach we prefer (CJP) */
+  .Icon {
+    width: 24px;
+    height: 24px;
+    display: none;
+  }
+}
+/*
+.MediaPlayButton:not([data-paused]) .PauseIcon,
+.MediaPlayButton[data-paused] .PlayIcon {
+  display: inline-block;
+} */
+
+/* One way to define the "default visible" icon (CJP) */
+.MediaMuteButton:not([data-volume-level]) .VolumeLowIcon,
+.MediaMuteButton[data-volume-level=high] .VolumeHighIcon,
+.MediaMuteButton[data-volume-level=low] .VolumeLowIcon,
+.MediaMuteButton[data-volume-level=medium] .VolumeLowIcon,
+.MediaMuteButton[data-volume-level=off] .VolumeOffIcon {
+  display: inline-block;
+}
+
+/* Media Control Bar UI/Styles */
+.ControlBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.Spacer {
+  flex-grow: 1;
+}
+
+/* Base Button Styling */
+.MediaPlayButton {
+  border: none;
+  background: rgb(20 20 30 / 0.7);
+  padding: 4px;
+  cursor: pointer;
+  color: rgb(238 238 238);
+
+  /* Basic Icon Styling for Buttons */
+  .PlayIcon, .PauseIcon {
+    width: 24px;
+    height: 24px;
+    display: none; /* Hide icons by default */
+  }
+
+  /* Show PlayIcon if paused and PauseIcon if unpaused */
+  &:not([data-paused]) .PauseIcon,
+  &[data-paused] .PlayIcon {
+    display: inline-block;
+  }
+}
