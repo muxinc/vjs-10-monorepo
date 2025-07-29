@@ -3,7 +3,6 @@ import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 import PlayButton from '../components/connected-with-defaults/PlayButton';
 import MuteButton from '../components/connected-with-defaults/MuteButton';
 import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
-/** @ts-ignore */
 import styles from './styles.module.css';
 
 export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({

@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@vjs/html": ["../../packages/html/src"],
+      "@vjs/react": ["../../packages/react/src"],
+      "@vjs/core": ["../../packages/core/src"]
+    }
+  },
+  "include": ["src"]
+}
