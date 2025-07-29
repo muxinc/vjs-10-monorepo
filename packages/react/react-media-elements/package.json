@@ -1,0 +1,38 @@
+{
+  "name": "@vjs-10/react-media-elements",
+  "version": "0.1.0",
+  "description": "React-specific media element components and hooks",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "media",
+    "react",
+    "hooks",
+    "video",
+    "audio"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@vjs-10/media": "workspace:*",
+    "@vjs-10/playback-engine": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@vjs-10/media",
+  "version": "0.1.0",
+  "description": "JS contracts and convenience code for conforming to HTMLMediaElement and related interfaces.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "media",
+    "HTMLMediaElement",
+    "video",
+    "audio",
+    "contracts"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@vjs-10/html-icons",
+  "version": "0.1.0",
+  "description": "HTML/DOM-specific icon components derived from @vjs-10/icons",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "icons",
+    "html",
+    "dom",
+    "web-components",
+    "media",
+    "player"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@vjs-10/icons": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

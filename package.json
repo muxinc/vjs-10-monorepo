@@ -1,0 +1,33 @@
+{
+  "name": "vjs-10-monorepo",
+  "version": "1.0.0",
+  "description": "A monorepo for Video.js 10 related library packages",
+  "private": true,
+  "workspaces": [
+    "packages/core/*",
+    "packages/html/*",
+    "packages/react/*",
+    "packages/react-native/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/videojs/vjs-10-monorepo.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Video.js Contributors"
+}

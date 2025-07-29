@@ -1,0 +1,29 @@
+{
+  "name": "@vjs-10/icons",
+  "version": "0.1.0",
+  "description": "Environment-agnostic library of SVG icons and possibly transforms or tooling for them.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "icons",
+    "svg",
+    "media",
+    "player",
+    "ui"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

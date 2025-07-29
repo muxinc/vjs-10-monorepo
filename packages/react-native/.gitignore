@@ -1,0 +1,52 @@
+# React Native specific ignores
+
+# Metro bundler
+.metro-health-check*
+
+# React Native Debugger
+react-native-debugger.log
+
+# Flipper
+Flipper/
+
+# Bundle artifacts
+*.jsbundle
+
+# Android specific
+android/app/build/
+android/app/src/main/assets/
+android/.gradle/
+android/build/
+android/gradle/
+android/gradlew*
+android/local.properties
+android/app/release/
+
+# iOS specific
+ios/build/
+ios/Pods/
+ios/*.xcworkspace
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/xcshareddata/
+ios/Podfile.lock
+ios/DerivedData/
+
+# CocoaPods
+Podfile.lock
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Detox
+.detoxrc.json
+detox_tests/
+
+# react-native-codegen
+build/generated/
+
+# Ruby (for iOS development)
+vendor/bundle/
