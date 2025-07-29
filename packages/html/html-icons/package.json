@@ -22,7 +22,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/icons": "workspace:*"
+    "@vjs-10/icons": "*"
   },
   "devDependencies": {
     "typescript": "^5.3.0"

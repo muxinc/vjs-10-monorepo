@@ -21,8 +21,8 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/media": "workspace:*",
-    "@vjs-10/playback-engine": "workspace:*"
+    "@vjs-10/media": "*",
+    "@vjs-10/playback-engine": "*"
   },
   "peerDependencies": {
     "react": ">=16.8.0"

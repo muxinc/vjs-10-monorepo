@@ -21,7 +21,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/icons": "workspace:*"
+    "@vjs-10/icons": "*"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

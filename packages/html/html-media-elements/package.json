@@ -22,8 +22,8 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/media": "workspace:*",
-    "@vjs-10/playback-engine": "workspace:*"
+    "@vjs-10/media": "*",
+    "@vjs-10/playback-engine": "*"
   },
   "devDependencies": {
     "typescript": "^5.3.0"
