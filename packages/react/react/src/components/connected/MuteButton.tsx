@@ -1,5 +1,6 @@
 // NOTE: This is an example of a "skeletal" connected component definition of a Mute Button. It "knows about" A Media (UI) Store and expects
 // to be provided a non-connected component
+import * as React from 'react';
 import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import type { CSSProperties, ElementType, PropsWithChildren } from 'react';
 

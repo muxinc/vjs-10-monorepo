@@ -1,12 +1,11 @@
 'use client';
 /** @TODO !!! Revisit for SSR (CJP) */
 import type { Context, ReactNode } from 'react';
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import { createMediaStore } from '@vjs-10/media-store';
 import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector.js';
 
 const identity = (x?: any) => x;
-
 
 /**
  * @description The {@link https://react.dev/learn/passing-data-deeply-with-context#context-an-alternative-to-passing-props|React Context}
@@ -17,8 +16,9 @@ const identity = (x?: any) => x;
  * @see {@link useMediaDispatch}
  * @see {@link useMediaSelector}
  */
-export const MediaContext: Context<any | null> =
-  createContext<any | null>(null);
+export const MediaContext: Context<any | null> = createContext<any | null>(
+  null,
+);
 
 export const MediaProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => createMediaStore(), []);
@@ -47,9 +47,9 @@ export const useMediaStore = () => {
 export const useMediaDispatch = () => {
   const store = useContext(MediaContext);
   const dispatch = store?.dispatch ?? identity;
-  return ((value) => {
+  return (value: any) => {
     return dispatch(value);
-  });
+  };
 };
 
 export const useMediaRef = () => {

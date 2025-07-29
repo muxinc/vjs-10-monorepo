@@ -1,6 +1,57 @@
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
-import { MediaElementLike, createMediaElementAdapter } from '@vjs-10/media';
-import { PlaybackEngine, NativePlaybackEngine, MediaSource } from '@vjs-10/playback-engine';
+
+// @ts-ignore - Placeholder interfaces for future implementation
+interface MediaElementLike {
+  currentTime: number;
+  duration: number;
+  paused: boolean;
+  ended: boolean;
+  volume: number;
+  muted: boolean;
+  playbackRate: number;
+  readyState: number;
+  networkState: number;
+  play(): Promise<void>;
+  pause(): void;
+  load(): void;
+}
+
+// @ts-ignore - Placeholder function for future implementation
+const createMediaElementAdapter = (element: HTMLMediaElement): MediaElementLike => {
+  return {
+    get currentTime() { return element.currentTime; },
+    set currentTime(value: number) { element.currentTime = value; },
+    get duration() { return element.duration; },
+    get paused() { return element.paused; },
+    get ended() { return element.ended; },
+    get volume() { return element.volume; },
+    set volume(value: number) { element.volume = value; },
+    get muted() { return element.muted; },
+    set muted(value: boolean) { element.muted = value; },
+    get playbackRate() { return element.playbackRate; },
+    set playbackRate(value: number) { element.playbackRate = value; },
+    get readyState() { return element.readyState; },
+    get networkState() { return element.networkState; },
+    play: () => element.play(),
+    pause: () => element.pause(),
+    load: () => element.load(),
+  };
+};
+
+// @ts-ignore - Placeholder class for future implementation
+class NativePlaybackEngine {
+  attach(_element: HTMLMediaElement) {
+    // Placeholder implementation
+  }
+  
+  detach() {
+    // Placeholder implementation
+  }
+  
+  load(_source: { src: string; type: string }) {
+    // Placeholder implementation
+  }
+}
 
 export interface MediaElementProps {
   src?: string;
@@ -45,7 +96,7 @@ export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
     style,
   }, ref) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const engineRef = useRef<PlaybackEngine>(new NativePlaybackEngine());
+    const engineRef = useRef(new NativePlaybackEngine());
     const adapterRef = useRef<MediaElementLike | null>(null);
 
     useEffect(() => {
@@ -180,7 +231,7 @@ export const AudioElement = forwardRef<MediaElementRef, MediaElementProps>(
     style,
   }, ref) => {
     const audioRef = useRef<HTMLAudioElement>(null);
-    const engineRef = useRef<PlaybackEngine>(new NativePlaybackEngine());
+    const engineRef = useRef(new NativePlaybackEngine());
     const adapterRef = useRef<MediaElementLike | null>(null);
 
     useEffect(() => {
@@ -295,4 +346,5 @@ export const AudioElement = forwardRef<MediaElementRef, MediaElementProps>(
 
 AudioElement.displayName = 'AudioElement';
 
-export { MediaElementLike, createMediaElementAdapter } from '@vjs-10/media';
+export type { MediaElementLike };
+export { createMediaElementAdapter };

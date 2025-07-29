@@ -48,7 +48,7 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
   getSnapshot: () => Snapshot,
   getServerSnapshot: undefined | null | (() => Snapshot),
   selector: (snapshot: Snapshot) => Selection,
-  isEqual?: (a: Selection, b: Selection) => boolean
+  isEqual?: (a: Selection, b: Selection) => boolean,
 ) {
   // Use this to track the rendered snapshot.
   const instRef = useRef<SnapshotRef<Selection>>(null);
@@ -69,7 +69,7 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
     // useRef hook, because that state would be shared across all concurrent
     // copies of the hook/component.
     let hasMemo = false;
-    let memoizedSnapshot;
+    let memoizedSnapshot: Snapshot;
     let memoizedSelection: Selection;
     const memoizedSelector = (nextSnapshot: Snapshot) => {
       if (!hasMemo) {
@@ -131,7 +131,7 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
   const value = useSyncExternalStore(
     subscribe,
     getSelection,
-    getServerSelection
+    getServerSelection,
   );
 
   useEffect(() => {

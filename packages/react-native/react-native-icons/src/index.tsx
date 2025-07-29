@@ -1,67 +1,44 @@
-import React from 'react';
-import { getIcon } from '@vjs-10/icons';
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import * as React from 'react';
 
-export interface IconProps extends Omit<SvgProps, 'viewBox'> {
+// Placeholder exports for React Native Icons package
+// These will be implemented in a future step
+
+export interface IconProps {
   name: string;
   size?: number;
   color?: string;
 }
 
-export const Icon: React.FC<IconProps> = ({
-  name,
-  size = 24,
-  color = '#000000',
-  ...props
-}) => {
-  const icon = getIcon(name);
-  
-  if (!icon) {
-    console.warn(`Icon "${name}" not found`);
-    return null;
-  }
-
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox={icon.viewBox}
-      fill={color}
-      {...props}
-    >
-      {icon.paths.map((path, index) => (
-        <Path key={index} d={path} fill={color} />
-      ))}
-    </Svg>
-  );
+// Placeholder component - will be implemented later
+export const Icon: React.FC<IconProps> = () => {
+  return React.createElement('div', { children: 'React Native Icon - Coming Soon' });
 };
 
-export const PlayIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="play" {...props} />
+// Placeholder icon components
+export const PlayIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Play Icon - Coming Soon' })
 );
 
-export const PauseIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="pause" {...props} />
+export const PauseIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Pause Icon - Coming Soon' })
 );
 
-export const StopIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="stop" {...props} />
+export const StopIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Stop Icon - Coming Soon' })
 );
 
-export const VolumeUpIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="volumeUp" {...props} />
+export const VolumeUpIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Volume Up Icon - Coming Soon' })
 );
 
-export const VolumeOffIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="volumeOff" {...props} />
+export const VolumeOffIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Volume Off Icon - Coming Soon' })
 );
 
-export const FullscreenIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="fullscreen" {...props} />
+export const FullscreenIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Fullscreen Icon - Coming Soon' })
 );
 
-export const ExitFullscreenIcon: React.FC<Omit<IconProps, 'name'>> = (props) => (
-  <Icon name="exitFullscreen" {...props} />
+export const ExitFullscreenIcon: React.FC<Omit<IconProps, 'name'>> = () => (
+  React.createElement('div', { children: 'Exit Fullscreen Icon - Coming Soon' })
 );
-
-export { getIcon, getAllIcons, createSVGString } from '@vjs-10/icons';

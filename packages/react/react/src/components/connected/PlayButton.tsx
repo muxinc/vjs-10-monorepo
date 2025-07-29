@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import type { CSSProperties, ElementType, PropsWithChildren } from 'react';
 

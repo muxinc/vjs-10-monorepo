@@ -1,3 +1,4 @@
+import * as React from 'react';
 import type { ElementType, PropsWithChildren } from 'react';
 
 type DefaultPlayButtonState = { mediaPaused: boolean };
