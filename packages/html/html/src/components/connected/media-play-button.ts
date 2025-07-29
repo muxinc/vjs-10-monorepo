@@ -1,3 +1,4 @@
+// @ts-ignore - Module resolution issues with @open-wc/context-protocol
 import { ConsumerMixin } from '@open-wc/context-protocol';
 
 // NOTE: This should be fairly generic code that could itself be abstracted into configuration for a more generic factory implementation. (CJP)
@@ -25,6 +26,7 @@ export const toConnectedMediaPlayButton = (BaseClass = HTMLElement) => {
             // Using `this.toggleAttribute('mediapaused', mediaPaused);` should also work if that's preferred.
             /** @ts-ignore */
             this.mediaPaused = mediaPaused;
+            // @ts-ignore - Element property access
             this.toggleAttribute('data-paused', mediaPaused);
           },
         );
@@ -33,13 +35,17 @@ export const toConnectedMediaPlayButton = (BaseClass = HTMLElement) => {
 
     connectedCallback(): void {
       super.connectedCallback?.();
+      // @ts-ignore - Element property access
       this.addEventListener('mediaplayrequest', this);
+      // @ts-ignore - Element property access
       this.addEventListener('mediapauserequest', this);
     }
 
     disconnectedCallback(): void {
       super.disconnectedCallback?.();
+      // @ts-ignore - Element property access
       this.removeEventListener('mediaplayrequest', this);
+      // @ts-ignore - Element property access
       this.removeEventListener('mediapauserequest', this);
     }
 

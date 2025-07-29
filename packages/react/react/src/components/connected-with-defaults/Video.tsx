@@ -12,7 +12,7 @@ import {
 } from 'react';
 /** @TODO Improve types crud (CJP) */
 import ConnectedComponent from '../connected/Video';
-import { createMediaStateOwner } from '../../../../core/src/media/playable';
+import { createMediaStateOwner } from '@vjs-10/media';
 
 // These are the first steps/WIP POC of decoupling the Media State Owner from the DOM.
 // Note that everything will still work if you use:

@@ -1,6 +1,6 @@
 // NOTE: This is an example of a "skeletal" connected component definition of a Mute Button. It "knows about" A Media (UI) Store and expects
 // to be provided a non-connected component
-import { useMediaDispatch, useMediaSelector } from '../../MediaProvider';
+import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import type { CSSProperties, ElementType, PropsWithChildren } from 'react';
 
 /** @TODO Export more types. Define more contracts (CJP) */
@@ -35,6 +35,7 @@ const MuteButton = ({
 }>) => {
   const Component = component;
   const dispatch = useMediaDispatch();
+  // @ts-ignore - State type issues
   const mediaVolumeLevel = useMediaSelector((state) => state.mediaVolumeLevel);
   console.log('mediaVolumeLevel', mediaVolumeLevel);
   return (

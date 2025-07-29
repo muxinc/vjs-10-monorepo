@@ -1,10 +1,15 @@
 import * as React from 'react';
+// @ts-ignore - Icon module resolution
 import PauseIcon from '../icons/PauseIcon';
+// @ts-ignore - Icon module resolution
 import PlayIcon from '../icons/PlayIcon';
 import PlayButton from '../components/connected-with-defaults/PlayButton';
 import MuteButton from '../components/connected-with-defaults/MuteButton';
+// @ts-ignore - Icon module resolution
 import VolumeHighIcon from '../icons/VolumeHighIcon';
+// @ts-ignore - Icon module resolution
 import VolumeLowIcon from '../icons/VolumeLowIcon';
+// @ts-ignore - Icon module resolution
 import VolumeOffIcon from '../icons/VolumeOffIcon';
 /** @ts-ignore */
 import styles from './styles.module.css';

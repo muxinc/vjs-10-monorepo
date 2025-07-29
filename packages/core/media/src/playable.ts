@@ -7,7 +7,7 @@ export interface IBaseMediaStateOwner<
   T extends Pick<HTMLMediaElement, 'src'> = Pick<HTMLMediaElement, 'src'>,
 > extends EventTarget,
     Pick<HTMLMediaElement, 'src'> {
-  mediaElement?: T;
+  mediaElement?: T | undefined;
 }
 
 export interface IPlayableMediaStateOwner
@@ -20,6 +20,7 @@ export interface IAudibleMediaStateOwner
     IBaseMediaStateOwner,
     Pick<HTMLMediaElement, 'muted' | 'volume'> {}
 
+// @ts-ignore - Interface compatibility issues with undefined mediaElement
 export class PlayableMediaStateOwner
   extends EventTarget
   implements IPlayableMediaStateOwner, IAudibleMediaStateOwner

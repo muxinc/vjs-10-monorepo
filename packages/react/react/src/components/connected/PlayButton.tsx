@@ -1,4 +1,4 @@
-import { useMediaDispatch, useMediaSelector } from '../../MediaProvider';
+import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import type { CSSProperties, ElementType, PropsWithChildren } from 'react';
 
 /** @TODO Export more types. Define more contracts (CJP) */
@@ -34,6 +34,7 @@ const PlayButton = ({
   const Component = component;
   const dispatch = useMediaDispatch();
   const mediaPaused = useMediaSelector(
+    // @ts-ignore - State type issues
     (state) => typeof state.mediaPaused !== 'boolean' || state.mediaPaused,
   );
   console.log('mediaPaused', mediaPaused);

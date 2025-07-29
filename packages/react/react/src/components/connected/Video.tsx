@@ -1,5 +1,5 @@
 'use client';
-import { useMediaRef } from '../../MediaProvider';
+import { useMediaRef } from '@vjs-10/react-media-store';
 import {
   ElementType,
   VideoHTMLAttributes,
