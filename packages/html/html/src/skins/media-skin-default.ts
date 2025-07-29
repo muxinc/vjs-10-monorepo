@@ -3,7 +3,7 @@ import { MediaSkin } from '../media-skin.js';
 import '../media-container.js';
 import '../components/connected-with-defaults/media-play-button.js';
 import '../components/connected-with-defaults/media-mute-button.js';
-import '../icons/index.js';
+import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
   return /* html */ `

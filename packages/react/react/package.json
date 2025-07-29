@@ -3,12 +3,20 @@
   "version": "0.1.0",
   "description": "React equivalent to @vjs-10/html - comprehensive React components for building media player UIs",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },

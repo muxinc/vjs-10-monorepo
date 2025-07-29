@@ -3,12 +3,20 @@
   "version": "0.1.0",
   "description": "A state abstraction for media. Accepts state owners like a media state owner for sinks and sources of media state.",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
