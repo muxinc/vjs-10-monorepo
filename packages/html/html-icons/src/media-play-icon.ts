@@ -1,4 +1,5 @@
 import { MediaChromeIcon } from './media-chrome-icon.js';
+import { SVG_ICONS } from '@vjs-10/icons';
 
 export function getTemplateHTML() {
   return /* html */ `
@@ -8,9 +9,7 @@ export function getTemplateHTML() {
         display: var(--media-play-icon-display, inline-flex);
       }
     </style>
-    <svg viewBox="0 0 24 24">
-      <path d="M8 5v14l11-7z"/>
-    </svg>
+    ${SVG_ICONS.play}
   `;
 }
 

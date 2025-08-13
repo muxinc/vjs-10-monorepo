@@ -1,6 +1,7 @@
 const typescript = require('@rollup/plugin-typescript');
 const resolve = require('@rollup/plugin-node-resolve');
 const commonjs = require('@rollup/plugin-commonjs');
+const { string } = require('rollup-plugin-string');
 
 module.exports = [
   // ESM build
@@ -20,6 +21,9 @@ module.exports = [
       return true;
     },
     plugins: [
+      string({
+        include: '**/*.svg'
+      }),
       resolve({
         extensions: ['.js', '.jsx', '.ts', '.tsx']
       }),
@@ -48,6 +52,9 @@ module.exports = [
       return true;
     },
     plugins: [
+      string({
+        include: '**/*.svg'
+      }),
       resolve({
         extensions: ['.js', '.jsx', '.ts', '.tsx']
       }),
