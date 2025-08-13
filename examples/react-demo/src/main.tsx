@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { MediaProvider, Video, MediaSkinDefault } from '@vjs-10/react';
+import '@vjs-10/react/style.css';
 
 const DemoPlayer = () => {
   return (
