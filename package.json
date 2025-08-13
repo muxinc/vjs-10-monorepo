@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build:libs": "npm run build --workspace=packages/core/* --workspace=packages/html/* --workspace=packages/react/* --workspace=packages/react-native/*",
+    "build:libs": "npm run build --workspaces --if-present --workspace=@vjs-10/icons --workspace=@vjs-10/media --workspace=@vjs-10/media-store --workspace=@vjs-10/playback-engine --workspace=@vjs-10/html --workspace=@vjs-10/html-icons --workspace=@vjs-10/html-media-elements --workspace=@vjs-10/html-media-store --workspace=@vjs-10/react --workspace=@vjs-10/react-icons --workspace=@vjs-10/react-media-elements --workspace=@vjs-10/react-media-store --workspace=@vjs-10/react-native --workspace=@vjs-10/react-native-icons --workspace=@vjs-10/react-native-media-elements",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
