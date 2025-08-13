@@ -5,7 +5,9 @@
     "declarationDir": "dist",
     "emitDeclarationOnly": true,
     "outDir": "dist",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "composite": false,
+    "incremental": false
   },
   "exclude": ["dist", "node_modules"]
 }
