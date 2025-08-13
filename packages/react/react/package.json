@@ -10,8 +10,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./style.css": "./dist/index.css"
+    }
   },
   "files": [
     "dist"

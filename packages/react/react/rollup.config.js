@@ -26,10 +26,10 @@ module.exports = [
       commonjs(),
       postcss({
         modules: true,
-        extract: 'index.css',
+        extract: false, // Don't extract CSS to separate file
+        inject: true,   // Inject CSS into JS bundle
         minimize: false,
         sourceMap: true,
-        inject: false, // Don't inject CSS, extract it
       }),
       typescript({
         tsconfig: 'tsconfig.json',
@@ -60,8 +60,10 @@ module.exports = [
       commonjs(),
       postcss({
         modules: true,
-        extract: false, // Don't extract CSS for CJS build to avoid conflicts
+        extract: false, // Don't extract CSS for CJS build
+        inject: true,   // Inject CSS into JS bundle
         minimize: false,
+        sourceMap: true,
       }),
       typescript({
         tsconfig: 'tsconfig.json',
