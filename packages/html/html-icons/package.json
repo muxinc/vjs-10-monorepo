@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "rollup -c && tsc --project tsconfig.build.json",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
@@ -33,6 +33,11 @@
     "@vjs-10/icons": "*"
   },
   "devDependencies": {
+    "rollup": "^4.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "tslib": "^2.6.0",
     "typescript": "^5.3.0"
   },
   "publishConfig": {
