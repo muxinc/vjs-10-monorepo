@@ -16,9 +16,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c && tsc --project tsconfig.build.json",
+    "generate": "svgr --config-file svgr.config.js --out-dir src/generated-icons ../../core/icons/assets",
+    "build": "npm run generate && rollup -c && tsc --project tsconfig.build.json",
     "test": "echo \"No tests yet\"",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist src/generated-icons"
   },
   "keywords": [
     "icons",
@@ -42,7 +43,11 @@
     "tslib": "^2.6.0",
     "typescript": "^5.3.0",
     "@types/react": "^18.0.0",
-    "react": "^18.0.0"
+    "react": "^18.0.0",
+    "@svgr/cli": "^8.0.0",
+    "@svgr/plugin-jsx": "^8.0.0",
+    "@svgr/plugin-prettier": "^8.0.0",
+    "@svgr/babel-plugin-add-jsx-attribute": "^8.0.0"
   },
   "publishConfig": {
     "access": "public"

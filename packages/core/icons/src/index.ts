@@ -1,3 +1,20 @@
+// Import SVG files as strings
+import playSvg from '../assets/play.svg';
+import pauseSvg from '../assets/pause.svg';
+import volumeHighSvg from '../assets/volume-high.svg';
+import volumeLowSvg from '../assets/volume-low.svg';
+import volumeOffSvg from '../assets/volume-off.svg';
+
+// Export SVG strings directly
+export const SVG_ICONS = {
+  play: playSvg,
+  pause: pauseSvg,
+  volumeHigh: volumeHighSvg,
+  volumeLow: volumeLowSvg,
+  volumeOff: volumeOffSvg,
+} as const;
+
+// Legacy interface for backward compatibility
 export interface IconDefinition {
   name: string;
   viewBox: string;
