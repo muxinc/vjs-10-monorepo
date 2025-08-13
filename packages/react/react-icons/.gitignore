@@ -1,0 +1,17 @@
+# Generated files - do not commit
+src/generated-icons/
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
