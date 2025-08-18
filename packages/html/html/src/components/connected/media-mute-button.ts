@@ -12,13 +12,13 @@ export const toConnectedMediaMuteButton = (BaseClass = HTMLElement) => {
       ];
     }
 
-    #mediaStore: any;
+    _mediaStore: any;
 
     contexts = {
       mediaStore: (mediaStore: any) => {
-        this.#mediaStore = mediaStore;
+        this._mediaStore = mediaStore;
 
-        this.#mediaStore.subscribeKeys(
+        this._mediaStore.subscribeKeys(
           ['mediaVolumeLevel', 'mediaMuted'],
           ({ mediaVolumeLevel, mediaMuted }: any) => {
             /** @ts-ignore */
@@ -54,11 +54,11 @@ export const toConnectedMediaMuteButton = (BaseClass = HTMLElement) => {
       /** @ts-ignore */
       super.handleEvent?.(event);
       if (
-        this.#mediaStore &&
+        this._mediaStore &&
         ['mediamuterequest', 'mediaunmuterequest'].includes(event.type)
       ) {
         const { type, detail } = event;
-        this.#mediaStore.dispatch({ type, detail });
+        this._mediaStore.dispatch({ type, detail });
       }
     }
   };
