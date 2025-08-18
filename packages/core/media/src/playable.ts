@@ -20,7 +20,6 @@ export interface IAudibleMediaStateOwner
     IBaseMediaStateOwner,
     Pick<HTMLMediaElement, 'muted' | 'volume'> {}
 
-// @ts-ignore - Interface compatibility issues with undefined mediaElement
 export class PlayableMediaStateOwner
   extends EventTarget
   implements IPlayableMediaStateOwner, IAudibleMediaStateOwner
@@ -98,8 +97,11 @@ export class PlayableMediaStateOwner
 
   handleEvent(event: Event): void {
     if (event.target === this.mediaElement) {
-      // @ts-ignore
-      const clonedEvent = new event.constructor(event.type, event);
+      const clonedEvent =
+        new (event.constructor as (typeof globalThis)['Event'])(
+          event.type,
+          event,
+        );
       this.dispatchEvent(clonedEvent);
     }
   }
