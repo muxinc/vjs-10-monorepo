@@ -12,13 +12,13 @@ export class MediaContainer extends ConsumerMixin(HTMLElement) {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
 
-  #mediaStore: any;
-  #mediaSlot: HTMLSlotElement;
+  _mediaStore: any;
+  _mediaSlot: HTMLSlotElement;
 
   contexts = {
     mediaStore: (mediaStore: any) => {
-      this.#mediaStore = mediaStore;
-      this.#handleMediaSlotChange();
+      this._mediaStore = mediaStore;
+      this._handleMediaSlotChange();
     },
   };
 
@@ -34,13 +34,13 @@ export class MediaContainer extends ConsumerMixin(HTMLElement) {
     }
 
     // @ts-ignore - Shadow DOM property access
-    this.#mediaSlot = this.shadowRoot!.querySelector('slot[name=media]') as HTMLSlotElement;
-    this.#mediaSlot.addEventListener('slotchange', this.#handleMediaSlotChange);
+    this._mediaSlot = this.shadowRoot!.querySelector('slot[name=media]') as HTMLSlotElement;
+    this._mediaSlot.addEventListener('slotchange', this._handleMediaSlotChange);
   }
 
-  #handleMediaSlotChange = () => {
-    const media = this.#mediaSlot.assignedElements({ flatten: true })[0];
-    this.#mediaStore.dispatch({ type: 'mediaelementchangerequest', detail: media });
+  _handleMediaSlotChange = () => {
+    const media = this._mediaSlot.assignedElements({ flatten: true })[0];
+    this._mediaStore.dispatch({ type: 'mediaelementchangerequest', detail: media });
   };
 }
 

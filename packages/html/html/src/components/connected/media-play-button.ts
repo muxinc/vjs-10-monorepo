@@ -11,13 +11,13 @@ export const toConnectedMediaPlayButton = (BaseClass = HTMLElement) => {
       ];
     }
 
-    #mediaStore: any;
+    _mediaStore: any;
 
     contexts = {
       mediaStore: (mediaStore: any) => {
-        this.#mediaStore = mediaStore;
+        this._mediaStore = mediaStore;
 
-        this.#mediaStore.subscribeKeys(
+        this._mediaStore.subscribeKeys(
           ['mediaPaused'],
           ({ mediaPaused }: any) => {
             // NOTE: We may want to assume setting properties instead of attributes here to leave things generic for
@@ -52,11 +52,11 @@ export const toConnectedMediaPlayButton = (BaseClass = HTMLElement) => {
       /** @ts-ignore */
       super.handleEvent?.(event);
       if (
-        this.#mediaStore &&
+        this._mediaStore &&
         ['mediaplayrequest', 'mediapauserequest'].includes(event.type)
       ) {
         const { type, detail } = event;
-        this.#mediaStore.dispatch({ type, detail });
+        this._mediaStore.dispatch({ type, detail });
       }
     }
   };
