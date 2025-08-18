@@ -31,7 +31,9 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
   set: FacadeSetter<S>;
   /** @TODO We probably need to refactor this for more complex cases where we can't simply translate to a setter */
   actions: {
-    [k: string]: (val: CustomEvent<any>) => ReturnType<FacadeGetter<T, D>>;
+    [k: string]: (
+      val: Pick<CustomEvent<any>, 'type' | 'detail'>,
+    ) => ReturnType<FacadeGetter<T, D>>;
   };
 };
 
@@ -49,7 +51,7 @@ export function createMediaStore({
   media?: any;
   stateMediator: Partial<StateMediator> & Pick<StateMediator, 'mediaPaused'>;
 }) {
-  const stateOwners: any = {};
+  const stateOwners: StateOwners = {};
   const store = map<any>({});
   const stateUpdateHandlers: Record<string, () => void> = {};
   const keys = Object.keys(stateMediator);
@@ -90,18 +92,23 @@ export function createMediaStore({
   }
 
   return {
-    dispatch(action: any) {
+    dispatch(action: Pick<CustomEvent<any>, 'type' | 'detail'>) {
       const { type, detail } = action;
 
       if (type === 'mediaelementchangerequest') {
         updateStateOwners({ media: detail });
       } else {
         for (const stateObject of Object.values(stateMediator).filter(
-          (stateMediator) => 'set' in stateMediator,
+          (
+            stateMediatorEntry,
+          ): stateMediatorEntry is FacadeProp<any, any, any> =>
+            'set' in stateMediatorEntry,
         )) {
           const { set, actions } = stateObject;
-          if (type in actions) {
-            set(actions[type as keyof typeof actions](), stateOwners);
+          if (actions[type]) {
+            const actionFn = actions[type];
+            const actionValue = actionFn(action);
+            (set as FacadeSetter<any>)(actionValue, stateOwners);
           }
         }
       }
