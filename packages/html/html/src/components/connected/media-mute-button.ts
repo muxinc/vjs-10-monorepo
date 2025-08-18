@@ -1,4 +1,3 @@
-// @ts-ignore - Module resolution issues with @open-wc/context-protocol
 import { ConsumerMixin } from '@open-wc/context-protocol';
 
 // NOTE: This should be fairly generic code that could itself be abstracted into configuration for a more generic factory implementation. (CJP)

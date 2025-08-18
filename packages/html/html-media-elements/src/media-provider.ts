@@ -1,4 +1,3 @@
-// @ts-ignore - Module resolution issues with @open-wc/context-protocol
 import { ProviderMixin } from '@open-wc/context-protocol';
 import { createMediaStore } from '@vjs-10/media-store';
 

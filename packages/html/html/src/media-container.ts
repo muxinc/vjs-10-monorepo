@@ -1,4 +1,3 @@
-// @ts-ignore - Module resolution issues with @open-wc/context-protocol
 import { ConsumerMixin } from '@open-wc/context-protocol';
 
 export function getTemplateHTML() {
