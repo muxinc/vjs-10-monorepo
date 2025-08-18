@@ -30,7 +30,9 @@ export type ReadonlyFacadeProp<T, D = T> = {
 export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
   set: FacadeSetter<S>;
   /** @TODO We probably need to refactor this for more complex cases where we can't simply translate to a setter */
-  actions: { [k: string]: (val: CustomEvent<any>) => ReturnType<FacadeGetter<T, D>> };
+  actions: {
+    [k: string]: (val: CustomEvent<any>) => ReturnType<FacadeGetter<T, D>>;
+  };
 };
 
 export type StateMediator = {
@@ -99,8 +101,6 @@ export function createMediaStore({
         )) {
           const { set, actions } = stateObject;
           if (type in actions) {
-            /** @TODO FIXME ASAP!!! (CJP) */
-            // @ts-ignore
             set(actions[type as keyof typeof actions](), stateOwners);
           }
         }
@@ -118,7 +118,7 @@ export function createMediaStore({
     // NOTE: In the POC architecture using nano-stores, subscribe is simply subscribeKeys across all keys. (CJP)
     subscribe(callback: (state: any) => void) {
       subscribeKeys(store, keys, callback);
-    }
+    },
   };
 }
 
