@@ -29,6 +29,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
+    "@vjs-10/media": "*",
     "@vjs-10/react-icons": "*",
     "@vjs-10/react-media-elements": "*",
     "@vjs-10/react-media-store": "*"
