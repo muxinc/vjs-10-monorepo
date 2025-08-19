@@ -1,5 +1,6 @@
 import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import * as React from 'react';
+import { toConnectedComponent } from '../utils/component-factory';
 
 export const useMuteButtonState = (_props: any) => {
   /** @TODO Fix type issues with hooks (CJP) */
@@ -31,7 +32,7 @@ export const useMuteButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useMuteButtonState>,
 ) => {
-  const baseProps = {
+  const baseProps: Record<string, any> = {
     /** data attributes/props - non-boolean */
     ['data-volume-level']: state.volumeLevel,
     /** @TODO Need another state provider in core for i18n (CJP) */
@@ -78,25 +79,6 @@ export const renderMuteButton = (
 };
 
 export type renderMuteButton = typeof renderMuteButton;
-
-export const toConnectedComponent = (
-  useStateHook: useMuteButtonState,
-  usePropsHook: useMuteButtonProps,
-  defaultRender: renderMuteButton,
-  displayName: string,
-) => {
-  const ConnectedComponent = ({
-    render = defaultRender,
-    ...props
-  }: MuteButtonProps & { render: renderMuteButton }) => {
-    const connectedState = useStateHook(props);
-    const connectedProps = usePropsHook(props, connectedState);
-    return render(connectedProps, connectedState);
-  };
-
-  ConnectedComponent.displayName = displayName;
-  return ConnectedComponent;
-};
 
 export const MuteButton = toConnectedComponent(
   useMuteButtonState,

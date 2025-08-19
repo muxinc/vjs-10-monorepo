@@ -1,5 +1,6 @@
 import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import * as React from 'react';
+import { toConnectedComponent } from '../utils/component-factory';
 
 export const usePlayButtonState = (_props: any) => {
   /** @TODO Fix type issues with hooks (CJP) */
@@ -29,7 +30,7 @@ export const usePlayButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof usePlayButtonState>,
 ) => {
-  const baseProps = {
+  const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
     role: 'button',
@@ -74,25 +75,6 @@ export const renderPlayButton = (
 };
 
 export type renderPlayButton = typeof renderPlayButton;
-
-export const toConnectedComponent = (
-  useStateHook: usePlayButtonState,
-  usePropsHook: usePlayButtonProps,
-  defaultRender: renderPlayButton,
-  displayName: string,
-) => {
-  const ConnectedComponent = ({
-    render = defaultRender,
-    ...props
-  }: PlayButtonProps & { render?: renderPlayButton }) => {
-    const connectedState = useStateHook(props);
-    const connectedProps = usePropsHook(props, connectedState);
-    return render(connectedProps, connectedState);
-  };
-
-  ConnectedComponent.displayName = displayName;
-  return ConnectedComponent;
-};
 
 export const PlayButton = toConnectedComponent(
   usePlayButtonState,
