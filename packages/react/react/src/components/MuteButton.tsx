@@ -1,17 +1,5 @@
 import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import * as React from 'react';
-import type { ElementType, PropsWithChildren } from 'react';
-
-type DefaultMuteButtonState = { volumeLevel: string; muted: boolean };
-type DefaultMuteButtonEventCallbacks = {
-  onmediamuterequest: (event: Pick<CustomEvent, 'type'>) => void;
-  onmediaunmuterequest: (event: Pick<CustomEvent, 'type'>) => void;
-};
-type ComponentType = ElementType<
-  PropsWithChildren<
-    Partial<DefaultMuteButtonState & DefaultMuteButtonEventCallbacks>
-  >
->;
 
 export const useMuteButtonState = (_props: any) => {
   /** @TODO Fix type issues with hooks (CJP) */
