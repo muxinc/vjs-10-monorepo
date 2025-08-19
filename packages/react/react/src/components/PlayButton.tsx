@@ -29,9 +29,7 @@ export const usePlayButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof usePlayButtonState>,
 ) => {
-  return {
-    /** data attributes/props */
-    ['data-paused']: state.paused,
+  const baseProps = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
     role: 'button',
@@ -41,6 +39,13 @@ export const usePlayButtonProps = (
     /** external props spread last to allow for overriding */
     ...props,
   };
+
+  // Handle boolean data attribute: present with empty string when true, absent when false
+  if (state.paused) {
+    baseProps['data-paused'] = '';
+  }
+
+  return baseProps;
 };
 
 export type usePlayButtonProps = typeof usePlayButtonProps;
