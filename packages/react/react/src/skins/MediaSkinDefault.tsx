@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
-import PlayButton from '../components/connected-with-defaults/PlayButton';
+import PlayButton from '../components/PlayButton';
 import MuteButton from '../components/MuteButton';
 import {
   VolumeHighIcon,
@@ -18,6 +18,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
       <div className={styles.Overlay}>
         <div className={styles.Spacer}></div>
         <div className={styles.ControlBar}>
+          {/* @ts-ignore */}
           <PlayButton className={styles.MediaPlayButton}>
             <PlayIcon className={styles.PlayIcon}></PlayIcon>
             <PauseIcon className={styles.PauseIcon}></PauseIcon>
