@@ -1,8 +1,12 @@
 import * as React from 'react';
 import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 import PlayButton from '../components/connected-with-defaults/PlayButton';
-import MuteButton from '../components/connected-with-defaults/MuteButton';
-import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
+import MuteButton from '../components/MuteButton';
+import {
+  VolumeHighIcon,
+  VolumeLowIcon,
+  VolumeOffIcon,
+} from '@vjs-10/react-icons';
 import styles from './styles.module.css';
 
 export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
@@ -18,6 +22,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             <PlayIcon className={styles.PlayIcon}></PlayIcon>
             <PauseIcon className={styles.PauseIcon}></PauseIcon>
           </PlayButton>
+          {/* @ts-ignore */}
           <MuteButton className={`${styles.Button} ${styles.MediaMuteButton}`}>
             <VolumeHighIcon
               className={`${styles.Icon} ${styles.VolumeHighIcon}`}
