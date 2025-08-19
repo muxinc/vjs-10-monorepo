@@ -2,7 +2,7 @@ import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import type { ElementType, PropsWithChildren } from 'react';
 
-type DefaultMuteButtonState = { mediaVolumeLevel: string };
+type DefaultMuteButtonState = { volumeLevel: string; muted: boolean };
 type DefaultMuteButtonEventCallbacks = {
   onmediamuterequest: (event: Pick<CustomEvent, 'type'>) => void;
   onmediaunmuterequest: (event: Pick<CustomEvent, 'type'>) => void;
@@ -44,9 +44,17 @@ export const useMuteButtonProps = (
   state: ReturnType<typeof useMuteButtonState>,
 ) => {
   return {
-    ...props,
+    /** data attributes/props */
     ['data-muted']: state.muted,
     ['data-volume-level']: state.volumeLevel,
+    /** @TODO Need another state provider in core for i18n (CJP) */
+    /** aria attributes/props */
+    role: 'button',
+    ['aria-label']: state.muted ? 'unmute' : 'mute',
+    /** tooltip */
+    ['data-tooltip']: state.muted ? 'Unmute' : 'Mute',
+    /** external props spread last to allow for overriding */
+    ...props,
   };
 };
 
@@ -61,6 +69,8 @@ export const renderMuteButton = (
     <button
       {...props}
       onClick={() => {
+        /** @ts-ignore */
+        if (props.disabled) return;
         if (state.muted) {
           state.requestUnmute();
         } else {
