@@ -30,7 +30,9 @@ export const audible = {
     mediaEvents: ['volumechange'],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API (CJP) */
-      mediavolumerequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }) => +detail,
+      mediavolumerequest: (
+        { detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 },
+      ) => +detail,
     },
   },
   // NOTE: This could be (re)implemented as "derived state" in some manner (e.g. selectors but also other patterns/conventions) if preferred. (CJP)

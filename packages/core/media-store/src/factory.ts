@@ -1,4 +1,4 @@
-import { map, subscribeKeys } from 'nanostores';
+import { getKey, map, subscribeKeys } from 'nanostores';
 
 export type StateOwners = {
   media?: any;
@@ -116,6 +116,13 @@ export function createMediaStore({
 
     getState() {
       return store.get();
+    },
+
+    getKeys(keys: string[]) {
+      return keys.reduce((acc, k) => {
+        acc[k] = getKey(store, k);
+        return acc;
+      }, {} as { [k: string]: any });
     },
 
     subscribeKeys(keys: string[], callback: (state: any) => void) {
