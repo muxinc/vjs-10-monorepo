@@ -31,9 +31,8 @@ export const useMuteButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useMuteButtonState>,
 ) => {
-  return {
-    /** data attributes/props */
-    ['data-muted']: state.muted,
+  const baseProps = {
+    /** data attributes/props - non-boolean */
     ['data-volume-level']: state.volumeLevel,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
@@ -44,6 +43,13 @@ export const useMuteButtonProps = (
     /** external props spread last to allow for overriding */
     ...props,
   };
+
+  // Handle boolean data attribute: present with empty string when true, absent when false
+  if (state.muted) {
+    baseProps['data-muted'] = '';
+  }
+
+  return baseProps;
 };
 
 export type useMuteButtonProps = typeof useMuteButtonProps;
