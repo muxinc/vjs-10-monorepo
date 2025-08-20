@@ -1,8 +1,8 @@
-import { MediaSkin } from '../media-skin.js';
+import { MediaSkin } from '../media-skin';
 
-import '../media-container.js';
-import '../components/connected-with-defaults/media-play-button.js';
-import '../components/connected-with-defaults/media-mute-button.js';
+import '../media-container';
+import '../components/media-play-button';
+import '../components/media-mute-button';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
