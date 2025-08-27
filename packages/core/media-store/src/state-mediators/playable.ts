@@ -1,5 +1,5 @@
 export const playable = {
-  mediaPaused: {
+  paused: {
     get(stateOwners: any) {
       const { media } = stateOwners;
       return media?.paused ?? true;
@@ -11,8 +11,8 @@ export const playable = {
     mediaEvents: ['play', 'playing', 'pause', 'emptied'],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API (CJP) */
-      mediaplayrequest: () => false,
-      mediapauserequest: () => true,
+      playrequest: () => false,
+      pauserequest: () => true,
     },
   },
 };

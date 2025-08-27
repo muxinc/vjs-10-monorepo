@@ -44,15 +44,15 @@ export class PlayButtonBase extends MediaChromeButton {
  * Handles media store state subscription and transformation
  */
 export const usePlayButtonState: StateHook<{ paused: boolean }> = {
-  keys: ['mediaPaused'],
+  keys: ['paused'],
   transform: (rawState, mediaStore) => ({
-    paused: rawState.mediaPaused ?? true,
+    paused: rawState.paused ?? true,
     requestPlay() {
-      const type = 'mediaplayrequest';
+      const type = 'playrequest';
       mediaStore.dispatch({ type });
     },
     requestPause() {
-      const type = 'mediapauserequest';
+      const type = 'pauserequest';
       mediaStore.dispatch({ type });
     },
   }),

@@ -5,16 +5,16 @@ import { toConnectedComponent } from '../utils/component-factory';
 export const useMuteButtonState = (_props: any) => {
   /** @TODO Fix type issues with hooks (CJP) */
   const volumeLevel = useMediaSelector(
-    (state: any) => state.mediaVolumeLevel,
+    (state: any) => state.volumeLevel,
   ) as string;
-  const muted = useMediaSelector((state: any) => state.mediaMuted) as boolean;
+  const muted = useMediaSelector((state: any) => state.muted) as boolean;
 
   const dispatch = useMediaDispatch();
   const requestMute = React.useCallback(() => {
-    dispatch({ type: 'mediamuterequest' });
+    dispatch({ type: 'muterequest' });
   }, [dispatch]);
   const requestUnmute = React.useCallback(() => {
-    dispatch({ type: 'mediaunmuterequest' });
+    dispatch({ type: 'unmuterequest' });
   }, [dispatch]);
 
   return {
