@@ -1,5 +1,5 @@
 export const audible = {
-  mediaMuted: {
+  muted: {
     get(stateOwners: any) {
       const { media } = stateOwners;
       return media?.muted ?? false;
@@ -12,11 +12,11 @@ export const audible = {
     mediaEvents: ['volumechange'],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API or aren't simple 1:1 with getter vs. setter (CJP) */
-      mediamuterequest: () => true,
-      mediaunmuterequest: () => false,
+      muterequest: () => true,
+      unmuterequest: () => false,
     },
   },
-  mediaVolume: {
+  volume: {
     get(stateOwners: any) {
       const { media } = stateOwners;
       return media?.volume ?? 1.0;
@@ -30,13 +30,13 @@ export const audible = {
     mediaEvents: ['volumechange'],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API (CJP) */
-      mediavolumerequest: (
+      volumerequest: (
         { detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 },
       ) => +detail,
     },
   },
   // NOTE: This could be (re)implemented as "derived state" in some manner (e.g. selectors but also other patterns/conventions) if preferred. (CJP)
-  mediaVolumeLevel: {
+  volumeLevel: {
     get(stateOwners: any) {
       const { media } = stateOwners;
       if (typeof media?.volume == 'undefined') return 'high';

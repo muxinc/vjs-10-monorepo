@@ -5,15 +5,15 @@ import { toConnectedComponent } from '../utils/component-factory';
 export const usePlayButtonState = (_props: any) => {
   /** @TODO Fix type issues with hooks (CJP) */
   const paused = useMediaSelector(
-    (state: any) => typeof state.mediaPaused !== 'boolean' || state.mediaPaused,
+    (state: any) => typeof state.paused !== 'boolean' || state.paused,
   ) as boolean;
 
   const dispatch = useMediaDispatch();
   const requestPlay = React.useCallback(() => {
-    dispatch({ type: 'mediaplayrequest' });
+    dispatch({ type: 'playrequest' });
   }, [dispatch]);
   const requestPause = React.useCallback(() => {
-    dispatch({ type: 'mediapauserequest' });
+    dispatch({ type: 'pauserequest' });
   }, [dispatch]);
 
   return {

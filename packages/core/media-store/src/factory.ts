@@ -38,10 +38,10 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
 };
 
 export type StateMediator = {
-  mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
-  mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
-  mediaVolume: FacadeProp<HTMLMediaElement['volume']>;
-  mediaVolumeLevel: ReadonlyFacadeProp<'high' | 'medium' | 'low' | 'off'>;
+  paused: FacadeProp<HTMLMediaElement['paused']>;
+  muted: FacadeProp<HTMLMediaElement['muted']>;
+  volume: FacadeProp<HTMLMediaElement['volume']>;
+  volumeLevel: ReadonlyFacadeProp<'high' | 'medium' | 'low' | 'off'>;
 };
 
 export function createMediaStore({
@@ -49,7 +49,7 @@ export function createMediaStore({
   stateMediator,
 }: {
   media?: any;
-  stateMediator: Partial<StateMediator> & Pick<StateMediator, 'mediaPaused'>;
+  stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>;
 }) {
   const stateOwners: StateOwners = {};
   const store = map<any>({});
@@ -137,7 +137,7 @@ export function createMediaStore({
 }
 
 function getInitialState(
-  stateMediator: Partial<StateMediator> & Pick<StateMediator, 'mediaPaused'>,
+  stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>,
   stateOwners: any,
 ) {
   let initialState: any = {};

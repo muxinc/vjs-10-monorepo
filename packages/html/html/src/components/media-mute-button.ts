@@ -56,16 +56,16 @@ export const useMuteButtonState: StateHook<{
   muted: boolean;
   volumeLevel: string;
 }> = {
-  keys: ['mediaMuted', 'mediaVolumeLevel'],
+  keys: ['muted', 'volumeLevel'],
   transform: (rawState, mediaStore) => ({
-    muted: rawState.mediaMuted ?? false,
-    volumeLevel: rawState.mediaVolumeLevel ?? 'off',
+    muted: rawState.muted ?? false,
+    volumeLevel: rawState.volumeLevel ?? 'off',
     requestMute() {
-      const type = 'mediamuterequest';
+      const type = 'muterequest';
       mediaStore.dispatch({ type });
     },
     requestUnmute() {
-      const type = 'mediaunmuterequest';
+      const type = 'unmuterequest';
       mediaStore.dispatch({ type });
     },
   }),
