@@ -1,11 +1,12 @@
 // Re-export everything from MediaProvider - this is the primary implementation
-export { 
-  MediaProvider, 
+export {
+  MediaProvider,
   MediaContext,
   useMediaStore,
   useMediaDispatch,
   useMediaRef,
-  useMediaSelector 
+  useMediaSelector,
+  shallowEqual,
 } from './MediaProvider.js';
 
 // @ts-ignore - Placeholder types until media-store exports are updated
