@@ -5,21 +5,21 @@ import {
 } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
 
-export class MediaMuteButton extends MediaChromeButton {
+export class MuteButtonBase extends MediaChromeButton {
   _state:
     | {
         muted: boolean;
         volumeLevel: string;
-        requestUnmute: () => void;
         requestMute: () => void;
+        requestUnmute: () => void;
       }
     | undefined;
 
   handleEvent(event: Event) {
     const { type } = event;
-    if (type === 'click') {
-      const state = this._state;
-      if (state) {
+    const state = this._state;
+    if (state) {
+      if (type === 'click') {
         if (state.muted) {
           state.requestUnmute();
         } else {
@@ -39,6 +39,7 @@ export class MediaMuteButton extends MediaChromeButton {
 
   _update(props: any, state: any) {
     this._state = state;
+    /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
     // Make generic
     this.toggleAttribute('data-muted', props['data-muted']);
     this.setAttribute('data-volume-level', props['data-volume-level']);
@@ -102,7 +103,7 @@ export const useMuteButtonProps: PropsHook<{
  * Equivalent to React's MuteButton = toConnectedComponent(...)
  */
 export const MuteButton = toConnectedHTMLComponent(
-  MediaMuteButton,
+  MuteButtonBase,
   useMuteButtonState,
   useMuteButtonProps,
   'MuteButton',

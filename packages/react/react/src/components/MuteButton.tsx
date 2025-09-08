@@ -1,27 +1,58 @@
-import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
+import {
+  shallowEqual,
+  // useMediaDispatch,
+  useMediaSelector,
+  useMediaStore,
+} from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const useMuteButtonState = (_props: any) => {
-  /** @TODO Fix type issues with hooks (CJP) */
-  const volumeLevel = useMediaSelector(
-    (state: any) => state.volumeLevel,
-  ) as string;
-  const muted = useMediaSelector((state: any) => state.muted) as boolean;
+/**
+ * MuteButton state hook - equivalent to React's useMuteButtonState
+ * Handles media store state subscription and transformation
+ */
+export const muteButtonStateDef = {
+  keys: ['muted', 'volumeLevel'],
+  stateTransform: (rawState: any) => ({
+    muted: rawState.muted ?? false,
+    volumeLevel: rawState.volumeLevel ?? 'off',
+  }),
+  /** @TODO Consider "promoting" this up to state-mediator defs + media store (CJP) */
+  requestMethods: (mediaStore: ReturnType<typeof useMediaStore>) => {
+    return {
+      requestMute() {
+        const type = 'muterequest';
+        mediaStore.dispatch({ type });
+      },
+      requestUnmute() {
+        const type = 'unmuterequest';
+        mediaStore.dispatch({ type });
+      },
+    };
+  },
+} as const;
 
-  const dispatch = useMediaDispatch();
-  const requestMute = React.useCallback(() => {
-    dispatch({ type: 'muterequest' });
-  }, [dispatch]);
-  const requestUnmute = React.useCallback(() => {
-    dispatch({ type: 'unmuterequest' });
-  }, [dispatch]);
+export const useMuteButtonState = (_props: any) => {
+  const mediaStore = useMediaStore();
+  /** @TODO Fix type issues with hooks (CJP) */
+  const mediaState = useMediaSelector(
+    muteButtonStateDef.stateTransform,
+    shallowEqual,
+  );
+
+  const [methods, setMethods] = React.useState(
+    muteButtonStateDef.requestMethods(mediaStore),
+  );
+
+  React.useEffect(() => {
+    setMethods(muteButtonStateDef.requestMethods(mediaStore));
+  }, [mediaStore]);
 
   return {
-    volumeLevel,
-    muted,
-    requestMute,
-    requestUnmute,
+    volumeLevel: mediaState.volumeLevel,
+    muted: mediaState.muted,
+    requestMute: methods.requestMute,
+    requestUnmute: methods.requestUnmute,
   } as const;
 };
 
