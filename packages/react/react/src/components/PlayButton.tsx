@@ -1,25 +1,56 @@
-import { useMediaDispatch, useMediaSelector } from '@vjs-10/react-media-store';
+import {
+  shallowEqual,
+  // useMediaDispatch,
+  useMediaSelector,
+  useMediaStore,
+} from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const usePlayButtonState = (_props: any) => {
-  /** @TODO Fix type issues with hooks (CJP) */
-  const paused = useMediaSelector(
-    (state: any) => typeof state.paused !== 'boolean' || state.paused,
-  ) as boolean;
+/**
+ * PlayButton state hook - equivalent to React's usePlayButtonState
+ * Handles media store state subscription and transformation
+ */
+export const playButtonStateDef = {
+  keys: ['paused'],
+  stateTransform: (rawState: any) => ({
+    paused: rawState.paused ?? true,
+  }),
+  /** @TODO Consider "promoting" this up to state-mediator defs + media store (CJP) */
+  requestMethods: (mediaStore: ReturnType<typeof useMediaStore>) => {
+    return {
+      requestPlay() {
+        const type = 'playrequest';
+        mediaStore.dispatch({ type });
+      },
+      requestPause() {
+        const type = 'pauserequest';
+        mediaStore.dispatch({ type });
+      },
+    };
+  },
+} as const;
 
-  const dispatch = useMediaDispatch();
-  const requestPlay = React.useCallback(() => {
-    dispatch({ type: 'playrequest' });
-  }, [dispatch]);
-  const requestPause = React.useCallback(() => {
-    dispatch({ type: 'pauserequest' });
-  }, [dispatch]);
+export const usePlayButtonState = (_props: any) => {
+  const mediaStore = useMediaStore();
+  /** @TODO Fix type issues with hooks (CJP) */
+  const mediaState = useMediaSelector(
+    playButtonStateDef.stateTransform,
+    shallowEqual,
+  );
+
+  const [methods, setMethods] = React.useState(
+    playButtonStateDef.requestMethods(mediaStore),
+  );
+
+  React.useEffect(() => {
+    setMethods(playButtonStateDef.requestMethods(mediaStore));
+  }, [mediaStore]);
 
   return {
-    paused,
-    requestPlay,
-    requestPause,
+    paused: mediaState.paused,
+    requestPlay: methods.requestPlay,
+    requestPause: methods.requestPause,
   } as const;
 };
 
