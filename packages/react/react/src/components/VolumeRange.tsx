@@ -1,24 +1,15 @@
-import React from 'react';
 import {
   shallowEqual,
   useMediaSelector,
   useMediaStore,
 } from '@vjs-10/react-media-store';
+import * as React from 'react';
+import { toConnectedComponent } from '../utils/component-factory';
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
 
-interface VolumeRangeProps {
-  className?: string;
-  style?: React.CSSProperties;
-}
-
-export const VolumeRange: React.FC<VolumeRangeProps> = ({
-  className,
-  style,
-  ...props
-}) => {
+export const useVolumeRangeState = (_props: any) => {
   const mediaStore = useMediaStore();
-
-  // Use useMediaSelector to properly subscribe to state changes
+  /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(
     volumeRangeStateDefinition.stateTransform,
     shallowEqual,
@@ -29,27 +20,69 @@ export const VolumeRange: React.FC<VolumeRangeProps> = ({
     [mediaStore],
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    methods.requestVolumeChange(parseFloat(e.target.value));
+  return {
+    volume: mediaState.volume,
+    muted: mediaState.muted,
+    volumeLevel: mediaState.volumeLevel,
+    requestVolumeChange: methods.requestVolumeChange,
+  } as const;
+};
+
+export type useVolumeRangeState = typeof useVolumeRangeState;
+export type VolumeRangeState = ReturnType<useVolumeRangeState>;
+
+export const useVolumeRangeProps = (
+  props: React.PropsWithChildren<{ [k: string]: any }>,
+  state: ReturnType<typeof useVolumeRangeState>,
+) => {
+  const displayValue = state.muted ? 0 : state.volume;
+
+  const baseProps: Record<string, any> = {
+    /** @TODO These should probably be defined in the render function (CJP) */
+    /** input properties */
+    type: 'range',
+    min: '0',
+    max: '1',
+    step: '0.01',
+    value: displayValue,
+    /** aria attributes/props */
+    'aria-label': 'Volume',
+    'aria-valuetext': `${Math.round(displayValue * 100)}%`,
+    /** data attributes */
+    'data-muted': state.muted,
+    'data-volume-level': state.volumeLevel,
+    /** external props spread last to allow for overriding */
+    ...props,
   };
 
-  const displayValue = mediaState.muted ? 0 : mediaState.volume;
+  return baseProps;
+};
 
+export type useVolumeRangeProps = typeof useVolumeRangeProps;
+type VolumeRangeProps = ReturnType<useVolumeRangeProps>;
+
+export const renderVolumeRange = (
+  props: VolumeRangeProps,
+  state: VolumeRangeState,
+) => {
   return (
     <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.01"
-      value={displayValue}
-      onChange={handleChange}
-      aria-label="Volume"
-      aria-valuetext={`${Math.round(displayValue * 100)}%`}
-      data-muted={mediaState.muted}
-      data-volume-level={mediaState.volumeLevel}
-      className={className}
-      style={style}
       {...props}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        /** @ts-ignore */
+        if (props.disabled) return;
+        state.requestVolumeChange(parseFloat(e.target.value));
+      }}
     />
   );
 };
+
+export type renderVolumeRange = typeof renderVolumeRange;
+
+export const VolumeRange = toConnectedComponent(
+  useVolumeRangeState,
+  useVolumeRangeProps,
+  renderVolumeRange,
+  'VolumeRange',
+);
+export default VolumeRange;
