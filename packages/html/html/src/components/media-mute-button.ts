@@ -21,7 +21,7 @@ export class MuteButtonBase extends MediaChromeButton {
     const state = this._state;
     if (state) {
       if (type === 'click') {
-        if (state.muted) {
+        if (state.volumeLevel === 'off') {
           state.requestUnmute();
         } else {
           state.requestMute();

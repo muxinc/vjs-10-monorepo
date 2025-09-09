@@ -3,6 +3,7 @@ import { MediaSkin } from '../media-skin';
 import '../media-container';
 import '../components/media-play-button';
 import '../components/media-mute-button';
+import '../components/media-volume-range';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
@@ -78,6 +79,37 @@ export function getTemplateHTML() {
       .spacer {
         flex-grow: 1;
       }
+
+      /* Volume Range UI/Styles */
+      media-volume-range {
+        margin: 0 8px;
+      }
+
+      media-volume-range input[type="range"] {
+        width: 80px;
+        height: 4px;
+        background: rgb(50 50 50);
+        outline: none;
+        border-radius: 2px;
+      }
+
+      media-volume-range input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        background: rgb(238 238 238);
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      media-volume-range input[type="range"]::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        background: rgb(238 238 238);
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
@@ -94,6 +126,7 @@ export function getTemplateHTML() {
             <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
             <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
           </media-mute-button>
+          <media-volume-range></media-volume-range>
         </div>
       <div>
     </media-container>

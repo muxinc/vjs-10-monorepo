@@ -69,7 +69,7 @@ export const renderMuteButton = (
       onClick={() => {
         /** @ts-ignore */
         if (props.disabled) return;
-        if (state.muted) {
+        if (state.volumeLevel === 'off') {
           state.requestUnmute();
         } else {
           state.requestMute();

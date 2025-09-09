@@ -8,6 +8,9 @@ export const audible = {
       const { media } = stateOwners;
       if (!media) return;
       media.muted = value;
+      if (!value && !media.volume) {
+        media.volume = 0.25;
+      }
     },
     mediaEvents: ['volumechange'],
     actions: {
@@ -24,8 +27,12 @@ export const audible = {
     set(value: number, stateOwners: any) {
       const { media } = stateOwners;
       if (!media) return;
-      if (!Number.isFinite(+value)) return;
-      media.volume = +value;
+      const numericValue = +value;
+      if (!Number.isFinite(numericValue)) return;
+      media.volume = numericValue;
+      if (numericValue > 0) {
+        media.mute = false;
+      }
     },
     mediaEvents: ['volumechange'],
     actions: {

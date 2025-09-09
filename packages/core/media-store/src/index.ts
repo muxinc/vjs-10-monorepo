@@ -5,3 +5,4 @@ export * from './state-mediators/audible';
 export * from './state-mediators/temporal';
 export * from './component-state-definitions/play-button';
 export * from './component-state-definitions/mute-button';
+export * from './component-state-definitions/volume-range';
