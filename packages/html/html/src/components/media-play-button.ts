@@ -4,6 +4,7 @@ import {
   PropsHook,
 } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
+import { playButtonStateDefinition } from './state-definitions/play-button';
 
 export class PlayButtonBase extends MediaChromeButton {
   _state:
@@ -44,17 +45,10 @@ export class PlayButtonBase extends MediaChromeButton {
  * Handles media store state subscription and transformation
  */
 export const usePlayButtonState: StateHook<{ paused: boolean }> = {
-  keys: ['paused'],
+  keys: playButtonStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
-    paused: rawState.paused ?? true,
-    requestPlay() {
-      const type = 'playrequest';
-      mediaStore.dispatch({ type });
-    },
-    requestPause() {
-      const type = 'pauserequest';
-      mediaStore.dispatch({ type });
-    },
+    ...playButtonStateDefinition.stateTransform(rawState),
+    ...playButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
   }),
 };
 
