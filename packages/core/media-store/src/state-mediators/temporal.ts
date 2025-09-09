@@ -1,5 +1,7 @@
 const isValidNumber = (value: any): value is number => {
-  return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
+  return (
+    typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)
+  );
 };
 
 export const temporal = {
@@ -21,37 +23,38 @@ export const temporal = {
       ) => +detail,
     },
   },
-  
+
   duration: {
     get(stateOwners: any) {
       const { media } = stateOwners;
-      
+
       // Return 0 if no media or invalid duration
-      if (!media?.duration || Number.isNaN(media.duration) || !Number.isFinite(media.duration)) {
+      if (
+        !media?.duration ||
+        Number.isNaN(media.duration) ||
+        !Number.isFinite(media.duration)
+      ) {
         return 0;
       }
-      
+
       return media.duration;
     },
     mediaEvents: ['loadedmetadata', 'durationchange', 'emptied'],
   },
-  
+
   seekable: {
     get(stateOwners: any): [number, number] | undefined {
       const { media } = stateOwners;
-      
+
       if (!media?.seekable?.length) return undefined;
-      
+
       const start = media.seekable.start(0);
       const end = media.seekable.end(media.seekable.length - 1);
-      
+
       // Account for cases where metadata has an "empty" seekable range
       if (!start && !end) return undefined;
-      
-      return [
-        Number(start.toFixed(3)), 
-        Number(end.toFixed(3))
-      ];
+
+      return [Number(start.toFixed(3)), Number(end.toFixed(3))];
     },
     mediaEvents: ['loadedmetadata', 'emptied', 'progress', 'seekablechange'],
   },
