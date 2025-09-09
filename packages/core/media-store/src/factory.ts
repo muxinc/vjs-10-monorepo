@@ -42,6 +42,9 @@ export type StateMediator = {
   muted: FacadeProp<HTMLMediaElement['muted']>;
   volume: FacadeProp<HTMLMediaElement['volume']>;
   volumeLevel: ReadonlyFacadeProp<'high' | 'medium' | 'low' | 'off'>;
+  currentTime: FacadeProp<HTMLMediaElement['currentTime']>;
+  duration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
+  seekable: ReadonlyFacadeProp<[number, number] | undefined>;
 };
 
 export function createMediaStore({
