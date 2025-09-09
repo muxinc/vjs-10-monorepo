@@ -4,6 +4,7 @@ import {
   PropsHook,
 } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
+import { muteButtonStateDefinition } from './state-definitions/mute-button';
 
 export class MuteButtonBase extends MediaChromeButton {
   _state:
@@ -57,18 +58,10 @@ export const useMuteButtonState: StateHook<{
   muted: boolean;
   volumeLevel: string;
 }> = {
-  keys: ['muted', 'volumeLevel'],
+  keys: muteButtonStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
-    muted: rawState.muted ?? false,
-    volumeLevel: rawState.volumeLevel ?? 'off',
-    requestMute() {
-      const type = 'muterequest';
-      mediaStore.dispatch({ type });
-    },
-    requestUnmute() {
-      const type = 'unmuterequest';
-      mediaStore.dispatch({ type });
-    },
+    ...muteButtonStateDefinition.stateTransform(rawState),
+    ...muteButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
   }),
 };
 

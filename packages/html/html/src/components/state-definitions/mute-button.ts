@@ -1,0 +1,35 @@
+export interface MuteButtonState {
+  muted: boolean;
+  volumeLevel: string;
+}
+
+export interface MuteButtonMethods {
+  requestMute: () => void;
+  requestUnmute: () => void;
+}
+
+export interface MuteButtonStateDefinition {
+  keys: string[];
+  stateTransform: (rawState: any) => MuteButtonState;
+  createRequestMethods: (
+    dispatch: (action: { type: string }) => void,
+  ) => MuteButtonMethods;
+}
+
+/**
+ * MuteButton state definition
+ * Defines the core state logic that can be shared between implementations
+ */
+export const muteButtonStateDefinition: MuteButtonStateDefinition = {
+  keys: ['muted', 'volumeLevel'],
+
+  stateTransform: (rawState: any): MuteButtonState => ({
+    muted: rawState.muted ?? (false as boolean),
+    volumeLevel: rawState.volumeLevel ?? ('off' as string),
+  }),
+
+  createRequestMethods: (dispatch): MuteButtonMethods => ({
+    requestMute: () => dispatch({ type: 'muterequest' }),
+    requestUnmute: () => dispatch({ type: 'unmuterequest' }),
+  }),
+};
