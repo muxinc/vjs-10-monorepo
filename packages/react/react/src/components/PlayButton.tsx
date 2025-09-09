@@ -5,7 +5,7 @@ import {
 } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
-import { playButtonStateDefinition } from './state-definitions/play-button';
+import { playButtonStateDefinition } from '@vjs-10/media-store';
 
 export const usePlayButtonState = (_props: any) => {
   const mediaStore = useMediaStore();

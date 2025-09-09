@@ -24,8 +24,8 @@ export const muteButtonStateDefinition: MuteButtonStateDefinition = {
   keys: ['muted', 'volumeLevel'],
 
   stateTransform: (rawState: any): MuteButtonState => ({
-    muted: rawState.muted ?? (false as boolean),
-    volumeLevel: rawState.volumeLevel ?? ('off' as string),
+    muted: rawState.muted ?? false,
+    volumeLevel: rawState.volumeLevel ?? 'off',
   }),
 
   createRequestMethods: (dispatch): MuteButtonMethods => ({
