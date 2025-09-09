@@ -23,13 +23,17 @@ export class VolumeRangeBase extends HTMLElement {
     this._input.min = '0';
     this._input.max = '1';
     this._input.step = '0.01';
-    this._input.addEventListener('input', this.handleInput.bind(this));
+    this._input.addEventListener('input', this);
     this.appendChild(this._input);
   }
 
-  handleInput() {
-    if (this._state) {
-      this._state.requestVolumeChange(parseFloat(this._input.value));
+  handleEvent(event: Event) {
+    const { type } = event;
+    const state = this._state;
+    if (state) {
+      if (type === 'input') {
+        state.requestVolumeChange(parseFloat(this._input.value));
+      }
     }
   }
 
