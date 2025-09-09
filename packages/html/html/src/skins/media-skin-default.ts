@@ -80,69 +80,6 @@ export function getTemplateHTML() {
       .spacer {
         flex-grow: 1;
       }
-
-      /* Volume Range UI/Styles */
-      media-volume-range {
-        margin: 0 8px;
-      }
-
-      media-volume-range input[type="range"] {
-        width: 80px;
-        height: 4px;
-        background: rgb(50 50 50);
-        outline: none;
-        border-radius: 2px;
-      }
-
-      media-volume-range input[type="range"]::-webkit-slider-thumb {
-        appearance: none;
-        width: 12px;
-        height: 12px;
-        background: rgb(238 238 238);
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      media-volume-range input[type="range"]::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-        background: rgb(238 238 238);
-        border-radius: 50%;
-        cursor: pointer;
-        border: none;
-      }
-
-      /* Time Range UI/Styles */
-      media-time-range {
-        flex-grow: 1;
-        margin: 0 8px;
-      }
-
-      media-time-range input[type="range"] {
-        width: 100%;
-        height: 4px;
-        background: rgb(50 50 50);
-        outline: none;
-        border-radius: 2px;
-      }
-
-      media-time-range input[type="range"]::-webkit-slider-thumb {
-        appearance: none;
-        width: 12px;
-        height: 12px;
-        background: rgb(238 238 238);
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      media-time-range input[type="range"]::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-        background: rgb(238 238 238);
-        border-radius: 50%;
-        cursor: pointer;
-        border: none;
-      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
