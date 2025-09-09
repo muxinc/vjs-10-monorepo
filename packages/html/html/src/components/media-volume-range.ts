@@ -18,6 +18,10 @@ export class VolumeRangeBase extends HTMLElement {
 
   constructor() {
     super();
+    /**
+     * @TODO This is just a simple render function to demonstrate functionality.
+     * A full implementation will need to implement a "compound component" architecture and likely should use templates. (CJP)
+     **/
     this._input = document.createElement('input');
     this._input.type = 'range';
     this._input.min = '0';
@@ -56,7 +60,7 @@ export class VolumeRangeBase extends HTMLElement {
     this._input.setAttribute('aria-label', props['aria-label']);
     this._input.setAttribute('aria-valuetext', props['aria-valuetext']);
     this._input.disabled = props.disabled ?? false;
-    
+
     // Update data attributes for styling
     this.setAttribute('data-volume-level', props['data-volume-level']);
     this.toggleAttribute('data-muted', props['data-muted']);
@@ -89,7 +93,7 @@ export const useVolumeRangeProps: PropsHook<{
   volumeLevel: string;
 }> = (state, _element) => {
   const displayValue = state.muted ? 0 : state.volume;
-  
+
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     ['data-muted']: state.muted,

@@ -69,6 +69,10 @@ export const useTimeRangeProps = (
 export type useTimeRangeProps = typeof useTimeRangeProps;
 type TimeRangeProps = ReturnType<useTimeRangeProps>;
 
+/**
+ * @TODO This is just a simple render function to demonstrate functionality.
+ * A full implementation will need to implement a "compound component" architecture. (CJP)
+ **/
 export const renderTimeRange = (
   props: TimeRangeProps,
   state: TimeRangeState,
