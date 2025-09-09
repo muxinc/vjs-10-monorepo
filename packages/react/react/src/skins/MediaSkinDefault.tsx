@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 import PlayButton from '../components/PlayButton';
 import MuteButton from '../components/MuteButton';
+import { VolumeRange } from '../components/VolumeRange';
 import {
   VolumeHighIcon,
   VolumeLowIcon,
@@ -35,6 +36,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
               className={`${styles.Icon} ${styles.VolumeOffIcon}`}
             ></VolumeOffIcon>
           </MuteButton>
+          <VolumeRange className={styles.VolumeRange} />
         </div>
       </div>
     </div>

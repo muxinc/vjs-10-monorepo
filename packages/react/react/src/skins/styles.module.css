@@ -67,6 +67,38 @@
   flex-grow: 1;
 }
 
+/* Volume Range UI/Styles */
+.VolumeRange {
+  margin: 0 8px;
+}
+
+.VolumeRange input[type="range"] {
+  width: 80px;
+  height: 4px;
+  background: rgb(50 50 50);
+  outline: none;
+  border-radius: 2px;
+  appearance: none;
+}
+
+.VolumeRange input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: rgb(238 238 238);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.VolumeRange input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: rgb(238 238 238);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
 /* Base Button Styling */
 .MediaPlayButton {
   border: none;
