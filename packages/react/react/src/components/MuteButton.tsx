@@ -1,52 +1,24 @@
 import {
   shallowEqual,
-  // useMediaDispatch,
   useMediaSelector,
   useMediaStore,
 } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
-
-/**
- * MuteButton state hook - equivalent to React's useMuteButtonState
- * Handles media store state subscription and transformation
- */
-export const muteButtonStateDef = {
-  keys: ['muted', 'volumeLevel'],
-  stateTransform: (rawState: any) => ({
-    muted: rawState.muted ?? false,
-    volumeLevel: rawState.volumeLevel ?? 'off',
-  }),
-  /** @TODO Consider "promoting" this up to state-mediator defs + media store (CJP) */
-  requestMethods: (mediaStore: ReturnType<typeof useMediaStore>) => {
-    return {
-      requestMute() {
-        const type = 'muterequest';
-        mediaStore.dispatch({ type });
-      },
-      requestUnmute() {
-        const type = 'unmuterequest';
-        mediaStore.dispatch({ type });
-      },
-    };
-  },
-} as const;
+import { muteButtonStateDefinition } from './state-definitions/mute-button';
 
 export const useMuteButtonState = (_props: any) => {
   const mediaStore = useMediaStore();
   /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(
-    muteButtonStateDef.stateTransform,
+    muteButtonStateDefinition.stateTransform,
     shallowEqual,
   );
 
-  const [methods, setMethods] = React.useState(
-    muteButtonStateDef.requestMethods(mediaStore),
+  const methods = React.useMemo(
+    () => muteButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
+    [mediaStore],
   );
-
-  React.useEffect(() => {
-    setMethods(muteButtonStateDef.requestMethods(mediaStore));
-  }, [mediaStore]);
 
   return {
     volumeLevel: mediaState.volumeLevel,
