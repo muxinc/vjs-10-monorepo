@@ -2,3 +2,5 @@ export * from './factory';
 export { createMediaStore } from './media-store';
 export * from './state-mediators/playable';
 export * from './state-mediators/audible';
+export * from './component-state-definitions/play-button';
+export * from './component-state-definitions/mute-button';

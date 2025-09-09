@@ -4,7 +4,7 @@ import {
   PropsHook,
 } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
-import { muteButtonStateDefinition } from './state-definitions/mute-button';
+import { muteButtonStateDefinition } from '@vjs-10/media-store';
 
 export class MuteButtonBase extends MediaChromeButton {
   _state:

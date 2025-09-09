@@ -5,7 +5,7 @@ import {
 } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
-import { muteButtonStateDefinition } from './state-definitions/mute-button';
+import { muteButtonStateDefinition } from '@vjs-10/media-store';
 
 export const useMuteButtonState = (_props: any) => {
   const mediaStore = useMediaStore();

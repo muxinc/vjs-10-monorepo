@@ -4,7 +4,7 @@ import {
   PropsHook,
 } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
-import { playButtonStateDefinition } from './state-definitions/play-button';
+import { playButtonStateDefinition } from '@vjs-10/media-store';
 
 export class PlayButtonBase extends MediaChromeButton {
   _state:
