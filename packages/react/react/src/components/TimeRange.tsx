@@ -34,7 +34,8 @@ export const useTimeRangeProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useTimeRangeState>,
 ) => {
-  const ratio = state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
+  const ratio =
+    state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);

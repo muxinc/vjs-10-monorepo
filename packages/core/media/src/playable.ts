@@ -1,7 +1,16 @@
 import type { IBasePlaybackEngine } from '@vjs-10/playback-engine';
 import { createPlaybackEngine } from '@vjs-10/playback-engine';
-/** @TODO Split out "playable" vs. "audible" and compose via factory (current mixin pattern or spreadable mixin pattern) (CJP) */
-export const Events = ['volumechange', 'pause', 'play', 'playing'] as const;
+/** @TODO Split out "playable" vs. "audible" vs. "temporal" and compose via factory (current mixin pattern or spreadable mixin pattern) (CJP) */
+export const Events = [
+  'volumechange',
+  'pause',
+  'play',
+  'playing',
+  'emptied',
+  'loadedmetadata',
+  'timeupdate',
+  'durationchange',
+] as const;
 
 export interface IBaseMediaStateOwner<
   T extends Pick<HTMLMediaElement, 'src'> = Pick<HTMLMediaElement, 'src'>,
@@ -19,6 +28,11 @@ export interface IAudibleMediaStateOwner
   extends EventTarget,
     IBaseMediaStateOwner,
     Pick<HTMLMediaElement, 'muted' | 'volume'> {}
+
+export interface ITemporalMediaStateOwner
+  extends EventTarget,
+    IBaseMediaStateOwner,
+    Pick<HTMLMediaElement, 'duration' | 'currentTime'> {}
 
 export class PlayableMediaStateOwner
   extends EventTarget
@@ -85,6 +99,21 @@ export class PlayableMediaStateOwner
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
     if (!this.mediaElement) return;
     this.mediaElement.volume = value;
+  }
+
+  get duration() {
+    return this.mediaElement?.duration ?? 0;
+  }
+
+  get currentTime() {
+    return this.mediaElement?.currentTime ?? 0;
+  }
+
+  set currentTime(value) {
+    if (value === this.currentTime) return;
+    /** @TODO implement deferred state etc. for cases where media has yet to be set */
+    if (!this.mediaElement) return;
+    this.mediaElement.currentTime = value;
   }
 
   get src() {
