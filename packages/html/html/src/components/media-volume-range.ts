@@ -19,7 +19,7 @@ export class VolumeRangeBase extends HTMLElement {
   constructor() {
     super();
     /**
-     * @TODO This is just a simple render function to demonstrate functionality.
+     * @TODO This is just a simple placeholder input to demonstrate functionality.
      * A full implementation will need to implement a "compound component" architecture and likely should use templates. (CJP)
      **/
     this._input = document.createElement('input');
@@ -108,6 +108,9 @@ export const useVolumeRangeProps: PropsHook<{
   return baseProps;
 };
 
+/**
+ * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
+ */
 /**
  * Connected VolumeRange component using hook-style architecture
  * Equivalent to React's VolumeRange = toConnectedComponent(...)

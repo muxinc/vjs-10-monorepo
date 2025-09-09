@@ -83,6 +83,9 @@ export const renderVolumeRange = (
 
 export type renderVolumeRange = typeof renderVolumeRange;
 
+/**
+ * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
+ */
 export const VolumeRange = toConnectedComponent(
   useVolumeRangeState,
   useVolumeRangeProps,

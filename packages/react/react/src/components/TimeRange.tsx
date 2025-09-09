@@ -93,6 +93,9 @@ export const renderTimeRange = (
 
 export type renderTimeRange = typeof renderTimeRange;
 
+/**
+ * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
+ */
 export const TimeRange = toConnectedComponent(
   useTimeRangeState,
   useTimeRangeProps,
