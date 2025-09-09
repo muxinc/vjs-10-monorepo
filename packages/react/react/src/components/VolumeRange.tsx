@@ -61,6 +61,10 @@ export const useVolumeRangeProps = (
 export type useVolumeRangeProps = typeof useVolumeRangeProps;
 type VolumeRangeProps = ReturnType<useVolumeRangeProps>;
 
+/**
+ * @TODO This is just a simple render function to demonstrate functionality.
+ * A full implementation will need to implement a "compound component" architecture. (CJP)
+ **/
 export const renderVolumeRange = (
   props: VolumeRangeProps,
   state: VolumeRangeState,

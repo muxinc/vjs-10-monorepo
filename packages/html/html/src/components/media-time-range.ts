@@ -5,6 +5,9 @@ import {
 } from '../utils/component-factory';
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 
+/**
+ * @TODO Should we use a base "range" superclass or just duplicate shared code? (CJP)
+ **/
 export class TimeRangeBase extends HTMLElement {
   _state:
     | {
@@ -17,6 +20,10 @@ export class TimeRangeBase extends HTMLElement {
 
   constructor() {
     super();
+    /**
+     * @TODO This is just a simple render function to demonstrate functionality.
+     * A full implementation will need to implement a "compound component" architecture and likely should use templates. (CJP)
+     **/
     this._input = document.createElement('input');
     this._input.type = 'range';
     this._input.min = '0';
@@ -48,13 +55,14 @@ export class TimeRangeBase extends HTMLElement {
 
   _update(props: any, state: any) {
     this._state = state;
-    const ratio = state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
+    const ratio =
+      state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
     this._input.value = ratio.toString();
     this._input.max = '100';
     this._input.setAttribute('aria-label', props['aria-label']);
     this._input.setAttribute('aria-valuetext', props['aria-valuetext']);
     this._input.disabled = props.disabled ?? false;
-    
+
     // Update data attributes for styling
     this.setAttribute('data-current-time', props['data-current-time']);
     this.setAttribute('data-duration', props['data-duration']);
@@ -92,7 +100,7 @@ export const useTimeRangeProps: PropsHook<{
 
   const currentTimeText = formatTime(state.currentTime);
   const durationText = formatTime(state.duration);
-  
+
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     ['data-current-time']: state.currentTime.toString(),
