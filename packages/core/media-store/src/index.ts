@@ -6,3 +6,4 @@ export * from './state-mediators/temporal';
 export * from './component-state-definitions/play-button';
 export * from './component-state-definitions/mute-button';
 export * from './component-state-definitions/volume-range';
+export * from './component-state-definitions/time-range';

@@ -3,6 +3,7 @@ import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 import PlayButton from '../components/PlayButton';
 import MuteButton from '../components/MuteButton';
 import { VolumeRange } from '../components/VolumeRange';
+import { TimeRange } from '../components/TimeRange';
 import {
   VolumeHighIcon,
   VolumeLowIcon,
@@ -24,6 +25,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             <PlayIcon className={styles.PlayIcon}></PlayIcon>
             <PauseIcon className={styles.PauseIcon}></PauseIcon>
           </PlayButton>
+          <TimeRange className={styles.TimeRange} />
           {/* @ts-ignore */}
           <MuteButton className={`${styles.Button} ${styles.MediaMuteButton}`}>
             <VolumeHighIcon

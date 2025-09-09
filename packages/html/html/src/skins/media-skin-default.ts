@@ -4,6 +4,7 @@ import '../media-container';
 import '../components/media-play-button';
 import '../components/media-mute-button';
 import '../components/media-volume-range';
+import '../components/media-time-range';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
@@ -110,6 +111,38 @@ export function getTemplateHTML() {
         cursor: pointer;
         border: none;
       }
+
+      /* Time Range UI/Styles */
+      media-time-range {
+        flex-grow: 1;
+        margin: 0 8px;
+      }
+
+      media-time-range input[type="range"] {
+        width: 100%;
+        height: 4px;
+        background: rgb(50 50 50);
+        outline: none;
+        border-radius: 2px;
+      }
+
+      media-time-range input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        background: rgb(238 238 238);
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      media-time-range input[type="range"]::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        background: rgb(238 238 238);
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
@@ -121,6 +154,7 @@ export function getTemplateHTML() {
             <media-play-icon class="icon play-icon"></media-play-icon>
             <media-pause-icon class="icon pause-icon"></media-pause-icon>
           </media-play-button>
+          <media-time-range></media-time-range>
           <media-mute-button class="button">
             <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
             <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
@@ -128,7 +162,7 @@ export function getTemplateHTML() {
           </media-mute-button>
           <media-volume-range></media-volume-range>
         </div>
-      <div>
+      </div>
     </media-container>
   `;
 }
