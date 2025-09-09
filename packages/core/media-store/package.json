@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc --emitDeclarationOnly",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },

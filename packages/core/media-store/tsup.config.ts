@@ -11,11 +11,6 @@ export default defineConfig({
     /^@vjs-10\//,
     /^[^.]/,
   ],
-  // Generate TypeScript declarations with custom config
-  dts: {
-    compilerOptions: {
-      composite: false,
-      incremental: false,
-    },
-  },
+  // Disable tsup's dts generation - we'll use tsc directly
+  dts: false,
 });
