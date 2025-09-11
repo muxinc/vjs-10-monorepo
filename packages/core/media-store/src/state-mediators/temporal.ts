@@ -15,7 +15,18 @@ export const temporal = {
       if (!media || !isValidNumber(value)) return;
       media.currentTime = value;
     },
-    mediaEvents: ['timeupdate', 'loadedmetadata'],
+    stateOwnersUpdateHandlers: [
+      (handler: (value?: number) => void, stateOwners: any) => {
+        const { media } = stateOwners;
+        if (!media) return;
+        
+        const eventHandler = () => handler();
+        const events = ['timeupdate', 'loadedmetadata'];
+        events.forEach(event => media.addEventListener(event, eventHandler));
+        
+        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
+      }
+    ],
     actions: {
       /** @TODO Support more sophisticated seeking patterns like seek-to-live, relative seeking, etc. (CJP) */
       seekrequest: (
@@ -39,7 +50,18 @@ export const temporal = {
 
       return media.duration;
     },
-    mediaEvents: ['loadedmetadata', 'durationchange', 'emptied'],
+    stateOwnersUpdateHandlers: [
+      (handler: (value?: number) => void, stateOwners: any) => {
+        const { media } = stateOwners;
+        if (!media) return;
+        
+        const eventHandler = () => handler();
+        const events = ['loadedmetadata', 'durationchange', 'emptied'];
+        events.forEach(event => media.addEventListener(event, eventHandler));
+        
+        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
+      }
+    ],
   },
 
   seekable: {
@@ -56,6 +78,17 @@ export const temporal = {
 
       return [Number(start.toFixed(3)), Number(end.toFixed(3))];
     },
-    mediaEvents: ['loadedmetadata', 'emptied', 'progress', 'seekablechange'],
+    stateOwnersUpdateHandlers: [
+      (handler: (value?: [number, number] | undefined) => void, stateOwners: any) => {
+        const { media } = stateOwners;
+        if (!media) return;
+        
+        const eventHandler = () => handler();
+        const events = ['loadedmetadata', 'emptied', 'progress', 'seekablechange'];
+        events.forEach(event => media.addEventListener(event, eventHandler));
+        
+        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
+      }
+    ],
   },
 };

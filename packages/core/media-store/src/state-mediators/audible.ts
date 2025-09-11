@@ -12,7 +12,17 @@ export const audible = {
         media.volume = 0.25;
       }
     },
-    mediaEvents: ['volumechange'],
+    stateOwnersUpdateHandlers: [
+      (handler: (value?: boolean) => void, stateOwners: any) => {
+        const { media } = stateOwners;
+        if (!media) return;
+        
+        const eventHandler = () => handler();
+        media.addEventListener('volumechange', eventHandler);
+        
+        return () => media.removeEventListener('volumechange', eventHandler);
+      }
+    ],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API or aren't simple 1:1 with getter vs. setter (CJP) */
       muterequest: () => true,
@@ -34,7 +44,17 @@ export const audible = {
         media.mute = false;
       }
     },
-    mediaEvents: ['volumechange'],
+    stateOwnersUpdateHandlers: [
+      (handler: (value?: number) => void, stateOwners: any) => {
+        const { media } = stateOwners;
+        if (!media) return;
+        
+        const eventHandler = () => handler();
+        media.addEventListener('volumechange', eventHandler);
+        
+        return () => media.removeEventListener('volumechange', eventHandler);
+      }
+    ],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API (CJP) */
       volumerequest: (
@@ -52,6 +72,16 @@ export const audible = {
       if (media.volume < 0.75) return 'medium';
       return 'high';
     },
-    mediaEvents: ['volumechange'],
+    stateOwnersUpdateHandlers: [
+      (handler: (value?: 'high' | 'medium' | 'low' | 'off') => void, stateOwners: any) => {
+        const { media } = stateOwners;
+        if (!media) return;
+        
+        const eventHandler = () => handler();
+        media.addEventListener('volumechange', eventHandler);
+        
+        return () => media.removeEventListener('volumechange', eventHandler);
+      }
+    ],
   },
 };

@@ -18,13 +18,13 @@ export type FacadeGetter<T, D = T> = (
 export type FacadeSetter<T> = (value: T, stateOwners: StateOwners) => void;
 
 export type StateOwnerUpdateHandler<T> = (
-  handler: (value: T) => void,
+  handler: (value?: T) => void,
   stateOwners: StateOwners,
-) => void;
+) => (() => void) | void;
 
 export type ReadonlyFacadeProp<T, D = T> = {
   get: FacadeGetter<T, D>;
-  mediaEvents?: string[];
+  stateOwnersUpdateHandlers?: StateOwnerUpdateHandler<T>[];
 };
 
 export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
@@ -56,7 +56,7 @@ export function createMediaStore({
 }) {
   const stateOwners: StateOwners = {};
   const store = map<any>({});
-  const stateUpdateHandlers: Record<string, () => void> = {};
+  const stateUpdateHandlerCleanups: Record<string, (() => void)[]> = {};
   const keys = Object.keys(stateMediator);
 
   function updateStateOwners(nextStateOwners: any) {
@@ -64,34 +64,37 @@ export function createMediaStore({
       return;
     }
 
-    let media = stateOwners.media;
-    if (media) {
-      for (const { mediaEvents = [] } of Object.values(stateMediator)) {
-        for (const mediaEvent of mediaEvents) {
-          media.removeEventListener(
-            mediaEvent,
-            stateUpdateHandlers[mediaEvent],
-          );
-          delete stateUpdateHandlers[mediaEvent];
-        }
-      }
-    }
+    // Clean up existing handlers
+    Object.entries(stateUpdateHandlerCleanups).forEach(([stateName, cleanups]) => {
+      cleanups.forEach(cleanup => cleanup?.());
+      stateUpdateHandlerCleanups[stateName] = [];
+    });
 
     Object.assign(stateOwners, nextStateOwners);
-
-    media = stateOwners.media;
     store.set(getInitialState(stateMediator, stateOwners));
 
-    if (media) {
-      for (const [stateName, stateObject] of Object.entries(stateMediator)) {
-        const { get, mediaEvents = [] } = stateObject;
-        for (const mediaEvent of mediaEvents) {
-          stateUpdateHandlers[mediaEvent] = () =>
-            store.setKey(stateName, get(stateOwners));
-          media.addEventListener(mediaEvent, stateUpdateHandlers[mediaEvent]);
-        }
+    // Set up new handlers
+    Object.entries(stateMediator).forEach(([stateName, stateObject]) => {
+      const { get, stateOwnersUpdateHandlers = [] } = stateObject;
+      
+      if (!stateUpdateHandlerCleanups[stateName]) {
+        stateUpdateHandlerCleanups[stateName] = [];
       }
-    }
+
+      // Create handler that updates the store
+      const updateHandler = (value?: any) => {
+        const nextValue = value !== undefined ? value : get(stateOwners);
+        store.setKey(stateName, nextValue);
+      };
+
+      // Execute each stateOwnersUpdateHandler
+      stateOwnersUpdateHandlers.forEach(setupHandler => {
+        const cleanup = setupHandler(updateHandler, stateOwners);
+        if (typeof cleanup === 'function') {
+          stateUpdateHandlerCleanups[stateName]?.push(cleanup);
+        }
+      });
+    });
   }
 
   return {
