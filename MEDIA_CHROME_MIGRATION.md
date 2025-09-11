@@ -7,12 +7,14 @@ This guide demonstrates how to migrate components and state management from Medi
 ## Architecture Comparison
 
 ### Media Chrome: Monolithic Event-Driven Architecture
+
 - **Single package** with all functionality
 - **Web Components** with direct DOM state coupling
 - **Custom event system** for state changes
 - **Integrated state management** within MediaController
 
-### VJS-10: Layered Platform-Specific Architecture  
+### VJS-10: Layered Platform-Specific Architecture
+
 - **Multi-package monorepo** organized by platform
 - **Hook-style components** with state injection
 - **Nanostores-based** reactive state management
@@ -23,12 +25,37 @@ This guide demonstrates how to migrate components and state management from Medi
 Based on commit history analysis (`ad7aa79` → `882019f` → `e1d326f`), the migration follows this pattern:
 
 1. **State Extraction** → Move state logic to core packages
-2. **Component Refactoring** → Implement hook-style architecture  
+2. **Component Refactoring** → Implement hook-style architecture
 3. **Platform Specialization** → Create platform-specific implementations
 
 ---
 
 ## Phase 1: State Management Migration
+
+Although the architecture is similar, we've made a few changes:
+
+- **What?** Instead of a single state model ("State Mediator"), we're breaking up state modeling into smaller categorical bits ("playable", "audible", "temporal")
+  - **Why?** This gets us closer to a few bigger picture goals, including: code reduction for different use cases (e.g. animated gif "players"); different target runtime environments (e.g. React Native fullscreen will likely be different from both React and HTML, which both rely on DOM APIs); greater customization (this makes it easier for folks to include, exclude, extend, replace or otherwise compose media state behaviors with simple, self-contained declarative definitions)
+- **What?** Instead of having one declarative model for state and a separate one for state change requests ("Request Map"), we're now co-locating requests and state modeling into a single model
+  - **Why?** The Media Chrome architecture was at least partly an "historic artifact" of the original implementation that adds little to no obvious value. By co-locating, the definitional relationships are clearer and there are fewer constructs to keep track of.
+- **What?** We no longer "bake in" the bespoke/ad hoc concepts of "preferences" like we did in Media Chrome, which relied on the `LocalStorage` Web API. Instead, this will need to be built as a full fledged "architecture" and abstracted in a way that accounts for differences in target platforms.
+  - **Why?** We want to decouple "web-specific" assumptions from the core architecture. We also want to leave room for future use cases like server-provided preferences. We also want to avoid some pain points and developer friction that we've encountered as a result of our current, ad hoc solution.
+
+In flux and likely to change:
+
+Media Store and related:
+
+- For expediency, we're currently built on the `nanostores` 3rd party library. We will eventually need to replace that with an in-house architecture (whether it conforms to `nanostores` or something else).
+- For expediency, we're currently reproducing some structural assumptions in the state mediator. Specifically, we are using a key-based lookup for potential state change monitoring (so far we only have `mediaEvents`). Instead, we should consider building everything on top of something more like the more generic and therefore architecturally simpler `stateOwnersUpdateHandlers` in Media Chrome, even if we decide to implement "convenience functions" or "conditional polymorphism" on top of that. This needn't be a direct port if there are improvements to be made there
+- For simplicity, we very likely will want to replace `dispatch` state request our architecture with simple methods, or at least add the methods directly to the media store, a la more modern versions of `Redux`. Currently, the only target use case of `dispatch()` gets wrapped by methods anyway in the component state models (See below for examples). One possible path forward would be to replace `actions` with something like our request methods.
+- Our current `actions` modeling is not versatile enough for the various state change requests supported in Media Chrome. This will need to expand, and maybe should be captured in any effort made for the previous callout.
+- While the new, compositional nature of the state mediator definitions will help with this, we do not yet have a well-established pattern for platform-specific but official implementations. PiP and Fullscreen are be concrete examples of these considerations.
+- For expediency, the inter-relationship between some state changes are "baked in" to the state mediator definitions. Concrete examples of these can be found in the `audible` state mediator, where `muted` and `volume` have defined relationships for common UI patterns (e.g. unmuting ensuring that the content is audible, even if `media.volume === 0`). There are tradeoffs and assumptions here, and alternative solutions are welcome.
+
+Component State Definitions and related:
+
+- While the general concept, abstraction, and purposes of these definitions should likely stay _roughly_ as is, the particular details are by no means solidified
+- Currently, there is no shared "common core" for the props hooks. However, we will likely want some abstraction and sharing there. This will require some discussion, as we also will need to figure out how we want to model things like i18n state (plausibly its own, separate "store" or "context"), since that will be required for at least some of the props translations. We also will need a solution that can remain platform or framework agnostic but share as much of the data and functionality as possible (i.e. provides key-value or "KV" pairs but doesn't determine the mappings of those to things like `setAttribute()` vs. props spreads, or React Native uses).
 
 ### Before: Media Chrome Monolithic State
 
@@ -41,13 +68,13 @@ export const requestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_UNMUTE_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaMuted'; 
+    const key = 'mediaMuted';
     const value = false;
     stateMediator[key].set(value, stateOwners);
   },
 };
 
-// media-chrome/src/js/media-store/state-mediator.ts  
+// media-chrome/src/js/media-store/state-mediator.ts
 export const stateMediator = {
   mediaMuted: {
     get: (stateOwners) => stateOwners.media?.muted ?? false,
@@ -64,7 +91,7 @@ export const stateMediator = {
     get: (stateOwners) => {
       const { media } = stateOwners;
       if (media?.muted || media?.volume === 0) return 'off';
-      if (media?.volume < 0.5) return 'low';  
+      if (media?.volume < 0.5) return 'low';
       if (media?.volume < 0.75) return 'medium';
       return 'high';
     },
@@ -76,6 +103,7 @@ export const stateMediator = {
 ### After: VJS-10 Decomposed State Architecture
 
 #### 1. Core State Mediator
+
 **Location**: `packages/core/media-store/src/state-mediators/audible.ts`
 
 ```typescript
@@ -114,6 +142,9 @@ export const audible = {
 ```
 
 #### 2. Component State Definition
+
+**NOTE:** In Media Chrome, this would have been partly owned by the Media Controller, and partly "baked in" to the web component directly.
+
 **Location**: `packages/core/media-store/src/component-state-definitions/mute-button.ts`
 
 ```typescript
@@ -164,7 +195,7 @@ class MediaMuteButton extends MediaChromeButton {
         ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
         : MediaUIEvents.MEDIA_MUTE_REQUEST;
     this.dispatchEvent(
-      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
+      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true }),
     );
   }
 }
@@ -173,18 +204,21 @@ class MediaMuteButton extends MediaChromeButton {
 ### After: VJS-10 Hook-Style Components
 
 #### HTML Implementation
+
 **Location**: `packages/html/html/src/components/media-mute-button.ts`
 
 ```typescript
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
 
 export class MuteButtonBase extends MediaChromeButton {
-  _state: {
-    muted: boolean;
-    volumeLevel: string;
-    requestMute: () => void;
-    requestUnmute: () => void;
-  } | undefined;
+  _state:
+    | {
+        muted: boolean;
+        volumeLevel: string;
+        requestMute: () => void;
+        requestUnmute: () => void;
+      }
+    | undefined;
 
   handleEvent(event: Event) {
     const { type } = event;
@@ -229,7 +263,8 @@ export const MuteButton = toConnectedHTMLComponent(
 );
 ```
 
-#### React Implementation  
+#### React Implementation
+
 **Location**: `packages/react/react/src/components/MuteButton.tsx`
 
 ```typescript
@@ -320,6 +355,7 @@ function getSlotTemplateHTML(_attrs: Record<string, string>) {
 ```
 
 **CSS Custom Properties for Theming:**
+
 ```css
 /* Media Chrome approach */
 media-mute-button {
@@ -346,6 +382,7 @@ export const useMuteButtonProps = (state, _element) => ({
 ```
 
 **External CSS Targeting Data Attributes:**
+
 ```css
 /* VJS-10 HTML approach - external stylesheets */
 media-mute-button {
@@ -359,19 +396,19 @@ media-mute-button {
   cursor: pointer;
 }
 
-media-mute-button[data-volume-level="off"] .volume-icon:not(.volume-off) {
+media-mute-button[data-volume-level='off'] .volume-icon:not(.volume-off) {
   display: none;
 }
 
-media-mute-button[data-volume-level="low"] .volume-icon:not(.volume-low) {
+media-mute-button[data-volume-level='low'] .volume-icon:not(.volume-low) {
   display: none;
 }
 
-media-mute-button[data-volume-level="medium"] .volume-icon:not(.volume-medium) {
+media-mute-button[data-volume-level='medium'] .volume-icon:not(.volume-medium) {
   display: none;
 }
 
-media-mute-button[data-volume-level="high"] .volume-icon:not(.volume-high) {
+media-mute-button[data-volume-level='high'] .volume-icon:not(.volume-high) {
   display: none;
 }
 ```
@@ -437,6 +474,7 @@ function getSlotTemplateHTML() {
 ### VJS-10: Centralized Icon System
 
 #### Core Icon Package
+
 **Location**: `packages/core/icons/src/index.ts`
 
 ```typescript
@@ -467,13 +505,14 @@ export const ICON_DEFINITIONS: Record<string, IconDefinition> = {
   play: {
     name: 'play',
     viewBox: '0 0 24 24',
-    paths: ['M8 5v14l11-7z']
+    paths: ['M8 5v14l11-7z'],
   },
   // ... other icons
 };
 ```
 
 #### HTML Icon Components
+
 **Location**: `packages/html/html-icons/src/media-volume-off-icon.ts`
 
 ```typescript
@@ -500,6 +539,7 @@ customElements.define('media-volume-off-icon', MediaVolumeOffIcon);
 ```
 
 #### React Icon Components (Auto-Generated)
+
 **Location**: `packages/react/react-icons/src/generated-icons/VolumeOff.tsx`
 
 ```tsx
@@ -507,10 +547,10 @@ customElements.define('media-volume-off-icon', MediaVolumeOffIcon);
  * @fileoverview Auto-generated React component from SVG
  * @generated
  */
-import * as React from "react";
-import type { IconProps } from "../types";
+import * as React from 'react';
+import type { IconProps } from '../types';
 
-const SvgVolumeOff = ({ color = "currentColor", ...props }: IconProps) => (
+const SvgVolumeOff = ({ color = 'currentColor', ...props }: IconProps) => (
   <svg
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -555,14 +595,15 @@ export const ${ReactComponentName} = createComponent({
 ```
 
 **Generated React Component:**
+
 ```tsx
 // Generated: media-chrome/dist/react/media-mute-button.js
-import React from "react";
+import React from 'react';
 import { createComponent } from 'ce-la-react';
-import * as Modules from "../index.js";
+import * as Modules from '../index.js';
 
 export const MediaMuteButton = createComponent({
-  tagName: "media-mute-button",
+  tagName: 'media-mute-button',
   elementClass: Modules.MediaMuteButton,
   react: React,
   toAttributeValue: toAttributeValue,
@@ -573,6 +614,7 @@ export const MediaMuteButton = createComponent({
 ```
 
 **Usage:**
+
 ```tsx
 // Media Chrome approach - thin wrapper around web component
 import { MediaMuteButton } from 'media-chrome/react';
@@ -648,6 +690,7 @@ export const MuteButton = toConnectedComponent(
 ```
 
 **Usage:**
+
 ```tsx
 // VJS-10 approach - native React with shared state
 import { MediaProvider } from '@vjs-10/react-media-store';
@@ -685,7 +728,7 @@ function getTemplateHTML(_attrs, _props) {
         pointer-events: none;
         opacity: 0.6;
       }
-      
+
       slot[name="tooltip"]:not([hidden]) ~ :host([notooltip]) {
         display: none;
       }
@@ -727,6 +770,7 @@ function getTooltipContentHTML() {
 ```
 
 **Usage:**
+
 ```html
 <!-- Media Chrome slot-based customization -->
 <media-mute-button>
@@ -743,6 +787,7 @@ function getTooltipContentHTML() {
 VJS-10 uses **React children patterns** and **render props** for composability:
 
 #### HTML Implementation (Web Component Slots)
+
 ```typescript
 // packages/html/html/src/components/media-mute-button.ts - Similar to Media Chrome
 export class MuteButtonBase extends MediaChromeButton {
@@ -751,6 +796,7 @@ export class MuteButtonBase extends MediaChromeButton {
 ```
 
 #### React Implementation (Children & Render Props)
+
 ```tsx
 // packages/react/react/src/components/MuteButton.tsx
 export const renderMuteButton = (props, state) => (
@@ -772,16 +818,21 @@ export const renderMuteButton = (props, state) => (
 export const MuteButtonRender = ({ children, ...props }) => {
   const state = useMuteButtonState(props);
   const buttonProps = useMuteButtonProps(props, state);
-  
+
   return children(buttonProps, state);
 };
 ```
 
 **Usage:**
+
 ```tsx
 // VJS-10 React children patterns
 import { MuteButton, MuteButtonRender } from '@vjs-10/react';
-import { VolumeOffIcon, VolumeLowIcon, VolumeHighIcon } from '@vjs-10/react-icons';
+import {
+  VolumeOffIcon,
+  VolumeLowIcon,
+  VolumeHighIcon,
+} from '@vjs-10/react-icons';
 
 // Simple children
 function SimpleUsage() {
@@ -798,9 +849,12 @@ function ConditionalIcons() {
     <MuteButton>
       {({ volumeLevel }) => {
         switch (volumeLevel) {
-          case 'off': return <VolumeOffIcon />;
-          case 'low': return <VolumeLowIcon />;
-          default: return <VolumeHighIcon />;
+          case 'off':
+            return <VolumeOffIcon />;
+          case 'low':
+            return <VolumeLowIcon />;
+          default:
+            return <VolumeHighIcon />;
         }
       }}
     </MuteButton>
@@ -817,9 +871,7 @@ function RenderPropUsage() {
             <span>Volume: {state.volumeLevel}</span>
             <CustomIcon muted={state.muted} />
           </button>
-          <span className="tooltip">
-            {state.muted ? 'Unmute' : 'Mute'}
-          </span>
+          <span className="tooltip">{state.muted ? 'Unmute' : 'Mute'}</span>
         </div>
       )}
     </MuteButtonRender>
@@ -833,34 +885,38 @@ function RenderPropUsage() {
 
 ### Architecture Changes
 
-| Aspect | Media Chrome | VJS-10 |
-|--------|-------------|--------|
-| **State Management** | Monolithic MediaStore with custom events | Layered nanostores with mediators |
-| **Component Style** | Web Components with Shadow DOM | Hook-style with platform adapters |
-| **React Integration** | Auto-generated thin wrappers | Native React components |
-| **Styling** | Shadow DOM + CSS custom properties | Data attributes + external CSS |
-| **Icons** | Inline SVG strings with slots | Centralized icon packages |
-| **Theming** | CSS custom properties | Platform-specific approaches |
-| **Composition** | Slot-based (HTML) | Children/render props (React) |
+| Aspect                | Media Chrome                             | VJS-10                            |
+| --------------------- | ---------------------------------------- | --------------------------------- |
+| **State Management**  | Monolithic MediaStore with custom events | Layered nanostores with mediators |
+| **Component Style**   | Web Components with Shadow DOM           | Hook-style with platform adapters |
+| **React Integration** | Auto-generated thin wrappers             | Native React components           |
+| **Styling**           | Shadow DOM + CSS custom properties       | Data attributes + external CSS    |
+| **Icons**             | Inline SVG strings with slots            | Centralized icon packages         |
+| **Theming**           | CSS custom properties                    | Platform-specific approaches      |
+| **Composition**       | Slot-based (HTML)                        | Children/render props (React)     |
 
 ### Migration Benefits
 
 #### 1. **Platform Optimization**
+
 - **HTML**: Web Components with Shadow DOM encapsulation
 - **React**: Native React patterns with hooks and JSX
 - **React Native**: Native mobile components (future)
 
 #### 2. **Bundle Size Control**
+
 - **Tree-shakable**: Import only needed components/icons
 - **Platform-specific builds**: No unused code
 - **Selective state subscriptions**: Optimized reactivity
 
 #### 3. **Developer Experience**
+
 - **Type safety**: Explicit interfaces and platform types
-- **Framework familiarity**: Native patterns per platform  
+- **Framework familiarity**: Native patterns per platform
 - **Customization**: More flexible composition patterns
 
 #### 4. **Maintainability**
+
 - **Separation of concerns**: Core logic vs. UI implementation
 - **Dependency hierarchy**: Clear, acyclic relationships
 - **Shared testing**: Core state logic tested once
@@ -868,18 +924,21 @@ function RenderPropUsage() {
 ### Migration Checklist (Extended)
 
 #### ✅ Phase 1: State Extraction
+
 - [ ] Create state mediator in `packages/core/media-store/src/state-mediators/`
 - [ ] Define component state interface in `packages/core/media-store/src/component-state-definitions/`
 - [ ] Add state keys and transformation logic
 - [ ] Implement request method factories
 
 #### ✅ Phase 2: Icon System Migration
+
 - [ ] Add SVG assets to `packages/core/icons/assets/`
 - [ ] Export icon strings from `packages/core/icons/src/index.ts`
 - [ ] Create HTML icon components in `packages/html/html-icons/src/`
 - [ ] Generate React icon components in `packages/react/react-icons/src/generated-icons/`
 
 #### ✅ Phase 3: HTML Component Implementation
+
 - [ ] Create base component class in `packages/html/*/src/components/`
 - [ ] Implement state hook with keys and transform function
 - [ ] Implement props hook for attribute management
@@ -887,6 +946,7 @@ function RenderPropUsage() {
 - [ ] Register custom element
 
 #### ✅ Phase 4: React Component Implementation
+
 - [ ] Create React hooks in `packages/react/*/src/components/`
 - [ ] Use `useMediaSelector` with `shallowEqual` optimization
 - [ ] Implement props transformation for React patterns
@@ -894,12 +954,14 @@ function RenderPropUsage() {
 - [ ] Connect with `toConnectedComponent` factory
 
 #### ✅ Phase 5: Styling Migration
+
 - [ ] Convert Shadow DOM styles to external CSS (HTML)
 - [ ] Implement CSS-in-JS or styled-components (React)
 - [ ] Update CSS custom property naming conventions
 - [ ] Create platform-specific theming approaches
 
 #### ✅ Phase 6: Testing & Documentation
+
 - [ ] Create platform-specific tests
 - [ ] Verify dependency hierarchy compliance
 - [ ] Document component API and usage patterns
