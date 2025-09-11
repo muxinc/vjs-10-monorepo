@@ -40,7 +40,7 @@ export class MediaContainer extends ConsumerMixin(HTMLElement) {
 
   _handleMediaSlotChange = () => {
     const media = this._mediaSlot.assignedElements({ flatten: true })[0];
-    this._mediaStore.dispatch({ type: 'mediaelementchangerequest', detail: media });
+    this._mediaStore.dispatch({ type: 'mediastateownerchangerequest', detail: media });
   };
 }
 

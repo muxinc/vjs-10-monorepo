@@ -2,6 +2,7 @@ import { getKey, map, subscribeKeys } from 'nanostores';
 
 export type StateOwners = {
   media?: any;
+  container?: any;
 };
 
 export type EventOrAction<D = undefined> = {
@@ -52,6 +53,7 @@ export function createMediaStore({
   stateMediator,
 }: {
   media?: any;
+  container?: any;
   stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>;
 }) {
   const stateOwners: StateOwners = {};
@@ -60,7 +62,12 @@ export function createMediaStore({
   const keys = Object.keys(stateMediator);
 
   function updateStateOwners(nextStateOwners: any) {
-    if (nextStateOwners.media === stateOwners.media) {
+    // Check if any state owner has changed
+    const hasChanges = Object.entries(nextStateOwners).some(
+      ([key, value]) => stateOwners[key as keyof StateOwners] !== value
+    );
+    
+    if (!hasChanges) {
       return;
     }
 
@@ -101,8 +108,10 @@ export function createMediaStore({
     dispatch(action: Pick<CustomEvent<any>, 'type' | 'detail'>) {
       const { type, detail } = action;
 
-      if (type === 'mediaelementchangerequest') {
+      if (type === 'mediastateownerchangerequest') {
         updateStateOwners({ media: detail });
+      } else if (type === 'containerstateownerchangerequest') {
+        updateStateOwners({ container: detail });
       } else {
         for (const stateObject of Object.values(stateMediator).filter(
           (
