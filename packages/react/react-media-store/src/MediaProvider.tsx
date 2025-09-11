@@ -58,9 +58,9 @@ export const useMediaRef = () => {
     // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
     // the corresponding react media element instance (e.g. a `<video>`) is being removed.
     /*
-    { type: 'mediaelementchangerequest', detail: media }
+    { type: 'mediastateownerchangerequest', detail: media }
     */
-    dispatch({ type: 'mediaelementchangerequest', detail: mediaEl });
+    dispatch({ type: 'mediastateownerchangerequest', detail: mediaEl });
   };
 };
 
