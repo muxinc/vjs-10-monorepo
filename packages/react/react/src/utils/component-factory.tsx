@@ -56,3 +56,41 @@ export type ConnectedComponent<
   TProps extends Record<string, any>,
   TRenderFn extends RenderFn<any, any>
 > = React.FC<TProps & { render?: TRenderFn }>;
+
+/**
+ * Factory function to create context-based components that don't use toConnectedComponent
+ * These components rely on context provided by a parent component.
+ * 
+ * @param usePropsHook - Hook that enhances props with context-derived values
+ * @param defaultRender - Default render function for the component
+ * @param displayName - Display name for React DevTools
+ * @returns Context-based component with customizable render prop
+ */
+export const toContextComponent = <
+  TProps extends Record<string, any>,
+  TResultProps extends Record<string, any>,
+  TRenderFn extends (props: TResultProps) => React.ReactElement
+>(
+  usePropsHook: (props: TProps) => TResultProps,
+  defaultRender: TRenderFn,
+  displayName: string,
+) => {
+  const ContextComponent = ({
+    render = defaultRender,
+    ...props
+  }: TProps & { render?: TRenderFn }) => {
+    const contextProps = usePropsHook(props as TProps);
+    return render(contextProps);
+  };
+
+  ContextComponent.displayName = displayName;
+  return ContextComponent;
+};
+
+/**
+ * Type helper to infer the context component type from the factory
+ */
+export type ContextComponent<
+  TProps extends Record<string, any>,
+  TRenderFn extends (props: any) => React.ReactElement
+> = React.FC<TProps & { render?: TRenderFn }>;
