@@ -5,6 +5,7 @@ import '../components/media-play-button';
 import '../components/media-mute-button';
 import '../components/media-volume-range';
 import '../components/media-time-range';
+import '../components/media-fullscreen-button';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
@@ -60,6 +61,12 @@ export function getTemplateHTML() {
         display: inline-block;
       }
 
+      /* Media Fullscreen Button UI/Styles */
+      media-fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon,
+      media-fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
+        display: inline-block;
+      }
+
       /* One way to define the "default visible" icon (CJP) */
       media-mute-button:not([data-volume-level]) .volume-low-icon,
       media-mute-button[data-volume-level=high] .volume-high-icon,
@@ -98,6 +105,10 @@ export function getTemplateHTML() {
             <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
           </media-mute-button>
           <media-volume-range></media-volume-range>
+          <media-fullscreen-button class="button">
+            <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
+            <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
+          </media-fullscreen-button>
         </div>
       </div>
     </media-container>
