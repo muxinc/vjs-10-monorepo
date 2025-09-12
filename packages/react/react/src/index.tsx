@@ -10,3 +10,4 @@ export { PlayButton } from './components/PlayButton';
 export { MuteButton } from './components/MuteButton';
 export { VolumeRange } from './components/VolumeRange';
 export { FullscreenButton } from './components/FullscreenButton';
+export { DurationDisplay } from './components/DurationDisplay';
