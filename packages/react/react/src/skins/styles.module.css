@@ -73,6 +73,18 @@
   flex-grow: 1;
 }
 
+/* Time Display Styling */
+.TimeDisplay {
+  background: rgb(20 20 30 / 0.7);
+  padding: 4px 8px;
+  color: rgb(238 238 238);
+  font-family: monospace;
+  font-size: 14px;
+  border-radius: 2px;
+  min-width: 3em;
+  text-align: center;
+}
+
 /* Base Button Styling */
 .MediaPlayButton {
   border: none;

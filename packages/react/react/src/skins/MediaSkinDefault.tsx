@@ -31,9 +31,9 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             <PlayIcon className={styles.PlayIcon}></PlayIcon>
             <PauseIcon className={styles.PauseIcon}></PauseIcon>
           </PlayButton>
-          <CurrentTimeDisplay />
+          <CurrentTimeDisplay className={styles.TimeDisplay} />
           <TimeRange className={styles.TimeRange} />
-          <DurationDisplay />
+          <DurationDisplay className={styles.TimeDisplay} />
           {/* @ts-ignore */}
           <MuteButton className={`${styles.Button} ${styles.MediaMuteButton}`}>
             <VolumeHighIcon
