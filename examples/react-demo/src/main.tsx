@@ -14,7 +14,7 @@ const DemoPlayer = () => {
           /> */}
           <Video
             muted
-            src="https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdesNyk8M.m3u8"
+            src="https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8"
           />
         </MediaSkinDefault>
       </div>
