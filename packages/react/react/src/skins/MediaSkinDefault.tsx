@@ -5,6 +5,7 @@ import MuteButton from '../components/MuteButton';
 import { VolumeRange } from '../components/VolumeRange';
 import { TimeRange } from '../components/TimeRange';
 import { FullscreenButton } from '../components/FullscreenButton';
+import { DurationDisplay } from '../components/DurationDisplay';
 import { MediaContainer } from '../components/MediaContainer';
 import {
   VolumeHighIcon,
@@ -30,6 +31,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             <PauseIcon className={styles.PauseIcon}></PauseIcon>
           </PlayButton>
           <TimeRange className={styles.TimeRange} />
+          <DurationDisplay />
           {/* @ts-ignore */}
           <MuteButton className={`${styles.Button} ${styles.MediaMuteButton}`}>
             <VolumeHighIcon
