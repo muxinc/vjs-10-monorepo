@@ -8,3 +8,4 @@ export { Video, MediaElementVideo } from './components/Video';
 export { PlayButton } from './components/PlayButton';
 export { MuteButton } from './components/MuteButton';
 export { VolumeRange } from './components/VolumeRange';
+export { FullscreenButton } from './components/FullscreenButton';
