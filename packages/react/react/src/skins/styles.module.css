@@ -112,6 +112,7 @@
 }
 
 .TimeRangeThumb {
+  left: var(--slider-fill);
   position: absolute;
   transform: translateX(-50%);
   width: 16px;
@@ -130,13 +131,14 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 0%;
+  width: var(--slider-pointer, 0%);
   background-color: rgba(255, 255, 255, 0.5);
   pointer-events: none;
   z-index: 1;
 }
 
 .TimeRangeProgress {
+  width: var(--slider-fill, 0%);
   position: absolute;
   top: 0;
   left: 0;
