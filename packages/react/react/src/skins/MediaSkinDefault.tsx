@@ -6,6 +6,7 @@ import { VolumeRange } from '../components/VolumeRange';
 import { TimeRange } from '../components/TimeRange';
 import { FullscreenButton } from '../components/FullscreenButton';
 import { DurationDisplay } from '../components/DurationDisplay';
+import { CurrentTimeDisplay } from '../components/CurrentTimeDisplay';
 import { MediaContainer } from '../components/MediaContainer';
 import {
   VolumeHighIcon,
@@ -30,6 +31,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             <PlayIcon className={styles.PlayIcon}></PlayIcon>
             <PauseIcon className={styles.PauseIcon}></PauseIcon>
           </PlayButton>
+          <CurrentTimeDisplay />
           <TimeRange className={styles.TimeRange} />
           <DurationDisplay />
           {/* @ts-ignore */}

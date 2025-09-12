@@ -9,4 +9,5 @@ export * from './component-state-definitions/volume-range';
 export * from './component-state-definitions/time-range';
 export * from './component-state-definitions/fullscreen-button';
 export * from './component-state-definitions/duration-display';
+export * from './component-state-definitions/current-time-display';
 export * from './utils/time';

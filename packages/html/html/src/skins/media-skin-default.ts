@@ -7,6 +7,7 @@ import '../components/media-volume-range';
 import '../components/media-time-range';
 import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
+import '../components/media-current-time-display';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
@@ -99,6 +100,7 @@ export function getTemplateHTML() {
             <media-play-icon class="icon play-icon"></media-play-icon>
             <media-pause-icon class="icon pause-icon"></media-pause-icon>
           </media-play-button>
+          <media-current-time-display></media-current-time-display>
           <media-time-range></media-time-range>
           <media-duration-display></media-duration-display>
           <media-mute-button class="button">
