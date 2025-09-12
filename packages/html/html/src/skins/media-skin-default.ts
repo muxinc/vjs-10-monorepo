@@ -42,6 +42,20 @@ export function getTemplateHTML() {
         background: none;
       }
 
+      /* Time Display Styling */
+      media-current-time-display,
+      media-duration-display {
+        background: rgb(20 20 30 / .7);
+        padding: 4px 8px;
+        color: rgb(238 238 238);
+        font-family: monospace;
+        font-size: 14px;
+        border-radius: 2px;
+        min-width: 3em;
+        text-align: center;
+        display: inline-block;
+      }
+
       /* Generic Media Button Styling */
       .button {
         border: none;
