@@ -5,7 +5,10 @@ import {
 } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
-import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+import {
+  currentTimeDisplayStateDefinition,
+  formatDisplayTime,
+} from '@vjs-10/media-store';
 
 export const useCurrentTimeDisplayState = (_props: any) => {
   const mediaStore = useMediaStore();
@@ -26,7 +29,7 @@ export type useCurrentTimeDisplayState = typeof useCurrentTimeDisplayState;
 export type CurrentTimeDisplayState = ReturnType<useCurrentTimeDisplayState>;
 
 export const useCurrentTimeDisplayProps = (
-  props: React.PropsWithChildren<{ [k: string]: any }>,
+  props: React.PropsWithChildren<{ showRemaining?: boolean; [k: string]: any }>,
   state: ReturnType<typeof useCurrentTimeDisplayState>,
 ) => {
   const baseProps: Record<string, any> = {
@@ -44,11 +47,19 @@ export const renderCurrentTimeDisplay = (
   props: CurrentTimeDisplayProps,
   state: CurrentTimeDisplayState,
 ) => {
-  return (
-    <span {...props}>
-      {formatDisplayTime(state.currentTime)}
-    </span>
-  );
+  const { showRemaining, ...restProps } = props;
+
+  let timeToDisplay: number | undefined;
+
+  if (showRemaining && state.duration != null && state.currentTime != null) {
+    // Show remaining time: duration - currentTime
+    timeToDisplay = state.duration - state.currentTime;
+  } else {
+    // Show current time (default behavior)
+    timeToDisplay = state.currentTime;
+  }
+
+  return <span {...restProps}>-{formatDisplayTime(timeToDisplay)}</span>;
 };
 
 export type renderCurrentTimeDisplay = typeof renderCurrentTimeDisplay;
