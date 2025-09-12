@@ -102,4 +102,4 @@ bun.lockb
 # Monorepo specific
 .rush/
 .turbo/
-.lerna/
+.lerna/.playwright-mcp/
