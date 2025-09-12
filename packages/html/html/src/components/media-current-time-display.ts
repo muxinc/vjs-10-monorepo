@@ -7,23 +7,11 @@ import {
   currentTimeDisplayStateDefinition,
   formatDisplayTime,
 } from '@vjs-10/media-store';
-import { namedNodeMapToObject } from '../utils/element-utils.js';
-
-export function getTemplateHTML(
-  this: typeof CurrentTimeDisplayBase,
-  _attrs: Record<string, string>,
-  _props: Record<string, any> = {},
-) {
-  return /* html */ `
-    <span></span>
-  `;
-}
 
 export class CurrentTimeDisplayBase extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
-  static getTemplateHTML = getTemplateHTML;
   static observedAttributes = ['show-remaining'];
 
   _state:
@@ -40,15 +28,6 @@ export class CurrentTimeDisplayBase extends HTMLElement {
       this.attachShadow(
         (this.constructor as typeof CurrentTimeDisplayBase).shadowRootOptions,
       );
-
-      const attrs = namedNodeMapToObject(this.attributes);
-      const html = (
-        this.constructor as typeof CurrentTimeDisplayBase
-      ).getTemplateHTML(attrs);
-      const shadowRoot = this.shadowRoot as unknown as ShadowRoot;
-      shadowRoot.setHTMLUnsafe
-        ? shadowRoot.setHTMLUnsafe(html)
-        : (shadowRoot.innerHTML = html);
     }
   }
 
@@ -78,21 +57,14 @@ export class CurrentTimeDisplayBase extends HTMLElement {
   _update(_props: any, state: any) {
     this._state = state;
 
-    // Update the span content with formatted time
-    const spanElement = this.shadowRoot?.querySelector('span') as HTMLElement;
-    if (spanElement) {
-      if (
-        this.showRemaining &&
-        state.duration != null &&
-        state.currentTime != null
-      ) {
-        // Show remaining time: duration - currentTime
-        const remainingTime = state.duration - state.currentTime;
-        spanElement.textContent = `-${formatDisplayTime(remainingTime)}`;
-      } else {
-        // Show current time (default behavior)
-        spanElement.textContent = formatDisplayTime(state.currentTime);
-      }
+    /** @TODO Should this live here or elsewhere? (CJP) */
+    const timeLabel =
+      this.showRemaining && state.duration != null && state.currentTime != null
+        ? formatDisplayTime(-(state.duration - state.currentTime))
+        : formatDisplayTime(state.currentTime);
+
+    if (this.shadowRoot) {
+      this.shadowRoot.textContent = timeLabel;
     }
   }
 }

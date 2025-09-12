@@ -1,8 +1,4 @@
-import {
-  shallowEqual,
-  useMediaSelector,
-  useMediaStore,
-} from '@vjs-10/react-media-store';
+import { shallowEqual, useMediaSelector } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
 import {
@@ -11,7 +7,6 @@ import {
 } from '@vjs-10/media-store';
 
 export const useCurrentTimeDisplayState = (_props: any) => {
-  const mediaStore = useMediaStore();
   /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(
     currentTimeDisplayStateDefinition.stateTransform,
@@ -30,7 +25,7 @@ export type CurrentTimeDisplayState = ReturnType<useCurrentTimeDisplayState>;
 
 export const useCurrentTimeDisplayProps = (
   props: React.PropsWithChildren<{ showRemaining?: boolean; [k: string]: any }>,
-  state: ReturnType<typeof useCurrentTimeDisplayState>,
+  _state: ReturnType<typeof useCurrentTimeDisplayState>,
 ) => {
   const baseProps: Record<string, any> = {
     /** external props spread last to allow for overriding */
@@ -49,17 +44,13 @@ export const renderCurrentTimeDisplay = (
 ) => {
   const { showRemaining, ...restProps } = props;
 
-  let timeToDisplay: number | undefined;
+  /** @TODO Should this live here or elsewhere? (CJP) */
+  const timeLabel =
+    showRemaining && state.duration != null && state.currentTime != null
+      ? formatDisplayTime(-(state.duration - state.currentTime))
+      : formatDisplayTime(state.currentTime);
 
-  if (showRemaining && state.duration != null && state.currentTime != null) {
-    // Show remaining time: duration - currentTime
-    timeToDisplay = state.duration - state.currentTime;
-  } else {
-    // Show current time (default behavior)
-    timeToDisplay = state.currentTime;
-  }
-
-  return <span {...restProps}>-{formatDisplayTime(timeToDisplay)}</span>;
+  return <span {...restProps}>{timeLabel}</span>;
 };
 
 export type renderCurrentTimeDisplay = typeof renderCurrentTimeDisplay;
