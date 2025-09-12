@@ -4,10 +4,14 @@ import PlayButton from '../components/PlayButton';
 import MuteButton from '../components/MuteButton';
 import { VolumeRange } from '../components/VolumeRange';
 import { TimeRange } from '../components/TimeRange';
+import { FullscreenButton } from '../components/FullscreenButton';
+import { MediaContainer } from '../components/MediaContainer';
 import {
   VolumeHighIcon,
   VolumeLowIcon,
   VolumeOffIcon,
+  FullscreenEnterIcon,
+  FullscreenExitIcon,
 } from '@vjs-10/react-icons';
 import styles from './styles.module.css';
 
@@ -15,7 +19,7 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <div className={styles.Container}>
+    <MediaContainer className={styles.Container}>
       {children}
       <div className={styles.Overlay}>
         <div className={styles.Spacer}></div>
@@ -39,8 +43,17 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             ></VolumeOffIcon>
           </MuteButton>
           <VolumeRange className={styles.VolumeRange} />
+          {/* @ts-ignore */}
+          <FullscreenButton className={`${styles.Button} ${styles.MediaFullscreenButton}`}>
+            <FullscreenEnterIcon
+              className={`${styles.Icon} ${styles.FullscreenEnterIcon}`}
+            ></FullscreenEnterIcon>
+            <FullscreenExitIcon
+              className={`${styles.Icon} ${styles.FullscreenExitIcon}`}
+            ></FullscreenExitIcon>
+          </FullscreenButton>
         </div>
       </div>
-    </div>
+    </MediaContainer>
   );
 };
