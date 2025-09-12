@@ -5,7 +5,7 @@ import {
 } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
-import { durationDisplayStateDefinition } from '@vjs-10/media-store';
+import { durationDisplayStateDefinition, formatDuration } from '@vjs-10/media-store';
 
 export const useDurationDisplayState = (_props: any) => {
   const mediaStore = useMediaStore();
@@ -18,9 +18,6 @@ export const useDurationDisplayState = (_props: any) => {
   // Duration display is read-only, no request methods needed
   return {
     duration: mediaState.duration,
-    isValidDuration: mediaState.isValidDuration,
-    formattedDuration: mediaState.formattedDuration,
-    durationPhrase: mediaState.durationPhrase,
   } as const;
 };
 
@@ -48,7 +45,7 @@ export const renderDurationDisplay = (
 ) => {
   return (
     <span {...props}>
-      {state.formattedDuration}
+      {formatDuration(state.duration)}
     </span>
   );
 };

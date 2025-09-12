@@ -3,7 +3,7 @@ import {
   StateHook,
   PropsHook,
 } from '../utils/component-factory';
-import { durationDisplayStateDefinition } from '@vjs-10/media-store';
+import { durationDisplayStateDefinition, formatDuration } from '@vjs-10/media-store';
 import { namedNodeMapToObject } from '../utils/element-utils.js';
 
 export function getTemplateHTML(
@@ -25,9 +25,6 @@ export class DurationDisplayBase extends HTMLElement {
   _state:
     | {
         duration: number | undefined;
-        isValidDuration: boolean;
-        formattedDuration: string;
-        durationPhrase: string;
       }
     | undefined;
 
@@ -54,21 +51,13 @@ export class DurationDisplayBase extends HTMLElement {
     return this._state?.duration;
   }
 
-  get formattedDuration() {
-    return this._state?.formattedDuration || '--:--';
-  }
-
-  get durationPhrase() {
-    return this._state?.durationPhrase || 'Duration unknown';
-  }
-
   _update(_props: any, state: any) {
     this._state = state;
     
-    // Update the span content
+    // Update the span content with formatted duration
     const spanElement = this.shadowRoot?.querySelector('span') as HTMLElement;
     if (spanElement) {
-      spanElement.textContent = state.formattedDuration;
+      spanElement.textContent = formatDuration(state.duration);
     }
   }
 }
@@ -79,9 +68,6 @@ export class DurationDisplayBase extends HTMLElement {
  */
 export const useDurationDisplayState: StateHook<{
   duration: number | undefined;
-  isValidDuration: boolean;
-  formattedDuration: string;
-  durationPhrase: string;
 }> = {
   keys: [...durationDisplayStateDefinition.keys],
   transform: (rawState, _mediaStore) => ({
@@ -96,9 +82,6 @@ export const useDurationDisplayState: StateHook<{
  */
 export const useDurationDisplayProps: PropsHook<{
   duration: number | undefined;
-  isValidDuration: boolean;
-  formattedDuration: string;
-  durationPhrase: string;
 }> = (_state, _element) => {
   const baseProps: Record<string, any> = {};
   return baseProps;

@@ -6,23 +6,12 @@
  * display is a read-only component that shows the total duration of media.
  */
 
-import { formatDuration, formatAsTimePhrase, isValidDuration } from '../utils/time';
-
 /**
  * State interface for duration display components
  */
 export interface DurationDisplayState {
   /** The raw duration value in seconds */
   duration: number | undefined;
-  
-  /** Whether the duration is valid and should be displayed */
-  isValidDuration: boolean;
-  
-  /** Formatted duration string for display (e.g., "4:32" or "--:--") */
-  formattedDuration: string;
-  
-  /** Human-readable duration phrase for accessibility (e.g., "4 minutes, 32 seconds") */
-  durationPhrase: string;
 }
 
 /**
@@ -42,13 +31,9 @@ export const durationDisplayStateDefinition = {
    */
   stateTransform: (rawState: Record<string, any>): DurationDisplayState => {
     const { duration } = rawState;
-    const isValid = isValidDuration(duration);
     
     return {
       duration,
-      isValidDuration: isValid,
-      formattedDuration: formatDuration(duration),
-      durationPhrase: isValid ? formatAsTimePhrase(duration) : 'Duration unknown',
     };
   },
 
