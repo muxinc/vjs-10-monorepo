@@ -55,6 +55,12 @@
   display: inline-block;
 }
 
+/* Fullscreen button icon states */
+.MediaFullscreenButton:not([data-fullscreen]) .FullscreenEnterIcon,
+.MediaFullscreenButton[data-fullscreen] .FullscreenExitIcon {
+  display: inline-block;
+}
+
 /* Media Control Bar UI/Styles */
 .ControlBar {
   display: flex;
