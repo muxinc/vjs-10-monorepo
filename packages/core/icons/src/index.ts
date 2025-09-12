@@ -4,6 +4,8 @@ import pauseSvg from '../assets/pause.svg';
 import volumeHighSvg from '../assets/volume-high.svg';
 import volumeLowSvg from '../assets/volume-low.svg';
 import volumeOffSvg from '../assets/volume-off.svg';
+import fullscreenEnterSvg from '../assets/fullscreen-enter.svg';
+import fullscreenExitSvg from '../assets/fullscreen-exit.svg';
 
 // Export SVG strings directly
 export const SVG_ICONS = {
@@ -12,6 +14,8 @@ export const SVG_ICONS = {
   volumeHigh: volumeHighSvg,
   volumeLow: volumeLowSvg,
   volumeOff: volumeOffSvg,
+  fullscreenEnter: fullscreenEnterSvg,
+  fullscreenExit: fullscreenExitSvg,
 } as const;
 
 // Legacy interface for backward compatibility
@@ -56,15 +60,15 @@ export const ICON_DEFINITIONS: Record<string, IconDefinition> = {
       'M12 4L9.91 6.09 12 8.18V4z'
     ]
   },
-  fullscreen: {
-    name: 'fullscreen',
-    viewBox: '0 0 24 24',
-    paths: ['M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z']
+  fullscreenEnter: {
+    name: 'fullscreen-enter',
+    viewBox: '0 0 26 24',
+    paths: ['M16 3v2.5h3.5V9H22V3h-6ZM4 9h2.5V5.5H10V3H4v6Zm15.5 9.5H16V21h6v-6h-2.5v3.5ZM6.5 15H4v6h6v-2.5H6.5V15Z']
   },
-  exitFullscreen: {
-    name: 'exit-fullscreen',
-    viewBox: '0 0 24 24',
-    paths: ['M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z']
+  fullscreenExit: {
+    name: 'fullscreen-exit',
+    viewBox: '0 0 26 24',
+    paths: ['M18.5 6.5V3H16v6h6V6.5h-3.5ZM16 21h2.5v-3.5H22V15h-6v6ZM4 17.5h3.5V21H10v-6H4v2.5Zm3.5-11H4V9h6V3H7.5v3.5Z']
   }
 };
 
