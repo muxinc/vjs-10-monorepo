@@ -4,7 +4,17 @@ import { timeRangeStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedComponent, toContextComponent } from '../utils/component-factory';
 
-interface TimeRangeContextValue {
+const formatTime = (time: number): string => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
+// ============================================================================
+// ROOT COMPONENT
+// ============================================================================
+
+interface TimeRangeRootContextValue {
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
@@ -17,23 +27,17 @@ interface TimeRangeContextValue {
   setTrackRef: (ref: HTMLDivElement | null) => void;
 }
 
-const formatTime = (time: number): string => {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
+const TimeRangeRootContext = React.createContext<TimeRangeRootContextValue | null>(null);
 
-const TimeRangeContext = React.createContext<TimeRangeContextValue | null>(null);
-
-export const useTimeRangeContext = (): TimeRangeContextValue => {
-  const context = React.useContext(TimeRangeContext);
+export const useTimeRangeRootContext = (): TimeRangeRootContextValue => {
+  const context = React.useContext(TimeRangeRootContext);
   if (!context) {
-    throw new Error('useTimeRangeContext must be used within a TimeRange.Root component');
+    throw new Error('useTimeRangeRootContext must be used within a TimeRange.Root component');
   }
   return context;
 };
 
-const useRootState = (_props: any) => {
+export const useTimeRangeRootState = (_props: any) => {
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
 
@@ -87,9 +91,9 @@ const useRootState = (_props: any) => {
   } as const;
 };
 
-const useRootProps = (
+export const useTimeRangeRootProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
-  state: ReturnType<typeof useRootState>
+  state: ReturnType<typeof useTimeRangeRootState>
 ) => {
   const { currentTime, duration, hovering, mousePosition } = state;
   const sliderFill = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -168,50 +172,13 @@ const useRootProps = (
   } as React.PropsWithChildren<{ [k: string]: any }>;
 };
 
-type useRootState = typeof useRootState;
-type useRootProps = typeof useRootProps;
-type RootState = ReturnType<useRootState>;
-type RootProps = ReturnType<useRootProps>;
+type useTimeRangeRootState = typeof useTimeRangeRootState;
+type useTimeRangeRootProps = typeof useTimeRangeRootProps;
+type TimeRangeRootState = ReturnType<useTimeRangeRootState>;
+type TimeRangeRootProps = ReturnType<useTimeRangeRootProps>;
 
-const useTrackProps = (props: React.PropsWithChildren<{ [k: string]: any }>) => {
-  const { setTrackRef } = useTimeRangeContext();
-
-  return {
-    ref: setTrackRef,
-    ...props,
-  };
-};
-
-const useThumbProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
-  return {
-    ...props,
-  };
-};
-
-const usePointerProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
-  return {
-    ...props,
-  };
-};
-
-const useProgressProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
-  return {
-    ...props,
-  };
-};
-
-type useTrackProps = typeof useTrackProps;
-type useThumbProps = typeof useThumbProps;
-type usePointerProps = typeof usePointerProps;
-type useProgressProps = typeof useProgressProps;
-
-type TrackProps = ReturnType<useTrackProps>;
-type ThumbProps = ReturnType<useThumbProps>;
-type PointerProps = ReturnType<usePointerProps>;
-type ProgressProps = ReturnType<useProgressProps>;
-
-const renderRoot = (props: RootProps, state: RootState) => {
-  const contextValue: TimeRangeContextValue = {
+export const renderTimeRangeRoot = (props: TimeRangeRootProps, state: TimeRangeRootState) => {
+  const contextValue: TimeRangeRootContextValue = {
     currentTime: state.currentTime,
     duration: state.duration,
     requestSeek: state.requestSeek,
@@ -225,57 +192,114 @@ const renderRoot = (props: RootProps, state: RootState) => {
   };
 
   return (
-    <TimeRangeContext.Provider value={contextValue}>
+    <TimeRangeRootContext.Provider value={contextValue}>
       <div style={props.style} {...props}>
         {props.children}
       </div>
-    </TimeRangeContext.Provider>
+    </TimeRangeRootContext.Provider>
   );
 };
 
-const renderTrack = (props: TrackProps) => {
+const TimeRangeRoot = toConnectedComponent(useTimeRangeRootState, useTimeRangeRootProps, renderTimeRangeRoot, 'TimeRange.Root');
+
+// ============================================================================
+// TRACK COMPONENT
+// ============================================================================
+
+export const useTimeRangeTrackProps = (props: React.PropsWithChildren<{ [k: string]: any }>) => {
+  const { setTrackRef } = useTimeRangeRootContext();
+
+  return {
+    ref: setTrackRef,
+    ...props,
+  };
+};
+
+type useTimeRangeTrackProps = typeof useTimeRangeTrackProps;
+type TimeRangeTrackProps = ReturnType<useTimeRangeTrackProps>;
+
+export const renderTimeRangeTrack = (props: TimeRangeTrackProps) => {
   return <div {...props} />;
 };
 
-const renderThumb = (props: ThumbProps) => {
+const TimeRangeTrack = toContextComponent(useTimeRangeTrackProps, renderTimeRangeTrack, 'TimeRange.Track');
+
+// ============================================================================
+// THUMB COMPONENT
+// ============================================================================
+
+export const useTimeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
+  return {
+    ...props,
+  };
+};
+
+type useTimeRangeThumbProps = typeof useTimeRangeThumbProps;
+type TimeRangeThumbProps = ReturnType<useTimeRangeThumbProps>;
+
+export const renderTimeRangeThumb = (props: TimeRangeThumbProps) => {
   return <div {...props} />;
 };
 
-const renderPointer = (props: PointerProps) => {
+const TimeRangeThumb = toContextComponent(useTimeRangeThumbProps, renderTimeRangeThumb, 'TimeRange.Thumb');
+
+// ============================================================================
+// POINTER COMPONENT
+// ============================================================================
+
+export const useTimeRangePointerProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
+  return {
+    ...props,
+  };
+};
+
+type useTimeRangePointerProps = typeof useTimeRangePointerProps;
+type TimeRangePointerProps = ReturnType<useTimeRangePointerProps>;
+
+export const renderTimeRangePointer = (props: TimeRangePointerProps) => {
   return <div {...props} />;
 };
 
-const renderProgress = (props: ProgressProps) => {
+const TimeRangePointer = toContextComponent(useTimeRangePointerProps, renderTimeRangePointer, 'TimeRange.Pointer');
+
+// ============================================================================
+// PROGRESS COMPONENT
+// ============================================================================
+
+export const useTimeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
+  return {
+    ...props,
+  };
+};
+
+type useTimeRangeProgressProps = typeof useTimeRangeProgressProps;
+type TimeRangeProgressProps = ReturnType<useTimeRangeProgressProps>;
+
+export const renderTimeRangeProgress = (props: TimeRangeProgressProps) => {
   return <div {...props} />;
 };
 
+const TimeRangeProgress = toContextComponent(useTimeRangeProgressProps, renderTimeRangeProgress, 'TimeRange.Progress');
 
-const Root = toConnectedComponent(useRootState, useRootProps, renderRoot, 'TimeRange.Root');
-
-const Track = toContextComponent(useTrackProps, renderTrack, 'TimeRange.Track');
-
-const Thumb = toContextComponent(useThumbProps, renderThumb, 'TimeRange.Thumb');
-
-const Pointer = toContextComponent(usePointerProps, renderPointer, 'TimeRange.Pointer');
-
-const Progress = toContextComponent(useProgressProps, renderProgress, 'TimeRange.Progress');
-
+// ============================================================================
+// EXPORTS
+// ============================================================================
 
 export const TimeRange = Object.assign(
   {},
   {
-    Root,
-    Track,
-    Thumb,
-    Pointer,
-    Progress,
+    Root: TimeRangeRoot,
+    Track: TimeRangeTrack,
+    Thumb: TimeRangeThumb,
+    Pointer: TimeRangePointer,
+    Progress: TimeRangeProgress,
   }
 ) as {
-  Root: typeof Root;
-  Track: typeof Track;
-  Thumb: typeof Thumb;
-  Pointer: typeof Pointer;
-  Progress: typeof Progress;
+  Root: typeof TimeRangeRoot;
+  Track: typeof TimeRangeTrack;
+  Thumb: typeof TimeRangeThumb;
+  Pointer: typeof TimeRangePointer;
+  Progress: typeof TimeRangeProgress;
 };
 
 export default TimeRange;
