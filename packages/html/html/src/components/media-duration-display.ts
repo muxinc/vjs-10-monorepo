@@ -3,7 +3,7 @@ import {
   StateHook,
   PropsHook,
 } from '../utils/component-factory';
-import { durationDisplayStateDefinition, formatDuration } from '@vjs-10/media-store';
+import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 import { namedNodeMapToObject } from '../utils/element-utils.js';
 
 export function getTemplateHTML(
@@ -57,7 +57,7 @@ export class DurationDisplayBase extends HTMLElement {
     // Update the span content with formatted duration
     const spanElement = this.shadowRoot?.querySelector('span') as HTMLElement;
     if (spanElement) {
-      spanElement.textContent = formatDuration(state.duration);
+      spanElement.textContent = formatDisplayTime(state.duration);
     }
   }
 }

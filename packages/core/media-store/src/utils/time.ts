@@ -142,19 +142,30 @@ export function isValidDuration(duration: unknown): duration is number {
 }
 
 /**
- * Formats a duration with fallback handling for invalid values
- * @param duration - The duration to format in seconds
- * @param guide - Optional guide duration for consistent formatting
- * @param fallback - Fallback text when duration is invalid (default: "--:--")
- * @returns Formatted duration string or fallback
+ * Formats a time value with fallback handling for invalid values
+ * @param time - The time value to format in seconds (duration, currentTime, etc.)
+ * @param guide - Optional guide time for consistent formatting
+ * @param fallback - Fallback text when time is invalid (default: "--:--")
+ * @returns Formatted time string or fallback
+ */
+export function formatDisplayTime(
+  time: unknown, 
+  guide?: number, 
+  fallback: string = '--:--'
+): string {
+  if (!isValidDuration(time)) {
+    return fallback;
+  }
+  return formatTime(time, guide);
+}
+
+/**
+ * @deprecated Use formatDisplayTime instead. Will be removed in a future version.
  */
 export function formatDuration(
   duration: unknown, 
   guide?: number, 
   fallback: string = '--:--'
 ): string {
-  if (!isValidDuration(duration)) {
-    return fallback;
-  }
-  return formatTime(duration, guide);
+  return formatDisplayTime(duration, guide, fallback);
 }

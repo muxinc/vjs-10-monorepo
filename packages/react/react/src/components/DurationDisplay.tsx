@@ -5,7 +5,7 @@ import {
 } from '@vjs-10/react-media-store';
 import * as React from 'react';
 import { toConnectedComponent } from '../utils/component-factory';
-import { durationDisplayStateDefinition, formatDuration } from '@vjs-10/media-store';
+import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 
 export const useDurationDisplayState = (_props: any) => {
   const mediaStore = useMediaStore();
@@ -45,7 +45,7 @@ export const renderDurationDisplay = (
 ) => {
   return (
     <span {...props}>
-      {formatDuration(state.duration)}
+      {formatDisplayTime(state.duration)}
     </span>
   );
 };
