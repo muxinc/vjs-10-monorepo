@@ -114,6 +114,7 @@ export function getTemplateHTML() {
             <media-play-icon class="icon play-icon"></media-play-icon>
             <media-pause-icon class="icon pause-icon"></media-pause-icon>
           </media-play-button>
+          <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display></media-current-time-display>
           <media-time-range></media-time-range>
           <media-duration-display></media-duration-display>

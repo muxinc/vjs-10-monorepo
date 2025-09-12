@@ -3,7 +3,10 @@ import {
   StateHook,
   PropsHook,
 } from '../utils/component-factory';
-import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+import {
+  currentTimeDisplayStateDefinition,
+  formatDisplayTime,
+} from '@vjs-10/media-store';
 import { namedNodeMapToObject } from '../utils/element-utils.js';
 
 export function getTemplateHTML(
@@ -21,6 +24,7 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     mode: 'open' as ShadowRootMode,
   };
   static getTemplateHTML = getTemplateHTML;
+  static observedAttributes = ['show-remaining'];
 
   _state:
     | {
@@ -56,13 +60,39 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     return this._state?.duration;
   }
 
+  get showRemaining() {
+    return this.hasAttribute('show-remaining');
+  }
+
+  attributeChangedCallback(
+    name: string,
+    _oldValue: string | null,
+    _newValue: string | null,
+  ) {
+    if (name === 'show-remaining' && this._state) {
+      // Re-render with current state when show-remaining attribute changes
+      this._update({}, this._state);
+    }
+  }
+
   _update(_props: any, state: any) {
     this._state = state;
-    
-    // Update the span content with formatted current time
+
+    // Update the span content with formatted time
     const spanElement = this.shadowRoot?.querySelector('span') as HTMLElement;
     if (spanElement) {
-      spanElement.textContent = formatDisplayTime(state.currentTime);
+      if (
+        this.showRemaining &&
+        state.duration != null &&
+        state.currentTime != null
+      ) {
+        // Show remaining time: duration - currentTime
+        const remainingTime = state.duration - state.currentTime;
+        spanElement.textContent = `-${formatDisplayTime(remainingTime)}`;
+      } else {
+        // Show current time (default behavior)
+        spanElement.textContent = formatDisplayTime(state.currentTime);
+      }
     }
   }
 }
@@ -108,7 +138,10 @@ export const CurrentTimeDisplay = toConnectedHTMLComponent(
 // Register the custom element
 if (!globalThis.customElements.get('media-current-time-display')) {
   // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-current-time-display', CurrentTimeDisplay);
+  globalThis.customElements.define(
+    'media-current-time-display',
+    CurrentTimeDisplay,
+  );
 }
 
 export default CurrentTimeDisplay;
