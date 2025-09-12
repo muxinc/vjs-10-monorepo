@@ -46,6 +46,7 @@ export type StateMediator = {
   currentTime: FacadeProp<HTMLMediaElement['currentTime']>;
   duration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
   seekable: ReadonlyFacadeProp<[number, number] | undefined>;
+  fullscreen: FacadeProp<boolean>;
 };
 
 export function createMediaStore({
