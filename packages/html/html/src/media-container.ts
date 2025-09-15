@@ -19,6 +19,7 @@ export class MediaContainer extends ConsumerMixin(HTMLElement) {
     mediaStore: (mediaStore: any) => {
       this._mediaStore = mediaStore;
       this._handleMediaSlotChange();
+      this._registerContainerStateOwner();
     },
   };
 
@@ -38,9 +39,29 @@ export class MediaContainer extends ConsumerMixin(HTMLElement) {
     this._mediaSlot.addEventListener('slotchange', this._handleMediaSlotChange);
   }
 
+  connectedCallback() {
+    super.connectedCallback?.();
+    this._registerContainerStateOwner();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback?.();
+    this._unregisterContainerStateOwner();
+  }
+
+  _registerContainerStateOwner = () => {
+    if (!this._mediaStore) return;
+    this._mediaStore.dispatch({ type: 'containerstateownerchangerequest', detail: this });
+  };
+
+  _unregisterContainerStateOwner = () => {
+    if (!this._mediaStore) return;
+    this._mediaStore.dispatch({ type: 'containerstateownerchangerequest', detail: null });
+  };
+
   _handleMediaSlotChange = () => {
     const media = this._mediaSlot.assignedElements({ flatten: true })[0];
-    this._mediaStore.dispatch({ type: 'mediaelementchangerequest', detail: media });
+    this._mediaStore.dispatch({ type: 'mediastateownerchangerequest', detail: media });
   };
 }
 

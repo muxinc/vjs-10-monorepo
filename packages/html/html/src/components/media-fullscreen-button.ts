@@ -1,0 +1,101 @@
+import {
+  toConnectedHTMLComponent,
+  StateHook,
+  PropsHook,
+} from '../utils/component-factory';
+import { MediaChromeButton } from './media-chrome-button';
+import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
+
+export class FullscreenButtonBase extends MediaChromeButton {
+  _state:
+    | {
+        fullscreen: boolean;
+        requestEnterFullscreen: () => void;
+        requestExitFullscreen: () => void;
+      }
+    | undefined;
+
+  handleEvent(event: Event) {
+    const { type } = event;
+    const state = this._state;
+    if (state && type === 'click') {
+      if (state.fullscreen) {
+        state.requestExitFullscreen();
+      } else {
+        state.requestEnterFullscreen();
+      }
+    }
+  }
+
+  get fullscreen() {
+    return this._state?.fullscreen;
+  }
+
+  _update(props: any, state: any, _mediaStore?: any) {
+    this._state = state;
+    /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
+    // Make generic
+    this.toggleAttribute('data-fullscreen', props['data-fullscreen']);
+    this.setAttribute('role', props['role']);
+    this.setAttribute('aria-label', props['aria-label']);
+    this.setAttribute('data-tooltip', props['data-tooltip']);
+  }
+}
+
+/**
+ * FullscreenButton state hook - equivalent to React's useFullscreenButtonState
+ * Handles media store state subscription and transformation
+ */
+export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
+  keys: fullscreenButtonStateDefinition.keys,
+  transform: (rawState, mediaStore) => ({
+    ...fullscreenButtonStateDefinition.stateTransform(rawState),
+    ...fullscreenButtonStateDefinition.createRequestMethods(
+      mediaStore.dispatch,
+    ),
+  }),
+};
+
+/**
+ * FullscreenButton props hook - equivalent to React's useFullscreenButtonProps
+ * Handles element attributes and properties based on state
+ */
+export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (
+  state,
+  _element,
+) => {
+  const baseProps: Record<string, any> = {
+    /** data attributes/props */
+    ['data-fullscreen']: state.fullscreen,
+    /** @TODO Need another state provider in core for i18n (CJP) */
+    /** aria attributes/props */
+    role: 'button',
+    ['aria-label']: state.fullscreen ? 'exit fullscreen' : 'enter fullscreen',
+    /** tooltip */
+    ['data-tooltip']: state.fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen',
+    /** @TODO Figure out how we want to handle attr overrides (e.g. aria-label) (CJP) */
+    /** external props spread last to allow for overriding */
+    // ...props,
+  };
+
+  return baseProps;
+};
+
+/**
+ * Connected FullscreenButton component using hook-style architecture
+ * Equivalent to React's FullscreenButton = toConnectedComponent(...)
+ */
+export const FullscreenButton = toConnectedHTMLComponent(
+  FullscreenButtonBase,
+  useFullscreenButtonState,
+  useFullscreenButtonProps,
+  'FullscreenButton',
+);
+
+// NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
+if (!globalThis.customElements.get('media-fullscreen-button')) {
+  // @ts-ignore - Custom element constructor compatibility
+  globalThis.customElements.define('media-fullscreen-button', FullscreenButton);
+}
+
+export default FullscreenButton;

@@ -5,6 +5,9 @@ import '../components/media-play-button';
 import '../components/media-mute-button';
 import '../components/media-volume-range';
 import '../components/media-time-range';
+import '../components/media-fullscreen-button';
+import '../components/media-duration-display';
+import '../components/media-current-time-display';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
@@ -39,6 +42,20 @@ export function getTemplateHTML() {
         background: none;
       }
 
+      /* Time Display Styling */
+      media-current-time-display,
+      media-duration-display {
+        background: rgb(20 20 30 / .7);
+        padding: 4px 8px;
+        color: rgb(238 238 238);
+        font-family: monospace;
+        font-size: 14px;
+        border-radius: 2px;
+        min-width: 3em;
+        text-align: center;
+        display: inline-block;
+      }
+
       /* Generic Media Button Styling */
       .button {
         border: none;
@@ -57,6 +74,12 @@ export function getTemplateHTML() {
       /* Media Play Button UI/Styles */
       media-play-button:not([data-paused]) .pause-icon,
       media-play-button[data-paused] .play-icon {
+        display: inline-block;
+      }
+
+      /* Media Fullscreen Button UI/Styles */
+      media-fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon,
+      media-fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
         display: inline-block;
       }
 
@@ -91,13 +114,20 @@ export function getTemplateHTML() {
             <media-play-icon class="icon play-icon"></media-play-icon>
             <media-pause-icon class="icon pause-icon"></media-pause-icon>
           </media-play-button>
+          <!-- Use the show-remaining attribute to show count down/remaining time -->
+          <media-current-time-display show-remaining></media-current-time-display>
           <media-time-range></media-time-range>
+          <media-duration-display></media-duration-display>
           <media-mute-button class="button">
             <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
             <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
             <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
           </media-mute-button>
           <media-volume-range></media-volume-range>
+          <media-fullscreen-button class="button">
+            <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
+            <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
+          </media-fullscreen-button>
         </div>
       </div>
     </media-container>

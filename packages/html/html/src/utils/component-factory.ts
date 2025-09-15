@@ -52,7 +52,7 @@ export const toConnectedHTMLComponent = <TState = any>(
           // @ts-ignore - Element property access
           const props = propsHook(state ?? {}, this);
           // @ts-ignore
-          this._update(props, state);
+          this._update(props, state, mediaStore);
         });
       },
     };

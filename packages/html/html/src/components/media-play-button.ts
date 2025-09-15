@@ -11,16 +11,18 @@ export class PlayButtonBase extends MediaChromeButton {
     | { paused: boolean; requestPlay: () => void; requestPause: () => void }
     | undefined;
 
+  constructor() {
+    super();
+  }
+
   handleEvent(event: Event) {
     const { type } = event;
     const state = this._state;
-    if (state) {
-      if (type === 'click') {
-        if (state.paused) {
-          state.requestPlay();
-        } else {
-          state.requestPause();
-        }
+    if (state && type === 'click') {
+      if (state.paused) {
+        state.requestPlay();
+      } else {
+        state.requestPause();
       }
     }
   }
@@ -29,7 +31,7 @@ export class PlayButtonBase extends MediaChromeButton {
     return this._state?.paused;
   }
 
-  _update(props: any, state: any) {
+  _update(props: any, state: any, _mediaStore?: any) {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
     // Make generic
