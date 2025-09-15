@@ -10,6 +10,25 @@ const formatTime = (time: number): string => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
+// Utility functions for pointer position and seek time calculations
+const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
+  const x = clientX - rect.left;
+  return Math.max(0, Math.min(100, (x / rect.width) * 100));
+};
+
+const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => {
+  return (ratio / 100) * duration;
+};
+
+const calculateSeekTimeFromPointerEvent = (
+  e: React.PointerEvent<HTMLDivElement>,
+  duration: number
+): number => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const ratio = calculatePointerRatio(e.clientX, rect);
+  return calculateSeekTimeFromRatio(ratio, duration);
+};
+
 // ============================================================================
 // ROOT COMPONENT
 // ============================================================================
@@ -18,8 +37,8 @@ interface TimeRangeRootContextValue {
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
-  mousePosition: number | null;
-  setMousePosition: (position: number | null) => void;
+  pointerPosition: number | null;
+  setPointerPosition: (position: number | null) => void;
   hovering: boolean;
   setHovering: (hovering: boolean) => void;
   dragging: boolean;
@@ -46,47 +65,23 @@ export const useTimeRangeRootState = (_props: any) => {
     [mediaStore]
   );
 
-  const [mousePosition, setMousePosition] = React.useState<number | null>(null);
+  const { requestSeek } = methods;
+  const [pointerPosition, setPointerPosition] = React.useState<number | null>(null);
   const [hovering, setHovering] = React.useState(false);
   const [dragging, setDragging] = React.useState(false);
   const [trackRef, setTrackRef] = React.useState<HTMLDivElement | null>(null);
 
-  React.useEffect(() => {
-    if (!dragging) return;
-
-    const handleGlobalPointerMove = (e: PointerEvent) => {
-      if (!trackRef) return;
-
-      const rect = trackRef.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const ratio = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      const seekTime = (ratio / 100) * mediaState.duration;
-      methods.requestSeek(seekTime);
-    };
-
-    const handleGlobalPointerUp = () => {
-      setDragging(false);
-    };
-
-    document.addEventListener('pointermove', handleGlobalPointerMove);
-    document.addEventListener('pointerup', handleGlobalPointerUp);
-
-    return () => {
-      document.removeEventListener('pointermove', handleGlobalPointerMove);
-      document.removeEventListener('pointerup', handleGlobalPointerUp);
-    };
-  }, [dragging, trackRef, mediaState.duration, methods]);
-
   return {
     currentTime: mediaState.currentTime,
     duration: mediaState.duration,
-    requestSeek: methods.requestSeek,
-    mousePosition,
-    setMousePosition,
+    requestSeek,
+    pointerPosition,
+    setPointerPosition,
     hovering,
     setHovering,
     dragging,
     setDragging,
+    trackRef,
     setTrackRef,
   } as const;
 };
@@ -95,47 +90,62 @@ export const useTimeRangeRootProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useTimeRangeRootState>
 ) => {
-  const { currentTime, duration, hovering, mousePosition } = state;
-  const sliderFill = duration > 0 ? (currentTime / duration) * 100 : 0;
-
-  const calculateSeekTime = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const ratio = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      return (ratio / 100) * state.duration;
-    },
-    [state.duration]
-  );
+  // When dragging, use pointer position for immediate feedback; otherwise use current time
+  const sliderFill =
+    state.dragging && state.pointerPosition !== null
+      ? state.pointerPosition
+      : state.duration > 0
+        ? (state.currentTime / state.duration) * 100
+        : 0;
 
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
       state.setDragging(true);
-      const seekTime = calculateSeekTime(e);
+      const seekTime = calculateSeekTimeFromPointerEvent(e, state.duration);
       state.requestSeek(seekTime);
+
+      // Capture pointer events to ensure we receive move and up events even if pointer leaves element
+      e.currentTarget.setPointerCapture(e.pointerId);
     },
-    [state.setDragging, state.requestSeek, calculateSeekTime]
+    [state.setDragging, state.requestSeek, state.duration]
   );
 
   const handlePointerMove = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      state.setMousePosition(percentage);
+    (e: PointerEvent) => {
+      if (!state.trackRef) return;
+
+      const rect = state.trackRef.getBoundingClientRect();
+      const ratio = calculatePointerRatio(e.clientX, rect);
+      state.setPointerPosition(ratio);
 
       if (state.dragging) {
-        const seekTime = calculateSeekTime(e);
+        const seekTime = calculateSeekTimeFromRatio(ratio, state.duration);
         state.requestSeek(seekTime);
       }
     },
-    [state.setMousePosition, state.dragging, state.requestSeek, calculateSeekTime]
+    [state.trackRef, state.setPointerPosition, state.dragging, state.requestSeek, state.duration]
   );
 
-  const handlePointerUp = React.useCallback(() => {
-    state.setDragging(false);
-  }, [state.setDragging]);
+  const handlePointerUp = React.useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+
+      if (state.dragging && state.trackRef && state.pointerPosition !== null) {
+        const seekTime = calculateSeekTimeFromRatio(state.pointerPosition, state.duration);
+        state.requestSeek(seekTime);
+      }
+      state.setDragging(false);
+    },
+    [
+      state.dragging,
+      state.trackRef,
+      state.pointerPosition,
+      state.requestSeek,
+      state.duration,
+      state.setDragging,
+    ]
+  );
 
   const handlePointerEnter = React.useCallback(() => {
     state.setHovering(true);
@@ -143,25 +153,27 @@ export const useTimeRangeRootProps = (
 
   const handlePointerLeave = React.useCallback(() => {
     state.setHovering(false);
-    state.setMousePosition(null);
-  }, [state.setHovering, state.setMousePosition]);
+  }, [state.setHovering]);
 
-  const currentTimeText = formatTime(currentTime);
-  const durationText = formatTime(duration);
+  const currentTimeText = formatTime(state.currentTime);
+  const durationText = formatTime(state.duration);
 
   return {
     role: 'slider',
     'aria-label': 'Seek',
     'aria-valuemin': 0,
     'aria-valuemax': 100,
-    'aria-valuenow': (currentTime / duration) * 100,
+    'aria-valuenow': sliderFill,
     'aria-valuetext': `${currentTimeText} of ${durationText}`,
     'data-current-time': state.currentTime,
     'data-duration': state.duration,
     style: {
       ...props.style,
       '--slider-fill': `${Math.round(sliderFill)}%`,
-      '--slider-pointer': hovering && mousePosition !== null ? `${Math.round(mousePosition)}%` : '0%',
+      '--slider-pointer':
+        state.hovering && state.pointerPosition !== null
+          ? `${Math.round(state.pointerPosition)}%`
+          : '0%',
     },
     onPointerDown: handlePointerDown,
     onPointerMove: handlePointerMove,
@@ -178,18 +190,32 @@ type TimeRangeRootState = ReturnType<useTimeRangeRootState>;
 type TimeRangeRootProps = ReturnType<useTimeRangeRootProps>;
 
 export const renderTimeRangeRoot = (props: TimeRangeRootProps, state: TimeRangeRootState) => {
-  const contextValue: TimeRangeRootContextValue = {
-    currentTime: state.currentTime,
-    duration: state.duration,
-    requestSeek: state.requestSeek,
-    mousePosition: state.mousePosition,
-    setMousePosition: state.setMousePosition,
-    hovering: state.hovering,
-    setHovering: state.setHovering,
-    dragging: state.dragging,
-    setDragging: state.setDragging,
-    setTrackRef: state.setTrackRef,
-  };
+  const contextValue: TimeRangeRootContextValue = React.useMemo(
+    () => ({
+      currentTime: state.currentTime,
+      duration: state.duration,
+      requestSeek: state.requestSeek,
+      pointerPosition: state.pointerPosition,
+      setPointerPosition: state.setPointerPosition,
+      hovering: state.hovering,
+      setHovering: state.setHovering,
+      dragging: state.dragging,
+      setDragging: state.setDragging,
+      setTrackRef: state.setTrackRef,
+    }),
+    [
+      state.currentTime,
+      state.duration,
+      state.requestSeek,
+      state.pointerPosition,
+      state.setPointerPosition,
+      state.hovering,
+      state.setHovering,
+      state.dragging,
+      state.setDragging,
+      state.setTrackRef,
+    ]
+  );
 
   return (
     <TimeRangeRootContext.Provider value={contextValue}>
@@ -200,7 +226,12 @@ export const renderTimeRangeRoot = (props: TimeRangeRootProps, state: TimeRangeR
   );
 };
 
-const TimeRangeRoot = toConnectedComponent(useTimeRangeRootState, useTimeRangeRootProps, renderTimeRangeRoot, 'TimeRange.Root');
+const TimeRangeRoot = toConnectedComponent(
+  useTimeRangeRootState,
+  useTimeRangeRootProps,
+  renderTimeRangeRoot,
+  'TimeRange.Root'
+);
 
 // ============================================================================
 // TRACK COMPONENT
@@ -222,7 +253,11 @@ export const renderTimeRangeTrack = (props: TimeRangeTrackProps) => {
   return <div {...props} />;
 };
 
-const TimeRangeTrack = toContextComponent(useTimeRangeTrackProps, renderTimeRangeTrack, 'TimeRange.Track');
+const TimeRangeTrack = toContextComponent(
+  useTimeRangeTrackProps,
+  renderTimeRangeTrack,
+  'TimeRange.Track'
+);
 
 // ============================================================================
 // THUMB COMPONENT
@@ -241,7 +276,11 @@ export const renderTimeRangeThumb = (props: TimeRangeThumbProps) => {
   return <div {...props} />;
 };
 
-const TimeRangeThumb = toContextComponent(useTimeRangeThumbProps, renderTimeRangeThumb, 'TimeRange.Thumb');
+const TimeRangeThumb = toContextComponent(
+  useTimeRangeThumbProps,
+  renderTimeRangeThumb,
+  'TimeRange.Thumb'
+);
 
 // ============================================================================
 // POINTER COMPONENT
@@ -260,7 +299,11 @@ export const renderTimeRangePointer = (props: TimeRangePointerProps) => {
   return <div {...props} />;
 };
 
-const TimeRangePointer = toContextComponent(useTimeRangePointerProps, renderTimeRangePointer, 'TimeRange.Pointer');
+const TimeRangePointer = toContextComponent(
+  useTimeRangePointerProps,
+  renderTimeRangePointer,
+  'TimeRange.Pointer'
+);
 
 // ============================================================================
 // PROGRESS COMPONENT
@@ -279,7 +322,11 @@ export const renderTimeRangeProgress = (props: TimeRangeProgressProps) => {
   return <div {...props} />;
 };
 
-const TimeRangeProgress = toContextComponent(useTimeRangeProgressProps, renderTimeRangeProgress, 'TimeRange.Progress');
+const TimeRangeProgress = toContextComponent(
+  useTimeRangeProgressProps,
+  renderTimeRangeProgress,
+  'TimeRange.Progress'
+);
 
 // ============================================================================
 // EXPORTS
