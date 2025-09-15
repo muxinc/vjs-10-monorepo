@@ -107,3 +107,41 @@
     display: inline-block;
   }
 }
+
+/* TimeRange Component Styles */
+.TimeRangeRoot {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-width: 100px;
+  width: 100%;
+  padding-block: .75rem;
+  margin: 0 .5rem;
+}
+
+.TimeRangeTrack {
+  position: relative;
+  width: 100%;
+  height: .375rem;
+  background-color: #e0e0e0;
+  border-radius: .25rem;
+  overflow: hidden;
+}
+
+.TimeRangeThumb {
+  width: .75rem;
+  height: .75rem;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.TimeRangePointer {
+  background-color: rgba(255, 255, 255, .5);
+  pointer-events: none;
+}
+
+.TimeRangeProgress {
+  background-color: #007bff;
+  border-radius: inherit;
+}

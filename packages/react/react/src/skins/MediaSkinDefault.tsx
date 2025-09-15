@@ -36,7 +36,13 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
             // showRemaining
             className={styles.TimeDisplay}
           />
-          <TimeRange className={styles.TimeRange} />
+          <TimeRange.Root className={styles.TimeRangeRoot}>
+            <TimeRange.Track className={styles.TimeRangeTrack}>
+              <TimeRange.Progress className={styles.TimeRangeProgress} />
+              <TimeRange.Pointer className={styles.TimeRangePointer} />
+            </TimeRange.Track>
+            <TimeRange.Thumb className={styles.TimeRangeThumb} />
+          </TimeRange.Root>
           <DurationDisplay className={styles.TimeDisplay} />
           {/* @ts-ignore */}
           <MuteButton className={`${styles.Button} ${styles.MediaMuteButton}`}>
