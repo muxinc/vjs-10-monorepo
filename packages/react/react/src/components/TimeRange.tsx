@@ -266,6 +266,13 @@ const TimeRangeTrack = toContextComponent(
 export const useTimeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
   return {
     ...props,
+    style: {
+      ...props.style,
+      insetInlineStart: 'var(--slider-fill)',
+      position: 'absolute' as const,
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
   };
 };
 
@@ -289,6 +296,12 @@ const TimeRangeThumb = toContextComponent(
 export const useTimeRangePointerProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
   return {
     ...props,
+    style: {
+      ...props.style,
+      width: 'var(--slider-pointer, 0%)',
+      position: 'absolute' as const,
+      height: '100%',
+    },
   };
 };
 
@@ -312,6 +325,12 @@ const TimeRangePointer = toContextComponent(
 export const useTimeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
   return {
     ...props,
+    style: {
+      ...props.style,
+      width: 'var(--slider-fill, 0%)',
+      position: 'absolute' as const,
+      height: '100%',
+    },
   };
 };
 

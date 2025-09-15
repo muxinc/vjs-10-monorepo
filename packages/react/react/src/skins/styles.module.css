@@ -94,55 +94,36 @@
 .TimeRangeRoot {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   position: relative;
   min-width: 100px;
   width: 100%;
-  height: 16px;
-  margin: 0 8px;
+  padding-block: .75rem;
+  margin: 0 .5rem;
 }
 
 .TimeRangeTrack {
   position: relative;
   width: 100%;
-  height: 8px;
+  height: .375rem;
   background-color: #e0e0e0;
-  border-radius: 4px;
+  border-radius: .25rem;
   overflow: hidden;
 }
 
 .TimeRangeThumb {
-  left: var(--slider-fill);
-  position: absolute;
-  transform: translateX(-50%);
-  width: 16px;
-  height: 16px;
+  width: .75rem;
+  height: .75rem;
   background-color: #fff;
   border-radius: 50%;
-  cursor: pointer;
-  z-index: 2;
-  top: 50%;
-  margin-top: -8px;
   pointer-events: none;
 }
 
 .TimeRangePointer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: var(--slider-pointer, 0%);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, .5);
   pointer-events: none;
-  z-index: 1;
 }
 
 .TimeRangeProgress {
-  width: var(--slider-fill, 0%);
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
   background-color: #007bff;
   border-radius: inherit;
 }
