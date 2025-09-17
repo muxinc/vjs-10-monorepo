@@ -1,4 +1,4 @@
-import { Plugin } from 'postcss';
+import { Plugin, Root, Helpers } from 'postcss';
 import postcss from 'postcss';
 import { ClassUsage, SemanticMapping } from './types.js';
 
@@ -20,7 +20,7 @@ export interface SemanticCSSGeneratorOptions {
 export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plugin => {
   const plugin = {
     postcssPlugin: 'semantic-css-generator',
-    Once(root, helpers) {
+    Once(root: Root, _helpers: Helpers) {
       const { usages, mappings = [], generateVanilla = true, generateModules = true } = options;
 
       // Group usages by component + element for deduplication
@@ -56,7 +56,7 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
     /**
      * Generate vanilla CSS with semantic element selectors
      */
-    generateVanillaCSS(root: any, usage: ClassUsage, mappings: SemanticMapping[]) {
+    generateVanillaCSS(root: Root, usage: ClassUsage, mappings: SemanticMapping[]) {
       const selector = plugin.getVanillaSelector(usage, mappings);
 
       if (usage.classes.length > 0) {
@@ -78,7 +78,7 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
     /**
      * Generate CSS modules with class-based selectors
      */
-    generateModuleCSS(root: any, usage: ClassUsage, mappings: SemanticMapping[]) {
+    generateModuleCSS(root: Root, usage: ClassUsage, mappings: SemanticMapping[]) {
       const className = plugin.getModuleClassName(usage, mappings);
       const selector = `.${className}`;
 
@@ -102,10 +102,10 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
      * Generate conditional/state-based CSS rules
      */
     generateConditionalRules(
-      root: any,
+      root: Root,
       usage: ClassUsage,
       baseSelector: string,
-      mappings: SemanticMapping[],
+      _mappings: SemanticMapping[],
       isModule = false
     ) {
       for (const condition of usage.conditions || []) {

@@ -15,7 +15,12 @@ export class ASTParser {
     try {
       const ast = parse(sourceCode, {
         sourceType: 'module',
-        plugins: ['tsx', 'typescript', 'jsx']
+        plugins: [
+          // NOTE: Per docs, this should be valid (CJP)
+          /** @ts-ignore */
+          ['typescript', { isTSX: true }],
+          'jsx',
+        ],
       });
 
       let currentComponent = this.extractComponentName(filePath);
@@ -29,7 +34,10 @@ export class ASTParser {
           }
         },
         VariableDeclarator(path) {
-          if (t.isIdentifier(path.node.id) && t.isArrowFunctionExpression(path.node.init)) {
+          if (
+            t.isIdentifier(path.node.id) &&
+            t.isArrowFunctionExpression(path.node.init)
+          ) {
             currentComponent = path.node.id.name;
           }
         },
@@ -46,13 +54,12 @@ export class ASTParser {
               path,
               currentComponent,
               filePath,
-              sourceCode
             );
             if (usage) {
               usages.push(usage);
             }
           }
-        }
+        },
       });
     } catch (error) {
       console.warn(`Failed to parse ${filePath}:`, error);
@@ -60,7 +67,7 @@ export class ASTParser {
 
     return {
       path: filePath,
-      usages
+      usages,
     };
   }
 
@@ -74,7 +81,7 @@ export class ASTParser {
     // Convert kebab-case or snake_case to PascalCase
     return baseName
       .split(/[-_]/)
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join('');
   }
 
@@ -82,8 +89,10 @@ export class ASTParser {
    * Check if JSX attribute is a className
    */
   private isClassNameAttribute(node: t.JSXAttribute): boolean {
-    return t.isJSXIdentifier(node.name) &&
-           (node.name.name === 'className' || node.name.name === 'class');
+    return (
+      t.isJSXIdentifier(node.name) &&
+      (node.name.name === 'className' || node.name.name === 'class')
+    );
   }
 
   /**
@@ -93,7 +102,6 @@ export class ASTParser {
     path: any,
     component: string,
     file: string,
-    sourceCode: string
   ): ClassUsage | null {
     const node = path.node;
     const element = this.getElementType(path);
@@ -104,7 +112,7 @@ export class ASTParser {
     }
 
     const conditions = this.extractConditions(classes);
-    const cleanClasses = classes.filter(cls => !this.isConditionalClass(cls));
+    const cleanClasses = classes.filter((cls) => !this.isConditionalClass(cls));
 
     const loc = node.loc;
 
@@ -115,7 +123,7 @@ export class ASTParser {
       classes: cleanClasses,
       conditions,
       line: loc?.start.line || 0,
-      column: loc?.start.column || 0
+      column: loc?.start.column || 0,
     };
   }
 
@@ -123,13 +131,22 @@ export class ASTParser {
    * Get the type of element this className is applied to
    */
   private getElementType(path: any): string {
-    const jsxElement = path.findParent((p: any) => t.isJSXOpeningElement(p.node));
+    const jsxElement = path.findParent((p: any) =>
+      t.isJSXOpeningElement(p.node),
+    );
 
     if (jsxElement && t.isJSXIdentifier(jsxElement.node.name)) {
       const elementName = jsxElement.node.name.name;
 
       // Map common HTML elements
-      const htmlElements = new Set(['button', 'div', 'span', 'input', 'img', 'video']);
+      const htmlElements = new Set([
+        'button',
+        'div',
+        'span',
+        'input',
+        'img',
+        'video',
+      ]);
       if (htmlElements.has(elementName.toLowerCase())) {
         return elementName.toLowerCase();
       }
@@ -149,14 +166,19 @@ export class ASTParser {
   /**
    * Extract class names from JSX attribute value
    */
-  private extractClasses(value: t.JSXExpressionContainer['expression'] | t.StringLiteral | null): string[] {
+  private extractClasses(
+    value: t.JSXExpressionContainer | t.StringLiteral | null,
+  ): string[] {
     if (!value) return [];
 
     if (t.isStringLiteral(value)) {
       return this.parseClassString(value.value);
     }
 
-    if (t.isJSXExpressionContainer(value)) {
+    if (
+      t.isJSXExpressionContainer(value) &&
+      !t.isJSXEmptyExpression(value.expression)
+    ) {
       return this.extractClassesFromExpression(value.expression);
     }
 
@@ -166,7 +188,9 @@ export class ASTParser {
   /**
    * Extract classes from various expression types
    */
-  private extractClassesFromExpression(expression: t.Expression | t.JSXEmptyExpression): string[] {
+  private extractClassesFromExpression(
+    expression: t.Expression | t.JSXEmptyExpression,
+  ): string[] {
     if (t.isStringLiteral(expression)) {
       return this.parseClassString(expression.value);
     }
@@ -174,7 +198,7 @@ export class ASTParser {
     if (t.isTemplateLiteral(expression)) {
       // Handle template literals - extract static parts
       const staticParts: string[] = [];
-      expression.quasis.forEach(quasi => {
+      expression.quasis.forEach((quasi) => {
         if (quasi.value.raw) {
           staticParts.push(...this.parseClassString(quasi.value.raw));
         }
@@ -184,14 +208,20 @@ export class ASTParser {
 
     if (t.isBinaryExpression(expression) && expression.operator === '+') {
       // Handle string concatenation
-      const left = this.extractClassesFromExpression(expression.left);
-      const right = this.extractClassesFromExpression(expression.right);
+      const left = t.isPrivateName(expression.left)
+        ? []
+        : this.extractClassesFromExpression(expression.left);
+      const right = t.isPrivateName(expression.right)
+        ? []
+        : this.extractClassesFromExpression(expression.right);
       return [...left, ...right];
     }
 
     if (t.isConditionalExpression(expression)) {
       // Handle ternary expressions
-      const consequent = this.extractClassesFromExpression(expression.consequent);
+      const consequent = this.extractClassesFromExpression(
+        expression.consequent,
+      );
       const alternate = this.extractClassesFromExpression(expression.alternate);
       return [...consequent, ...alternate];
     }
@@ -207,8 +237,8 @@ export class ASTParser {
   private parseClassString(classString: string): string[] {
     return classString
       .split(/\s+/)
-      .map(cls => cls.trim())
-      .filter(cls => cls.length > 0);
+      .map((cls) => cls.trim())
+      .filter((cls) => cls.length > 0);
   }
 
   /**
@@ -217,7 +247,7 @@ export class ASTParser {
   private extractConditions(classes: string[]): string[] {
     const conditions: string[] = [];
 
-    classes.forEach(cls => {
+    classes.forEach((cls) => {
       // Handle data-* attribute conditions
       const dataMatch = cls.match(/^data-\[([^\]]+)\]:/);
       if (dataMatch) {
@@ -226,7 +256,7 @@ export class ASTParser {
 
       // Handle pseudo-class conditions
       const pseudoMatch = cls.match(/^(hover|focus|active|disabled):/);
-      if (pseudoMatch) {
+      if (pseudoMatch && pseudoMatch[1]) {
         conditions.push(pseudoMatch[1]);
       }
     });
@@ -238,12 +268,13 @@ export class ASTParser {
    * Check if a class is conditional (has modifiers)
    */
   private isConditionalClass(cls: string): boolean {
-    return cls.includes(':') && (
-      cls.startsWith('data-[') ||
-      cls.startsWith('hover:') ||
-      cls.startsWith('focus:') ||
-      cls.startsWith('active:') ||
-      cls.startsWith('disabled:')
+    return (
+      cls.includes(':') &&
+      (cls.startsWith('data-[') ||
+        cls.startsWith('hover:') ||
+        cls.startsWith('focus:') ||
+        cls.startsWith('active:') ||
+        cls.startsWith('disabled:'))
     );
   }
 }

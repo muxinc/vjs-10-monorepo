@@ -1,6 +1,5 @@
-import { Plugin } from 'postcss';
+import { Plugin, Root, Helpers } from 'postcss';
 import { writeFileSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
 
 export interface MultiFormatOutputOptions {
   /** Output directory */
@@ -21,7 +20,7 @@ export interface MultiFormatOutputOptions {
 export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => {
   const plugin = {
     postcssPlugin: 'multi-format-output',
-    OnceExit(root, helpers) {
+    OnceExit(root: Root, _helpers: Helpers) {
       const {
         outputDir,
         generateVanilla = true,

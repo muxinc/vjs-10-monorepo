@@ -1,4 +1,4 @@
-import { Plugin } from 'postcss';
+import { Plugin, Root, Rule } from 'postcss';
 import postcss from 'postcss';
 
 export interface SemanticTransformOptions {
@@ -17,7 +17,7 @@ export interface SemanticTransformOptions {
 export const semanticTransform = (options: SemanticTransformOptions = {}): Plugin => {
   const plugin = {
     postcssPlugin: 'semantic-transform',
-    Rule(rule) {
+    Rule(rule: Rule) {
       const { componentMappings = {}, elementMappings = {}, isModule = false } = options;
 
       // Transform component-specific selectors
@@ -35,7 +35,7 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
       rule.selector = plugin.enhanceIconStates(rule.selector, isModule);
     },
 
-    OnceExit(root) {
+    OnceExit(root: Root) {
       // Add any additional enhancements after all rules are processed
       plugin.addUtilityClasses(root, options);
     },

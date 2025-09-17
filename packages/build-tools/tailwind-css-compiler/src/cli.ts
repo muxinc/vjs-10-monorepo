@@ -41,11 +41,17 @@ async function main() {
         break;
       case '--output':
       case '-o':
-        config.outputDir = args[++i];
+        const outputValue = args[++i];
+        if (outputValue) {
+          config.outputDir = outputValue;
+        }
         break;
       case '--sources':
       case '-s':
-        config.sources = args[++i].split(',');
+        const sourcesValue = args[++i];
+        if (sourcesValue) {
+          config.sources = sourcesValue.split(',');
+        }
         break;
       case '--no-vanilla':
         config.generateVanilla = false;
@@ -54,7 +60,10 @@ async function main() {
         config.generateModules = false;
         break;
       case '--tailwind-config':
-        config.tailwindConfig = args[++i];
+        const tailwindConfigValue = args[++i];
+        if (tailwindConfigValue) {
+          config.tailwindConfig = tailwindConfigValue;
+        }
         break;
     }
   }

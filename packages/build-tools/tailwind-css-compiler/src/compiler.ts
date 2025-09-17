@@ -98,7 +98,7 @@ export class TailwindCSSCompiler {
       // Step 1: Generate intermediate CSS with @apply directives
       semanticCSSGenerator({
         usages,
-        mappings: this.config.mappings,
+        mappings: this.config.mappings || [],
         generateVanilla: !isModule,
         generateModules: isModule
       }),
@@ -159,21 +159,4 @@ export class TailwindCSSCompiler {
     };
   }
 
-  /**
-   * Print compilation statistics
-   */
-  private printStats(usages: ClassUsage[]): void {
-    const stats = {
-      totalUsages: usages.length,
-      components: new Set(usages.map(u => u.component)).size,
-      elements: new Set(usages.map(u => u.element)).size,
-      uniqueClasses: new Set(usages.flatMap(u => u.classes)).size
-    };
-
-    console.log('📊 Compilation Statistics:');
-    console.log(`  Components: ${stats.components}`);
-    console.log(`  Elements: ${stats.elements}`);
-    console.log(`  Total usages: ${stats.totalUsages}`);
-    console.log(`  Unique classes: ${stats.uniqueClasses}`);
-  }
 }
