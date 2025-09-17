@@ -34,5 +34,8 @@
     "url": "https://github.com/videojs/vjs-10-monorepo.git"
   },
   "license": "Apache-2.0",
-  "author": "Video.js Contributors"
+  "author": "Video.js Contributors",
+  "dependencies": {
+    "tailwindcss": "^3.4.17"
+  }
 }
