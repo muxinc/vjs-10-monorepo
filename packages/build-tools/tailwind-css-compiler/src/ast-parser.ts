@@ -72,6 +72,42 @@ export function isClassNameAttribute(node: t.JSXAttribute): boolean {
 /**
  * Get the type of element this className is applied to
  */
+/**
+ * Check if an element is structural (generic layout/styling container)
+ * vs semantic (meaningful component or form element)
+ */
+export function isStructuralElement(elementName: string): boolean {
+  const structuralElements = new Set([
+    'div', 'span', 'section', 'article', 'aside', 'header', 'footer', 'main', 'nav'
+  ]);
+  return structuralElements.has(elementName.toLowerCase());
+}
+
+/**
+ * Get the raw JSX element name (for component naming)
+ */
+export function getJSXElementName(path: any): string | null {
+  const jsxElement = path.findParent((p: any) => t.isJSXOpeningElement(p.node));
+
+  if (jsxElement) {
+    if (t.isJSXIdentifier(jsxElement.node.name)) {
+      // Simple component: <PlayButton>
+      return jsxElement.node.name.name;
+    } else if (t.isJSXMemberExpression(jsxElement.node.name)) {
+      // Compound component: <TimeRange.Root>
+      // Extract the full name like "TimeRange.Root"
+      const object = jsxElement.node.name.object;
+      const property = jsxElement.node.name.property;
+
+      if (t.isJSXIdentifier(object) && t.isJSXIdentifier(property)) {
+        return `${object.name}.${property.name}`;
+      }
+    }
+  }
+
+  return null;
+}
+
 export function getElementType(path: any): string {
   const jsxElement = path.findParent((p: any) => t.isJSXOpeningElement(p.node));
 
@@ -182,10 +218,16 @@ export function extractClasses(
  */
 export function extractClassUsage(
   path: any,
-  component: string,
+  fallbackComponent: string,
 ): Omit<ClassUsage, 'file'> | null {
   const node = path.node;
   const element = getElementType(path);
+
+  // Determine component name based on element type
+  const jsxElementName = getJSXElementName(path);
+  const component = (jsxElementName && isStructuralElement(jsxElementName))
+    ? jsxElementName.toLowerCase()  // Use "div", "span", etc. for structural elements
+    : (jsxElementName || fallbackComponent); // Use component name for semantic elements
 
   const classes = extractClasses(node.value);
   if (classes.length === 0) {
