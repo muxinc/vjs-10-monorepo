@@ -82,6 +82,7 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
       const className = plugin.getModuleClassName(usage, mappings);
       const selector = `.${className}`;
 
+
       if (usage.classes.length > 0) {
         const rule = postcss.rule({ selector });
         const applyRule = postcss.atRule({
@@ -183,11 +184,14 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
         return customMapping.moduleClassName;
       }
 
-      // Generate class name
+      // For CSS modules, always use PascalCase component names directly
+      // Icons get special handling to avoid duplication like "PlayIconIcon"
       if (usage.element === 'icon') {
-        return `${usage.component}Icon`;
+        // If component already ends with "Icon", don't add another "Icon"
+        return usage.component.endsWith('Icon') ? usage.component : `${usage.component}Icon`;
       }
 
+      // For all other elements, use the component name as-is (PascalCase)
       return usage.component;
     },
 

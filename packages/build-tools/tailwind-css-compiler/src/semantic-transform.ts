@@ -20,6 +20,8 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
     Rule(rule: Rule) {
       const { componentMappings = {}, elementMappings = {}, isModule = false } = options;
 
+      const originalSelector = rule.selector;
+
       // Transform component-specific selectors
       rule.selector = plugin.transformComponentSelectors(rule.selector, componentMappings);
 
@@ -33,6 +35,7 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
 
       // Handle nested icon states for better specificity
       rule.selector = plugin.enhanceIconStates(rule.selector, isModule);
+
     },
 
     OnceExit(root: Root) {

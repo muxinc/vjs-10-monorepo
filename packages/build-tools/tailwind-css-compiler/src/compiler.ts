@@ -109,8 +109,8 @@ export class TailwindCSSCompiler {
       // Step 3: Transform selectors and add enhancements
       semanticTransform({
         isModule,
-        componentMappings: this.getComponentMappings(),
-        elementMappings: this.getElementMappings()
+        componentMappings: isModule ? {} : this.getComponentMappings(),
+        elementMappings: isModule ? {} : this.getElementMappings()
       }),
 
       // Step 4: Output files
