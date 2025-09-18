@@ -40,7 +40,7 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
 
     OnceExit(root: Root) {
       // Add any additional enhancements after all rules are processed
-      plugin.addUtilityClasses(root, options);
+      // Note: Utility classes removed - only generate CSS for actual component usage
     },
 
     /**
@@ -165,42 +165,6 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
       return selector;
     },
 
-    /**
-     * Add utility classes that might be commonly needed
-     */
-    addUtilityClasses(root: any, options: SemanticTransformOptions) {
-      const { isModule = false } = options;
-
-      // Add common utility classes
-      const spacerSelector = isModule ? '.Spacer' : '.spacer';
-      const spacerRule = postcss.rule({ selector: spacerSelector });
-      const spacerDecl = postcss.decl({ prop: 'flex-grow', value: '1' });
-      spacerRule.append(spacerDecl);
-      root.append(spacerRule);
-
-      // Add control bar styles
-      const controlBarSelector = isModule ? '.ControlBar' : '.control-bar';
-      const controlBarRule = postcss.rule({ selector: controlBarSelector });
-      controlBarRule.append(postcss.decl({ prop: 'display', value: 'flex' }));
-      controlBarRule.append(postcss.decl({ prop: 'align-items', value: 'center' }));
-      controlBarRule.append(postcss.decl({ prop: 'justify-content', value: 'flex-start' }));
-      controlBarRule.append(postcss.decl({ prop: 'width', value: '100%' }));
-      root.append(controlBarRule);
-
-      // Add container overlay styles
-      const overlaySelector = isModule ? '.Container .Overlay' : 'media-container > .overlay';
-      const overlayRule = postcss.rule({ selector: overlaySelector });
-      overlayRule.append(postcss.decl({ prop: 'position', value: 'absolute' }));
-      overlayRule.append(postcss.decl({ prop: 'top', value: '0' }));
-      overlayRule.append(postcss.decl({ prop: 'left', value: '0' }));
-      overlayRule.append(postcss.decl({ prop: 'bottom', value: '0' }));
-      overlayRule.append(postcss.decl({ prop: 'right', value: '0' }));
-      overlayRule.append(postcss.decl({ prop: 'display', value: 'flex' }));
-      overlayRule.append(postcss.decl({ prop: 'flex-flow', value: 'column nowrap' }));
-      overlayRule.append(postcss.decl({ prop: 'align-items', value: 'start' }));
-      overlayRule.append(postcss.decl({ prop: 'background', value: 'none' }));
-      root.append(overlayRule);
-    },
 
     /**
      * Capitalize first letter

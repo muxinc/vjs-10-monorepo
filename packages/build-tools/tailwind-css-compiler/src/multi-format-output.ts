@@ -97,9 +97,6 @@ export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => 
         '.CurrentTimeDisplay': 'media-current-time-display',
         '.DurationDisplay': 'media-duration-display',
         '.Container': 'media-container',
-        '.ControlBar': '.control-bar',
-        '.Spacer': '.spacer',
-        '.Overlay': '.overlay',
 
         // Icon transformations
         '.PlayIcon': '.play-icon',
