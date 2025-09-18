@@ -122,10 +122,12 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
         baseSelector = `${componentName} .${iconClass}`;
       } else if (usage.component.toLowerCase().includes(elementType)) {
         const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
-        baseSelector = `media-${elementName}`;
+        // Don't add media- prefix if the original component name already starts with "Media"
+        baseSelector = usage.component.startsWith('Media') ? elementName : `media-${elementName}`;
       } else {
         const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
-        baseSelector = elementName;
+        // Don't add media- prefix if the original component name already starts with "Media"
+        baseSelector = usage.component.startsWith('Media') ? elementName : `media-${elementName}`;
       }
 
       return baseSelector;

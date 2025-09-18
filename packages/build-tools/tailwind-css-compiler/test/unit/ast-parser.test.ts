@@ -3,8 +3,6 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import * as t from '@babel/types';
 import {
-  isConditionalClass,
-  extractConditions,
   parseClassString,
   extractComponentName,
   isClassNameAttribute,
@@ -110,9 +108,7 @@ export const DataButton = () => {
       expect(usage.classes).toContain('hover:bg-gray-100');
       expect(usage.classes).toContain('data-[state=open]:bg-blue-500');
 
-      // Should extract conditions
-      expect(usage.conditions).toContain('hover');
-      expect(usage.conditions).toContain('data-state=open');
+      // Note: Conditional class processing removed - Tailwind handles natively
     });
 
     it('should handle malformed code gracefully', () => {
@@ -226,8 +222,7 @@ export const MultiElementComponent = () => {
       const usage = result.usages[0];
 
       expect(usage.classes).toContain('hover:bg-gray-100');
-      expect(usage.conditions).toContain('data-state=open');
-      expect(usage.conditions).toContain('hover');
+      // Note: Conditional processing removed - classes processed by Tailwind natively
     });
   });
 
@@ -255,179 +250,6 @@ export const MultiElementComponent = () => {
     });
   });
 
-  describe('isConditionalClass', () => {
-    it('should return true for hover pseudo-class', () => {
-      const result = isConditionalClass('hover:bg-blue-500');
-      expect(result).toBe(true);
-    });
-
-    it('should return true for focus pseudo-class', () => {
-      const result = isConditionalClass('focus:ring-2');
-      expect(result).toBe(true);
-    });
-
-    it('should return true for active pseudo-class', () => {
-      const result = isConditionalClass('active:bg-gray-800');
-      expect(result).toBe(true);
-    });
-
-    it('should return true for disabled pseudo-class', () => {
-      const result = isConditionalClass('disabled:opacity-50');
-      expect(result).toBe(true);
-    });
-
-    it('should return true for data attribute conditions', () => {
-      const result = isConditionalClass('data-[state=open]:bg-blue-500');
-      expect(result).toBe(true);
-    });
-
-    it('should return true for complex data attribute conditions', () => {
-      const result = isConditionalClass('data-[orientation=vertical]:h-full');
-      expect(result).toBe(true);
-    });
-
-    it('should return false for regular classes without conditions', () => {
-      const result = isConditionalClass('bg-blue-500');
-      expect(result).toBe(false);
-    });
-
-    it('should return false for classes with colons but not conditional prefixes', () => {
-      const result = isConditionalClass('sm:bg-blue-500');
-      expect(result).toBe(false);
-    });
-
-    it('should return false for classes that contain conditional words but not as prefixes', () => {
-      const result = isConditionalClass('my-hover-class');
-      expect(result).toBe(false);
-    });
-
-    it('should return false for empty string', () => {
-      const result = isConditionalClass('');
-      expect(result).toBe(false);
-    });
-
-    it('should return false for classes with only colons but no conditional prefixes', () => {
-      const result = isConditionalClass('lg:md:bg-red-500');
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('extractConditions', () => {
-    it('should extract hover conditions', () => {
-      const classes = ['hover:bg-blue-500', 'hover:text-white'];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('hover');
-      expect(result).toHaveLength(1); // deduplicated
-    });
-
-    it('should extract focus conditions', () => {
-      const classes = ['focus:ring-2', 'focus:outline-none'];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('focus');
-      expect(result).toHaveLength(1);
-    });
-
-    it('should extract active conditions', () => {
-      const classes = ['active:bg-gray-800', 'active:scale-95'];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('active');
-      expect(result).toHaveLength(1);
-    });
-
-    it('should extract disabled conditions', () => {
-      const classes = ['disabled:opacity-50', 'disabled:cursor-not-allowed'];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('disabled');
-      expect(result).toHaveLength(1);
-    });
-
-    it('should extract simple data attribute conditions', () => {
-      const classes = ['data-[state=open]:bg-blue-500'];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('data-state=open');
-      expect(result).toHaveLength(1);
-    });
-
-    it('should extract complex data attribute conditions', () => {
-      const classes = [
-        'data-[orientation=vertical]:h-full',
-        'data-[disabled=true]:opacity-50',
-      ];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('data-orientation=vertical');
-      expect(result).toContain('data-disabled=true');
-      expect(result).toHaveLength(2);
-    });
-
-    it('should extract mixed pseudo-class and data conditions', () => {
-      const classes = [
-        'hover:bg-blue-500',
-        'focus:ring-2',
-        'data-[state=open]:visible',
-        'active:scale-95',
-      ];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('hover');
-      expect(result).toContain('focus');
-      expect(result).toContain('active');
-      expect(result).toContain('data-state=open');
-      expect(result).toHaveLength(4);
-    });
-
-    it('should deduplicate identical conditions', () => {
-      const classes = [
-        'hover:bg-blue-500',
-        'hover:text-white',
-        'hover:border-blue-600',
-        'focus:ring-2',
-        'focus:outline-none',
-      ];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('hover');
-      expect(result).toContain('focus');
-      expect(result).toHaveLength(2); // only unique conditions
-    });
-
-    it('should return empty array for classes without conditions', () => {
-      const classes = ['bg-blue-500', 'text-white', 'p-4'];
-      const result = extractConditions(classes);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should ignore responsive and other non-conditional prefixes', () => {
-      const classes = ['sm:bg-blue-500', 'lg:text-large', 'dark:bg-gray-800'];
-      const result = extractConditions(classes);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should handle empty array', () => {
-      const result = extractConditions([]);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should handle data attributes with special characters', () => {
-      const classes = [
-        'data-[aria-expanded=true]:rotate-180',
-        'data-[theme=dark]:bg-black',
-      ];
-      const result = extractConditions(classes);
-
-      expect(result).toContain('data-aria-expanded=true');
-      expect(result).toContain('data-theme=dark');
-      expect(result).toHaveLength(2);
-    });
-  });
 
   describe('parseClassString', () => {
     it('should parse simple space-separated classes', () => {
@@ -1648,7 +1470,6 @@ export const MultiElementComponent = () => {
       expect(result!.component).toBe('MyComponent');
       expect(result!.element).toBe('button');
       expect(result!.classes).toEqual(['bg-blue-500', 'text-white', 'p-4']);
-      expect(result!.conditions).toEqual([]);
       expect(result!.line).toBe(1);
       expect(result!.column).toBe(0);
     });
@@ -1667,10 +1488,6 @@ export const MultiElementComponent = () => {
         'data-[state=open]:visible',
         'p-4',
       ]);
-      expect(result!.conditions).toContain('hover');
-      expect(result!.conditions).toContain('focus');
-      expect(result!.conditions).toContain('data-state=open');
-      expect(result!.conditions).toHaveLength(3);
     });
 
     it('should extract class usage from JSX expression container with string literal', () => {
@@ -1683,7 +1500,6 @@ export const MultiElementComponent = () => {
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['bg-green-500', 'rounded']);
       expect(result!.element).toBe('span');
-      expect(result!.conditions).toEqual([]);
     });
 
     it('should extract class usage from template literal with conditional', () => {
@@ -1856,9 +1672,6 @@ export const MultiElementComponent = () => {
         'rounded',
         'data-[loading=true]:opacity-50',
       ]);
-      expect(result!.conditions).toContain('hover');
-      expect(result!.conditions).toContain('data-loading=true');
-      expect(result!.conditions).toHaveLength(2);
     });
 
     it('should preserve class order in output', () => {
@@ -1894,10 +1707,9 @@ export const MultiElementComponent = () => {
       const result = extractClassUsage(path, 'MediaControlsComponent');
 
       expect(result).not.toBeNull();
-      expect(result!.component).toBe('MediaControlsComponent');
+      expect(result!.component).toBe('PlayButton');
       expect(result!.element).toBe('button'); // PlayButton -> button
       expect(result!.classes).toEqual(['bg-blue-500', 'hover:bg-blue-600']);
-      expect(result!.conditions).toEqual(['hover']);
     });
   });
 
@@ -1922,7 +1734,6 @@ export const SimpleButton = () => {
       expect(usage.component).toBe('SimpleButton');
       expect(usage.element).toBe('button');
       expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
-      expect(usage.conditions).toEqual([]);
     });
 
     it('should parse component with template literal className', () => {
@@ -1968,9 +1779,6 @@ export const HoverButton = () => {
         'focus:ring-2',
         'data-[state=open]:visible',
       ]);
-      expect(usage.conditions).toContain('hover');
-      expect(usage.conditions).toContain('focus');
-      expect(usage.conditions).toContain('data-state=open');
     });
 
     it('should parse multiple elements in component', () => {
@@ -2345,10 +2153,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expect(allClasses).toContain('hover:opacity-100');
       expect(allClasses).toContain('data-[visible=true]:block');
 
-      // Check that conditions were extracted
-      const allConditions = result.flatMap((usage) => usage.conditions);
-      expect(allConditions).toContain('hover');
-      expect(allConditions).toContain('data-visible=true');
     });
   });
 
@@ -2377,7 +2181,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
           'px-4',
           'rounded',
         ],
-        conditions: ['hover'],
       });
       expect(result.usages[0].line).toBeGreaterThan(0);
       expect(result.usages[0].column).toBeGreaterThanOrEqual(0);
@@ -2428,11 +2231,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
         'hover:bg-blue-500',
         'data-[active]:text-white',
         'disabled:opacity-50',
-      ]);
-      expect(result.usages[0].conditions).toEqual([
-        'hover',
-        'data-active',
-        'disabled',
       ]);
     });
 
@@ -2596,16 +2394,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expectedClasses.forEach((cls) => {
         expect(buttonUsage!.classes).toContain(cls);
       });
-      const expectedConditions = [
-        'hover',
-        'data-playing=true',
-        'focus',
-        'disabled',
-      ];
-      expect(buttonUsage!.conditions).toHaveLength(expectedConditions.length);
-      expectedConditions.forEach((condition) => {
-        expect(buttonUsage!.conditions).toContain(condition);
-      });
 
       expect(svgUsage).toBeDefined();
       expect(svgUsage!.classes).toEqual(['w-4', 'h-4', 'fill-current']);
@@ -2631,7 +2419,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
         expect(usage).toHaveProperty('component');
         expect(usage).toHaveProperty('element');
         expect(usage).toHaveProperty('classes');
-        expect(usage).toHaveProperty('conditions');
         expect(usage).toHaveProperty('line');
         expect(usage).toHaveProperty('column');
 
@@ -2639,7 +2426,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
         expect(typeof usage.component).toBe('string');
         expect(typeof usage.element).toBe('string');
         expect(Array.isArray(usage.classes)).toBe(true);
-        expect(Array.isArray(usage.conditions)).toBe(true);
         expect(typeof usage.line).toBe('number');
         expect(typeof usage.column).toBe('number');
       }
