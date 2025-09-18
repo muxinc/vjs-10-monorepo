@@ -265,18 +265,24 @@ export function parseSourceCode(sourceCode: string, filePath: string): ClassUsag
   return usages;
 }
 
+/**
+ * Parse a single TypeScript/React file and extract className usage
+ */
+export function parseFile(filePath: string): ParsedFile {
+  const sourceCode = readFileSync(filePath, 'utf8');
+  const usages = parseSourceCode(sourceCode, filePath);
+
+  return {
+    path: filePath,
+    usages,
+  };
+}
+
 export class ASTParser {
   /**
    * Parse a single TypeScript/React file and extract className usage
    */
   parseFile(filePath: string): ParsedFile {
-    const sourceCode = readFileSync(filePath, 'utf8');
-    const usages = parseSourceCode(sourceCode, filePath);
-
-    return {
-      path: filePath,
-      usages,
-    };
+    return parseFile(filePath);
   }
-
 }

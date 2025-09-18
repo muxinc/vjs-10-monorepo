@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { mkdirSync } from 'fs';
+import { mkdirSync, readFileSync } from 'fs';
 import * as t from '@babel/types';
 import {
   ASTParser,
@@ -15,11 +15,21 @@ import {
   extractClasses,
   extractClassUsage,
   parseSourceCode,
+  parseFile,
 } from '../../src/ast-parser.js';
 import { createTestFile } from '../utils/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEST_OUTPUT_DIR = resolve(__dirname, '../temp');
+
+// Mock fs.readFileSync for parseFile tests
+vi.mock('fs', async () => {
+  const actual = await vi.importActual('fs') as any;
+  return {
+    ...actual,
+    readFileSync: vi.fn(),
+  };
+});
 
 describe('ASTParser', () => {
   let parser: ASTParser;
@@ -42,7 +52,7 @@ export const SimpleButton = () => {
 };
 `;
 
-      const usages = parser.parseSourceCode(sourceCode, 'SimpleButton.tsx');
+      const usages = parseSourceCode(sourceCode, 'SimpleButton.tsx');
 
       expect(usages).toHaveLength(1);
 
@@ -64,7 +74,7 @@ export const ConditionalButton = ({ isActive }: { isActive: boolean }) => {
 };
 `;
 
-      const usages = parser.parseSourceCode(
+      const usages = parseSourceCode(
         sourceCode,
         'ConditionalButton.tsx',
       );
@@ -90,7 +100,7 @@ function PauseButton() {
 }
 `;
 
-      const usages = parser.parseSourceCode(sourceCode, 'test.tsx');
+      const usages = parseSourceCode(sourceCode, 'test.tsx');
 
       expect(usages).toHaveLength(2);
 
@@ -112,7 +122,7 @@ export const DataButton = () => {
 };
 `;
 
-      const usages = parser.parseSourceCode(sourceCode, 'DataButton.tsx');
+      const usages = parseSourceCode(sourceCode, 'DataButton.tsx');
 
       expect(usages).toHaveLength(1);
       const usage = usages[0];
@@ -135,7 +145,7 @@ export const BrokenComponent = () => {
   );
 `;
 
-      const usages = parser.parseSourceCode(invalidCode, 'Broken.tsx');
+      const usages = parseSourceCode(invalidCode, 'Broken.tsx');
 
       // Should return empty array and not throw
       expect(usages).toEqual([]);
@@ -155,7 +165,7 @@ export const MultiElementComponent = () => {
 };
 `;
 
-      const usages = parser.parseSourceCode(sourceCode, 'Multi.tsx');
+      const usages = parseSourceCode(sourceCode, 'Multi.tsx');
 
       expect(usages).toHaveLength(4);
 
@@ -190,7 +200,7 @@ export const TestButton = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.path).toBe(filePath);
       expect(result.usages).toHaveLength(1);
@@ -220,7 +230,7 @@ export const ConditionalButton = ({ isActive }: { isActive: boolean }) => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages).toHaveLength(1);
       const usage = result.usages[0];
@@ -250,7 +260,7 @@ export const MultiElementComponent = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages).toHaveLength(4);
 
@@ -286,7 +296,7 @@ export const DataAttributeComponent = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages).toHaveLength(1);
       const usage = result.usages[0];
@@ -308,7 +318,7 @@ export const DataAttributeComponent = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages[0]?.component).toBe('MyAwesomeComponent');
     });
@@ -322,7 +332,7 @@ export const DataAttributeComponent = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages[0]?.component).toBe('PlayButtonComponent');
     });
@@ -336,7 +346,7 @@ export const DataAttributeComponent = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages[0]?.component).toBe('MediaPlayerComponent');
     });
@@ -360,7 +370,7 @@ export const BrokenComponent = () => {
         invalidCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       // Should return empty usages array but not throw
       expect(result.path).toBe(filePath);
@@ -385,7 +395,7 @@ export const NoClassNameComponent = () => {
         componentCode,
         TEST_OUTPUT_DIR,
       );
-      const result = parser.parseFile(filePath);
+      const result = parseFile(filePath);
 
       expect(result.usages).toEqual([]);
     });
@@ -2453,6 +2463,410 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       const allConditions = result.flatMap(usage => usage.conditions);
       expect(allConditions).toContain('hover');
       expect(allConditions).toContain('data-visible=true');
+    });
+  });
+
+  describe('parseFile', () => {
+    it('should parse a simple React component file', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export default function TestComponent() {
+  return <div className="bg-blue-500 text-white">Hello</div>;
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/TestComponent.tsx');
+
+      expect(result.path).toBe('/test/TestComponent.tsx');
+      expect(result.usages).toHaveLength(1);
+      expect(result.usages[0]).toMatchObject({
+        file: '/test/TestComponent.tsx',
+        component: 'TestComponent',
+        element: 'div',
+        classes: ['bg-blue-500', 'text-white'],
+        conditions: [],
+      });
+      expect(result.usages[0].line).toBeGreaterThan(0);
+      expect(result.usages[0].column).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should parse a file with multiple components', () => {
+      const mockFileContent = `
+import React from 'react';
+
+function Button() {
+  return <button className="px-4 py-2">Click me</button>;
+}
+
+const Card = () => {
+  return <div className="rounded-lg shadow-md">Card content</div>;
+};
+
+export default function App() {
+  return (
+    <div className="container mx-auto">
+      <Button />
+      <Card />
+    </div>
+  );
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/App.tsx');
+
+      expect(result.path).toBe('/test/App.tsx');
+      expect(result.usages).toHaveLength(3);
+
+      // Button component
+      expect(result.usages[0]).toMatchObject({
+        component: 'Button',
+        element: 'button',
+        classes: ['px-4', 'py-2'],
+      });
+
+      // Card component
+      expect(result.usages[1]).toMatchObject({
+        component: 'Card',
+        element: 'div',
+        classes: ['rounded-lg', 'shadow-md'],
+      });
+
+      // App component
+      expect(result.usages[2]).toMatchObject({
+        component: 'App',
+        element: 'div',
+        classes: ['container', 'mx-auto'],
+      });
+    });
+
+    it('should parse file with conditional classes', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export default function ConditionalComponent({ isActive }: { isActive: boolean }) {
+  return (
+    <div className={\`base-class \${isActive ? 'hover:bg-blue-500 data-[active]:text-white' : 'disabled:opacity-50'}\`}>
+      Content
+    </div>
+  );
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/ConditionalComponent.tsx');
+
+      expect(result.usages).toHaveLength(1);
+      expect(result.usages[0].classes).toEqual([
+        'base-class',
+        'hover:bg-blue-500',
+        'data-[active]:text-white',
+        'disabled:opacity-50'
+      ]);
+      expect(result.usages[0].conditions).toEqual(['hover', 'data-active', 'disabled']);
+    });
+
+    it('should handle file with no className usage', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export default function NoClasses() {
+  return <div>No classes here</div>;
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/NoClasses.tsx');
+
+      expect(result.path).toBe('/test/NoClasses.tsx');
+      expect(result.usages).toHaveLength(0);
+    });
+
+    it('should handle TypeScript file with JSX', () => {
+      const mockFileContent = `
+import React from 'react';
+
+interface Props {
+  variant: 'primary' | 'secondary';
+}
+
+export const TypedComponent: React.FC<Props> = ({ variant }) => {
+  return (
+    <button className={\`btn \${variant === 'primary' ? 'bg-blue-500' : 'bg-gray-500'}\`}>
+      Typed Button
+    </button>
+  );
+};
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/TypedComponent.tsx');
+
+      expect(result.usages).toHaveLength(1);
+      expect(result.usages[0]).toMatchObject({
+        component: 'TypedComponent',
+        element: 'button',
+        classes: ['btn', 'bg-blue-500', 'bg-gray-500'],
+      });
+    });
+
+    it('should extract component name from file path', () => {
+      const mockFileContent = `
+export default function DefaultExport() {
+  return <div className="test-class">Content</div>;
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/components/my-awesome-component.tsx');
+
+      expect(result.usages[0].component).toBe('DefaultExport'); // Function name takes precedence over file path
+    });
+
+    it('should handle parsing errors gracefully', () => {
+      const mockFileContent = `
+// This is invalid JavaScript/JSX
+export default function BrokenComponent() {
+  return <div className="test"
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      // Mock console.warn to avoid noise in test output
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const result = parseFile('/test/BrokenComponent.tsx');
+
+      expect(result.path).toBe('/test/BrokenComponent.tsx');
+      expect(result.usages).toHaveLength(0);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to parse /test/BrokenComponent.tsx:'),
+        expect.any(Error)
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle complex nested JSX structures', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export default function ComplexComponent() {
+  return (
+    <div className="container">
+      <header className="header bg-white">
+        <nav className="nav flex items-center">
+          <a href="#" className="link hover:text-blue-500">Home</a>
+        </nav>
+      </header>
+      <main className="main">
+        <section className="section">
+          <article className="article prose max-w-none">
+            Content
+          </article>
+        </section>
+      </main>
+    </div>
+  );
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/ComplexComponent.tsx');
+
+      expect(result.usages).toHaveLength(7);
+
+      const classLists = result.usages.map(usage => usage.classes);
+      expect(classLists).toEqual([
+        ['container'],
+        ['header', 'bg-white'],
+        ['nav', 'flex', 'items-center'],
+        ['link', 'hover:text-blue-500'],
+        ['main'],
+        ['section'],
+        ['article', 'prose', 'max-w-none']
+      ]);
+    });
+
+    it('should handle files with class attribute (HTML style)', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export default function HtmlStyleComponent() {
+  return <div class="html-style-class">HTML style</div>;
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/HtmlStyleComponent.tsx');
+
+      expect(result.usages).toHaveLength(1);
+      expect(result.usages[0].classes).toEqual(['html-style-class']);
+    });
+
+    it('should handle empty and whitespace-only class attributes', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export default function EmptyClasses() {
+  return (
+    <>
+      <div className="">Empty string</div>
+      <div className="   ">Whitespace only</div>
+      <div className="valid-class">Valid</div>
+    </>
+  );
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/EmptyClasses.tsx');
+
+      expect(result.usages).toHaveLength(1); // Only the valid class should be found
+      expect(result.usages[0].classes).toEqual(['valid-class']);
+    });
+
+    it('should read file from filesystem', () => {
+      const mockFileContent = 'test content';
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      parseFile('/test/file.tsx');
+
+      expect(readFileSync).toHaveBeenCalledWith('/test/file.tsx', 'utf8');
+    });
+
+    it('should handle different file extensions', () => {
+      const mockFileContent = `
+export default function TestComponent() {
+  return <div className="test-class">Test</div>;
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      // Test .tsx
+      const tsxResult = parseFile('/components/Component.tsx');
+      expect(tsxResult.usages[0].component).toBe('TestComponent'); // Function name is used
+
+      // Test .jsx
+      const jsxResult = parseFile('/components/Component.jsx');
+      expect(jsxResult.usages[0].component).toBe('TestComponent'); // Function name is used
+
+      // Test .ts
+      const tsResult = parseFile('/utils/helper.ts');
+      expect(tsResult.usages[0].component).toBe('TestComponent'); // Function name is used
+
+      // Test .js
+      const jsResult = parseFile('/utils/helper.js');
+      expect(jsResult.usages[0].component).toBe('TestComponent'); // Function name is used
+    });
+
+    it('should handle realistic media player component', () => {
+      const mockFileContent = `
+import React from 'react';
+
+export const PlayButton = ({ isPlaying, onClick }) => {
+  return (
+    <button
+      className={\`
+        relative inline-flex min-w-0 cursor-pointer select-none items-center
+        justify-center rounded-full p-2 transition-all duration-150
+        \${isPlaying ? 'hover:bg-blue-600 data-[playing=true]:bg-blue-500' : 'hover:bg-gray-600'}
+        focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed
+      \`}
+      onClick={onClick}
+      aria-label={isPlaying ? 'Pause' : 'Play'}
+    >
+      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+        {isPlaying ? (
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+        ) : (
+          <path d="M8 5v14l11-7z" />
+        )}
+      </svg>
+    </button>
+  );
+};
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/src/components/PlayButton.tsx');
+
+      expect(result.usages).toHaveLength(2);
+
+      const buttonUsage = result.usages.find(u => u.element === 'button');
+      const svgUsage = result.usages.find(u => u.element === 'svg');
+
+      expect(buttonUsage).toBeDefined();
+      const expectedClasses = [
+        'relative', 'inline-flex', 'min-w-0', 'cursor-pointer', 'select-none',
+        'items-center', 'justify-center', 'rounded-full', 'p-2', 'transition-all',
+        'duration-150', 'hover:bg-blue-600', 'data-[playing=true]:bg-blue-500',
+        'hover:bg-gray-600', 'focus:ring-2', 'focus:ring-blue-300',
+        'disabled:opacity-50', 'disabled:cursor-not-allowed'
+      ];
+      expect(buttonUsage!.classes).toHaveLength(expectedClasses.length);
+      expectedClasses.forEach(cls => {
+        expect(buttonUsage!.classes).toContain(cls);
+      });
+      const expectedConditions = ['hover', 'data-playing=true', 'focus', 'disabled'];
+      expect(buttonUsage!.conditions).toHaveLength(expectedConditions.length);
+      expectedConditions.forEach(condition => {
+        expect(buttonUsage!.conditions).toContain(condition);
+      });
+
+      expect(svgUsage).toBeDefined();
+      expect(svgUsage!.classes).toEqual(['w-4', 'h-4', 'fill-current']);
+    });
+
+    it('should return ParsedFile structure with correct shape', () => {
+      const mockFileContent = `
+export default function Simple() {
+  return <div className="test">Test</div>;
+}
+      `;
+
+      vi.mocked(readFileSync).mockReturnValue(mockFileContent);
+
+      const result = parseFile('/test/Simple.tsx');
+
+      // Check that result matches ParsedFile interface
+      expect(result).toHaveProperty('path');
+      expect(result).toHaveProperty('usages');
+      expect(typeof result.path).toBe('string');
+      expect(Array.isArray(result.usages)).toBe(true);
+
+      // Check ClassUsage structure
+      if (result.usages.length > 0) {
+        const usage = result.usages[0];
+        expect(usage).toHaveProperty('file');
+        expect(usage).toHaveProperty('component');
+        expect(usage).toHaveProperty('element');
+        expect(usage).toHaveProperty('classes');
+        expect(usage).toHaveProperty('conditions');
+        expect(usage).toHaveProperty('line');
+        expect(usage).toHaveProperty('column');
+
+        expect(typeof usage.file).toBe('string');
+        expect(typeof usage.component).toBe('string');
+        expect(typeof usage.element).toBe('string');
+        expect(Array.isArray(usage.classes)).toBe(true);
+        expect(Array.isArray(usage.conditions)).toBe(true);
+        expect(typeof usage.line).toBe('number');
+        expect(typeof usage.column).toBe('number');
+      }
     });
   });
 });
