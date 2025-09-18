@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { mkdirSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import * as t from '@babel/types';
 import {
   ASTParser,
@@ -52,7 +52,7 @@ export const SimpleButton = () => {
 };
 `;
 
-      const usages = parseSourceCode(sourceCode, 'SimpleButton.tsx');
+      const usages = parseSourceCode(sourceCode, 'SimpleButton');
 
       expect(usages).toHaveLength(1);
 
@@ -60,7 +60,6 @@ export const SimpleButton = () => {
       expect(usage.component).toBe('SimpleButton');
       expect(usage.element).toBe('button');
       expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
-      expect(usage.file).toBe('SimpleButton.tsx');
     });
 
     it('should handle template literal classNames', () => {
@@ -74,7 +73,7 @@ export const ConditionalButton = ({ isActive }: { isActive: boolean }) => {
 };
 `;
 
-      const usages = parseSourceCode(sourceCode, 'ConditionalButton.tsx');
+      const usages = parseSourceCode(sourceCode, 'ConditionalButton');
 
       expect(usages).toHaveLength(1);
       const usage = usages[0];
@@ -97,7 +96,7 @@ function PauseButton() {
 }
 `;
 
-      const usages = parseSourceCode(sourceCode, 'test.tsx');
+      const usages = parseSourceCode(sourceCode, 'Test');
 
       expect(usages).toHaveLength(2);
 
@@ -119,7 +118,7 @@ export const DataButton = () => {
 };
 `;
 
-      const usages = parseSourceCode(sourceCode, 'DataButton.tsx');
+      const usages = parseSourceCode(sourceCode, 'DataButton');
 
       expect(usages).toHaveLength(1);
       const usage = usages[0];
@@ -142,7 +141,7 @@ export const BrokenComponent = () => {
   );
 `;
 
-      const usages = parseSourceCode(invalidCode, 'Broken.tsx');
+      const usages = parseSourceCode(invalidCode, 'Broken');
 
       // Should return empty array and not throw
       expect(usages).toEqual([]);
@@ -162,7 +161,7 @@ export const MultiElementComponent = () => {
 };
 `;
 
-      const usages = parseSourceCode(sourceCode, 'Multi.tsx');
+      const usages = parseSourceCode(sourceCode, 'Multi');
 
       expect(usages).toHaveLength(4);
 
@@ -303,7 +302,6 @@ export const DataAttributeComponent = () => {
       expect(usage.conditions).toContain('hover');
     });
   });
-
 
   describe('error handling', () => {
     it('should handle malformed TypeScript gracefully', () => {
@@ -1741,10 +1739,9 @@ export const NoClassNameComponent = () => {
     it('should extract class usage from string literal className', () => {
       const stringLiteral = t.stringLiteral('bg-blue-500 text-white p-4');
       const path = createMockPath('button', stringLiteral);
-      const result = extractClassUsage(path, 'MyComponent', 'MyComponent.tsx');
+      const result = extractClassUsage(path, 'MyComponent');
 
       expect(result).not.toBeNull();
-      expect(result!.file).toBe('MyComponent.tsx');
       expect(result!.component).toBe('MyComponent');
       expect(result!.element).toBe('button');
       expect(result!.classes).toEqual(['bg-blue-500', 'text-white', 'p-4']);
@@ -1758,11 +1755,7 @@ export const NoClassNameComponent = () => {
         'hover:bg-blue-600 focus:ring-2 data-[state=open]:visible p-4',
       );
       const path = createMockPath('div', stringLiteral);
-      const result = extractClassUsage(
-        path,
-        'ConditionalComponent',
-        'ConditionalComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'ConditionalComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual([
@@ -1782,11 +1775,7 @@ export const NoClassNameComponent = () => {
         t.stringLiteral('bg-green-500 rounded'),
       );
       const path = createMockPath('span', expressionContainer);
-      const result = extractClassUsage(
-        path,
-        'ExpressionComponent',
-        'ExpressionComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'ExpressionComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['bg-green-500', 'rounded']);
@@ -1813,11 +1802,7 @@ export const NoClassNameComponent = () => {
       );
       const expressionContainer = t.jsxExpressionContainer(templateLiteral);
       const path = createMockPath('button', expressionContainer);
-      const result = extractClassUsage(
-        path,
-        'TemplateComponent',
-        'TemplateComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'TemplateComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['base-class', 'active', 'inactive']);
@@ -1831,11 +1816,7 @@ export const NoClassNameComponent = () => {
       );
       const expressionContainer = t.jsxExpressionContainer(binaryExpression);
       const path = createMockPath('button', expressionContainer);
-      const result = extractClassUsage(
-        path,
-        'BinaryComponent',
-        'BinaryComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'BinaryComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['btn', 'btn-', 'primary']);
@@ -1844,11 +1825,7 @@ export const NoClassNameComponent = () => {
     it('should return null for empty className', () => {
       const emptyString = t.stringLiteral('');
       const path = createMockPath('div', emptyString);
-      const result = extractClassUsage(
-        path,
-        'EmptyComponent',
-        'EmptyComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'EmptyComponent');
 
       expect(result).toBeNull();
     });
@@ -1856,22 +1833,14 @@ export const NoClassNameComponent = () => {
     it('should return null for whitespace-only className', () => {
       const whitespaceString = t.stringLiteral('   \t\n   ');
       const path = createMockPath('div', whitespaceString);
-      const result = extractClassUsage(
-        path,
-        'WhitespaceComponent',
-        'WhitespaceComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'WhitespaceComponent');
 
       expect(result).toBeNull();
     });
 
     it('should return null for null className value', () => {
       const path = createMockPath('div', null);
-      const result = extractClassUsage(
-        path,
-        'NullComponent',
-        'NullComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'NullComponent');
 
       expect(result).toBeNull();
     });
@@ -1881,19 +1850,11 @@ export const NoClassNameComponent = () => {
 
       // Test with HTML elements
       const buttonPath = createMockPath('button', stringLiteral);
-      const buttonResult = extractClassUsage(
-        buttonPath,
-        'TestComponent',
-        'test.tsx',
-      );
+      const buttonResult = extractClassUsage(buttonPath, 'TestComponent');
       expect(buttonResult!.element).toBe('button');
 
       const inputPath = createMockPath('input', stringLiteral);
-      const inputResult = extractClassUsage(
-        inputPath,
-        'TestComponent',
-        'test.tsx',
-      );
+      const inputResult = extractClassUsage(inputPath, 'TestComponent');
       expect(inputResult!.element).toBe('input');
 
       // Test with custom components
@@ -1901,27 +1862,18 @@ export const NoClassNameComponent = () => {
       const playButtonResult = extractClassUsage(
         playButtonPath,
         'TestComponent',
-        'test.tsx',
       );
       expect(playButtonResult!.element).toBe('button');
 
       const playIconPath = createMockPath('PlayIcon', stringLiteral);
-      const playIconResult = extractClassUsage(
-        playIconPath,
-        'TestComponent',
-        'test.tsx',
-      );
+      const playIconResult = extractClassUsage(playIconPath, 'TestComponent');
       expect(playIconResult!.element).toBe('icon');
     });
 
     it('should handle line and column information', () => {
       const stringLiteral = t.stringLiteral('test-class');
       const path = createMockPath('div', stringLiteral, 10, 25);
-      const result = extractClassUsage(
-        path,
-        'LocationComponent',
-        'LocationComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'LocationComponent');
 
       expect(result).not.toBeNull();
       expect(result!.line).toBe(10);
@@ -1935,11 +1887,7 @@ export const NoClassNameComponent = () => {
       // Remove location info
       path.node.loc = null;
 
-      const result = extractClassUsage(
-        path,
-        'NoLocationComponent',
-        'NoLocationComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'NoLocationComponent');
 
       expect(result).not.toBeNull();
       expect(result!.line).toBe(0);
@@ -1965,11 +1913,7 @@ export const NoClassNameComponent = () => {
       );
       const expressionContainer = t.jsxExpressionContainer(complexExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(
-        path,
-        'ComplexComponent',
-        'ComplexComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'ComplexComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['base-class', 'active', 'inactive']);
@@ -1981,11 +1925,7 @@ export const NoClassNameComponent = () => {
       ]);
       const expressionContainer = t.jsxExpressionContainer(callExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(
-        path,
-        'CallComponent',
-        'CallComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'CallComponent');
 
       expect(result).toBeNull();
     });
@@ -2008,11 +1948,7 @@ export const NoClassNameComponent = () => {
         'p-4 hover:bg-blue-500 rounded data-[loading=true]:opacity-50',
       );
       const path = createMockPath('button', stringLiteral);
-      const result = extractClassUsage(
-        path,
-        'MixedComponent',
-        'MixedComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'MixedComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual([
@@ -2042,11 +1978,7 @@ export const NoClassNameComponent = () => {
       );
       const expressionContainer = t.jsxExpressionContainer(complexExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(
-        path,
-        'OrderComponent',
-        'OrderComponent.tsx',
-      );
+      const result = extractClassUsage(path, 'OrderComponent');
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual([
@@ -2060,14 +1992,9 @@ export const NoClassNameComponent = () => {
     it('should handle realistic component and file names', () => {
       const stringLiteral = t.stringLiteral('bg-blue-500 hover:bg-blue-600');
       const path = createMockPath('PlayButton', stringLiteral);
-      const result = extractClassUsage(
-        path,
-        'MediaControlsComponent',
-        '/src/components/MediaControls.tsx',
-      );
+      const result = extractClassUsage(path, 'MediaControlsComponent');
 
       expect(result).not.toBeNull();
-      expect(result!.file).toBe('/src/components/MediaControls.tsx');
       expect(result!.component).toBe('MediaControlsComponent');
       expect(result!.element).toBe('button'); // PlayButton -> button
       expect(result!.classes).toEqual(['bg-blue-500', 'hover:bg-blue-600']);
@@ -2089,14 +2016,13 @@ export const SimpleButton = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'SimpleButton.tsx');
+      const result = parseSourceCode(sourceCode, 'SimpleButton');
 
       expect(result).toHaveLength(1);
       const usage = result[0];
       expect(usage.component).toBe('SimpleButton');
       expect(usage.element).toBe('button');
       expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
-      expect(usage.file).toBe('SimpleButton.tsx');
       expect(usage.conditions).toEqual([]);
     });
 
@@ -2113,7 +2039,7 @@ export const ConditionalButton = ({ isActive }) => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'ConditionalButton.tsx');
+      const result = parseSourceCode(sourceCode, 'ConditionalButton');
 
       expect(result).toHaveLength(1);
       const usage = result[0];
@@ -2133,7 +2059,7 @@ export const HoverButton = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'HoverButton.tsx');
+      const result = parseSourceCode(sourceCode, 'HoverButton');
 
       expect(result).toHaveLength(1);
       const usage = result[0];
@@ -2162,7 +2088,7 @@ export const MultiElementComponent = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'MultiElementComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'MultiElementComponent');
 
       expect(result).toHaveLength(3);
 
@@ -2187,7 +2113,7 @@ function MyCustomButton() {
 export default MyCustomButton;
 `;
 
-      const result = parseSourceCode(sourceCode, 'MyCustomButton.tsx');
+      const result = parseSourceCode(sourceCode, 'MyCustomButton');
 
       expect(result).toHaveLength(1);
       expect(result[0].component).toBe('MyCustomButton');
@@ -2204,7 +2130,7 @@ const ArrowComponent = () => {
 export default ArrowComponent;
 `;
 
-      const result = parseSourceCode(sourceCode, 'ArrowComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'ArrowComponent');
 
       expect(result).toHaveLength(1);
       expect(result[0].component).toBe('ArrowComponent');
@@ -2221,7 +2147,7 @@ const InternalComponent = () => {
 export default InternalComponent;
 `;
 
-      const result = parseSourceCode(sourceCode, 'ExportedComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'ExportedComponent');
 
       expect(result).toHaveLength(1);
       expect(result[0].component).toBe('InternalComponent');
@@ -2244,7 +2170,7 @@ export const OuterComponent = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'NestedComponents.tsx');
+      const result = parseSourceCode(sourceCode, 'NestedComponents');
 
       expect(result).toHaveLength(2);
 
@@ -2277,7 +2203,7 @@ export const ExpressionComponent = ({ theme }) => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'ExpressionComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'ExpressionComponent');
 
       expect(result).toHaveLength(1); // Only one has extractable static classes
 
@@ -2299,7 +2225,7 @@ export const EmptyClassComponent = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'EmptyClassComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'EmptyClassComponent');
 
       expect(result).toHaveLength(0); // Empty classNames should be filtered out
     });
@@ -2316,7 +2242,7 @@ export const BrokenComponent = () => {
   );
 `;
 
-      const result = parseSourceCode(malformedCode, 'BrokenComponent.tsx');
+      const result = parseSourceCode(malformedCode, 'BrokenComponent');
 
       expect(result).toHaveLength(0); // Should return empty array for malformed code
     });
@@ -2340,7 +2266,7 @@ export const ElementTypesComponent = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'ElementTypesComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'ElementTypesComponent');
 
       expect(result).toHaveLength(7);
 
@@ -2374,7 +2300,7 @@ export const TypedComponent: React.FC<Props> = ({ variant, disabled }) => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'TypedComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'TypedComponent');
 
       expect(result).toHaveLength(1);
       expect(result[0].component).toBe('TypedComponent');
@@ -2392,7 +2318,7 @@ export const LineColComponent = () => {
   );
 };`;
 
-      const result = parseSourceCode(sourceCode, 'LineColComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'LineColComponent');
 
       expect(result).toHaveLength(1);
       expect(result[0].line).toBeGreaterThan(0);
@@ -2408,7 +2334,7 @@ export default () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'FallbackComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'FallbackComponent');
 
       expect(result).toHaveLength(1);
       expect(result[0].component).toBe('FallbackComponent'); // From file path
@@ -2431,7 +2357,7 @@ export const ComplexComponent = ({ condition, theme, size }) => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'ComplexComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'ComplexComponent');
 
       expect(result).toHaveLength(2);
 
@@ -2457,7 +2383,7 @@ export const HtmlStyleComponent = () => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'HtmlStyleComponent.tsx');
+      const result = parseSourceCode(sourceCode, 'HtmlStyleComponent');
 
       expect(result).toHaveLength(2);
       expect(result[0].classes).toEqual(['react-style']);
@@ -2502,7 +2428,7 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
 };
 `;
 
-      const result = parseSourceCode(sourceCode, 'MediaControls.tsx');
+      const result = parseSourceCode(sourceCode, 'MediaControls');
 
       expect(result).toHaveLength(6);
 
@@ -2713,7 +2639,7 @@ export default function BrokenComponent() {
       expect(result.path).toBe('/test/BrokenComponent.tsx');
       expect(result.usages).toHaveLength(0);
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to parse /test/BrokenComponent.tsx:'),
+        expect.stringContaining('Failed to parse src'),
         expect.any(Error),
       );
 

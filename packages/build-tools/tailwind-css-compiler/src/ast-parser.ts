@@ -183,8 +183,7 @@ export function extractClasses(
 export function extractClassUsage(
   path: any,
   component: string,
-  file: string,
-): ClassUsage | null {
+): Omit<ClassUsage, 'file'> | null {
   const node = path.node;
   const element = getElementType(path);
 
@@ -198,7 +197,6 @@ export function extractClassUsage(
   const loc = node.loc;
 
   return {
-    file,
     component,
     element,
     classes,
@@ -211,8 +209,11 @@ export function extractClassUsage(
 /**
  * Parse source code string and extract className usage
  */
-export function parseSourceCode(sourceCode: string, filePath: string): ClassUsage[] {
-  const usages: ClassUsage[] = [];
+export function parseSourceCode(
+  sourceCode: string,
+  defaultComponentName: string,
+): Omit<ClassUsage, 'file'>[] {
+  const usages: Omit<ClassUsage, 'file'>[] = [];
 
   try {
     const ast = parse(sourceCode, {
@@ -225,7 +226,7 @@ export function parseSourceCode(sourceCode: string, filePath: string): ClassUsag
       ],
     });
 
-    let currentComponent = extractComponentName(filePath);
+    let currentComponent = defaultComponentName;
 
     traverse(ast, {
       // Track current component/function name
@@ -251,7 +252,7 @@ export function parseSourceCode(sourceCode: string, filePath: string): ClassUsag
       // Extract className attributes
       JSXAttribute(path) {
         if (isClassNameAttribute(path.node)) {
-          const usage = extractClassUsage(path, currentComponent, filePath);
+          const usage = extractClassUsage(path, currentComponent);
           if (usage) {
             usages.push(usage);
           }
@@ -259,7 +260,7 @@ export function parseSourceCode(sourceCode: string, filePath: string): ClassUsag
       },
     });
   } catch (error) {
-    console.warn(`Failed to parse ${filePath}:`, error);
+    console.warn(`Failed to parse src`, error);
   }
 
   return usages;
@@ -270,11 +271,15 @@ export function parseSourceCode(sourceCode: string, filePath: string): ClassUsag
  */
 export function parseFile(filePath: string): ParsedFile {
   const sourceCode = readFileSync(filePath, 'utf8');
-  const usages = parseSourceCode(sourceCode, filePath);
+  const defaultComponentName = extractComponentName(filePath);
+  const usages = parseSourceCode(sourceCode, defaultComponentName);
+
+  // Add file path to all usages
+  const usagesWithFile = usages.map((usage) => ({ ...usage, file: filePath }));
 
   return {
     path: filePath,
-    usages,
+    usages: usagesWithFile,
   };
 }
 
