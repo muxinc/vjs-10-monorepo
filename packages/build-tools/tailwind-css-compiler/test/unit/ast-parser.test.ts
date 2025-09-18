@@ -24,7 +24,7 @@ const TEST_OUTPUT_DIR = resolve(__dirname, '../temp');
 
 // Mock fs.readFileSync for parseFile tests
 vi.mock('fs', async () => {
-  const actual = await vi.importActual('fs') as any;
+  const actual = (await vi.importActual('fs')) as any;
   return {
     ...actual,
     readFileSync: vi.fn(),
@@ -74,10 +74,7 @@ export const ConditionalButton = ({ isActive }: { isActive: boolean }) => {
 };
 `;
 
-      const usages = parseSourceCode(
-        sourceCode,
-        'ConditionalButton.tsx',
-      );
+      const usages = parseSourceCode(sourceCode, 'ConditionalButton.tsx');
 
       expect(usages).toHaveLength(1);
       const usage = usages[0];
@@ -307,50 +304,6 @@ export const DataAttributeComponent = () => {
     });
   });
 
-  describe('extractComponentName', () => {
-    it('should extract component name from file path', () => {
-      // Test the private method via parseFile
-      const componentCode =
-        'export const Test = () => <div className="test">Test</div>;';
-
-      const filePath = createTestFile(
-        'my-awesome-component.tsx',
-        componentCode,
-        TEST_OUTPUT_DIR,
-      );
-      const result = parseFile(filePath);
-
-      expect(result.usages[0]?.component).toBe('MyAwesomeComponent');
-    });
-
-    it('should handle kebab-case file names', () => {
-      const componentCode =
-        'export const Test = () => <div className="test">Test</div>;';
-
-      const filePath = createTestFile(
-        'play-button-component.tsx',
-        componentCode,
-        TEST_OUTPUT_DIR,
-      );
-      const result = parseFile(filePath);
-
-      expect(result.usages[0]?.component).toBe('PlayButtonComponent');
-    });
-
-    it('should handle snake_case file names', () => {
-      const componentCode =
-        'export const Test = () => <div className="test">Test</div>;';
-
-      const filePath = createTestFile(
-        'media_player_component.tsx',
-        componentCode,
-        TEST_OUTPUT_DIR,
-      );
-      const result = parseFile(filePath);
-
-      expect(result.usages[0]?.component).toBe('MediaPlayerComponent');
-    });
-  });
 
   describe('error handling', () => {
     it('should handle malformed TypeScript gracefully', () => {
@@ -1489,7 +1442,7 @@ export const NoClassNameComponent = () => {
 
     it('should extract classes from JSX expression container with string literal', () => {
       const expressionContainer = t.jsxExpressionContainer(
-        t.stringLiteral('hover:bg-blue-600 focus:ring-2')
+        t.stringLiteral('hover:bg-blue-600 focus:ring-2'),
       );
       const result = extractClasses(expressionContainer);
 
@@ -1501,14 +1454,11 @@ export const NoClassNameComponent = () => {
         [
           t.templateElement(
             { raw: 'bg-blue-500 ', cooked: 'bg-blue-500 ' },
-            false
+            false,
           ),
-          t.templateElement(
-            { raw: ' p-4', cooked: ' p-4' },
-            true
-          )
+          t.templateElement({ raw: ' p-4', cooked: ' p-4' }, true),
         ],
-        [t.identifier('dynamicClass')]
+        [t.identifier('dynamicClass')],
       );
       const expressionContainer = t.jsxExpressionContainer(templateLiteral);
       const result = extractClasses(expressionContainer);
@@ -1520,7 +1470,7 @@ export const NoClassNameComponent = () => {
       const binaryExpression = t.binaryExpression(
         '+',
         t.stringLiteral('bg-blue-500 '),
-        t.stringLiteral('text-white')
+        t.stringLiteral('text-white'),
       );
       const expressionContainer = t.jsxExpressionContainer(binaryExpression);
       const result = extractClasses(expressionContainer);
@@ -1532,12 +1482,19 @@ export const NoClassNameComponent = () => {
       const conditionalExpression = t.conditionalExpression(
         t.identifier('isActive'),
         t.stringLiteral('bg-blue-500 active'),
-        t.stringLiteral('bg-gray-500 inactive')
+        t.stringLiteral('bg-gray-500 inactive'),
       );
-      const expressionContainer = t.jsxExpressionContainer(conditionalExpression);
+      const expressionContainer = t.jsxExpressionContainer(
+        conditionalExpression,
+      );
       const result = extractClasses(expressionContainer);
 
-      expect(result).toEqual(['bg-blue-500', 'active', 'bg-gray-500', 'inactive']);
+      expect(result).toEqual([
+        'bg-blue-500',
+        'active',
+        'bg-gray-500',
+        'inactive',
+      ]);
     });
 
     it('should return empty array for JSX expression container with empty expression', () => {
@@ -1549,10 +1506,9 @@ export const NoClassNameComponent = () => {
     });
 
     it('should return empty array for JSX expression container with unsupported expression', () => {
-      const callExpression = t.callExpression(
-        t.identifier('classNames'),
-        [t.stringLiteral('bg-blue-500')]
-      );
+      const callExpression = t.callExpression(t.identifier('classNames'), [
+        t.stringLiteral('bg-blue-500'),
+      ]);
       const expressionContainer = t.jsxExpressionContainer(callExpression);
       const result = extractClasses(expressionContainer);
 
@@ -1580,20 +1536,19 @@ export const NoClassNameComponent = () => {
         t.binaryExpression(
           '+',
           t.stringLiteral('base-class '),
-          t.stringLiteral('active')
+          t.stringLiteral('active'),
         ),
         t.templateLiteral(
           [
-            t.templateElement(
-              { raw: 'inactive ', cooked: 'inactive ' },
-              false
-            ),
-            t.templateElement({ raw: '', cooked: '' }, true)
+            t.templateElement({ raw: 'inactive ', cooked: 'inactive ' }, false),
+            t.templateElement({ raw: '', cooked: '' }, true),
           ],
-          [t.identifier('theme')]
-        )
+          [t.identifier('theme')],
+        ),
       );
-      const expressionContainer = t.jsxExpressionContainer(conditionalExpression);
+      const expressionContainer = t.jsxExpressionContainer(
+        conditionalExpression,
+      );
       const result = extractClasses(expressionContainer);
 
       expect(result).toEqual(['base-class', 'active', 'inactive']);
@@ -1613,7 +1568,7 @@ export const NoClassNameComponent = () => {
       // This represents: className={styles.button}
       const memberExpression = t.memberExpression(
         t.identifier('styles'),
-        t.identifier('button')
+        t.identifier('button'),
       );
       const expressionContainer = t.jsxExpressionContainer(memberExpression);
       const result = extractClasses(expressionContainer);
@@ -1628,13 +1583,13 @@ export const NoClassNameComponent = () => {
         t.binaryExpression(
           '+',
           t.stringLiteral('first-class '),
-          t.stringLiteral('second-class')
+          t.stringLiteral('second-class'),
         ),
         t.binaryExpression(
           '+',
           t.stringLiteral('third-class '),
-          t.stringLiteral('fourth-class')
-        )
+          t.stringLiteral('fourth-class'),
+        ),
       );
       const expressionContainer = t.jsxExpressionContainer(complexExpression);
       const result = extractClasses(expressionContainer);
@@ -1643,7 +1598,7 @@ export const NoClassNameComponent = () => {
         'first-class',
         'second-class',
         'third-class',
-        'fourth-class'
+        'fourth-class',
       ]);
     });
 
@@ -1655,25 +1610,30 @@ export const NoClassNameComponent = () => {
           [
             t.templateElement(
               { raw: 'level1-true ', cooked: 'level1-true ' },
-              false
+              false,
             ),
-            t.templateElement({ raw: '', cooked: '' }, true)
+            t.templateElement({ raw: '', cooked: '' }, true),
           ],
           [
             t.conditionalExpression(
               t.identifier('level2'),
               t.stringLiteral('level2-true'),
-              t.stringLiteral('level2-false')
-            )
-          ]
+              t.stringLiteral('level2-false'),
+            ),
+          ],
         ),
-        t.stringLiteral('level1-false')
+        t.stringLiteral('level1-false'),
       );
       const expressionContainer = t.jsxExpressionContainer(nestedConditional);
       const result = extractClasses(expressionContainer);
 
       // Should extract static parts from template literal, expressions within template, and the false branch
-      expect(result).toEqual(['level1-true', 'level2-true', 'level2-false', 'level1-false']);
+      expect(result).toEqual([
+        'level1-true',
+        'level2-true',
+        'level2-false',
+        'level1-false',
+      ]);
     });
 
     it('should handle realistic className patterns', () => {
@@ -1683,13 +1643,13 @@ export const NoClassNameComponent = () => {
         t.binaryExpression(
           '+',
           t.stringLiteral('btn btn-'),
-          t.identifier('variant')
+          t.identifier('variant'),
         ),
         t.conditionalExpression(
           t.identifier('disabled'),
           t.stringLiteral(' disabled'),
-          t.stringLiteral('')
-        )
+          t.stringLiteral(''),
+        ),
       );
       const expressionContainer = t.jsxExpressionContainer(realisticPattern);
       const result = extractClasses(expressionContainer);
@@ -1703,22 +1663,21 @@ export const NoClassNameComponent = () => {
         [
           t.templateElement(
             { raw: 'base-class ', cooked: 'base-class ' },
-            false
+            false,
           ),
-          t.templateElement(
-            { raw: ' end-class', cooked: ' end-class' },
-            true
-          )
+          t.templateElement({ raw: ' end-class', cooked: ' end-class' }, true),
         ],
         [
           t.conditionalExpression(
             t.identifier('condition'),
             t.stringLiteral('active'),
-            t.stringLiteral('inactive')
-          )
-        ]
+            t.stringLiteral('inactive'),
+          ),
+        ],
       );
-      const expressionContainer = t.jsxExpressionContainer(templateWithConditional);
+      const expressionContainer = t.jsxExpressionContainer(
+        templateWithConditional,
+      );
       const result = extractClasses(expressionContainer);
 
       // Should extract static parts from template literal and expressions within
@@ -1730,8 +1689,8 @@ export const NoClassNameComponent = () => {
       const objectExpression = t.objectExpression([
         t.objectProperty(
           t.stringLiteral('className'),
-          t.stringLiteral('bg-blue-500')
-        )
+          t.stringLiteral('bg-blue-500'),
+        ),
       ]);
       const expressionContainer = t.jsxExpressionContainer(objectExpression);
       const result = extractClasses(expressionContainer);
@@ -1747,17 +1706,17 @@ export const NoClassNameComponent = () => {
       elementName: string,
       attributeValue: t.JSXExpressionContainer | t.StringLiteral | null,
       line = 1,
-      column = 0
+      column = 0,
     ) {
       const jsxElement = t.jsxOpeningElement(
         t.jsxIdentifier(elementName),
         [],
-        false
+        false,
       );
 
       const jsxAttribute = t.jsxAttribute(
         t.jsxIdentifier('className'),
-        attributeValue
+        attributeValue,
       );
 
       // Mock location object
@@ -1765,7 +1724,7 @@ export const NoClassNameComponent = () => {
         start: { line, column },
         end: { line, column: column + 10 },
         filename: '',
-        identifierName: undefined
+        identifierName: undefined,
       };
 
       return {
@@ -1775,7 +1734,7 @@ export const NoClassNameComponent = () => {
             return { node: jsxElement };
           }
           return null;
-        }
+        },
       };
     }
 
@@ -1795,12 +1754,23 @@ export const NoClassNameComponent = () => {
     });
 
     it('should extract class usage with conditional classes', () => {
-      const stringLiteral = t.stringLiteral('hover:bg-blue-600 focus:ring-2 data-[state=open]:visible p-4');
+      const stringLiteral = t.stringLiteral(
+        'hover:bg-blue-600 focus:ring-2 data-[state=open]:visible p-4',
+      );
       const path = createMockPath('div', stringLiteral);
-      const result = extractClassUsage(path, 'ConditionalComponent', 'ConditionalComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'ConditionalComponent',
+        'ConditionalComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
-      expect(result!.classes).toEqual(['hover:bg-blue-600', 'focus:ring-2', 'data-[state=open]:visible', 'p-4']);
+      expect(result!.classes).toEqual([
+        'hover:bg-blue-600',
+        'focus:ring-2',
+        'data-[state=open]:visible',
+        'p-4',
+      ]);
       expect(result!.conditions).toContain('hover');
       expect(result!.conditions).toContain('focus');
       expect(result!.conditions).toContain('data-state=open');
@@ -1809,10 +1779,14 @@ export const NoClassNameComponent = () => {
 
     it('should extract class usage from JSX expression container with string literal', () => {
       const expressionContainer = t.jsxExpressionContainer(
-        t.stringLiteral('bg-green-500 rounded')
+        t.stringLiteral('bg-green-500 rounded'),
       );
       const path = createMockPath('span', expressionContainer);
-      const result = extractClassUsage(path, 'ExpressionComponent', 'ExpressionComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'ExpressionComponent',
+        'ExpressionComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['bg-green-500', 'rounded']);
@@ -1823,20 +1797,27 @@ export const NoClassNameComponent = () => {
     it('should extract class usage from template literal with conditional', () => {
       const templateLiteral = t.templateLiteral(
         [
-          t.templateElement({ raw: 'base-class ', cooked: 'base-class ' }, false),
-          t.templateElement({ raw: '', cooked: '' }, true)
+          t.templateElement(
+            { raw: 'base-class ', cooked: 'base-class ' },
+            false,
+          ),
+          t.templateElement({ raw: '', cooked: '' }, true),
         ],
         [
           t.conditionalExpression(
             t.identifier('isActive'),
             t.stringLiteral('active'),
-            t.stringLiteral('inactive')
-          )
-        ]
+            t.stringLiteral('inactive'),
+          ),
+        ],
       );
       const expressionContainer = t.jsxExpressionContainer(templateLiteral);
       const path = createMockPath('button', expressionContainer);
-      const result = extractClassUsage(path, 'TemplateComponent', 'TemplateComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'TemplateComponent',
+        'TemplateComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['base-class', 'active', 'inactive']);
@@ -1846,11 +1827,15 @@ export const NoClassNameComponent = () => {
       const binaryExpression = t.binaryExpression(
         '+',
         t.stringLiteral('btn btn-'),
-        t.stringLiteral('primary')
+        t.stringLiteral('primary'),
       );
       const expressionContainer = t.jsxExpressionContainer(binaryExpression);
       const path = createMockPath('button', expressionContainer);
-      const result = extractClassUsage(path, 'BinaryComponent', 'BinaryComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'BinaryComponent',
+        'BinaryComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['btn', 'btn-', 'primary']);
@@ -1859,7 +1844,11 @@ export const NoClassNameComponent = () => {
     it('should return null for empty className', () => {
       const emptyString = t.stringLiteral('');
       const path = createMockPath('div', emptyString);
-      const result = extractClassUsage(path, 'EmptyComponent', 'EmptyComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'EmptyComponent',
+        'EmptyComponent.tsx',
+      );
 
       expect(result).toBeNull();
     });
@@ -1867,14 +1856,22 @@ export const NoClassNameComponent = () => {
     it('should return null for whitespace-only className', () => {
       const whitespaceString = t.stringLiteral('   \t\n   ');
       const path = createMockPath('div', whitespaceString);
-      const result = extractClassUsage(path, 'WhitespaceComponent', 'WhitespaceComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'WhitespaceComponent',
+        'WhitespaceComponent.tsx',
+      );
 
       expect(result).toBeNull();
     });
 
     it('should return null for null className value', () => {
       const path = createMockPath('div', null);
-      const result = extractClassUsage(path, 'NullComponent', 'NullComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'NullComponent',
+        'NullComponent.tsx',
+      );
 
       expect(result).toBeNull();
     });
@@ -1884,27 +1881,47 @@ export const NoClassNameComponent = () => {
 
       // Test with HTML elements
       const buttonPath = createMockPath('button', stringLiteral);
-      const buttonResult = extractClassUsage(buttonPath, 'TestComponent', 'test.tsx');
+      const buttonResult = extractClassUsage(
+        buttonPath,
+        'TestComponent',
+        'test.tsx',
+      );
       expect(buttonResult!.element).toBe('button');
 
       const inputPath = createMockPath('input', stringLiteral);
-      const inputResult = extractClassUsage(inputPath, 'TestComponent', 'test.tsx');
+      const inputResult = extractClassUsage(
+        inputPath,
+        'TestComponent',
+        'test.tsx',
+      );
       expect(inputResult!.element).toBe('input');
 
       // Test with custom components
       const playButtonPath = createMockPath('PlayButton', stringLiteral);
-      const playButtonResult = extractClassUsage(playButtonPath, 'TestComponent', 'test.tsx');
+      const playButtonResult = extractClassUsage(
+        playButtonPath,
+        'TestComponent',
+        'test.tsx',
+      );
       expect(playButtonResult!.element).toBe('button');
 
       const playIconPath = createMockPath('PlayIcon', stringLiteral);
-      const playIconResult = extractClassUsage(playIconPath, 'TestComponent', 'test.tsx');
+      const playIconResult = extractClassUsage(
+        playIconPath,
+        'TestComponent',
+        'test.tsx',
+      );
       expect(playIconResult!.element).toBe('icon');
     });
 
     it('should handle line and column information', () => {
       const stringLiteral = t.stringLiteral('test-class');
       const path = createMockPath('div', stringLiteral, 10, 25);
-      const result = extractClassUsage(path, 'LocationComponent', 'LocationComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'LocationComponent',
+        'LocationComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
       expect(result!.line).toBe(10);
@@ -1918,7 +1935,11 @@ export const NoClassNameComponent = () => {
       // Remove location info
       path.node.loc = null;
 
-      const result = extractClassUsage(path, 'NoLocationComponent', 'NoLocationComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'NoLocationComponent',
+        'NoLocationComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
       expect(result!.line).toBe(0);
@@ -1932,32 +1953,39 @@ export const NoClassNameComponent = () => {
         t.binaryExpression(
           '+',
           t.stringLiteral('base-class '),
-          t.stringLiteral('active')
+          t.stringLiteral('active'),
         ),
         t.templateLiteral(
           [
             t.templateElement({ raw: 'inactive ', cooked: 'inactive ' }, false),
-            t.templateElement({ raw: '', cooked: '' }, true)
+            t.templateElement({ raw: '', cooked: '' }, true),
           ],
-          [t.identifier('theme')]
-        )
+          [t.identifier('theme')],
+        ),
       );
       const expressionContainer = t.jsxExpressionContainer(complexExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(path, 'ComplexComponent', 'ComplexComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'ComplexComponent',
+        'ComplexComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
       expect(result!.classes).toEqual(['base-class', 'active', 'inactive']);
     });
 
     it('should handle unsupported expressions gracefully', () => {
-      const callExpression = t.callExpression(
-        t.identifier('classNames'),
-        [t.stringLiteral('base-class')]
-      );
+      const callExpression = t.callExpression(t.identifier('classNames'), [
+        t.stringLiteral('base-class'),
+      ]);
       const expressionContainer = t.jsxExpressionContainer(callExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(path, 'CallComponent', 'CallComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'CallComponent',
+        'CallComponent.tsx',
+      );
 
       expect(result).toBeNull();
     });
@@ -1966,18 +1994,33 @@ export const NoClassNameComponent = () => {
       const jsxEmptyExpression = t.jsxEmptyExpression();
       const expressionContainer = t.jsxExpressionContainer(jsxEmptyExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(path, 'EmptyExpressionComponent', 'EmptyExpressionComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'EmptyExpressionComponent',
+        'EmptyExpressionComponent.tsx',
+      );
 
       expect(result).toBeNull();
     });
 
     it('should handle mixed conditional and static classes', () => {
-      const stringLiteral = t.stringLiteral('p-4 hover:bg-blue-500 rounded data-[loading=true]:opacity-50');
+      const stringLiteral = t.stringLiteral(
+        'p-4 hover:bg-blue-500 rounded data-[loading=true]:opacity-50',
+      );
       const path = createMockPath('button', stringLiteral);
-      const result = extractClassUsage(path, 'MixedComponent', 'MixedComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'MixedComponent',
+        'MixedComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
-      expect(result!.classes).toEqual(['p-4', 'hover:bg-blue-500', 'rounded', 'data-[loading=true]:opacity-50']);
+      expect(result!.classes).toEqual([
+        'p-4',
+        'hover:bg-blue-500',
+        'rounded',
+        'data-[loading=true]:opacity-50',
+      ]);
       expect(result!.conditions).toContain('hover');
       expect(result!.conditions).toContain('data-loading=true');
       expect(result!.conditions).toHaveLength(2);
@@ -1989,20 +2032,29 @@ export const NoClassNameComponent = () => {
         t.binaryExpression(
           '+',
           t.stringLiteral('first-class '),
-          t.stringLiteral('second-class')
+          t.stringLiteral('second-class'),
         ),
         t.binaryExpression(
           '+',
           t.stringLiteral('third-class '),
-          t.stringLiteral('fourth-class')
-        )
+          t.stringLiteral('fourth-class'),
+        ),
       );
       const expressionContainer = t.jsxExpressionContainer(complexExpression);
       const path = createMockPath('div', expressionContainer);
-      const result = extractClassUsage(path, 'OrderComponent', 'OrderComponent.tsx');
+      const result = extractClassUsage(
+        path,
+        'OrderComponent',
+        'OrderComponent.tsx',
+      );
 
       expect(result).not.toBeNull();
-      expect(result!.classes).toEqual(['first-class', 'second-class', 'third-class', 'fourth-class']);
+      expect(result!.classes).toEqual([
+        'first-class',
+        'second-class',
+        'third-class',
+        'fourth-class',
+      ]);
     });
 
     it('should handle realistic component and file names', () => {
@@ -2011,7 +2063,7 @@ export const NoClassNameComponent = () => {
       const result = extractClassUsage(
         path,
         'MediaControlsComponent',
-        '/src/components/MediaControls.tsx'
+        '/src/components/MediaControls.tsx',
       );
 
       expect(result).not.toBeNull();
@@ -2085,7 +2137,12 @@ export const HoverButton = () => {
 
       expect(result).toHaveLength(1);
       const usage = result[0];
-      expect(usage.classes).toEqual(['p-4', 'hover:bg-blue-500', 'focus:ring-2', 'data-[state=open]:visible']);
+      expect(usage.classes).toEqual([
+        'p-4',
+        'hover:bg-blue-500',
+        'focus:ring-2',
+        'data-[state=open]:visible',
+      ]);
       expect(usage.conditions).toContain('hover');
       expect(usage.conditions).toContain('focus');
       expect(usage.conditions).toContain('data-state=open');
@@ -2192,8 +2249,8 @@ export const OuterComponent = () => {
       expect(result).toHaveLength(2);
 
       // First className encountered (order may vary based on AST traversal)
-      const outerDiv = result.find(r => r.classes.includes('outer-div'));
-      const innerSpan = result.find(r => r.classes.includes('inner-span'));
+      const outerDiv = result.find((r) => r.classes.includes('outer-div'));
+      const innerSpan = result.find((r) => r.classes.includes('inner-span'));
 
       expect(outerDiv).toBeDefined();
       expect(outerDiv!.element).toBe('div');
@@ -2378,7 +2435,11 @@ export const ComplexComponent = ({ condition, theme, size }) => {
 
       expect(result).toHaveLength(2);
 
-      expect(result[0].classes).toEqual(['large-container', 'small-container', 'default-container']);
+      expect(result[0].classes).toEqual([
+        'large-container',
+        'small-container',
+        'default-container',
+      ]);
       expect(result[1].classes).toEqual(['btn', '-theme', '-size']);
     });
 
@@ -2446,7 +2507,7 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expect(result).toHaveLength(6);
 
       // Check that we got all the expected classes
-      const allClasses = result.flatMap(usage => usage.classes);
+      const allClasses = result.flatMap((usage) => usage.classes);
       expect(allClasses).toContain('media-controls-container');
       expect(allClasses).toContain('play-button');
       expect(allClasses).toContain('playing');
@@ -2460,7 +2521,7 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expect(allClasses).toContain('data-[visible=true]:block');
 
       // Check that conditions were extracted
-      const allConditions = result.flatMap(usage => usage.conditions);
+      const allConditions = result.flatMap((usage) => usage.conditions);
       expect(allConditions).toContain('hover');
       expect(allConditions).toContain('data-visible=true');
     });
@@ -2566,9 +2627,13 @@ export default function ConditionalComponent({ isActive }: { isActive: boolean }
         'base-class',
         'hover:bg-blue-500',
         'data-[active]:text-white',
-        'disabled:opacity-50'
+        'disabled:opacity-50',
       ]);
-      expect(result.usages[0].conditions).toEqual(['hover', 'data-active', 'disabled']);
+      expect(result.usages[0].conditions).toEqual([
+        'hover',
+        'data-active',
+        'disabled',
+      ]);
     });
 
     it('should handle file with no className usage', () => {
@@ -2649,7 +2714,7 @@ export default function BrokenComponent() {
       expect(result.usages).toHaveLength(0);
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('Failed to parse /test/BrokenComponent.tsx:'),
-        expect.any(Error)
+        expect.any(Error),
       );
 
       consoleSpy.mockRestore();
@@ -2685,7 +2750,7 @@ export default function ComplexComponent() {
 
       expect(result.usages).toHaveLength(7);
 
-      const classLists = result.usages.map(usage => usage.classes);
+      const classLists = result.usages.map((usage) => usage.classes);
       expect(classLists).toEqual([
         ['container'],
         ['header', 'bg-white'],
@@ -2693,7 +2758,7 @@ export default function ComplexComponent() {
         ['link', 'hover:text-blue-500'],
         ['main'],
         ['section'],
-        ['article', 'prose', 'max-w-none']
+        ['article', 'prose', 'max-w-none'],
       ]);
     });
 
@@ -2806,24 +2871,42 @@ export const PlayButton = ({ isPlaying, onClick }) => {
 
       expect(result.usages).toHaveLength(2);
 
-      const buttonUsage = result.usages.find(u => u.element === 'button');
-      const svgUsage = result.usages.find(u => u.element === 'svg');
+      const buttonUsage = result.usages.find((u) => u.element === 'button');
+      const svgUsage = result.usages.find((u) => u.element === 'svg');
 
       expect(buttonUsage).toBeDefined();
       const expectedClasses = [
-        'relative', 'inline-flex', 'min-w-0', 'cursor-pointer', 'select-none',
-        'items-center', 'justify-center', 'rounded-full', 'p-2', 'transition-all',
-        'duration-150', 'hover:bg-blue-600', 'data-[playing=true]:bg-blue-500',
-        'hover:bg-gray-600', 'focus:ring-2', 'focus:ring-blue-300',
-        'disabled:opacity-50', 'disabled:cursor-not-allowed'
+        'relative',
+        'inline-flex',
+        'min-w-0',
+        'cursor-pointer',
+        'select-none',
+        'items-center',
+        'justify-center',
+        'rounded-full',
+        'p-2',
+        'transition-all',
+        'duration-150',
+        'hover:bg-blue-600',
+        'data-[playing=true]:bg-blue-500',
+        'hover:bg-gray-600',
+        'focus:ring-2',
+        'focus:ring-blue-300',
+        'disabled:opacity-50',
+        'disabled:cursor-not-allowed',
       ];
       expect(buttonUsage!.classes).toHaveLength(expectedClasses.length);
-      expectedClasses.forEach(cls => {
+      expectedClasses.forEach((cls) => {
         expect(buttonUsage!.classes).toContain(cls);
       });
-      const expectedConditions = ['hover', 'data-playing=true', 'focus', 'disabled'];
+      const expectedConditions = [
+        'hover',
+        'data-playing=true',
+        'focus',
+        'disabled',
+      ];
       expect(buttonUsage!.conditions).toHaveLength(expectedConditions.length);
-      expectedConditions.forEach(condition => {
+      expectedConditions.forEach((condition) => {
         expect(buttonUsage!.conditions).toContain(condition);
       });
 
