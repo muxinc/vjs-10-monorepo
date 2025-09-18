@@ -7,8 +7,6 @@ export interface ClassUsage {
   element: string;
   /** Tailwind classes found */
   classes: string[];
-  /** Conditional modifiers (e.g., ["data-paused", "hover"]) */
-  conditions?: string[];
   /** Line number in source file */
   line: number;
   /** Column number in source file */

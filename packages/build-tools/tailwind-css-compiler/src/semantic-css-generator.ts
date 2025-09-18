@@ -33,9 +33,6 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
         if (existing) {
           // Merge classes from multiple instances
           existing.classes = [...new Set([...existing.classes, ...usage.classes])];
-          if (usage.conditions) {
-            existing.conditions = [...new Set([...(existing.conditions || []), ...usage.conditions])];
-          }
         } else {
           usageMap.set(key, { ...usage });
         }
@@ -69,10 +66,8 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
         root.append(rule);
       }
 
-      // Generate conditional/state-based rules
-      if (usage.conditions && usage.conditions.length > 0) {
-        plugin.generateConditionalRules(root, usage, selector, mappings);
-      }
+      // Note: Conditional styles are handled by Tailwind's @apply directive
+      // No need for separate conditional rule generation
     },
 
     /**
@@ -93,54 +88,10 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
         root.append(rule);
       }
 
-      // Generate conditional rules for modules
-      if (usage.conditions && usage.conditions.length > 0) {
-        plugin.generateConditionalRules(root, usage, selector, mappings, true);
-      }
+      // Note: Conditional styles are handled by Tailwind's @apply directive
+      // No need for separate conditional rule generation
     },
 
-    /**
-     * Generate conditional/state-based CSS rules
-     */
-    generateConditionalRules(
-      root: Root,
-      usage: ClassUsage,
-      baseSelector: string,
-      _mappings: SemanticMapping[],
-      isModule = false
-    ) {
-      for (const condition of usage.conditions || []) {
-        let conditionalSelector: string;
-
-        if (condition.startsWith('data-')) {
-          // Handle data attributes: data-paused -> [data-paused]
-          conditionalSelector = `${baseSelector}[${condition}]`;
-        } else {
-          // Handle pseudo-classes: hover -> :hover
-          conditionalSelector = `${baseSelector}:${condition}`;
-        }
-
-        // For nested elements (like icons), we might need descendant selectors
-        if (usage.element === 'icon') {
-          const iconSelector = isModule ? '.Icon' : '.icon';
-          conditionalSelector = `${conditionalSelector} ${iconSelector}`;
-        }
-
-        // Create rule for conditional state
-        const rule = postcss.rule({ selector: conditionalSelector });
-
-        // Add display rule for icons (common pattern)
-        if (usage.element === 'icon') {
-          const decl = postcss.decl({
-            prop: 'display',
-            value: 'inline-block'
-          });
-          rule.append(decl);
-        }
-
-        root.append(rule);
-      }
-    },
 
     /**
      * Get vanilla CSS selector for a usage

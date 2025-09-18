@@ -4,39 +4,6 @@ import * as t from '@babel/types';
 import { readFileSync } from 'fs';
 import { ClassUsage, ParsedFile } from './types.js';
 
-/**
- * Check if a class is conditional (has modifiers)
- */
-export function isConditionalClass(cls: string): boolean {
-  return (
-    cls.includes(':') &&
-    (cls.startsWith('data-[') ||
-      cls.startsWith('hover:') ||
-      cls.startsWith('focus:') ||
-      cls.startsWith('active:') ||
-      cls.startsWith('disabled:'))
-  );
-}
-
-/**
- * Extract conditional modifiers from classes
- */
-export function extractConditions(classes: string[]): string[] {
-  return classes.reduce((conditions, cls) => {
-    let condition: string | undefined;
-    // Handle data-* attribute conditions
-    const dataMatch = cls.match(/^data-\[([^\]]+)\]:/);
-    if (dataMatch) {
-      condition = `data-${dataMatch[1]}`;
-    } else {
-      // Handle pseudo-class conditions
-      condition = cls.match(/^(hover|focus|active|disabled):/)?.[1];
-    }
-    if (condition && !conditions.includes(condition))
-      conditions.push(condition);
-    return conditions;
-  }, [] as string[]);
-}
 
 /**
  * Parse space-separated class string
@@ -234,15 +201,12 @@ export function extractClassUsage(
     return null;
   }
 
-  const conditions = extractConditions(classes);
-
   const loc = node.loc;
 
   return {
     component,
     element,
     classes,
-    conditions,
     line: loc?.start.line || 0,
     column: loc?.start.column || 0,
   };
