@@ -335,4 +335,61 @@ export const NoClassNameComponent = () => {
       expect(result.usages).toEqual([]);
     });
   });
+
+  describe('isConditionalClass', () => {
+    it('should return true for hover pseudo-class', () => {
+      const result = parser.isConditionalClass('hover:bg-blue-500');
+      expect(result).toBe(true);
+    });
+
+    it('should return true for focus pseudo-class', () => {
+      const result = parser.isConditionalClass('focus:ring-2');
+      expect(result).toBe(true);
+    });
+
+    it('should return true for active pseudo-class', () => {
+      const result = parser.isConditionalClass('active:bg-gray-800');
+      expect(result).toBe(true);
+    });
+
+    it('should return true for disabled pseudo-class', () => {
+      const result = parser.isConditionalClass('disabled:opacity-50');
+      expect(result).toBe(true);
+    });
+
+    it('should return true for data attribute conditions', () => {
+      const result = parser.isConditionalClass('data-[state=open]:bg-blue-500');
+      expect(result).toBe(true);
+    });
+
+    it('should return true for complex data attribute conditions', () => {
+      const result = parser.isConditionalClass('data-[orientation=vertical]:h-full');
+      expect(result).toBe(true);
+    });
+
+    it('should return false for regular classes without conditions', () => {
+      const result = parser.isConditionalClass('bg-blue-500');
+      expect(result).toBe(false);
+    });
+
+    it('should return false for classes with colons but not conditional prefixes', () => {
+      const result = parser.isConditionalClass('sm:bg-blue-500');
+      expect(result).toBe(false);
+    });
+
+    it('should return false for classes that contain conditional words but not as prefixes', () => {
+      const result = parser.isConditionalClass('my-hover-class');
+      expect(result).toBe(false);
+    });
+
+    it('should return false for empty string', () => {
+      const result = parser.isConditionalClass('');
+      expect(result).toBe(false);
+    });
+
+    it('should return false for classes with only colons but no conditional prefixes', () => {
+      const result = parser.isConditionalClass('lg:md:bg-red-500');
+      expect(result).toBe(false);
+    });
+  });
 });
