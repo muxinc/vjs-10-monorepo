@@ -33,29 +33,6 @@ const calculateSeekTimeFromPointerEvent = (
 // ROOT COMPONENT
 // ============================================================================
 
-interface TimeRangeRootContextValue {
-  currentTime: number;
-  duration: number;
-  requestSeek: (time: number) => void;
-  pointerPosition: number | null;
-  setPointerPosition: (position: number | null) => void;
-  hovering: boolean;
-  setHovering: (hovering: boolean) => void;
-  dragging: boolean;
-  setDragging: (dragging: boolean) => void;
-  setTrackRef: (ref: HTMLDivElement | null) => void;
-}
-
-const TimeRangeRootContext = React.createContext<TimeRangeRootContextValue | null>(null);
-
-export const useTimeRangeRootContext = (): TimeRangeRootContextValue => {
-  const context = React.useContext(TimeRangeRootContext);
-  if (!context) {
-    throw new Error('useTimeRangeRootContext must be used within a TimeRange.Root component');
-  }
-  return context;
-};
-
 export const useTimeRangeRootState = (_props: any) => {
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
@@ -186,43 +163,11 @@ export const useTimeRangeRootProps = (
 
 type useTimeRangeRootState = typeof useTimeRangeRootState;
 type useTimeRangeRootProps = typeof useTimeRangeRootProps;
-type TimeRangeRootState = ReturnType<useTimeRangeRootState>;
 type TimeRangeRootProps = ReturnType<useTimeRangeRootProps>;
 
-export const renderTimeRangeRoot = (props: TimeRangeRootProps, state: TimeRangeRootState) => {
-  const contextValue: TimeRangeRootContextValue = React.useMemo(
-    () => ({
-      currentTime: state.currentTime,
-      duration: state.duration,
-      requestSeek: state.requestSeek,
-      pointerPosition: state.pointerPosition,
-      setPointerPosition: state.setPointerPosition,
-      hovering: state.hovering,
-      setHovering: state.setHovering,
-      dragging: state.dragging,
-      setDragging: state.setDragging,
-      setTrackRef: state.setTrackRef,
-    }),
-    [
-      state.currentTime,
-      state.duration,
-      state.requestSeek,
-      state.pointerPosition,
-      state.setPointerPosition,
-      state.hovering,
-      state.setHovering,
-      state.dragging,
-      state.setDragging,
-      state.setTrackRef,
-    ]
-  );
-
+export const renderTimeRangeRoot = (props: TimeRangeRootProps) => {
   return (
-    <TimeRangeRootContext.Provider value={contextValue}>
-      <div style={props.style} {...props}>
-        {props.children}
-      </div>
-    </TimeRangeRootContext.Provider>
+    <div {...props} />
   );
 };
 
@@ -237,8 +182,8 @@ const TimeRangeRoot = toConnectedComponent(
 // TRACK COMPONENT
 // ============================================================================
 
-export const useTimeRangeTrackProps = (props: React.PropsWithChildren<{ [k: string]: any }>) => {
-  const { setTrackRef } = useTimeRangeRootContext();
+export const useTimeRangeTrackProps = (props: React.PropsWithChildren<{ [k: string]: any }>, context: any) => {
+  const { setTrackRef } = context;
 
   return {
     ref: setTrackRef,

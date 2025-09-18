@@ -12,6 +12,9 @@ module.exports = [
       format: 'esm',
       sourcemap: true,
     },
+    watch: {
+      clearScreen: false
+    },
     external: (id) => {
       // Don't externalize relative imports (starts with . or /)
       if (id.startsWith('.') || id.startsWith('/')) return false;
@@ -42,6 +45,9 @@ module.exports = [
       file: 'dist/index.js',
       format: 'cjs',
       sourcemap: true,
+    },
+    watch: {
+      clearScreen: false
     },
     external: (id) => {
       // Don't externalize relative imports (starts with . or /)

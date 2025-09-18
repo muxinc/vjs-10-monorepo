@@ -23,7 +23,7 @@ export function getTemplateHTML() {
         color: rgb(238 238 238);
       }
 
-      media-container > [slot=media] {
+      media-container > ::slotted([slot=media]) {
         width: 100%;
         height: 100%;
       }
@@ -103,6 +103,45 @@ export function getTemplateHTML() {
       .spacer {
         flex-grow: 1;
       }
+
+      /* TimeRange Component Styles */
+      media-time-range-root {
+        display: flex;
+        align-items: center;
+        position: relative;
+        min-width: 100px;
+        width: 100%;
+        padding-block: .75rem;
+        margin: 0 .5rem;
+      }
+
+      media-time-range-track {
+        position: relative;
+        width: 100%;
+        height: .375rem;
+        background-color: #e0e0e0;
+        border-radius: .25rem;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      media-time-range-thumb {
+        width: .75rem;
+        height: .75rem;
+        background-color: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      media-time-range-pointer {
+        background-color: rgba(255, 255, 255, .5);
+        pointer-events: none;
+      }
+
+      media-time-range-progress {
+        background-color: #007bff;
+        border-radius: inherit;
+      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
@@ -116,7 +155,13 @@ export function getTemplateHTML() {
           </media-play-button>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
-          <media-time-range></media-time-range>
+          <media-time-range-root>
+            <media-time-range-track>
+              <media-time-range-progress></media-time-range-progress>
+              <media-time-range-pointer></media-time-range-pointer>
+            </media-time-range-track>
+            <media-time-range-thumb></media-time-range-thumb>
+          </media-time-range-root>
           <media-duration-display></media-duration-display>
           <media-mute-button class="button">
             <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>

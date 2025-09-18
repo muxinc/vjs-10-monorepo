@@ -7,18 +7,20 @@ export type StateHookFn<TProps = any, TState = any> = (props: TProps) => TState;
 
 export type PropsHookFn<TProps = any, TState = any, TResultProps = any> = (
   props: TProps,
-  state: TState,
+  state: TState
 ) => TResultProps;
 
 export type RenderFn<TProps = any, TState = any> = (
   props: TProps,
-  state: TState,
+  state: TState
 ) => React.ReactElement;
+
+const Context = React.createContext<any | null>(null);
 
 /**
  * Generic factory function to create connected components following the hooks pattern
  * inspired by Adobe React Spectrum and Base UI architectures.
- * 
+ *
  * @param useStateHook - Hook that provides component state
  * @param usePropsHook - Hook that enhances props with state-derived values
  * @param defaultRender - Default render function for the component
@@ -29,12 +31,12 @@ export const toConnectedComponent = <
   TProps extends Record<string, any>,
   TState,
   TResultProps extends Record<string, any>,
-  TRenderFn extends RenderFn<TResultProps, TState>
+  TRenderFn extends RenderFn<TResultProps, TState>,
 >(
   useStateHook: StateHookFn<TProps, TState>,
   usePropsHook: PropsHookFn<TProps, TState, TResultProps>,
   defaultRender: TRenderFn,
-  displayName: string,
+  displayName: string
 ) => {
   const ConnectedComponent = ({
     render = defaultRender,
@@ -42,7 +44,11 @@ export const toConnectedComponent = <
   }: TProps & { render?: TRenderFn }) => {
     const connectedState = useStateHook(props as TProps);
     const connectedProps = usePropsHook(props as TProps, connectedState);
-    return render(connectedProps, connectedState);
+    return (
+      <Context.Provider value={connectedState}>
+        {render(connectedProps, connectedState)}
+      </Context.Provider>
+    );
   };
 
   ConnectedComponent.displayName = displayName;
@@ -54,13 +60,13 @@ export const toConnectedComponent = <
  */
 export type ConnectedComponent<
   TProps extends Record<string, any>,
-  TRenderFn extends RenderFn<any, any>
+  TRenderFn extends RenderFn<any, any>,
 > = React.FC<TProps & { render?: TRenderFn }>;
 
 /**
  * Factory function to create context-based components that don't use toConnectedComponent
  * These components rely on context provided by a parent component.
- * 
+ *
  * @param usePropsHook - Hook that enhances props with context-derived values
  * @param defaultRender - Default render function for the component
  * @param displayName - Display name for React DevTools
@@ -69,18 +75,19 @@ export type ConnectedComponent<
 export const toContextComponent = <
   TProps extends Record<string, any>,
   TResultProps extends Record<string, any>,
-  TRenderFn extends (props: TResultProps) => React.ReactElement
+  TRenderFn extends (props: TResultProps, context: any) => React.ReactElement,
 >(
-  usePropsHook: (props: TProps) => TResultProps,
+  usePropsHook: (props: TProps, context: any) => TResultProps,
   defaultRender: TRenderFn,
-  displayName: string,
+  displayName: string
 ) => {
   const ContextComponent = ({
     render = defaultRender,
     ...props
   }: TProps & { render?: TRenderFn }) => {
-    const contextProps = usePropsHook(props as TProps);
-    return render(contextProps);
+    const context = React.useContext(Context);
+    const contextProps = usePropsHook(props as TProps, context);
+    return render(contextProps, context);
   };
 
   ContextComponent.displayName = displayName;
@@ -92,5 +99,5 @@ export const toContextComponent = <
  */
 export type ContextComponent<
   TProps extends Record<string, any>,
-  TRenderFn extends (props: any) => React.ReactElement
+  TRenderFn extends (props: any, context: any) => React.ReactElement,
 > = React.FC<TProps & { render?: TRenderFn }>;

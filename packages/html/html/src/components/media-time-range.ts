@@ -5,10 +5,29 @@ import {
 } from '../utils/component-factory';
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 
+// Utility functions for pointer position and seek time calculations
+const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
+  const x = clientX - rect.left;
+  return Math.max(0, Math.min(100, (x / rect.width) * 100));
+};
+
+const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => {
+  return (ratio / 100) * duration;
+};
+
+const calculateSeekTimeFromPointerEvent = (
+  event: PointerEvent,
+  duration: number
+): number => {
+  const rect = (event.target as HTMLElement).getBoundingClientRect();
+  const ratio = calculatePointerRatio(event.clientX, rect);
+  return calculateSeekTimeFromRatio(ratio, duration);
+};
+
 /**
- * @TODO Should we use a base "range" superclass or just duplicate shared code? (CJP)
- **/
-export class TimeRangeBase extends HTMLElement {
+ * TimeRange Root component - Main container with pointer event handling
+ */
+export class TimeRangeRootBase extends HTMLElement {
   _state:
     | {
         currentTime: number;
@@ -16,33 +35,85 @@ export class TimeRangeBase extends HTMLElement {
         requestSeek: (time: number) => void;
       }
     | undefined;
-  _input: HTMLInputElement;
+  _trackElement: HTMLElement | null = null;
+  _pointerPosition: number | null = null;
+  _hovering: boolean = false;
+  _dragging: boolean = false;
 
   constructor() {
     super();
-    /**
-     * @TODO This is just a simple placeholder input to demonstrate functionality.
-     * A full implementation will need to implement a "compound component" architecture and likely should use templates. (CJP)
-     **/
-    this._input = document.createElement('input');
-    this._input.type = 'range';
-    this._input.min = '0';
-    this._input.max = '100';
-    this._input.step = '0.1';
-    this._input.addEventListener('input', this);
-    this.appendChild(this._input);
+    
+    // Add pointer event listeners
+    this.addEventListener('pointerdown', this);
+    this.addEventListener('pointermove', this);
+    this.addEventListener('pointerup', this);
+    this.addEventListener('pointerenter', this);
+    this.addEventListener('pointerleave', this);
   }
 
   handleEvent(event: Event) {
     const { type } = event;
     const state = this._state;
-    if (state) {
-      if (type === 'input') {
-        const ratio = parseFloat(this._input.value) / 100;
-        const seekTime = ratio * state.duration;
-        state.requestSeek(seekTime);
-      }
+    if (!state) return;
+
+    switch (type) {
+      case 'pointerdown':
+        this._handlePointerDown(event as PointerEvent);
+        break;
+      case 'pointermove':
+        this._handlePointerMove(event as PointerEvent);
+        break;
+      case 'pointerup':
+        this._handlePointerUp(event as PointerEvent);
+        break;
+      case 'pointerenter':
+        this._handlePointerEnter();
+        break;
+      case 'pointerleave':
+        this._handlePointerLeave();
+        break;
     }
+  }
+
+  private _handlePointerDown(event: PointerEvent) {
+    event.preventDefault();
+    this._dragging = true;
+    const seekTime = calculateSeekTimeFromPointerEvent(event, this._state!.duration);
+    this._state!.requestSeek(seekTime);
+    
+    // Capture pointer events
+    this.setPointerCapture(event.pointerId);
+  }
+
+  private _handlePointerMove(event: PointerEvent) {
+    if (!this._trackElement) return;
+
+    const rect = this._trackElement.getBoundingClientRect();
+    const ratio = calculatePointerRatio(event.clientX, rect);
+    this._pointerPosition = ratio;
+
+    if (this._dragging) {
+      const seekTime = calculateSeekTimeFromRatio(ratio, this._state!.duration);
+      this._state!.requestSeek(seekTime);
+    }
+  }
+
+  private _handlePointerUp(event: PointerEvent) {
+    this.releasePointerCapture(event.pointerId);
+    
+    if (this._dragging && this._trackElement && this._pointerPosition !== null) {
+      const seekTime = calculateSeekTimeFromRatio(this._pointerPosition, this._state!.duration);
+      this._state!.requestSeek(seekTime);
+    }
+    this._dragging = false;
+  }
+
+  private _handlePointerEnter() {
+    this._hovering = true;
+  }
+
+  private _handlePointerLeave() {
+    this._hovering = false;
   }
 
   get currentTime() {
@@ -55,25 +126,106 @@ export class TimeRangeBase extends HTMLElement {
 
   _update(props: any, state: any) {
     this._state = state;
-    const ratio =
-      state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
-    this._input.value = ratio.toString();
-    this._input.max = '100';
-    this._input.setAttribute('aria-label', props['aria-label']);
-    this._input.setAttribute('aria-valuetext', props['aria-valuetext']);
-    this._input.disabled = props.disabled ?? false;
+    
+    // Find track element
+    this._trackElement = this.querySelector('media-time-range-track') as HTMLElement;
+    
+    // Calculate slider fill percentage
+    const sliderFill = this._dragging && this._pointerPosition !== null
+      ? this._pointerPosition
+      : state.duration > 0
+        ? (state.currentTime / state.duration) * 100
+        : 0;
 
-    // Update data attributes for styling
-    this.setAttribute('data-current-time', props['data-current-time']);
-    this.setAttribute('data-duration', props['data-duration']);
+    // Update CSS custom properties
+    this.style.setProperty('--slider-fill', `${Math.round(sliderFill)}%`);
+    this.style.setProperty('--slider-pointer', 
+      this._hovering && this._pointerPosition !== null
+        ? `${Math.round(this._pointerPosition)}%`
+        : '0%'
+    );
+
+    // Update ARIA attributes
+    this.setAttribute('role', 'slider');
+    this.setAttribute('aria-label', props['aria-label'] || 'Seek');
+    this.setAttribute('aria-valuemin', '0');
+    this.setAttribute('aria-valuemax', '100');
+    this.setAttribute('aria-valuenow', sliderFill.toString());
+    this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
+    
+    // Update data attributes
+    this.setAttribute('data-current-time', state.currentTime.toString());
+    this.setAttribute('data-duration', state.duration.toString());
   }
 }
 
 /**
- * TimeRange state hook - equivalent to React's useTimeRangeState
+ * TimeRange Track component - Track element that captures pointer events
+ */
+export class TimeRangeTrackBase extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  _update(_props: any, _state: any) {
+    // Track doesn't need much state management
+  }
+}
+
+/**
+ * TimeRange Progress component - Shows current progress
+ */
+export class TimeRangeProgressBase extends HTMLElement {
+  constructor() {
+    super();
+    this.style.position = 'absolute';
+    this.style.width = 'var(--slider-fill, 0%)';
+    this.style.height = '100%';
+  }
+
+  _update(_props: any, _state: any) {
+    // Progress updates are handled by CSS custom properties
+  }
+}
+
+/**
+ * TimeRange Pointer component - Shows hover position
+ */
+export class TimeRangePointerBase extends HTMLElement {
+  constructor() {
+    super();
+    this.style.position = 'absolute';
+    this.style.width = 'var(--slider-pointer, 0%)';
+    this.style.height = '100%';
+  }
+
+  _update(_props: any, _state: any) {
+    // Pointer updates are handled by CSS custom properties
+  }
+}
+
+/**
+ * TimeRange Thumb component - Draggable thumb element
+ */
+export class TimeRangeThumbBase extends HTMLElement {
+  constructor() {
+    super();
+    this.style.position = 'absolute';
+    this.style.top = '50%';
+    this.style.left = 'var(--slider-fill, 0%)';
+    this.style.transform = 'translate(-50%, -50%)';
+  }
+
+  _update(_props: any, _state: any) {
+    // Thumb updates are handled by CSS custom properties
+  }
+}
+
+/**
+ * TimeRange Root state hook - equivalent to React's useTimeRangeRootState
  * Handles media store state subscription and transformation
  */
-export const useTimeRangeState: StateHook<{
+export const useTimeRangeRootState: StateHook<{
   currentTime: number;
   duration: number;
 }> = {
@@ -85,10 +237,10 @@ export const useTimeRangeState: StateHook<{
 };
 
 /**
- * TimeRange props hook - equivalent to React's useTimeRangeProps
+ * TimeRange Root props hook - equivalent to React's useTimeRangeRootProps
  * Handles element attributes and properties based on state
  */
-export const useTimeRangeProps: PropsHook<{
+export const useTimeRangeRootProps: PropsHook<{
   currentTime: number;
   duration: number;
 }> = (state, _element) => {
@@ -108,31 +260,133 @@ export const useTimeRangeProps: PropsHook<{
     /** aria attributes/props */
     ['aria-label']: 'Seek',
     ['aria-valuetext']: `${currentTimeText} of ${durationText}`,
-    /** input props */
-    disabled: false,
   };
 
   return baseProps;
 };
 
 /**
- * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
+ * TimeRange Track props hook
  */
+export const useTimeRangeTrackProps: PropsHook<{}> = (_state, _element) => {
+  return {};
+};
+
 /**
- * Connected TimeRange component using hook-style architecture
- * Equivalent to React's TimeRange = toConnectedComponent(...)
+ * TimeRange Progress props hook
  */
-export const TimeRange = toConnectedHTMLComponent(
-  TimeRangeBase,
-  useTimeRangeState,
-  useTimeRangeProps,
-  'TimeRange',
+export const useTimeRangeProgressProps: PropsHook<{}> = (_state, _element) => {
+  return {};
+};
+
+/**
+ * TimeRange Pointer props hook
+ */
+export const useTimeRangePointerProps: PropsHook<{}> = (_state, _element) => {
+  return {};
+};
+
+/**
+ * TimeRange Thumb props hook
+ */
+export const useTimeRangeThumbProps: PropsHook<{}> = (_state, _element) => {
+  return {};
+};
+
+/**
+ * Connected TimeRange Root component using hook-style architecture
+ */
+export const TimeRangeRoot = toConnectedHTMLComponent(
+  TimeRangeRootBase,
+  useTimeRangeRootState,
+  useTimeRangeRootProps,
+  'TimeRangeRoot',
 );
 
-// NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
-if (!globalThis.customElements.get('media-time-range')) {
+/**
+ * Connected TimeRange Track component
+ */
+export const TimeRangeTrack = toConnectedHTMLComponent(
+  TimeRangeTrackBase,
+  { keys: [], transform: () => ({}) },
+  useTimeRangeTrackProps,
+  'TimeRangeTrack',
+);
+
+/**
+ * Connected TimeRange Progress component
+ */
+export const TimeRangeProgress = toConnectedHTMLComponent(
+  TimeRangeProgressBase,
+  { keys: [], transform: () => ({}) },
+  useTimeRangeProgressProps,
+  'TimeRangeProgress',
+);
+
+/**
+ * Connected TimeRange Pointer component
+ */
+export const TimeRangePointer = toConnectedHTMLComponent(
+  TimeRangePointerBase,
+  { keys: [], transform: () => ({}) },
+  useTimeRangePointerProps,
+  'TimeRangePointer',
+);
+
+/**
+ * Connected TimeRange Thumb component
+ */
+export const TimeRangeThumb = toConnectedHTMLComponent(
+  TimeRangeThumbBase,
+  { keys: [], transform: () => ({}) },
+  useTimeRangeThumbProps,
+  'TimeRangeThumb',
+);
+
+/**
+ * Compound TimeRange component object
+ */
+export const TimeRange = Object.assign(
+  {},
+  {
+    Root: TimeRangeRoot,
+    Track: TimeRangeTrack,
+    Progress: TimeRangeProgress,
+    Pointer: TimeRangePointer,
+    Thumb: TimeRangeThumb,
+  }
+) as {
+  Root: typeof TimeRangeRoot;
+  Track: typeof TimeRangeTrack;
+  Progress: typeof TimeRangeProgress;
+  Pointer: typeof TimeRangePointer;
+  Thumb: typeof TimeRangeThumb;
+};
+
+// Register custom elements
+if (!globalThis.customElements.get('media-time-range-root')) {
   // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-time-range', TimeRange);
+  globalThis.customElements.define('media-time-range-root', TimeRangeRoot);
+}
+
+if (!globalThis.customElements.get('media-time-range-track')) {
+  // @ts-ignore - Custom element constructor compatibility
+  globalThis.customElements.define('media-time-range-track', TimeRangeTrack);
+}
+
+if (!globalThis.customElements.get('media-time-range-progress')) {
+  // @ts-ignore - Custom element constructor compatibility
+  globalThis.customElements.define('media-time-range-progress', TimeRangeProgress);
+}
+
+if (!globalThis.customElements.get('media-time-range-pointer')) {
+  // @ts-ignore - Custom element constructor compatibility
+  globalThis.customElements.define('media-time-range-pointer', TimeRangePointer);
+}
+
+if (!globalThis.customElements.get('media-time-range-thumb')) {
+  // @ts-ignore - Custom element constructor compatibility
+  globalThis.customElements.define('media-time-range-thumb', TimeRangeThumb);
 }
 
 export default TimeRange;
