@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "rollup -c && tsc --project tsconfig.build.json",
+    "dev": "rollup -c -w",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },

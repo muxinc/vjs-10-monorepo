@@ -12,6 +12,9 @@ module.exports = [
       format: 'esm',
       sourcemap: true,
     },
+    watch: {
+      clearScreen: false
+    },
     external: [
       'react',
       '@vjs-10/react-icons',
@@ -45,6 +48,9 @@ module.exports = [
       file: 'dist/index.js',
       format: 'cjs',
       sourcemap: true,
+    },
+    watch: {
+      clearScreen: false
     },
     external: [
       'react',
