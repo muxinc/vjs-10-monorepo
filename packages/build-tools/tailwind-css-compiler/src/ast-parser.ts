@@ -83,7 +83,7 @@ export class ASTParser {
   /**
    * Extract component name from file path
    */
-  private extractComponentName(filePath: string): string {
+  extractComponentName(filePath: string): string {
     const fileName = filePath.split('/').pop() || '';
     const baseName = fileName.replace(/\.(tsx?|jsx?)$/, '');
 
@@ -97,7 +97,7 @@ export class ASTParser {
   /**
    * Check if JSX attribute is a className
    */
-  private isClassNameAttribute(node: t.JSXAttribute): boolean {
+  isClassNameAttribute(node: t.JSXAttribute): boolean {
     return (
       t.isJSXIdentifier(node.name) &&
       (node.name.name === 'className' || node.name.name === 'class')
@@ -107,7 +107,7 @@ export class ASTParser {
   /**
    * Extract class usage from JSX attribute
    */
-  private extractClassUsage(
+  extractClassUsage(
     path: any,
     component: string,
     file: string,
@@ -139,7 +139,7 @@ export class ASTParser {
   /**
    * Get the type of element this className is applied to
    */
-  private getElementType(path: any): string {
+  getElementType(path: any): string {
     const jsxElement = path.findParent((p: any) =>
       t.isJSXOpeningElement(p.node),
     );
@@ -175,7 +175,7 @@ export class ASTParser {
   /**
    * Extract class names from JSX attribute value
    */
-  private extractClasses(
+  extractClasses(
     value: t.JSXExpressionContainer | t.StringLiteral | null,
   ): string[] {
     if (!value) return [];
@@ -197,7 +197,7 @@ export class ASTParser {
   /**
    * Extract classes from various expression types
    */
-  private extractClassesFromExpression(
+  extractClassesFromExpression(
     expression: t.Expression | t.JSXEmptyExpression,
   ): string[] {
     if (t.isStringLiteral(expression)) {
@@ -243,7 +243,7 @@ export class ASTParser {
   /**
    * Parse space-separated class string
    */
-  private parseClassString(classString: string): string[] {
+  parseClassString(classString: string): string[] {
     return classString
       .split(/\s+/)
       .map((cls) => cls.trim())
@@ -253,7 +253,7 @@ export class ASTParser {
   /**
    * Extract conditional modifiers from classes
    */
-  private extractConditions(classes: string[]): string[] {
+  extractConditions(classes: string[]): string[] {
     const conditions: string[] = [];
 
     classes.forEach((cls) => {
@@ -276,7 +276,7 @@ export class ASTParser {
   /**
    * Check if a class is conditional (has modifiers)
    */
-  private isConditionalClass(cls: string): boolean {
+  isConditionalClass(cls: string): boolean {
     return (
       cls.includes(':') &&
       (cls.startsWith('data-[') ||
