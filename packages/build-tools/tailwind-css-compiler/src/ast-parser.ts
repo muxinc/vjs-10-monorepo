@@ -10,6 +10,18 @@ export class ASTParser {
    */
   parseFile(filePath: string): ParsedFile {
     const sourceCode = readFileSync(filePath, 'utf8');
+    const usages = this.parseSourceCode(sourceCode, filePath);
+
+    return {
+      path: filePath,
+      usages,
+    };
+  }
+
+  /**
+   * Parse source code string and extract className usage
+   */
+  parseSourceCode(sourceCode: string, filePath: string): ClassUsage[] {
     const usages: ClassUsage[] = [];
 
     try {
@@ -65,10 +77,7 @@ export class ASTParser {
       console.warn(`Failed to parse ${filePath}:`, error);
     }
 
-    return {
-      path: filePath,
-      usages,
-    };
+    return usages;
   }
 
   /**

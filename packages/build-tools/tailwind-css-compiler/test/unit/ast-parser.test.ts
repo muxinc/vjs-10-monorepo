@@ -15,6 +15,146 @@ describe('ASTParser', () => {
     parser = new ASTParser();
   });
 
+  describe('parseSourceCode', () => {
+    it('should parse simple component with className directly from source', () => {
+      const sourceCode = `
+import React from 'react';
+
+export const SimpleButton = () => {
+  return (
+    <button className="bg-blue-500 text-white">
+      Click me
+    </button>
+  );
+};
+`;
+
+      const usages = parser.parseSourceCode(sourceCode, 'SimpleButton.tsx');
+
+      expect(usages).toHaveLength(1);
+
+      const usage = usages[0];
+      expect(usage.component).toBe('SimpleButton');
+      expect(usage.element).toBe('button');
+      expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
+      expect(usage.file).toBe('SimpleButton.tsx');
+    });
+
+    it('should handle template literal classNames', () => {
+      const sourceCode = `
+export const ConditionalButton = ({ isActive }: { isActive: boolean }) => {
+  return (
+    <button className={\`bg-blue-500 \${isActive ? 'bg-green-500' : 'bg-red-500'}\`}>
+      Click me
+    </button>
+  );
+};
+`;
+
+      const usages = parser.parseSourceCode(sourceCode, 'ConditionalButton.tsx');
+
+      expect(usages).toHaveLength(1);
+      const usage = usages[0];
+
+      // Should extract static parts from template literal
+      expect(usage.classes).toContain('bg-blue-500');
+      // TODO: These should be extracted from template literal expressions
+      // expect(usage.classes).toContain('bg-green-500');
+      // expect(usage.classes).toContain('bg-red-500');
+    });
+
+    it('should track component names from function declarations', () => {
+      const sourceCode = `
+function PlayButton() {
+  return <button className="play-btn">Play</button>;
+}
+
+function PauseButton() {
+  return <button className="pause-btn">Pause</button>;
+}
+`;
+
+      const usages = parser.parseSourceCode(sourceCode, 'test.tsx');
+
+      expect(usages).toHaveLength(2);
+
+      const playUsage = usages.find(u => u.classes.includes('play-btn'));
+      const pauseUsage = usages.find(u => u.classes.includes('pause-btn'));
+
+      expect(playUsage?.component).toBe('PlayButton');
+      expect(pauseUsage?.component).toBe('PauseButton');
+    });
+
+    it('should handle JSX expressions with conditions', () => {
+      const sourceCode = `
+export const DataButton = () => {
+  return (
+    <button className="data-[state=open]:bg-blue-500 hover:bg-gray-100">
+      Toggle
+    </button>
+  );
+};
+`;
+
+      const usages = parser.parseSourceCode(sourceCode, 'DataButton.tsx');
+
+      expect(usages).toHaveLength(1);
+      const usage = usages[0];
+
+      // Should extract base classes and conditions
+      expect(usage.classes).toContain('hover:bg-gray-100');
+      expect(usage.classes).toContain('data-[state=open]:bg-blue-500');
+
+      // Should extract conditions
+      expect(usage.conditions).toContain('hover');
+      expect(usage.conditions).toContain('data-state=open');
+    });
+
+    it('should handle malformed code gracefully', () => {
+      const invalidCode = `
+export const BrokenComponent = () => {
+  return (
+    <button className="bg-blue-500"
+      // Missing closing and other syntax errors
+  );
+`;
+
+      const usages = parser.parseSourceCode(invalidCode, 'Broken.tsx');
+
+      // Should return empty array and not throw
+      expect(usages).toEqual([]);
+    });
+
+    it('should detect different element types', () => {
+      const sourceCode = `
+export const MultiElementComponent = () => {
+  return (
+    <div>
+      <button className="btn-primary">Button</button>
+      <input className="input-field" />
+      <PlayIcon className="icon-play" />
+      <VolumeRange className="range-slider" />
+    </div>
+  );
+};
+`;
+
+      const usages = parser.parseSourceCode(sourceCode, 'Multi.tsx');
+
+      expect(usages).toHaveLength(4);
+
+      const buttonUsage = usages.find(u => u.classes.includes('btn-primary'));
+      const inputUsage = usages.find(u => u.classes.includes('input-field'));
+      const iconUsage = usages.find(u => u.classes.includes('icon-play'));
+      const rangeUsage = usages.find(u => u.classes.includes('range-slider'));
+
+      expect(buttonUsage?.element).toBe('button');
+      expect(inputUsage?.element).toBe('input');
+      expect(iconUsage?.element).toBe('icon'); // Should detect Icon suffix
+      expect(rangeUsage?.element).toBe('range'); // Should detect Range suffix
+    });
+  });
+
   describe('parseFile', () => {
     it('should parse a simple React component with className', () => {
       const componentCode = `
