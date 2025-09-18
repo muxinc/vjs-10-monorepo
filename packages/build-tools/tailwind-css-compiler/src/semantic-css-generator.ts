@@ -27,7 +27,7 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
       const usageMap = new Map<string, ClassUsage>();
 
       for (const usage of usages) {
-        const key = `${usage.component}-${usage.element}`;
+        const key = `${usage.component}-${usage.element}${usage.instanceId ? `-${usage.instanceId}` : ''}`;
         const existing = usageMap.get(key);
 
         if (existing) {
@@ -152,23 +152,32 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
       );
 
       if (customMapping) {
-        return customMapping.vanillaSelector;
+        const baseSelector = customMapping.vanillaSelector;
+        // For vanilla selectors, append instanceId to the element part
+        if (usage.instanceId && baseSelector.includes(' .')) {
+          return baseSelector.replace(' .', ` .${baseSelector.split(' .')[1]}-${usage.instanceId}`);
+        }
+        return usage.instanceId ? `${baseSelector}-${usage.instanceId}` : baseSelector;
       }
 
       // Generate semantic selector
       const componentName = plugin.toKebabCase(usage.component);
       const elementType = usage.element;
 
+      let baseSelector: string;
+
       if (elementType === 'icon') {
-        return `${componentName} .${elementType}`;
+        const iconClass = usage.instanceId ? `${elementType}-${usage.instanceId}` : elementType;
+        baseSelector = `${componentName} .${iconClass}`;
+      } else if (usage.component.toLowerCase().includes(elementType)) {
+        const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
+        baseSelector = `media-${elementName}`;
+      } else {
+        const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
+        baseSelector = elementName;
       }
 
-      // For buttons, ranges, etc., use the component name as element
-      if (usage.component.toLowerCase().includes(elementType)) {
-        return `media-${componentName}`;
-      }
-
-      return `${componentName}`;
+      return baseSelector;
     },
 
     /**
@@ -181,18 +190,24 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
       );
 
       if (customMapping) {
-        return customMapping.moduleClassName;
+        const baseName = customMapping.moduleClassName;
+        return usage.instanceId ? `${baseName}-${usage.instanceId}` : baseName;
       }
+
+      let baseName: string;
 
       // For CSS modules, always use PascalCase component names directly
       // Icons get special handling to avoid duplication like "PlayIconIcon"
       if (usage.element === 'icon') {
         // If component already ends with "Icon", don't add another "Icon"
-        return usage.component.endsWith('Icon') ? usage.component : `${usage.component}Icon`;
+        baseName = usage.component.endsWith('Icon') ? usage.component : `${usage.component}Icon`;
+      } else {
+        // For all other elements, use the component name as-is (PascalCase)
+        baseName = usage.component;
       }
 
-      // For all other elements, use the component name as-is (PascalCase)
-      return usage.component;
+      // Add instanceId suffix if present
+      return usage.instanceId ? `${baseName}-${usage.instanceId}` : baseName;
     },
 
     /**

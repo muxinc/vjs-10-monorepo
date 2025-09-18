@@ -13,6 +13,8 @@ export interface ClassUsage {
   line: number;
   /** Column number in source file */
   column: number;
+  /** Optional instance identifier for distinguishing multiple instances of same component+element */
+  instanceId?: string;
 }
 
 export interface SemanticMapping {
