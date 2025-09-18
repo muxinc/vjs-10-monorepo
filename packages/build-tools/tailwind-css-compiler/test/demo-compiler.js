@@ -30,7 +30,7 @@ async function runDemo() {
 
     // Read and display the generated CSS files
     const modulesFile = path.join(outputDir, 'MediaSkinTailwind.module.css');
-    const vanillaFile = path.join(outputDir, 'MediaSkinTailwind.css');
+    const vanillaFile = path.join(outputDir, 'media-skin-tailwind.css');
 
     if (fs.existsSync(modulesFile)) {
       console.log('\n📄 CSS Modules output:');

@@ -141,8 +141,9 @@ export class TailwindCSSCompiler {
     if (parsedFiles.length === 1) {
       // Single component: use component name from file path
       const componentName = extractComponentName(parsedFiles[0].path);
+      const kebabComponentName = this.toKebabCase(componentName);
       return {
-        vanillaFilename: `${componentName}.css`,
+        vanillaFilename: `${kebabComponentName}.css`,
         modulesFilename: `${componentName}.module.css`
       };
     } else if (parsedFiles.length > 1) {
@@ -158,6 +159,15 @@ export class TailwindCSSCompiler {
         modulesFilename: 'modules.css'
       };
     }
+  }
+
+  /**
+   * Convert PascalCase to kebab-case
+   */
+  private toKebabCase(str: string): string {
+    return str
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .toLowerCase();
   }
 
   /**
