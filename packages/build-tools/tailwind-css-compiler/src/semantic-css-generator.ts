@@ -111,12 +111,33 @@ export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plug
         return usage.instanceId ? `${baseSelector}-${usage.instanceId}` : baseSelector;
       }
 
-      // Generate semantic selector
+      // Generate selector based on component type
       const componentName = plugin.toKebabCase(usage.component);
       const elementType = usage.element;
 
       let baseSelector: string;
 
+      // Handle native HTML elements - generate class selectors
+      if (usage.componentType === 'native') {
+        const className = usage.instanceId ? `${usage.component}-${usage.instanceId}` : usage.component;
+        baseSelector = `.${className}`;
+        return baseSelector;
+      }
+
+      // Handle library components - generate element selectors
+      if (usage.componentType === 'library') {
+        if (elementType === 'icon') {
+          const iconClass = usage.instanceId ? `${elementType}-${usage.instanceId}` : elementType;
+          baseSelector = `${componentName} .${iconClass}`;
+        } else {
+          const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
+          // Don't add media- prefix if the original component name already starts with "Media"
+          baseSelector = usage.component.startsWith('Media') ? elementName : `media-${elementName}`;
+        }
+        return baseSelector;
+      }
+
+      // Handle unknown type - fall back to original logic
       if (elementType === 'icon') {
         const iconClass = usage.instanceId ? `${elementType}-${usage.instanceId}` : elementType;
         baseSelector = `${componentName} .${iconClass}`;

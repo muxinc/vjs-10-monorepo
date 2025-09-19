@@ -38,7 +38,8 @@ export const SimpleButton = () => {
       expect(usages).toHaveLength(1);
 
       const usage = usages[0];
-      expect(usage.component).toBe('SimpleButton');
+      expect(usage.component).toBe('button'); // Native HTML element uses element name
+      expect(usage.componentType).toBe('native');
       expect(usage.element).toBe('button');
       expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
     });
@@ -84,8 +85,10 @@ function PauseButton() {
       const playUsage = usages.find((u) => u.classes.includes('play-btn'));
       const pauseUsage = usages.find((u) => u.classes.includes('pause-btn'));
 
-      expect(playUsage?.component).toBe('PlayButton');
-      expect(pauseUsage?.component).toBe('PauseButton');
+      expect(playUsage?.component).toBe('button'); // Native HTML element uses element name
+      expect(playUsage?.componentType).toBe('native');
+      expect(pauseUsage?.component).toBe('button'); // Native HTML element uses element name
+      expect(pauseUsage?.componentType).toBe('native');
     });
 
     it('should handle JSX expressions with conditions', () => {
@@ -168,7 +171,8 @@ export const MultiElementComponent = () => {
       expect(result.usages).toHaveLength(1);
 
       const usage = result.usages[0];
-      expect(usage.component).toBe('TestButton');
+      expect(usage.component).toBe('button'); // Native HTML element uses element name
+      expect(usage.componentType).toBe('native');
       expect(usage.element).toBe('button');
       expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
       expect(usage.file).toBe(fixturePath);
@@ -1464,12 +1468,13 @@ export const MultiElementComponent = () => {
     it('should extract class usage from string literal className', () => {
       const stringLiteral = t.stringLiteral('bg-blue-500 text-white p-4');
       const path = createMockPath('button', stringLiteral);
-      const result = extractClassUsage(path, 'MyComponent');
+      const result = extractClassUsage(path, 'MyComponent', new Set());
 
       expect(result).not.toBeNull();
-      expect(result!.component).toBe('MyComponent');
+      expect(result!.component).toBe('button'); // Native HTML element uses element name
       expect(result!.element).toBe('button');
       expect(result!.classes).toEqual(['bg-blue-500', 'text-white', 'p-4']);
+      expect(result!.componentType).toBe('native');
       expect(result!.line).toBe(1);
       expect(result!.column).toBe(0);
     });
@@ -1479,9 +1484,12 @@ export const MultiElementComponent = () => {
         'hover:bg-blue-600 focus:ring-2 data-[state=open]:visible p-4',
       );
       const path = createMockPath('div', stringLiteral);
-      const result = extractClassUsage(path, 'ConditionalComponent');
+      const result = extractClassUsage(path, 'ConditionalComponent', new Set());
 
       expect(result).not.toBeNull();
+      expect(result!.component).toBe('div'); // Native HTML element uses element name
+      expect(result!.element).toBe('div');
+      expect(result!.componentType).toBe('native');
       expect(result!.classes).toEqual([
         'hover:bg-blue-600',
         'focus:ring-2',
@@ -1498,8 +1506,10 @@ export const MultiElementComponent = () => {
       const result = extractClassUsage(path, 'ExpressionComponent');
 
       expect(result).not.toBeNull();
-      expect(result!.classes).toEqual(['bg-green-500', 'rounded']);
+      expect(result!.component).toBe('span'); // Native HTML element uses element name
       expect(result!.element).toBe('span');
+      expect(result!.componentType).toBe('native');
+      expect(result!.classes).toEqual(['bg-green-500', 'rounded']);
     });
 
     it('should extract class usage from template literal with conditional', () => {
@@ -1709,6 +1719,7 @@ export const MultiElementComponent = () => {
       expect(result).not.toBeNull();
       expect(result!.component).toBe('PlayButton');
       expect(result!.element).toBe('button'); // PlayButton -> button
+      expect(result!.componentType).toBe('unknown'); // Not imported in this mock test
       expect(result!.classes).toEqual(['bg-blue-500', 'hover:bg-blue-600']);
     });
   });
@@ -1731,8 +1742,9 @@ export const SimpleButton = () => {
 
       expect(result).toHaveLength(1);
       const usage = result[0];
-      expect(usage.component).toBe('SimpleButton');
+      expect(usage.component).toBe('button'); // Native HTML element uses element name
       expect(usage.element).toBe('button');
+      expect(usage.componentType).toBe('native');
       expect(usage.classes).toEqual(['bg-blue-500', 'text-white']);
     });
 
@@ -1823,7 +1835,8 @@ export default MyCustomButton;
       const result = parseSourceCode(sourceCode, 'MyCustomButton');
 
       expect(result).toHaveLength(1);
-      expect(result[0].component).toBe('MyCustomButton');
+      expect(result[0].component).toBe('button'); // Native HTML element uses element name
+      expect(result[0].componentType).toBe('native');
     });
 
     it('should track component names from variable declarations', () => {
@@ -1840,7 +1853,8 @@ export default ArrowComponent;
       const result = parseSourceCode(sourceCode, 'ArrowComponent');
 
       expect(result).toHaveLength(1);
-      expect(result[0].component).toBe('ArrowComponent');
+      expect(result[0].component).toBe('div'); // Native HTML element uses element name
+      expect(result[0].componentType).toBe('native');
     });
 
     it('should track component names from export default declarations', () => {
@@ -1857,7 +1871,8 @@ export default InternalComponent;
       const result = parseSourceCode(sourceCode, 'ExportedComponent');
 
       expect(result).toHaveLength(1);
-      expect(result[0].component).toBe('InternalComponent');
+      expect(result[0].component).toBe('div'); // Native HTML element uses element name
+      expect(result[0].componentType).toBe('native');
     });
 
     it('should handle nested components with different names', () => {
@@ -2010,7 +2025,8 @@ export const TypedComponent: React.FC<Props> = ({ variant, disabled }) => {
       const result = parseSourceCode(sourceCode, 'TypedComponent');
 
       expect(result).toHaveLength(1);
-      expect(result[0].component).toBe('TypedComponent');
+      expect(result[0].component).toBe('button'); // Native HTML element uses element name
+      expect(result[0].componentType).toBe('native');
       expect(result[0].classes).toEqual(['btn', 'btn-', 'disabled']);
     });
 
@@ -2044,7 +2060,8 @@ export default () => {
       const result = parseSourceCode(sourceCode, 'FallbackComponent');
 
       expect(result).toHaveLength(1);
-      expect(result[0].component).toBe('FallbackComponent'); // From file path
+      expect(result[0].component).toBe('div'); // Native HTML element uses element name
+      expect(result[0].componentType).toBe('native');
     });
 
     it('should handle complex nested expressions', () => {
@@ -2170,7 +2187,8 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expect(result.usages).toHaveLength(1);
       expect(result.usages[0]).toMatchObject({
         file: fixturePath,
-        component: 'SimpleButton',
+        component: 'button', // Native HTML element uses element name
+        componentType: 'native',
         element: 'button',
         classes: [
           'bg-blue-500',
@@ -2196,23 +2214,26 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expect(result.path).toBe(fixturePath);
       expect(result.usages).toHaveLength(3);
 
-      // Button component
+      // Button component (native HTML button)
       expect(result.usages[0]).toMatchObject({
-        component: 'Button',
+        component: 'button',
+        componentType: 'native',
         element: 'button',
         classes: ['px-4', 'py-2'],
       });
 
-      // Card component
+      // Card component (native HTML div)
       expect(result.usages[1]).toMatchObject({
-        component: 'Card',
+        component: 'div',
+        componentType: 'native',
         element: 'div',
         classes: ['rounded-lg', 'shadow-md'],
       });
 
-      // App component
+      // App component (native HTML div)
       expect(result.usages[2]).toMatchObject({
-        component: 'App',
+        component: 'div',
+        componentType: 'native',
         element: 'div',
         classes: ['container', 'mx-auto'],
       });
@@ -2254,7 +2275,8 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
 
       expect(result.usages).toHaveLength(1);
       expect(result.usages[0]).toMatchObject({
-        component: 'TypedComponent',
+        component: 'button', // Native HTML element uses element name
+        componentType: 'native',
         element: 'button',
         classes: ['btn', 'bg-blue-500', 'bg-gray-500'],
       });
@@ -2267,7 +2289,8 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       );
       const result = parseFile(fixturePath);
 
-      expect(result.usages[0].component).toBe('DefaultExport'); // Function name takes precedence over file path
+      expect(result.usages[0].component).toBe('div'); // Native HTML element uses element name
+      expect(result.usages[0].componentType).toBe('native');
     });
 
     it('should handle parsing errors gracefully', () => {
@@ -2353,7 +2376,8 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
 
       // Test that parseFile works with .tsx extension
       const result = parseFile(fixturePath);
-      expect(result.usages[0].component).toBe('Simple'); // Function name from fixture
+      expect(result.usages[0].component).toBe('div'); // Native HTML element uses element name
+      expect(result.usages[0].componentType).toBe('native');
       expect(result.usages[0].classes).toEqual(['test']);
     });
 

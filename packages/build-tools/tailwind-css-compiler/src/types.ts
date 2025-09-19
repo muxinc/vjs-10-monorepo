@@ -13,6 +13,8 @@ export interface ClassUsage {
   column: number;
   /** Optional instance identifier for distinguishing multiple instances of same component+element */
   instanceId?: string;
+  /** Type of component - distinguishes library vs native elements */
+  componentType: 'library' | 'native' | 'unknown';
 }
 
 export interface SemanticMapping {
