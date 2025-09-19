@@ -1,9 +1,22 @@
 import { parse } from '@babel/parser';
-import traverse from '@babel/traverse';
+import traverse, { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import type {
+  JSXOpeningElement,
+  JSXAttribute,
+  JSXIdentifier,
+  JSXMemberExpression,
+  Expression,
+  JSXEmptyExpression,
+  JSXExpressionContainer,
+  StringLiteral,
+  ImportDeclaration,
+  FunctionDeclaration,
+  VariableDeclarator,
+  ExportDefaultDeclaration,
+} from '@babel/types';
 import { readFileSync } from 'fs';
 import { ClassUsage, ParsedFile } from './types.js';
-
 
 /**
  * Parse space-separated class string
@@ -29,7 +42,7 @@ export function extractComponentName(filePath: string): string {
 /**
  * Check if JSX attribute is a className
  */
-export function isClassNameAttribute(node: t.JSXAttribute): boolean {
+export function isClassNameAttribute(node: JSXAttribute): boolean {
   return (
     t.isJSXIdentifier(node.name) &&
     (node.name.name === 'className' || node.name.name === 'class')
@@ -37,12 +50,9 @@ export function isClassNameAttribute(node: t.JSXAttribute): boolean {
 }
 
 /**
- * Get the type of element this className is applied to
- */
-/**
  * Native HTML elements that should be classified as 'native' component type
  */
-const NATIVE_HTML_ELEMENTS = new Set([
+const NATIVE_HTML_ELEMENTS = [
   'button',
   'div',
   'span',
@@ -55,38 +65,50 @@ const NATIVE_HTML_ELEMENTS = new Set([
   'header',
   'footer',
   'main',
-  'nav'
-]);
-
-/**
- * Check if an element is structural (generic layout/styling container)
- * vs semantic (meaningful component or form element)
- */
-export function isStructuralElement(elementName: string): boolean {
-  const structuralElements = new Set([
-    'div', 'span', 'section', 'article', 'aside', 'header', 'footer', 'main', 'nav'
-  ]);
-  return structuralElements.has(elementName.toLowerCase());
-}
+  'nav',
+] as const;
 
 /**
  * Check if an element is a native HTML element
  */
-export function isNativeHTMLElement(elementName: string): boolean {
-  return NATIVE_HTML_ELEMENTS.has(elementName.toLowerCase());
+export function isNativeHTMLElement(
+  elementName: string,
+  nativeElementNames: Readonly<string[]> = NATIVE_HTML_ELEMENTS,
+): boolean {
+  return nativeElementNames.includes(elementName.toLowerCase());
+}
+
+/**
+ * Type guard to check if a JSX element name is an identifier
+ */
+function isJSXIdentifierName(
+  name: JSXOpeningElement['name'],
+): name is JSXIdentifier {
+  return t.isJSXIdentifier(name);
+}
+
+/**
+ * Type guard to check if a JSX element name is a member expression
+ */
+function isJSXMemberExpressionName(
+  name: JSXOpeningElement['name'],
+): name is JSXMemberExpression {
+  return t.isJSXMemberExpression(name);
 }
 
 /**
  * Get the raw JSX element name (for component naming)
  */
-export function getJSXElementName(path: any): string | null {
-  const jsxElement = path.findParent((p: any) => t.isJSXOpeningElement(p.node));
+export function getJSXElementName(path: NodePath<JSXAttribute>): string | null {
+  const jsxElement = path.findParent((p: NodePath) =>
+    t.isJSXOpeningElement(p.node),
+  ) as NodePath<JSXOpeningElement> | null;
 
   if (jsxElement) {
-    if (t.isJSXIdentifier(jsxElement.node.name)) {
+    if (isJSXIdentifierName(jsxElement.node.name)) {
       // Simple component: <PlayButton>
       return jsxElement.node.name.name;
-    } else if (t.isJSXMemberExpression(jsxElement.node.name)) {
+    } else if (isJSXMemberExpressionName(jsxElement.node.name)) {
       // Compound component: <TimeRange.Root>
       // Extract the full name like "TimeRange.Root"
       const object = jsxElement.node.name.object;
@@ -101,10 +123,12 @@ export function getJSXElementName(path: any): string | null {
   return null;
 }
 
-export function getElementType(path: any): string {
-  const jsxElement = path.findParent((p: any) => t.isJSXOpeningElement(p.node));
+export function getElementType(path: NodePath<JSXAttribute>): string {
+  const jsxElement = path.findParent((p: NodePath) =>
+    t.isJSXOpeningElement(p.node),
+  ) as NodePath<JSXOpeningElement> | null;
 
-  if (jsxElement && t.isJSXIdentifier(jsxElement.node.name)) {
+  if (jsxElement && isJSXIdentifierName(jsxElement.node.name)) {
     const elementName = jsxElement.node.name.name;
 
     // Map native HTML elements using the shared set
@@ -128,7 +152,7 @@ export function getElementType(path: any): string {
  * Extract classes from various expression types
  */
 export function extractClassesFromExpression(
-  expression: t.Expression | t.JSXEmptyExpression,
+  expression: Expression | JSXEmptyExpression,
 ): string[] {
   if (t.isStringLiteral(expression)) {
     return parseClassString(expression.value);
@@ -147,7 +171,7 @@ export function extractClassesFromExpression(
 
     // Recursively extract from expressions inside template literal
     expression.expressions.forEach((expr) => {
-      allParts.push(...extractClassesFromExpression(expr));
+      allParts.push(...extractClassesFromExpression(expr as Expression));
     });
 
     return allParts;
@@ -180,7 +204,7 @@ export function extractClassesFromExpression(
  * Extract class names from JSX attribute value
  */
 export function extractClasses(
-  value: t.JSXExpressionContainer | t.StringLiteral | null,
+  value: JSXExpressionContainer | StringLiteral | null,
 ): string[] {
   if (!value) return [];
 
@@ -202,9 +226,9 @@ export function extractClasses(
  * Extract class usage from JSX attribute
  */
 export function extractClassUsage(
-  path: any,
+  path: NodePath<JSXAttribute>,
   fallbackComponent: string,
-  importedComponents?: Set<string>,
+  importedComponents?: string[],
 ): Omit<ClassUsage, 'file'> | null {
   const node = path.node;
   const element = getElementType(path);
@@ -219,7 +243,7 @@ export function extractClassUsage(
     // Native HTML elements (button, div, span, etc.)
     component = jsxElementName.toLowerCase();
     componentType = 'native';
-  } else if (jsxElementName && importedComponents?.has(jsxElementName)) {
+  } else if (jsxElementName && importedComponents?.includes(jsxElementName)) {
     // Imported library components
     component = jsxElementName;
     componentType = 'library';
@@ -233,7 +257,9 @@ export function extractClassUsage(
     componentType = 'unknown';
   }
 
-  const classes = extractClasses(node.value);
+  const classes = extractClasses(
+    node.value as JSXExpressionContainer | StringLiteral | null,
+  );
   if (classes.length === 0) {
     return null;
   }
@@ -260,7 +286,7 @@ export function parseSourceCode(
   const usages: Omit<ClassUsage, 'file'>[] = [];
 
   // Track imported components to distinguish library vs native components
-  const importedComponents = new Set<string>();
+  let importedComponents: string[] = [];
 
   try {
     const ast = parse(sourceCode, {
@@ -277,24 +303,30 @@ export function parseSourceCode(
 
     traverse(ast, {
       // Track imported components
-      ImportDeclaration(path) {
+      ImportDeclaration(path: NodePath<ImportDeclaration>) {
         const specifiers = path.node.specifiers;
-        for (const specifier of specifiers) {
-          if (t.isImportSpecifier(specifier) || t.isImportDefaultSpecifier(specifier)) {
-            if (t.isIdentifier(specifier.local)) {
-              importedComponents.add(specifier.local.name);
+        importedComponents = specifiers.reduce(
+          (importedComponents, specifier) => {
+            if (
+              (t.isImportSpecifier(specifier) ||
+                t.isImportDefaultSpecifier(specifier)) &&
+              t.isIdentifier(specifier.local)
+            ) {
+              importedComponents.push(specifier.local.name);
             }
-          }
-        }
+            return importedComponents;
+          },
+          [] as string[],
+        );
       },
 
       // Track current component/function name
-      FunctionDeclaration(path) {
+      FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
         if (path.node.id?.name) {
           currentComponent = path.node.id.name;
         }
       },
-      VariableDeclarator(path) {
+      VariableDeclarator(path: NodePath<VariableDeclarator>) {
         if (
           t.isIdentifier(path.node.id) &&
           t.isArrowFunctionExpression(path.node.init)
@@ -302,16 +334,20 @@ export function parseSourceCode(
           currentComponent = path.node.id.name;
         }
       },
-      ExportDefaultDeclaration(path) {
+      ExportDefaultDeclaration(path: NodePath<ExportDefaultDeclaration>) {
         if (t.isIdentifier(path.node.declaration)) {
           currentComponent = path.node.declaration.name;
         }
       },
 
       // Extract className attributes
-      JSXAttribute(path) {
+      JSXAttribute(path: NodePath<JSXAttribute>) {
         if (isClassNameAttribute(path.node)) {
-          const usage = extractClassUsage(path, currentComponent, importedComponents);
+          const usage = extractClassUsage(
+            path,
+            currentComponent,
+            importedComponents,
+          );
           if (usage) {
             usages.push(usage);
           }
@@ -324,7 +360,6 @@ export function parseSourceCode(
 
   return usages;
 }
-
 
 /**
  * Parse a single TypeScript/React file and extract className usage
