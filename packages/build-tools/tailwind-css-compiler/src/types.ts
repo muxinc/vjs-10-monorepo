@@ -11,8 +11,6 @@ export interface ClassUsage {
   line: number;
   /** Column number in source file */
   column: number;
-  /** Optional instance identifier for distinguishing multiple instances of same component+element */
-  instanceId?: string;
   /** Type of component - distinguishes library vs native elements */
   componentType: 'library' | 'native' | 'unknown';
 }
@@ -26,6 +24,21 @@ export interface SemanticMapping {
   vanillaSelector: string;
   /** Class name for CSS modules */
   moduleClassName: string;
+}
+
+export interface SelectorContext {
+  usage: ClassUsage;
+  targetType: 'vanilla' | 'modules';
+  instanceSuffix?: string;
+}
+
+export interface SelectorStrategy {
+  /** Generate a CSS selector for the given context */
+  generateSelector(context: SelectorContext): string;
+  /** Determine if this usage needs deduplication */
+  needsDeduplication(usage: ClassUsage): boolean;
+  /** Generate a key for deduplication grouping */
+  getDeduplicationKey(usage: ClassUsage): string;
 }
 
 export interface CompilerConfig {

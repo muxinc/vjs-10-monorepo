@@ -27,7 +27,7 @@ describe('semanticCSSGenerator', () => {
 
       expectValidCSS(css);
       expectCSSToContain(css, [
-        'play-button {',
+        'media-play-button {',
         '@apply bg-blue-500 text-white rounded',
         '}'
       ]);
@@ -73,8 +73,7 @@ describe('semanticCSSGenerator', () => {
         createTestUsage({
           component: 'PlayButton',
           element: 'button',
-          classes: ['bg-blue-500'],
-          conditions: ['hover', 'data-playing']
+          classes: ['bg-blue-500']
         })
       ];
 
@@ -90,10 +89,10 @@ describe('semanticCSSGenerator', () => {
       const css = result.css;
 
       expectValidCSS(css);
+      // Our new architecture only generates the basic selector since conditions are handled by Tailwind's built-in conditional classes
       expectCSSToContain(css, [
-        'play-button {',
-        'play-button:hover {',
-        'play-button[data-playing] {'
+        'media-play-button {',
+        '@apply bg-blue-500'
       ]);
     });
   });
@@ -192,12 +191,11 @@ describe('semanticCSSGenerator', () => {
       const result = await processor.process('', { from: undefined });
       const css = result.css;
 
-      // Should only have one rule for button, with merged classes
-      const buttonRules = css.match(/button \{[^}]*\}/g);
-      expect(buttonRules).toHaveLength(1);
-
+      // Should create separate selectors for different instances
       expectCSSToContain(css, [
-        '@apply bg-blue-500 text-white'
+        'media-button {',
+        'media-button-2 {',
+        'media-button-3 {'
       ]);
     });
   });
@@ -208,8 +206,7 @@ describe('semanticCSSGenerator', () => {
         createTestUsage({
           component: 'PlayIcon',
           element: 'icon',
-          classes: ['w-6', 'h-6'],
-          conditions: ['data-state']
+          classes: ['w-6', 'h-6']
         })
       ];
 
@@ -229,9 +226,6 @@ describe('semanticCSSGenerator', () => {
         'play-icon .icon {',
         '@apply w-6 h-6'
       ]);
-
-      // Should handle icon conditional states
-      expect(css).toContain('[data-state] .icon');
     });
   });
 
@@ -261,8 +255,7 @@ describe('semanticCSSGenerator', () => {
     it('should handle usages with only conditions', async () => {
       const usages = [
         createTestUsage({
-          classes: [],
-          conditions: ['hover', 'focus']
+          classes: [] // Empty classes - should generate no CSS
         })
       ];
 
@@ -277,11 +270,8 @@ describe('semanticCSSGenerator', () => {
       const result = await processor.process('', { from: undefined });
       const css = result.css;
 
-      // Should generate conditional rules even without base classes
-      expectCSSToContain(css, [
-        ':hover {',
-        ':focus {'
-      ]);
+      // Should not generate any CSS for empty class lists
+      expect(css.trim()).toBe('');
     });
   });
 });

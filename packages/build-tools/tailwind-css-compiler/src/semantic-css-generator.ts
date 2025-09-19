@@ -1,6 +1,8 @@
 import { Plugin, Root, Helpers } from 'postcss';
 import postcss from 'postcss';
-import { ClassUsage, SemanticMapping } from './types.js';
+import { ClassUsage, SemanticMapping, SelectorContext } from './types.js';
+import { VanillaSelectorStrategy, ModulesSelectorStrategy } from './selector-strategies.js';
+import { SelectorDeduplicationService } from './selector-deduplication.js';
 
 export interface SemanticCSSGeneratorOptions {
   /** Class usages extracted from AST parsing */
@@ -18,183 +20,59 @@ export interface SemanticCSSGeneratorOptions {
  * based on extracted className usage from React components
  */
 export const semanticCSSGenerator = (options: SemanticCSSGeneratorOptions): Plugin => {
-  const plugin = {
+  return {
     postcssPlugin: 'semantic-css-generator',
     Once(root: Root, _helpers: Helpers) {
       const { usages, mappings = [], generateVanilla = true, generateModules = true } = options;
 
-      // Group usages by component + element for deduplication
-      const usageMap = new Map<string, ClassUsage>();
+      // Create selector contexts from usages
+      const contexts: SelectorContext[] = usages.map(usage => ({
+        usage,
+        targetType: 'vanilla' as const // This will be overridden per strategy
+      }));
 
-      for (const usage of usages) {
-        const key = `${usage.component}-${usage.element}${usage.instanceId ? `-${usage.instanceId}` : ''}`;
-        const existing = usageMap.get(key);
+      const deduplicationService = new SelectorDeduplicationService();
 
-        if (existing) {
-          // Merge classes from multiple instances
-          existing.classes = [...new Set([...existing.classes, ...usage.classes])];
-        } else {
-          usageMap.set(key, { ...usage });
-        }
-      }
+      if (generateVanilla) {
+        const vanillaStrategy = new VanillaSelectorStrategy(mappings);
+        const vanillaContexts = contexts.map(c => ({ ...c, targetType: 'vanilla' as const }));
+        const vanillaResults = deduplicationService.processSelectors(vanillaContexts, vanillaStrategy);
 
-      // Generate CSS for each unique component-element combination
-      for (const usage of usageMap.values()) {
-        if (generateVanilla) {
-          plugin.generateVanillaCSS(root, usage, mappings);
-        }
-
-        if (generateModules) {
-          plugin.generateModuleCSS(root, usage, mappings);
-        }
-      }
-    },
-
-    /**
-     * Generate vanilla CSS with semantic element selectors
-     */
-    generateVanillaCSS(root: Root, usage: ClassUsage, mappings: SemanticMapping[]) {
-      const selector = plugin.getVanillaSelector(usage, mappings);
-
-      if (usage.classes.length > 0) {
-        const rule = postcss.rule({ selector });
-        const applyRule = postcss.atRule({
-          name: 'apply',
-          params: usage.classes.join(' ')
+        // Generate vanilla CSS rules
+        vanillaResults.forEach(result => {
+          generateCSSRule(root, result.selector, result.context.usage.classes);
         });
-        rule.append(applyRule);
-        root.append(rule);
       }
 
-      // Note: Conditional styles are handled by Tailwind's @apply directive
-      // No need for separate conditional rule generation
-    },
+      if (generateModules) {
+        const modulesStrategy = new ModulesSelectorStrategy(mappings);
+        const modulesContexts = contexts.map(c => ({ ...c, targetType: 'modules' as const }));
+        const modulesResults = deduplicationService.processSelectors(modulesContexts, modulesStrategy);
 
-    /**
-     * Generate CSS modules with class-based selectors
-     */
-    generateModuleCSS(root: Root, usage: ClassUsage, mappings: SemanticMapping[]) {
-      const className = plugin.getModuleClassName(usage, mappings);
-      const selector = `.${className}`;
-
-
-      if (usage.classes.length > 0) {
-        const rule = postcss.rule({ selector });
-        const applyRule = postcss.atRule({
-          name: 'apply',
-          params: usage.classes.join(' ')
+        // Generate CSS modules rules
+        modulesResults.forEach(result => {
+          // For modules, prepend . to make it a class selector
+          const selector = result.selector.startsWith('.') ? result.selector : `.${result.selector}`;
+          generateCSSRule(root, selector, result.context.usage.classes);
         });
-        rule.append(applyRule);
-        root.append(rule);
       }
-
-      // Note: Conditional styles are handled by Tailwind's @apply directive
-      // No need for separate conditional rule generation
-    },
-
-
-    /**
-     * Get vanilla CSS selector for a usage
-     */
-    getVanillaSelector(usage: ClassUsage, mappings: SemanticMapping[]): string {
-      // Check for custom mapping first
-      const customMapping = mappings.find(m =>
-        m.component === usage.component && m.element === usage.element
-      );
-
-      if (customMapping) {
-        const baseSelector = customMapping.vanillaSelector;
-        // For vanilla selectors, append instanceId to the element part
-        if (usage.instanceId && baseSelector.includes(' .')) {
-          return baseSelector.replace(' .', ` .${baseSelector.split(' .')[1]}-${usage.instanceId}`);
-        }
-        return usage.instanceId ? `${baseSelector}-${usage.instanceId}` : baseSelector;
-      }
-
-      // Generate selector based on component type
-      const componentName = plugin.toKebabCase(usage.component);
-      const elementType = usage.element;
-
-      let baseSelector: string;
-
-      // Handle native HTML elements - generate class selectors
-      if (usage.componentType === 'native') {
-        const className = usage.instanceId ? `${usage.component}-${usage.instanceId}` : usage.component;
-        baseSelector = `.${className}`;
-        return baseSelector;
-      }
-
-      // Handle library components - generate element selectors
-      if (usage.componentType === 'library') {
-        if (elementType === 'icon') {
-          const iconClass = usage.instanceId ? `${elementType}-${usage.instanceId}` : elementType;
-          baseSelector = `${componentName} .${iconClass}`;
-        } else {
-          const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
-          // Don't add media- prefix if the original component name already starts with "Media"
-          baseSelector = usage.component.startsWith('Media') ? elementName : `media-${elementName}`;
-        }
-        return baseSelector;
-      }
-
-      // Handle unknown type - fall back to original logic
-      if (elementType === 'icon') {
-        const iconClass = usage.instanceId ? `${elementType}-${usage.instanceId}` : elementType;
-        baseSelector = `${componentName} .${iconClass}`;
-      } else if (usage.component.toLowerCase().includes(elementType)) {
-        const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
-        // Don't add media- prefix if the original component name already starts with "Media"
-        baseSelector = usage.component.startsWith('Media') ? elementName : `media-${elementName}`;
-      } else {
-        const elementName = usage.instanceId ? `${componentName}-${usage.instanceId}` : componentName;
-        // Don't add media- prefix if the original component name already starts with "Media"
-        baseSelector = usage.component.startsWith('Media') ? elementName : `media-${elementName}`;
-      }
-
-      return baseSelector;
-    },
-
-    /**
-     * Get CSS module class name for a usage
-     */
-    getModuleClassName(usage: ClassUsage, mappings: SemanticMapping[]): string {
-      // Check for custom mapping first
-      const customMapping = mappings.find(m =>
-        m.component === usage.component && m.element === usage.element
-      );
-
-      if (customMapping) {
-        const baseName = customMapping.moduleClassName;
-        return usage.instanceId ? `${baseName}-${usage.instanceId}` : baseName;
-      }
-
-      let baseName: string;
-
-      // For CSS modules, always use PascalCase component names directly
-      // Icons get special handling to avoid duplication like "PlayIconIcon"
-      if (usage.element === 'icon') {
-        // If component already ends with "Icon", don't add another "Icon"
-        baseName = usage.component.endsWith('Icon') ? usage.component : `${usage.component}Icon`;
-      } else {
-        // For all other elements, use the component name as-is (PascalCase)
-        baseName = usage.component;
-      }
-
-      // Add instanceId suffix if present
-      return usage.instanceId ? `${baseName}-${usage.instanceId}` : baseName;
-    },
-
-    /**
-     * Convert PascalCase to kebab-case
-     */
-    toKebabCase(str: string): string {
-      return str
-        .replace(/([a-z])([A-Z])/g, '$1-$2')
-        .toLowerCase();
     }
   };
-
-  return plugin;
 };
+
+/**
+ * Generate a CSS rule with @apply directive
+ */
+function generateCSSRule(root: Root, selector: string, classes: string[]) {
+  if (classes.length > 0) {
+    const rule = postcss.rule({ selector });
+    const applyRule = postcss.atRule({
+      name: 'apply',
+      params: classes.join(' ')
+    });
+    rule.append(applyRule);
+    root.append(rule);
+  }
+}
 
 semanticCSSGenerator.postcss = true;

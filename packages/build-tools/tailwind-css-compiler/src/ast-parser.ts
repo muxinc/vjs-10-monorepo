@@ -259,9 +259,6 @@ export function parseSourceCode(
 ): Omit<ClassUsage, 'file'>[] {
   const usages: Omit<ClassUsage, 'file'>[] = [];
 
-  // Track instances of component+element combinations for instanceId generation
-  const instanceCounters = new Map<string, number>();
-
   // Track imported components to distinguish library vs native components
   const importedComponents = new Set<string>();
 
@@ -325,42 +322,9 @@ export function parseSourceCode(
     console.warn(`Failed to parse src`, error);
   }
 
-  // Second pass: assign instanceIds for duplicate component+element combinations
-  assignInstanceIds(usages, instanceCounters);
-
   return usages;
 }
 
-/**
- * Assign instanceIds to distinguish multiple instances of the same component+element combination
- */
-function assignInstanceIds(usages: Omit<ClassUsage, 'file'>[], instanceCounters: Map<string, number>) {
-  // First pass: count occurrences of each component+element combination
-  const combinationCounts = new Map<string, number>();
-
-  for (const usage of usages) {
-    const key = `${usage.component}-${usage.element}`;
-    combinationCounts.set(key, (combinationCounts.get(key) || 0) + 1);
-  }
-
-  // Second pass: assign instanceIds only to duplicates
-  for (const usage of usages) {
-    const key = `${usage.component}-${usage.element}`;
-    const count = combinationCounts.get(key) || 1;
-
-    if (count > 1) {
-      // Multiple instances exist, assign instanceId
-      const currentInstance = (instanceCounters.get(key) || 0) + 1;
-      instanceCounters.set(key, currentInstance);
-
-      // First instance gets no suffix, subsequent get -2, -3, etc.
-      if (currentInstance > 1) {
-        usage.instanceId = currentInstance.toString();
-      }
-    }
-    // Single instances get no instanceId (backward compatibility)
-  }
-}
 
 /**
  * Parse a single TypeScript/React file and extract className usage

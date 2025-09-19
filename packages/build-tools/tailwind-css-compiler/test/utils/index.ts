@@ -43,6 +43,7 @@ export function createTestUsage(overrides: Partial<ClassUsage> = {}): ClassUsage
     classes: ['bg-blue-500', 'text-white'],
     line: 1,
     column: 0,
+    componentType: 'library', // Default to library component for tests
     ...overrides
   };
 }
