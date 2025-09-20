@@ -11,7 +11,8 @@ This package provides React components for media player icons that are automatic
 **Important:** The React components in this package are automatically generated. Do not edit them directly.
 
 ### Generated Files Location
-```
+
+```bash
 src/generated-icons/
 ├── index.ts          # Auto-generated exports (DO NOT EDIT)
 ├── Play.tsx          # Auto-generated component (DO NOT EDIT)
@@ -22,8 +23,10 @@ src/generated-icons/
 ```
 
 ### Source of Truth
+
 All icons originate from SVG files located in:
-```
+
+```bash
 packages/core/icons/assets/
 ├── play.svg
 ├── pause.svg
@@ -99,6 +102,7 @@ npm run clean
 ## 🏗️ Architecture
 
 This package follows the monorepo's dependency hierarchy:
+
 - **Depends on**: `@vjs-10/icons` (for shared SVG assets)
 - **Peer dependency**: `react` (>=16.8.0)
 - **Build tool**: SVGR for SVG-to-React transformation
@@ -120,8 +124,9 @@ This package follows the monorepo's dependency hierarchy:
 ## 🎯 Icon Naming Convention
 
 SVG filename → React component name:
+
 - `play.svg` → `PlayIcon`
-- `volume-high.svg` → `VolumeHighIcon` 
+- `volume-high.svg` → `VolumeHighIcon`
 - `my-custom-icon.svg` → `MyCustomIconIcon`
 
 ## 🔍 Technical Details
@@ -130,4 +135,3 @@ SVG filename → React component name:
 - **Output**: TypeScript React components
 - **Optimization**: Automatic SVG optimization via SVGO
 - **Styling**: Uses `currentColor` for easy theming
-- **Size**: Icons default to `1em` width/height for text alignment

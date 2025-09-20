@@ -146,10 +146,10 @@ export const useTimeRangeRootProps = (
     'data-duration': state.duration,
     style: {
       ...props.style,
-      '--slider-fill': `${Math.round(sliderFill)}%`,
+      '--slider-fill': `${sliderFill.toFixed(3)}%`,
       '--slider-pointer':
         state.hovering && state.pointerPosition !== null
-          ? `${Math.round(state.pointerPosition)}%`
+          ? `${state.pointerPosition.toFixed(3)}%`
           : '0%',
     },
     onPointerDown: handlePointerDown,
