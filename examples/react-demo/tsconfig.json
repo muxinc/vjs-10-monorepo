@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "jsx": "react-jsx",
     "paths": {
       "@vjs/react": ["../../packages/react/src"],
       "@vjs/html": ["../../packages/html/src"],

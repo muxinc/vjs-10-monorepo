@@ -4,7 +4,7 @@ A monorepo for Video.js 10 related library packages, organized by platform and r
 
 ## Structure
 
-```
+```bash
 vjs-10-monorepo/
 ├── packages/
 │   ├── core/               # Runtime-agnostic packages
@@ -69,11 +69,13 @@ npm install
 ### Building
 
 Build all packages:
+
 ```bash
 npm run build
 ```
 
 Build specific package:
+
 ```bash
 npm run build --workspace=@vjs-10/core
 ```
@@ -92,6 +94,9 @@ npm run typecheck
 
 # Run linting
 npm run lint
+
+# Run dev build
+npm run dev
 ```
 
 ## Package Dependencies
