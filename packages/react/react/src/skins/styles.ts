@@ -6,13 +6,15 @@ const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(
 const styles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip rounded-4xl',
+    // Base typography
+    'antialiased font-[510] font-sans text-[0.8125rem] @7xl/root:text-[0.9375rem] leading-normal tracking-[-0.0125em]',
     // Prevent rounded corners in fullscreen.
     '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
     'after:absolute after:inset-0 after:ring-black/10 after:ring-1 dark:after:ring-black/40 after:ring-inset after:z-10 after:pointer-events-none after:rounded-[inherit]',
     'before:absolute before:inset-px before:rounded-[inherit] before:ring-white/15 before:ring-1 before:ring-inset before:z-10 before:pointer-events-none',
     // Ensure the nested video inherits the radius.
-    '[&_video]:rounded-[inherit]',
+    '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto',
   ),
   Overlay: cn(
     'opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none z-10 bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90',
@@ -96,7 +98,7 @@ const styles = {
   ),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn(
-    'tabular-nums text-sm @7xl/root:text-base text-shadow-2xs shadow-black/50'
+    'tabular-nums text-shadow-2xs shadow-black/50'
   ),
   TimeRangeRoot: cn('flex h-5 items-center flex-1 group/slider relative'),
   TimeRangeTrack: cn('h-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),

@@ -22,6 +22,18 @@ function DemoPlayer() {
           </MediaSkinDefault>
         </div>
       </MediaProvider>
+
+      <MediaProvider>
+        <div className="w-full max-w-4xl mx-auto">
+          <MediaSkinDefault>
+            {/* @ts-ignore -- types are incorrect */}
+            <Video
+              muted
+              src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8"
+            />
+          </MediaSkinDefault>
+        </div>
+      </MediaProvider>
     </div>
   );
 };
