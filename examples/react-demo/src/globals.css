@@ -8,7 +8,7 @@
 }
 
 :root {
-  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  font-feature-settings: "cv01", "ss01", "ss03";
 }
 
 /* Make hocus (hover + focus-visible) variants */
