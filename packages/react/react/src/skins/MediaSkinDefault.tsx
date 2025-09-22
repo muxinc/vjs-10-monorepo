@@ -18,10 +18,15 @@ import MuteButton from '../components/MuteButton';
 import PlayButton from '../components/PlayButton';
 import { VolumeRange } from '../components/VolumeRange';
 import { TimeRange } from '../components/TimeRange';
+import { PropsWithChildren } from 'react';
 
-export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+type SkinProps = PropsWithChildren<{
+  className?: string;
+}>;
+
+export default function MediaSkinDefault({ children, className = '' }: SkinProps) {
   return (
-    <MediaContainer className={styles.MediaContainer}>
+    <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
 
       {/* Background gradient to help with controls contrast. */}
