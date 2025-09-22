@@ -254,7 +254,6 @@ export const MultiElementComponent = () => {
     });
   });
 
-
   describe('parseClassString', () => {
     it('should parse simple space-separated classes', () => {
       const result = parseClassString('bg-blue-500 text-white p-4');
@@ -715,11 +714,9 @@ export const MultiElementComponent = () => {
     it('should return "icon" for components with Icon in name', () => {
       const playIconPath = createMockPath('PlayIcon');
       const closeIconPath = createMockPath('CloseIcon');
-      const iconButtonPath = createMockPath('IconButton');
 
       expect(getElementType(playIconPath)).toBe('icon');
       expect(getElementType(closeIconPath)).toBe('icon');
-      expect(getElementType(iconButtonPath)).toBe('icon');
     });
 
     it('should return "button" for components with Button in name', () => {
@@ -771,7 +768,7 @@ export const MultiElementComponent = () => {
       expect(getElementType(fooPath)).toBe('foo');
     });
 
-    it('should handle pattern priority correctly', () => {
+    it('should base element type to be based on suffix only', () => {
       // Components with multiple patterns should match the first pattern in the code order
       // Order is: Icon, Button, Range, Display
       const iconButtonPath = createMockPath('IconButton');
@@ -779,27 +776,23 @@ export const MultiElementComponent = () => {
       const rangeButtonPath = createMockPath('RangeButton');
       const buttonRangePath = createMockPath('ButtonRange');
 
-      // Icon pattern is checked first, so IconButton matches "icon"
-      expect(getElementType(iconButtonPath)).toBe('icon');
-      // ButtonIcon also matches Icon first (Icon comes before Button)
+      expect(getElementType(iconButtonPath)).toBe('button');
       expect(getElementType(buttonIconPath)).toBe('icon');
-      // RangeButton matches Button first (Button comes before Range)
       expect(getElementType(rangeButtonPath)).toBe('button');
-      // ButtonRange matches Button first (Button comes before Range)
-      expect(getElementType(buttonRangePath)).toBe('button');
+      expect(getElementType(buttonRangePath)).toBe('range');
     });
 
-    it('should return "div" as default when no parent found', () => {
+    it('should return undefined as default when no parent found', () => {
       const pathWithoutParent = {
         findParent: () => null,
       };
 
       const result = getElementType(pathWithoutParent);
 
-      expect(result).toBe('div');
+      expect(result).toBe(undefined);
     });
 
-    it('should return "div" as default when parent is not JSX element', () => {
+    it('should return undefined as default when parent is not JSX element', () => {
       const pathWithNonJSXParent = {
         findParent: (predicate: any) => {
           const nonJSXNode = t.identifier('someVariable');
@@ -812,13 +805,13 @@ export const MultiElementComponent = () => {
 
       const result = getElementType(pathWithNonJSXParent);
 
-      expect(result).toBe('div');
+      expect(result).toBe(undefined);
     });
 
     it('should handle numeric and special characters in component names', () => {
       const component2Path = createMockPath('Component2');
       const underscorePath = createMockPath('My_Component');
-      const numberIconPath = createMockPath('Icon24');
+      const numberIconPath = createMockPath('SeekForward15Icon');
 
       expect(getElementType(component2Path)).toBe('component2');
       expect(getElementType(underscorePath)).toBe('my_component');
@@ -2169,7 +2162,6 @@ export const MediaControls = ({ isPlaying, volume, muted }) => {
       expect(allClasses).toContain('time-controls');
       expect(allClasses).toContain('hover:opacity-100');
       expect(allClasses).toContain('data-[visible=true]:block');
-
     });
   });
 

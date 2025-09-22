@@ -4,7 +4,7 @@ export interface ClassUsage {
   /** Component name (e.g., "PlayButton") */
   component: string;
   /** Element type (e.g., "button", "icon", "div") */
-  element: string;
+  element: string | undefined;
   /** Tailwind classes found */
   classes: string[];
   /** Line number in source file */

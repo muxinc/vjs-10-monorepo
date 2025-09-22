@@ -123,7 +123,12 @@ export function getJSXElementName(path: NodePath<JSXAttribute>): string | null {
   return null;
 }
 
-export function getElementType(path: NodePath<JSXAttribute>): string {
+const COMPONENT_TYPE_SUFFIXES = ['Icon', 'Button', 'Range', 'Display'];
+
+export function getElementType(
+  path: NodePath<JSXAttribute>,
+  componentTypeSuffixes: Readonly<string[]> = COMPONENT_TYPE_SUFFIXES,
+): string | undefined {
   const jsxElement = path.findParent((p: NodePath) =>
     t.isJSXOpeningElement(p.node),
   ) as NodePath<JSXOpeningElement> | null;
@@ -137,15 +142,16 @@ export function getElementType(path: NodePath<JSXAttribute>): string {
     }
 
     // For custom components, try to infer the type
-    if (elementName.includes('Icon')) return 'icon';
-    if (elementName.includes('Button')) return 'button';
-    if (elementName.includes('Range')) return 'range';
-    if (elementName.includes('Display')) return 'display';
+    const suffixName = componentTypeSuffixes.find((suffix) =>
+      elementName.endsWith(suffix),
+    );
+
+    if (suffixName) return suffixName.toLowerCase();
 
     return elementName.toLowerCase();
   }
 
-  return 'div'; // default
+  return undefined; // default
 }
 
 /**
