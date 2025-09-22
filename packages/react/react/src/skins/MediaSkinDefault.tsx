@@ -1,26 +1,27 @@
+import styles from './styles';
+
 import * as React from 'react';
-import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
-import PlayButton from '../components/PlayButton';
-import MuteButton from '../components/MuteButton';
-// import { VolumeRange } from '../components/VolumeRange';
-import { TimeRange } from '../components/TimeRange';
-import { FullscreenButton } from '../components/FullscreenButton';
-import { DurationDisplay } from '../components/DurationDisplay';
-import { CurrentTimeDisplay } from '../components/CurrentTimeDisplay';
-import { MediaContainer } from '../components/MediaContainer';
+
 import {
+  FullscreenEnterIcon,
+  FullscreenExitIcon,
+  PauseIcon,
+  PlayIcon,
   VolumeHighIcon,
   VolumeLowIcon,
   VolumeOffIcon,
-  FullscreenEnterIcon,
-  FullscreenExitIcon,
 } from '@vjs-10/react-icons';
 
-import styles from './styles';
+import { CurrentTimeDisplay } from '../components/CurrentTimeDisplay';
+import { DurationDisplay } from '../components/DurationDisplay';
+import { FullscreenButton } from '../components/FullscreenButton';
+import { MediaContainer } from '../components/MediaContainer';
+import MuteButton from '../components/MuteButton';
+import PlayButton from '../components/PlayButton';
+// import { VolumeRange } from '../components/VolumeRange';
+import { TimeRange } from '../components/TimeRange';
 
-export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <MediaContainer className={styles.MediaContainer}>
       {children}

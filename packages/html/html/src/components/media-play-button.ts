@@ -1,15 +1,10 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
-import { MediaChromeButton } from './media-chrome-button';
 import { playButtonStateDefinition } from '@vjs-10/media-store';
 
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { MediaChromeButton } from './media-chrome-button';
+
 export class PlayButtonBase extends MediaChromeButton {
-  _state:
-    | { paused: boolean; requestPlay: () => void; requestPause: () => void }
-    | undefined;
+  _state: { paused: boolean; requestPlay: () => void; requestPause: () => void } | undefined;
 
   constructor() {
     super();
@@ -58,10 +53,7 @@ export const usePlayButtonState: StateHook<{ paused: boolean }> = {
  * PlayButton props hook - equivalent to React's usePlayButtonProps
  * Handles element attributes and properties based on state
  */
-export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (
-  state,
-  _element,
-) => {
+export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     ['data-paused']: state.paused,
@@ -87,7 +79,7 @@ export const PlayButton = toConnectedHTMLComponent(
   PlayButtonBase,
   usePlayButtonState,
   usePlayButtonProps,
-  'PlayButton',
+  'PlayButton'
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

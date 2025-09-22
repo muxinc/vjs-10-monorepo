@@ -46,13 +46,10 @@ export const fullscreenable = {
           'fullscreenElement' in doc
             ? 'fullscreenElement'
             : 'webkitFullscreenElement' in doc
-            ? 'webkitFullscreenElement'
-            : undefined;
+              ? 'webkitFullscreenElement'
+              : undefined;
 
-        if (
-          fullscreenElementKey &&
-          !(fullscreenElementKey in (currentRoot || {}))
-        ) {
+        if (fullscreenElementKey && !(fullscreenElementKey in (currentRoot || {}))) {
           // For older Safari versions, use composed node containment check
           return containsComposedNode(currentFullscreenElement, container);
         }
@@ -60,8 +57,7 @@ export const fullscreenable = {
         // Traverse shadow DOM layers looking for our container
         while (fullscreenElementKey && currentRoot?.[fullscreenElementKey]) {
           if (currentRoot[fullscreenElementKey] === container) return true;
-          if (currentRoot[fullscreenElementKey]?.contains?.(container))
-            return true;
+          if (currentRoot[fullscreenElementKey]?.contains?.(container)) return true;
           currentRoot = currentRoot[fullscreenElementKey]?.shadowRoot;
         }
       }
@@ -113,12 +109,7 @@ export const fullscreenable = {
         if (!globalThis?.document) return;
 
         const eventHandler = () => handler();
-        const events = [
-          'fullscreenchange',
-          'webkitfullscreenchange',
-          'mozfullscreenchange',
-          'MSFullscreenChange',
-        ];
+        const events = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
 
         events.forEach((event) => {
           globalThis.document.addEventListener(event, eventHandler);
@@ -133,9 +124,7 @@ export const fullscreenable = {
     ],
     actions: {
       /** Toggle fullscreen state or explicitly enter/exit based on detail */
-      fullscreenrequest: (
-        { detail }: Pick<CustomEvent<any>, 'detail'> = { detail: undefined },
-      ) => {
+      fullscreenrequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: undefined }) => {
         // If detail is provided, use it; otherwise toggle current state
         if (typeof detail === 'boolean') {
           return detail;

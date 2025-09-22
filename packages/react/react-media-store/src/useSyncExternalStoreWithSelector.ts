@@ -6,13 +6,7 @@
  *
  */
 
-import {
-  useRef,
-  useEffect,
-  useMemo,
-  useDebugValue,
-  useSyncExternalStore,
-} from 'react';
+import { useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 
 // NOTE: This is a port of https://github.com/facebook/react/blob/main/packages/use-sync-external-store/src/useSyncExternalStoreWithSelector.js
 // and React's internal/shared version of `Object.is` with refactors for TypeScript and bundling. Doing this to avoid adding an additional dependency
@@ -39,8 +33,7 @@ type SnapshotRef<Selection> =
     }
   | null;
 
-const is: (x: any, y: any) => boolean =
-  typeof Object.is === 'function' ? Object.is : isPolyfill;
+const is: (x: any, y: any) => boolean = typeof Object.is === 'function' ? Object.is : isPolyfill;
 
 // Same as useSyncExternalStore, but supports selector and isEqual arguments.
 export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
@@ -48,7 +41,7 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
   getSnapshot: () => Snapshot,
   getServerSnapshot: undefined | null | (() => Snapshot),
   selector: (snapshot: Snapshot) => Selection,
-  isEqual?: (a: Selection, b: Selection) => boolean,
+  isEqual?: (a: Selection, b: Selection) => boolean
 ) {
   // Use this to track the rendered snapshot.
   const instRef = useRef<SnapshotRef<Selection>>(null);
@@ -118,21 +111,14 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
       return nextSelection;
     };
     // Assigning this to a constant so that Flow knows it can't change.
-    const maybeGetServerSnapshot =
-      getServerSnapshot === undefined ? null : getServerSnapshot;
+    const maybeGetServerSnapshot = getServerSnapshot === undefined ? null : getServerSnapshot;
     const getSnapshotWithSelector = () => memoizedSelector(getSnapshot());
     const getServerSnapshotWithSelector =
-      maybeGetServerSnapshot === null
-        ? undefined
-        : () => memoizedSelector(maybeGetServerSnapshot());
+      maybeGetServerSnapshot === null ? undefined : () => memoizedSelector(maybeGetServerSnapshot());
     return [getSnapshotWithSelector, getServerSnapshotWithSelector];
   }, [getSnapshot, getServerSnapshot, selector, isEqual]);
 
-  const value = useSyncExternalStore(
-    subscribe,
-    getSelection,
-    getServerSelection,
-  );
+  const value = useSyncExternalStore(subscribe, getSelection, getServerSelection);
 
   useEffect(() => {
     inst.hasValue = true;

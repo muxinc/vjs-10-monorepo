@@ -1,5 +1,6 @@
-import { defineConfig } from 'vite';
 import { fileURLToPath } from 'url';
+
+import { defineConfig } from 'vite';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 

@@ -1,7 +1,7 @@
 import { ConsumerMixin } from '@open-wc/context-protocol';
 
 export function getTemplateHTML() {
-  return /* html */`
+  return /* html */ `
     <slot name="media"></slot>
     <slot></slot>
   `;

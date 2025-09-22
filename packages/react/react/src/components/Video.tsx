@@ -1,18 +1,19 @@
 'use client';
 
 import * as React from 'react';
-import { useMediaRef } from '@vjs-10/react-media-store';
-import { createMediaStateOwner } from '@vjs-10/media';
 import {
-  ElementType,
-  VideoHTMLAttributes,
-  DetailedHTMLProps,
-  PropsWithChildren,
   CSSProperties,
+  DetailedHTMLProps,
+  ElementType,
+  PropsWithChildren,
   Ref,
   useImperativeHandle,
   useRef,
+  VideoHTMLAttributes,
 } from 'react';
+
+import { createMediaStateOwner } from '@vjs-10/media';
+import { useMediaRef } from '@vjs-10/react-media-store';
 
 export type MuxVideoProps = {
   'playback-id'?: string;
@@ -22,10 +23,9 @@ type MediaStateOwner = NonNullable<Parameters<ReturnType<typeof useMediaRef>>[0]
 
 /** @TODO Improve type inference and narrowing/widening for different use cases (CJP) */
 type ComponentType = ElementType<
-  Omit<
-    DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>,
-    'ref'
-  > & { ref: Ref<MediaStateOwner> }
+  Omit<DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> & {
+    ref: Ref<MediaStateOwner>;
+  }
 >;
 
 // These are the first steps/WIP POC of decoupling the Media State Owner from the DOM.
@@ -33,22 +33,13 @@ type ComponentType = ElementType<
 // 1. an audio/video element directly
 // 2. a custom element a la media-elements
 type CreateMediaStateOwner = typeof createMediaStateOwner;
-const useMediaStateOwner = (
-  ref: Ref<any>,
-  createMediaStateOwner: CreateMediaStateOwner /*, props? */
-) => {
+const useMediaStateOwner = (ref: Ref<any>, createMediaStateOwner: CreateMediaStateOwner /*, props? */) => {
   const mediaStateOwnerRef = useRef(createMediaStateOwner(/* props? */));
   useImperativeHandle(ref, () => mediaStateOwnerRef.current, []);
   /** @TODO Parameterize this (CJP) */
-  type ComponentProps = DetailedHTMLProps<
-    VideoHTMLAttributes<HTMLVideoElement>,
-    HTMLVideoElement
-  >;
+  type ComponentProps = DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
   return {
-    updateMediaElement(
-      mediaEl: HTMLMediaElement | null,
-      props: ComponentProps
-    ) {
+    updateMediaElement(mediaEl: HTMLMediaElement | null, props: ComponentProps) {
       // NOTE: The details here will almost definitely change for a less "bare bones"/"POC" implementation of Media State Owner impl. (CJP)
       mediaStateOwnerRef.current.mediaElement = mediaEl ?? undefined;
       mediaStateOwnerRef.current.src = props.src as string;
@@ -60,17 +51,17 @@ const useMediaStateOwner = (
 };
 
 const DefaultVideoComponent: ElementType<
-  Omit<
-    DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>,
-    'ref'
-  > & { ref: Ref<any> }
+  Omit<DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> & { ref: Ref<any> }
 > = ({ children, ref, ...props }) => {
   const { updateMediaElement } = useMediaStateOwner(ref, createMediaStateOwner);
   return (
-    <video {...props} ref={(mediaEl) => {
+    <video
+      {...props}
+      ref={(mediaEl) => {
         /** @TODO In later iterations/non-POC, we should be able to have a function that can be used directly for the `ref` prop (CJP) */
         updateMediaElement(mediaEl, props);
-      }}>
+      }}
+    >
       {children}
     </video>
   );

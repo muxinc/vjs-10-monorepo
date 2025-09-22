@@ -16,12 +16,12 @@ export const audible = {
       (handler: (value?: boolean) => void, stateOwners: any) => {
         const { media } = stateOwners;
         if (!media) return;
-        
+
         const eventHandler = () => handler();
         media.addEventListener('volumechange', eventHandler);
-        
+
         return () => media.removeEventListener('volumechange', eventHandler);
-      }
+      },
     ],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API or aren't simple 1:1 with getter vs. setter (CJP) */
@@ -48,18 +48,16 @@ export const audible = {
       (handler: (value?: number) => void, stateOwners: any) => {
         const { media } = stateOwners;
         if (!media) return;
-        
+
         const eventHandler = () => handler();
         media.addEventListener('volumechange', eventHandler);
-        
+
         return () => media.removeEventListener('volumechange', eventHandler);
-      }
+      },
     ],
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API (CJP) */
-      volumerequest: (
-        { detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 },
-      ) => +detail,
+      volumerequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }) => +detail,
     },
   },
   // NOTE: This could be (re)implemented as "derived state" in some manner (e.g. selectors but also other patterns/conventions) if preferred. (CJP)
@@ -76,12 +74,12 @@ export const audible = {
       (handler: (value?: 'high' | 'medium' | 'low' | 'off') => void, stateOwners: any) => {
         const { media } = stateOwners;
         if (!media) return;
-        
+
         const eventHandler = () => handler();
         media.addEventListener('volumechange', eventHandler);
-        
+
         return () => media.removeEventListener('volumechange', eventHandler);
-      }
+      },
     ],
   },
 };

@@ -1,9 +1,6 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
+
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class VolumeRangeBase extends HTMLElement {
   _state:
@@ -119,7 +116,7 @@ export const VolumeRange = toConnectedHTMLComponent(
   VolumeRangeBase,
   useVolumeRangeState,
   useVolumeRangeProps,
-  'VolumeRange',
+  'VolumeRange'
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

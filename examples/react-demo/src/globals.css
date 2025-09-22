@@ -4,11 +4,13 @@
 @source "../../../packages/react";
 
 @theme {
-  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
 }
 
 :root {
-  font-feature-settings: "cv01", "ss01", "ss03";
+  font-feature-settings: 'cv01', 'ss01', 'ss03';
 }
 
 /* Make hocus (hover + focus-visible) variants */

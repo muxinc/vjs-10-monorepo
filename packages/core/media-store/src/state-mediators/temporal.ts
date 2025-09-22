@@ -1,7 +1,5 @@
 const isValidNumber = (value: any): value is number => {
-  return (
-    typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)
-  );
+  return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
 };
 
 export const temporal = {
@@ -19,19 +17,17 @@ export const temporal = {
       (handler: (value?: number) => void, stateOwners: any) => {
         const { media } = stateOwners;
         if (!media) return;
-        
+
         const eventHandler = () => handler();
         const events = ['timeupdate', 'loadedmetadata'];
-        events.forEach(event => media.addEventListener(event, eventHandler));
-        
-        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
-      }
+        events.forEach((event) => media.addEventListener(event, eventHandler));
+
+        return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
+      },
     ],
     actions: {
       /** @TODO Support more sophisticated seeking patterns like seek-to-live, relative seeking, etc. (CJP) */
-      seekrequest: (
-        { detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 },
-      ) => +detail,
+      seekrequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }) => +detail,
     },
   },
 
@@ -40,11 +36,7 @@ export const temporal = {
       const { media } = stateOwners;
 
       // Return 0 if no media or invalid duration
-      if (
-        !media?.duration ||
-        Number.isNaN(media.duration) ||
-        !Number.isFinite(media.duration)
-      ) {
+      if (!media?.duration || Number.isNaN(media.duration) || !Number.isFinite(media.duration)) {
         return 0;
       }
 
@@ -54,13 +46,13 @@ export const temporal = {
       (handler: (value?: number) => void, stateOwners: any) => {
         const { media } = stateOwners;
         if (!media) return;
-        
+
         const eventHandler = () => handler();
         const events = ['loadedmetadata', 'durationchange', 'emptied'];
-        events.forEach(event => media.addEventListener(event, eventHandler));
-        
-        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
-      }
+        events.forEach((event) => media.addEventListener(event, eventHandler));
+
+        return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
+      },
     ],
   },
 
@@ -82,13 +74,13 @@ export const temporal = {
       (handler: (value?: [number, number] | undefined) => void, stateOwners: any) => {
         const { media } = stateOwners;
         if (!media) return;
-        
+
         const eventHandler = () => handler();
         const events = ['loadedmetadata', 'emptied', 'progress', 'seekablechange'];
-        events.forEach(event => media.addEventListener(event, eventHandler));
-        
-        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
-      }
+        events.forEach((event) => media.addEventListener(event, eventHandler));
+
+        return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
+      },
     ],
   },
 };

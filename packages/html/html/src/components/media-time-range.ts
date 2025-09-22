@@ -1,9 +1,6 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
+
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
 
 // Utility functions for pointer position and seek time calculations
 const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
@@ -15,10 +12,7 @@ const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => 
   return (ratio / 100) * duration;
 };
 
-const calculateSeekTimeFromPointerEvent = (
-  event: PointerEvent,
-  duration: number
-): number => {
+const calculateSeekTimeFromPointerEvent = (event: PointerEvent, duration: number): number => {
   const rect = (event.target as HTMLElement).getBoundingClientRect();
   const ratio = calculatePointerRatio(event.clientX, rect);
   return calculateSeekTimeFromRatio(ratio, duration);
@@ -42,7 +36,7 @@ export class TimeRangeRootBase extends HTMLElement {
 
   constructor() {
     super();
-    
+
     // Add pointer event listeners
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointermove', this);
@@ -80,7 +74,7 @@ export class TimeRangeRootBase extends HTMLElement {
     this._dragging = true;
     const seekTime = calculateSeekTimeFromPointerEvent(event, this._state!.duration);
     this._state!.requestSeek(seekTime);
-    
+
     // Capture pointer events
     this.setPointerCapture(event.pointerId);
   }
@@ -100,7 +94,7 @@ export class TimeRangeRootBase extends HTMLElement {
 
   private _handlePointerUp(event: PointerEvent) {
     this.releasePointerCapture(event.pointerId);
-    
+
     if (this._dragging && this._trackElement && this._pointerPosition !== null) {
       const seekTime = calculateSeekTimeFromRatio(this._pointerPosition, this._state!.duration);
       this._state!.requestSeek(seekTime);
@@ -126,23 +120,23 @@ export class TimeRangeRootBase extends HTMLElement {
 
   _update(props: any, state: any) {
     this._state = state;
-    
+
     // Find track element
     this._trackElement = this.querySelector('media-time-range-track') as HTMLElement;
-    
+
     // Calculate slider fill percentage
-    const sliderFill = this._dragging && this._pointerPosition !== null
-      ? this._pointerPosition
-      : state.duration > 0
-        ? (state.currentTime / state.duration) * 100
-        : 0;
+    const sliderFill =
+      this._dragging && this._pointerPosition !== null
+        ? this._pointerPosition
+        : state.duration > 0
+          ? (state.currentTime / state.duration) * 100
+          : 0;
 
     // Update CSS custom properties
     this.style.setProperty('--slider-fill', `${Math.round(sliderFill)}%`);
-    this.style.setProperty('--slider-pointer', 
-      this._hovering && this._pointerPosition !== null
-        ? `${Math.round(this._pointerPosition)}%`
-        : '0%'
+    this.style.setProperty(
+      '--slider-pointer',
+      this._hovering && this._pointerPosition !== null ? `${Math.round(this._pointerPosition)}%` : '0%'
     );
 
     // Update ARIA attributes
@@ -152,7 +146,7 @@ export class TimeRangeRootBase extends HTMLElement {
     this.setAttribute('aria-valuemax', '100');
     this.setAttribute('aria-valuenow', sliderFill.toString());
     this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
-    
+
     // Update data attributes
     this.setAttribute('data-current-time', state.currentTime.toString());
     this.setAttribute('data-duration', state.duration.toString());
@@ -300,7 +294,7 @@ export const TimeRangeRoot = toConnectedHTMLComponent(
   TimeRangeRootBase,
   useTimeRangeRootState,
   useTimeRangeRootProps,
-  'TimeRangeRoot',
+  'TimeRangeRoot'
 );
 
 /**
@@ -310,7 +304,7 @@ export const TimeRangeTrack = toConnectedHTMLComponent(
   TimeRangeTrackBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeTrackProps,
-  'TimeRangeTrack',
+  'TimeRangeTrack'
 );
 
 /**
@@ -320,7 +314,7 @@ export const TimeRangeProgress = toConnectedHTMLComponent(
   TimeRangeProgressBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeProgressProps,
-  'TimeRangeProgress',
+  'TimeRangeProgress'
 );
 
 /**
@@ -330,7 +324,7 @@ export const TimeRangePointer = toConnectedHTMLComponent(
   TimeRangePointerBase,
   { keys: [], transform: () => ({}) },
   useTimeRangePointerProps,
-  'TimeRangePointer',
+  'TimeRangePointer'
 );
 
 /**
@@ -340,7 +334,7 @@ export const TimeRangeThumb = toConnectedHTMLComponent(
   TimeRangeThumbBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeThumbProps,
-  'TimeRangeThumb',
+  'TimeRangeThumb'
 );
 
 /**

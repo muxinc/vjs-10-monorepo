@@ -1,10 +1,7 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
-import { MediaChromeButton } from './media-chrome-button';
 import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
+
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { MediaChromeButton } from './media-chrome-button';
 
 export class FullscreenButtonBase extends MediaChromeButton {
   _state:
@@ -50,9 +47,7 @@ export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
   keys: fullscreenButtonStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
     ...fullscreenButtonStateDefinition.stateTransform(rawState),
-    ...fullscreenButtonStateDefinition.createRequestMethods(
-      mediaStore.dispatch,
-    ),
+    ...fullscreenButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
   }),
 };
 
@@ -60,10 +55,7 @@ export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
  * FullscreenButton props hook - equivalent to React's useFullscreenButtonProps
  * Handles element attributes and properties based on state
  */
-export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (
-  state,
-  _element,
-) => {
+export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     ['data-fullscreen']: state.fullscreen,
@@ -89,7 +81,7 @@ export const FullscreenButton = toConnectedHTMLComponent(
   FullscreenButtonBase,
   useFullscreenButtonState,
   useFullscreenButtonProps,
-  'FullscreenButton',
+  'FullscreenButton'
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

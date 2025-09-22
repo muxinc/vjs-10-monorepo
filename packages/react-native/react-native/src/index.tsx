@@ -31,5 +31,5 @@ export const Player: React.FC<PlayerProps> = () => {
 // Re-export placeholder packages (will be available at runtime)
 // @ts-ignore - Package imports for placeholder stubs
 export * from '@vjs-10/react-native-icons';
-// @ts-ignore - Package imports for placeholder stubs  
+// @ts-ignore - Package imports for placeholder stubs
 export * from '@vjs-10/react-native-media-elements';

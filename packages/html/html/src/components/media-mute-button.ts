@@ -1,10 +1,7 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
-import { MediaChromeButton } from './media-chrome-button';
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
+
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { MediaChromeButton } from './media-chrome-button';
 
 export class MuteButtonBase extends MediaChromeButton {
   _state:
@@ -99,7 +96,7 @@ export const MuteButton = toConnectedHTMLComponent(
   MuteButtonBase,
   useMuteButtonState,
   useMuteButtonProps,
-  'MuteButton',
+  'MuteButton'
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

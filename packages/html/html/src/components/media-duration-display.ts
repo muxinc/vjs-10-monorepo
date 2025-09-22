@@ -1,15 +1,12 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
 import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
 import { namedNodeMapToObject } from '../utils/element-utils.js';
 
 export function getTemplateHTML(
   this: typeof DurationDisplayBase,
   _attrs: Record<string, string>,
-  _props: Record<string, any> = {},
+  _props: Record<string, any> = {}
 ) {
   return /* html */ `
     <span></span>
@@ -32,18 +29,12 @@ export class DurationDisplayBase extends HTMLElement {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow(
-        (this.constructor as typeof DurationDisplayBase).shadowRootOptions,
-      );
+      this.attachShadow((this.constructor as typeof DurationDisplayBase).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-      const html = (
-        this.constructor as typeof DurationDisplayBase
-      ).getTemplateHTML(attrs);
+      const html = (this.constructor as typeof DurationDisplayBase).getTemplateHTML(attrs);
       const shadowRoot = this.shadowRoot as unknown as ShadowRoot;
-      shadowRoot.setHTMLUnsafe
-        ? shadowRoot.setHTMLUnsafe(html)
-        : (shadowRoot.innerHTML = html);
+      shadowRoot.setHTMLUnsafe ? shadowRoot.setHTMLUnsafe(html) : (shadowRoot.innerHTML = html);
     }
   }
 
@@ -53,7 +44,7 @@ export class DurationDisplayBase extends HTMLElement {
 
   _update(_props: any, state: any) {
     this._state = state;
-    
+
     // Update the span content with formatted duration
     const spanElement = this.shadowRoot?.querySelector('span') as HTMLElement;
     if (spanElement) {
@@ -95,7 +86,7 @@ export const DurationDisplay = toConnectedHTMLComponent(
   DurationDisplayBase,
   useDurationDisplayState,
   useDurationDisplayProps,
-  'DurationDisplay',
+  'DurationDisplay'
 );
 
 // Register the custom element

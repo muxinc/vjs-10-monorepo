@@ -29,7 +29,7 @@ export interface MediaElementRef {
   playbackRate: number;
   readyState: number;
   networkState: number;
-  
+
   play(): Promise<void>;
   pause(): void;
   load(): void;
@@ -37,10 +37,8 @@ export interface MediaElementRef {
 }
 
 // Placeholder component - will be implemented later
-export const VideoElement = React.forwardRef<MediaElementRef, MediaElementProps>(
-  (_, __) => {
-    return React.createElement('div', { children: 'React Native VideoElement - Coming Soon' });
-  }
-);
+export const VideoElement = React.forwardRef<MediaElementRef, MediaElementProps>((_, __) => {
+  return React.createElement('div', { children: 'React Native VideoElement - Coming Soon' });
+});
 
 VideoElement.displayName = 'VideoElement';

@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   plugins: ['@svgr/plugin-jsx', '@svgr/plugin-prettier'],
@@ -7,14 +7,14 @@ module.exports = {
   icon: false, // Don't set height/width attributes.
   expandProps: 'end',
   svgProps: {
-    'aria-hidden': 'true'
+    'aria-hidden': 'true',
   },
   replaceAttrValues: {
     '#000': '{color}',
     '#fff': '{color}',
-    'black': '{color}',
-    'white': '{color}',
-    'currentColor': '{color}'
+    black: '{color}',
+    white: '{color}',
+    currentColor: '{color}',
   },
   template: (variables, { tpl }) => {
     return tpl`
@@ -42,15 +42,15 @@ const ${variables.componentName} = ({ color = 'currentColor', ...props }: IconPr
 );
 
 ${variables.exports};
-`
+`;
   },
   indexTemplate: (filePaths) => {
     const exportEntries = filePaths.map(({ path: filePath }) => {
-      const basename = path.basename(filePath, path.extname(filePath))
-      const componentName = /^\d/.test(basename) ? `Svg${basename}` : basename
-      const iconName = `${componentName}Icon`
-      return `export { default as ${iconName} } from './${basename}';`
-    })
+      const basename = path.basename(filePath, path.extname(filePath));
+      const componentName = /^\d/.test(basename) ? `Svg${basename}` : basename;
+      const iconName = `${componentName}Icon`;
+      return `export { default as ${iconName} } from './${basename}';`;
+    });
 
     const header = `/**
  * @fileoverview Auto-generated index file for React icon components
@@ -66,8 +66,8 @@ ${variables.exports};
  *
  * @generated
  */
-`
+`;
 
-    return header + exportEntries.join('\n') + '\n'
-  }
-}
+    return header + exportEntries.join('\n') + '\n';
+  },
+};

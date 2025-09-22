@@ -38,7 +38,7 @@ packages/core/icons/assets/
 ## Usage
 
 ```tsx
-import { PlayIcon, PauseIcon, VolumeHighIcon } from '@vjs-10/react-icons';
+import { PauseIcon, PlayIcon, VolumeHighIcon } from '@vjs-10/react-icons';
 
 function MediaControls() {
   return (

@@ -1,23 +1,18 @@
-import {
-  shallowEqual,
-  useMediaSelector,
-  useMediaStore,
-} from '@vjs-10/react-media-store';
 import * as React from 'react';
-import { toConnectedComponent } from '../utils/component-factory';
+
 import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
+import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+
+import { toConnectedComponent } from '../utils/component-factory';
 
 export const useFullscreenButtonState = (_props: any) => {
   const mediaStore = useMediaStore();
   /** @TODO Fix type issues with hooks (CJP) */
-  const mediaState = useMediaSelector(
-    fullscreenButtonStateDefinition.stateTransform,
-    shallowEqual,
-  );
+  const mediaState = useMediaSelector(fullscreenButtonStateDefinition.stateTransform, shallowEqual);
 
   const methods = React.useMemo(
     () => fullscreenButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore],
+    [mediaStore]
   );
 
   return {
@@ -32,7 +27,7 @@ export type FullscreenButtonState = ReturnType<useFullscreenButtonState>;
 
 export const useFullscreenButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
-  state: ReturnType<typeof useFullscreenButtonState>,
+  state: ReturnType<typeof useFullscreenButtonState>
 ) => {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
@@ -56,10 +51,7 @@ export const useFullscreenButtonProps = (
 export type useFullscreenButtonProps = typeof useFullscreenButtonProps;
 type FullscreenButtonProps = ReturnType<useFullscreenButtonProps>;
 
-export const renderFullscreenButton = (
-  props: FullscreenButtonProps,
-  state: FullscreenButtonState,
-) => {
+export const renderFullscreenButton = (props: FullscreenButtonProps, state: FullscreenButtonState) => {
   return (
     <button
       {...props}
@@ -84,6 +76,6 @@ export const FullscreenButton = toConnectedComponent(
   useFullscreenButtonState,
   useFullscreenButtonProps,
   renderFullscreenButton,
-  'FullscreenButton',
+  'FullscreenButton'
 );
 export default FullscreenButton;
