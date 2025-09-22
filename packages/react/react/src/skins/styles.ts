@@ -112,6 +112,16 @@ const styles: Record<string, string> = {
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
     'size-2.5 active:size-3 group-active/slider:size-3'
   ),
+  VolumeRangeRoot: cn('flex h-5 items-center w-20 group/slider relative'),
+  VolumeRangeTrack: cn('h-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
+  VolumeRangeProgress: cn('bg-white rounded-[inherit]'),
+  VolumeRangeThumb: cn(
+    'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',
+    'opacity-0 transition-[opacity,height,width] ease-in-out',
+    '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
+    'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
+    'size-2.5 active:size-3 group-active/slider:size-3'
+  ),
 };
 
 export default styles;

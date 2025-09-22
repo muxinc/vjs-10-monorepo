@@ -6,7 +6,7 @@ import './globals.css';
 
 function DemoPlayer() {
   return (
-    <div className="min-h-screen grid place-items-center">
+    <div className="min-h-screen grid place-items-center gap-8 p-8">
       <MediaProvider>
         <div className="w-full max-w-4xl mx-auto">
           <MediaSkinDefault>

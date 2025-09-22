@@ -16,7 +16,7 @@ import { FullscreenButton } from '../components/FullscreenButton';
 import { MediaContainer } from '../components/MediaContainer';
 import MuteButton from '../components/MuteButton';
 import PlayButton from '../components/PlayButton';
-// import { VolumeRange } from '../components/VolumeRange';
+import { VolumeRange } from '../components/VolumeRange';
 import { TimeRange } from '../components/TimeRange';
 
 export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -57,8 +57,12 @@ export const MediaSkinDefault: React.FC<{ children: React.ReactNode }> = ({ chil
           <VolumeOffIcon className={styles.VolumeOffIcon} />
         </MuteButton>
 
-        {/* TODO: Volume slider in a popover (requires building a popover and vertical orientation slider) or we just inline it on larger displays? */}
-        {/* <VolumeRange className={legacyStyles.VolumeRange} /> */}
+        <VolumeRange.Root className={styles.VolumeRangeRoot}>
+          <VolumeRange.Track className={styles.VolumeRangeTrack}>
+            <VolumeRange.Progress className={styles.VolumeRangeProgress} />
+          </VolumeRange.Track>
+          <VolumeRange.Thumb className={styles.VolumeRangeThumb} />
+        </VolumeRange.Root>
 
         <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
           <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
