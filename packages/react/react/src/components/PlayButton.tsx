@@ -1,23 +1,18 @@
-import {
-  shallowEqual,
-  useMediaSelector,
-  useMediaStore,
-} from '@vjs-10/react-media-store';
 import * as React from 'react';
-import { toConnectedComponent } from '../utils/component-factory';
+
 import { playButtonStateDefinition } from '@vjs-10/media-store';
+import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+
+import { toConnectedComponent } from '../utils/component-factory';
 
 export const usePlayButtonState = (_props: any) => {
   const mediaStore = useMediaStore();
   /** @TODO Fix type issues with hooks (CJP) */
-  const mediaState = useMediaSelector(
-    playButtonStateDefinition.stateTransform,
-    shallowEqual,
-  );
+  const mediaState = useMediaSelector(playButtonStateDefinition.stateTransform, shallowEqual);
 
   const methods = React.useMemo(
     () => playButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore],
+    [mediaStore]
   );
 
   return {
@@ -32,7 +27,7 @@ export type PlayButtonState = ReturnType<usePlayButtonState>;
 
 export const usePlayButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
-  state: ReturnType<typeof usePlayButtonState>,
+  state: ReturnType<typeof usePlayButtonState>
 ) => {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
@@ -56,10 +51,7 @@ export const usePlayButtonProps = (
 export type usePlayButtonProps = typeof usePlayButtonProps;
 type PlayButtonProps = ReturnType<usePlayButtonProps>;
 
-export const renderPlayButton = (
-  props: PlayButtonProps,
-  state: PlayButtonState,
-) => {
+export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState) => {
   return (
     <button
       {...props}
@@ -80,10 +72,5 @@ export const renderPlayButton = (
 
 export type renderPlayButton = typeof renderPlayButton;
 
-export const PlayButton = toConnectedComponent(
-  usePlayButtonState,
-  usePlayButtonProps,
-  renderPlayButton,
-  'PlayButton',
-);
+export const PlayButton = toConnectedComponent(usePlayButtonState, usePlayButtonProps, renderPlayButton, 'PlayButton');
 export default PlayButton;

@@ -13,24 +13,24 @@ module.exports = [
       sourcemap: true,
     },
     watch: {
-      clearScreen: false
+      clearScreen: false,
     },
     external: [
       'react',
       '@vjs-10/react-icons',
-      '@vjs-10/react-media-elements', 
+      '@vjs-10/react-media-elements',
       '@vjs-10/react-media-store',
-      '@vjs-10/media'
+      '@vjs-10/media',
     ],
     plugins: [
       resolve({
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       }),
       commonjs(),
       postcss({
         modules: true,
         extract: false, // Don't extract CSS to separate file
-        inject: true,   // Inject CSS into JS bundle
+        inject: true, // Inject CSS into JS bundle
         minimize: false,
         sourceMap: true,
       }),
@@ -50,24 +50,24 @@ module.exports = [
       sourcemap: true,
     },
     watch: {
-      clearScreen: false
+      clearScreen: false,
     },
     external: [
       'react',
       '@vjs-10/react-icons',
       '@vjs-10/react-media-elements',
-      '@vjs-10/react-media-store', 
-      '@vjs-10/media'
+      '@vjs-10/react-media-store',
+      '@vjs-10/media',
     ],
     plugins: [
       resolve({
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       }),
       commonjs(),
       postcss({
         modules: true,
         extract: false, // Don't extract CSS for CJS build
-        inject: true,   // Inject CSS into JS bundle
+        inject: true, // Inject CSS into JS bundle
         minimize: false,
         sourceMap: true,
       }),

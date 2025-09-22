@@ -1,5 +1,7 @@
 import type { IBasePlaybackEngine } from '@vjs-10/playback-engine';
+
 import { createPlaybackEngine } from '@vjs-10/playback-engine';
+
 /** @TODO Split out "playable" vs. "audible" vs. "temporal" and compose via factory (current mixin pattern or spreadable mixin pattern) (CJP) */
 export const Events = [
   'volumechange',
@@ -12,9 +14,8 @@ export const Events = [
   'durationchange',
 ] as const;
 
-export interface IBaseMediaStateOwner<
-  T extends Pick<HTMLMediaElement, 'src'> = Pick<HTMLMediaElement, 'src'>,
-> extends EventTarget,
+export interface IBaseMediaStateOwner<T extends Pick<HTMLMediaElement, 'src'> = Pick<HTMLMediaElement, 'src'>>
+  extends EventTarget,
     Pick<HTMLMediaElement, 'src'> {
   mediaElement?: T | undefined;
 }
@@ -34,10 +35,7 @@ export interface ITemporalMediaStateOwner
     IBaseMediaStateOwner,
     Pick<HTMLMediaElement, 'duration' | 'currentTime'> {}
 
-export class PlayableMediaStateOwner
-  extends EventTarget
-  implements IPlayableMediaStateOwner, IAudibleMediaStateOwner
-{
+export class PlayableMediaStateOwner extends EventTarget implements IPlayableMediaStateOwner, IAudibleMediaStateOwner {
   protected _playbackEngine: IBasePlaybackEngine;
   constructor() {
     super();
@@ -126,11 +124,7 @@ export class PlayableMediaStateOwner
 
   handleEvent(event: Event): void {
     if (event.target === this.mediaElement) {
-      const clonedEvent =
-        new (event.constructor as (typeof globalThis)['Event'])(
-          event.type,
-          event,
-        );
+      const clonedEvent = new (event.constructor as (typeof globalThis)['Event'])(event.type, event);
       this.dispatchEvent(clonedEvent);
     }
   }

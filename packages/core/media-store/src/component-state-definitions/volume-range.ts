@@ -11,9 +11,7 @@ export interface VolumeRangeMethods {
 export interface VolumeRangeStateDefinition {
   keys: string[];
   stateTransform: (rawState: any) => VolumeRangeState;
-  createRequestMethods: (
-    dispatch: (action: { type: string; detail?: any }) => void,
-  ) => VolumeRangeMethods;
+  createRequestMethods: (dispatch: (action: { type: string; detail?: any }) => void) => VolumeRangeMethods;
 }
 
 /**

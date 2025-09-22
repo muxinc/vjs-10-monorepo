@@ -29,10 +29,7 @@ const UnitLabels = [
 ] as const;
 
 const toTimeUnitPhrase = (timeUnitValue: number, unitIndex: number): string => {
-  const unitLabel =
-    timeUnitValue === 1
-      ? UnitLabels[unitIndex]?.singular
-      : UnitLabels[unitIndex]?.plural;
+  const unitLabel = timeUnitValue === 1 ? UnitLabels[unitIndex]?.singular : UnitLabels[unitIndex]?.plural;
 
   return `${timeUnitValue} ${unitLabel}`;
 };
@@ -53,18 +50,11 @@ export function formatAsTimePhrase(seconds: number): string {
   const positiveSeconds = Math.abs(seconds);
   const negative = positiveSeconds !== seconds;
   const secondsDateTime = new Date(0, 0, 0, 0, 0, positiveSeconds, 0);
-  const timeParts = [
-    secondsDateTime.getHours(),
-    secondsDateTime.getMinutes(),
-    secondsDateTime.getSeconds(),
-  ];
+  const timeParts = [secondsDateTime.getHours(), secondsDateTime.getMinutes(), secondsDateTime.getSeconds()];
 
   const timeString = timeParts
     // Convert non-0 values to a string of the value plus its unit
-    .map(
-      (timeUnitValue, index) =>
-        timeUnitValue && toTimeUnitPhrase(timeUnitValue, index),
-    )
+    .map((timeUnitValue, index) => timeUnitValue && toTimeUnitPhrase(timeUnitValue, index))
     // Ignore/exclude any 0 values
     .filter((x) => x)
     // join into a single comma-separated string phrase
@@ -124,8 +114,7 @@ export function formatTime(seconds: number, guide?: number): string {
 
   // If hours are showing, we may need to add a leading zero.
   // Always show at least one digit of minutes.
-  const minutesString =
-    ((showHours || gm >= 10) && (m as number) < 10 ? '0' + m : m) + ':';
+  const minutesString = ((showHours || gm >= 10) && (m as number) < 10 ? '0' + m : m) + ':';
 
   // Check if leading zero is needed for seconds
   const secondsString = (s as number) < 10 ? '0' + s : s;
@@ -140,11 +129,7 @@ export function formatTime(seconds: number, guide?: number): string {
  * @param fallback - Fallback text when time is invalid (default: "--:--")
  * @returns Formatted time string or fallback
  */
-export function formatDisplayTime(
-  time: unknown,
-  guide?: number,
-  fallback: string = '--:--',
-): string {
+export function formatDisplayTime(time: unknown, guide?: number, fallback: string = '--:--'): string {
   if (!isValidNumber(time)) {
     return fallback;
   }

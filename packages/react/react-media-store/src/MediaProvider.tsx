@@ -2,8 +2,11 @@
 
 /** @TODO !!! Revisit for SSR (CJP) */
 import type { Context, ReactNode } from 'react';
+
 import React, { createContext, useContext, useMemo } from 'react';
+
 import { createMediaStore } from '@vjs-10/media-store';
+
 import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector.js';
 
 const identity = (x?: any) => x;
@@ -17,9 +20,7 @@ const identity = (x?: any) => x;
  * @see {@link useMediaDispatch}
  * @see {@link useMediaSelector}
  */
-export const MediaContext: Context<any | null> = createContext<any | null>(
-  null,
-);
+export const MediaContext: Context<any | null> = createContext<any | null>(null);
 
 export const MediaProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => createMediaStore(), []);
@@ -35,9 +36,7 @@ export const MediaProvider = ({ children }: { children: ReactNode }) => {
   //     });
   //   };
   // }, []);
-  return (
-    <MediaContext.Provider value={value}>{children}</MediaContext.Provider>
-  );
+  return <MediaContext.Provider value={value}>{children}</MediaContext.Provider>;
 };
 
 export const useMediaStore = () => {
@@ -84,12 +83,7 @@ export const shallowEqual = (objA: any, objB: any): boolean => {
 
   // Since we've done an Object.is() check immediately above, we can safely assume non-objects (or null-valued objects)
   // are not equal, so can early bail for those as well.
-  if (
-    typeof objA !== 'object' ||
-    objA === null ||
-    typeof objB !== 'object' ||
-    objB === null
-  ) {
+  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
     return false;
   }
 
@@ -121,17 +115,14 @@ export const shallowEqual = (objA: any, objB: any): boolean => {
   return true;
 };
 
-export const useMediaSelector = <S = any,>(
-  selector: (state: any) => S,
-  equalityFn = refEquality,
-) => {
+export const useMediaSelector = <S = any,>(selector: (state: any) => S, equalityFn = refEquality) => {
   const store = useContext(MediaContext);
   const selectedState = useSyncExternalStoreWithSelector(
     store?.subscribe ?? identity,
     store?.getState ?? identity,
     store?.getState ?? identity,
     selector,
-    equalityFn,
+    equalityFn
   ) as S;
 
   return selectedState;

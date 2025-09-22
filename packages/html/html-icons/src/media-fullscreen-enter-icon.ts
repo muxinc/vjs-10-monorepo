@@ -1,5 +1,6 @@
-import { MediaChromeIcon } from './media-chrome-icon.js';
 import { SVG_ICONS } from '@vjs-10/icons';
+
+import { MediaChromeIcon } from './media-chrome-icon.js';
 
 export function getTemplateHTML() {
   return /* html */ `

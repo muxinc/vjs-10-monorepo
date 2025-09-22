@@ -1,6 +1,6 @@
 /**
  * @fileoverview Duration display component state definition
- * 
+ *
  * This module provides the component state definition for duration display
  * components across HTML, React, and React Native platforms. The duration
  * display is a read-only component that shows the total duration of media.
@@ -31,7 +31,7 @@ export const durationDisplayStateDefinition = {
    */
   stateTransform: (rawState: Record<string, any>): DurationDisplayState => {
     const { duration } = rawState;
-    
+
     return {
       duration,
     };

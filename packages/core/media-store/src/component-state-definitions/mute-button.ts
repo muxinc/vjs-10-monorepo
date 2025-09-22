@@ -11,9 +11,7 @@ export interface MuteButtonMethods {
 export interface MuteButtonStateDefinition {
   keys: string[];
   stateTransform: (rawState: any) => MuteButtonState;
-  createRequestMethods: (
-    dispatch: (action: { type: string }) => void,
-  ) => MuteButtonMethods;
+  createRequestMethods: (dispatch: (action: { type: string }) => void) => MuteButtonMethods;
 }
 
 /**

@@ -26,7 +26,7 @@ export const toConnectedHTMLComponent = <TState = any>(
   BaseClass: CustomElementConstructor,
   stateHook: StateHook<TState>,
   propsHook: PropsHook<TState>,
-  displayName?: string,
+  displayName?: string
 ) => {
   const ConnectedComponent = class extends ConsumerMixin(BaseClass) {
     static get observedAttributes(): string[] {

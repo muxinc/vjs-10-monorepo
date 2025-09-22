@@ -1,6 +1,6 @@
 /**
  * @fileoverview Current time display component state definition
- * 
+ *
  * This module provides the component state definition for current time display
  * components across HTML, React, and React Native platforms. The current time
  * display is a read-only component that shows the current playback time of media.
@@ -12,7 +12,7 @@
 export interface CurrentTimeDisplayState {
   /** The current time value in seconds */
   currentTime: number | undefined;
-  
+
   /** The total duration in seconds (for future functionality) */
   duration: number | undefined;
 }
@@ -34,7 +34,7 @@ export const currentTimeDisplayStateDefinition = {
    */
   stateTransform: (rawState: Record<string, any>): CurrentTimeDisplayState => {
     const { currentTime, duration } = rawState;
-    
+
     return {
       currentTime,
       duration,
@@ -62,4 +62,6 @@ export type CurrentTimeDisplayComponentState = ReturnType<typeof currentTimeDisp
 /**
  * Type helper to extract the request methods type (empty for read-only component)
  */
-export type CurrentTimeDisplayRequestMethods = ReturnType<typeof currentTimeDisplayStateDefinition.createRequestMethods>;
+export type CurrentTimeDisplayRequestMethods = ReturnType<
+  typeof currentTimeDisplayStateDefinition.createRequestMethods
+>;

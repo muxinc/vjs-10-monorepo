@@ -10,10 +10,7 @@ export type PropsHookFn<TProps = any, TState = any, TResultProps = any> = (
   state: TState
 ) => TResultProps;
 
-export type RenderFn<TProps = any, TState = any> = (
-  props: TProps,
-  state: TState
-) => React.ReactElement;
+export type RenderFn<TProps = any, TState = any> = (props: TProps, state: TState) => React.ReactElement;
 
 const Context = React.createContext<any | null>(null);
 
@@ -38,17 +35,10 @@ export const toConnectedComponent = <
   defaultRender: TRenderFn,
   displayName: string
 ) => {
-  const ConnectedComponent = ({
-    render = defaultRender,
-    ...props
-  }: TProps & { render?: TRenderFn }) => {
+  const ConnectedComponent = ({ render = defaultRender, ...props }: TProps & { render?: TRenderFn }) => {
     const connectedState = useStateHook(props as TProps);
     const connectedProps = usePropsHook(props as TProps, connectedState);
-    return (
-      <Context.Provider value={connectedState}>
-        {render(connectedProps, connectedState)}
-      </Context.Provider>
-    );
+    return <Context.Provider value={connectedState}>{render(connectedProps, connectedState)}</Context.Provider>;
   };
 
   ConnectedComponent.displayName = displayName;
@@ -58,10 +48,9 @@ export const toConnectedComponent = <
 /**
  * Type helper to infer the component type from the factory
  */
-export type ConnectedComponent<
-  TProps extends Record<string, any>,
-  TRenderFn extends RenderFn<any, any>,
-> = React.FC<TProps & { render?: TRenderFn }>;
+export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn extends RenderFn<any, any>> = React.FC<
+  TProps & { render?: TRenderFn }
+>;
 
 /**
  * Factory function to create context-based components that don't use toConnectedComponent
@@ -81,10 +70,7 @@ export const toContextComponent = <
   defaultRender: TRenderFn,
   displayName: string
 ) => {
-  const ContextComponent = ({
-    render = defaultRender,
-    ...props
-  }: TProps & { render?: TRenderFn }) => {
+  const ContextComponent = ({ render = defaultRender, ...props }: TProps & { render?: TRenderFn }) => {
     const context = React.useContext(Context);
     const contextProps = usePropsHook(props as TProps, context);
     return render(contextProps, context);

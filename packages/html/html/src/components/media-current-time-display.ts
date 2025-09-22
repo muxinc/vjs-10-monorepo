@@ -1,12 +1,6 @@
-import {
-  toConnectedHTMLComponent,
-  StateHook,
-  PropsHook,
-} from '../utils/component-factory';
-import {
-  currentTimeDisplayStateDefinition,
-  formatDisplayTime,
-} from '@vjs-10/media-store';
+import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+
+import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class CurrentTimeDisplayBase extends HTMLElement {
   static shadowRootOptions = {
@@ -25,9 +19,7 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow(
-        (this.constructor as typeof CurrentTimeDisplayBase).shadowRootOptions,
-      );
+      this.attachShadow((this.constructor as typeof CurrentTimeDisplayBase).shadowRootOptions);
     }
   }
 
@@ -43,11 +35,7 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     return this.hasAttribute('show-remaining');
   }
 
-  attributeChangedCallback(
-    name: string,
-    _oldValue: string | null,
-    _newValue: string | null,
-  ) {
+  attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null) {
     if (name === 'show-remaining' && this._state) {
       // Re-render with current state when show-remaining attribute changes
       this._update({}, this._state);
@@ -104,16 +92,13 @@ export const CurrentTimeDisplay = toConnectedHTMLComponent(
   CurrentTimeDisplayBase,
   useCurrentTimeDisplayState,
   useCurrentTimeDisplayProps,
-  'CurrentTimeDisplay',
+  'CurrentTimeDisplay'
 );
 
 // Register the custom element
 if (!globalThis.customElements.get('media-current-time-display')) {
   // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define(
-    'media-current-time-display',
-    CurrentTimeDisplay,
-  );
+  globalThis.customElements.define('media-current-time-display', CurrentTimeDisplay);
 }
 
 export default CurrentTimeDisplay;

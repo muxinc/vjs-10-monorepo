@@ -11,16 +11,13 @@ export type EventOrAction<D = undefined> = {
   target?: EventTarget;
 };
 
-export type FacadeGetter<T, D = T> = (
-  stateOwners: StateOwners,
-  event?: EventOrAction<D>,
-) => T;
+export type FacadeGetter<T, D = T> = (stateOwners: StateOwners, event?: EventOrAction<D>) => T;
 
 export type FacadeSetter<T> = (value: T, stateOwners: StateOwners) => void;
 
 export type StateOwnerUpdateHandler<T> = (
   handler: (value?: T) => void,
-  stateOwners: StateOwners,
+  stateOwners: StateOwners
 ) => (() => void) | void;
 
 export type ReadonlyFacadeProp<T, D = T> = {
@@ -32,9 +29,7 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
   set: FacadeSetter<S>;
   /** @TODO We probably need to refactor this for more complex cases where we can't simply translate to a setter */
   actions: {
-    [k: string]: (
-      val: Pick<CustomEvent<any>, 'type' | 'detail'>,
-    ) => ReturnType<FacadeGetter<T, D>>;
+    [k: string]: (val: Pick<CustomEvent<any>, 'type' | 'detail'>) => ReturnType<FacadeGetter<T, D>>;
   };
 };
 
@@ -67,14 +62,14 @@ export function createMediaStore({
     const hasChanges = Object.entries(nextStateOwners).some(
       ([key, value]) => stateOwners[key as keyof StateOwners] !== value
     );
-    
+
     if (!hasChanges) {
       return;
     }
 
     // Clean up existing handlers
     Object.entries(stateUpdateHandlerCleanups).forEach(([stateName, cleanups]) => {
-      cleanups.forEach(cleanup => cleanup?.());
+      cleanups.forEach((cleanup) => cleanup?.());
       stateUpdateHandlerCleanups[stateName] = [];
     });
 
@@ -84,7 +79,7 @@ export function createMediaStore({
     // Set up new handlers
     Object.entries(stateMediator).forEach(([stateName, stateObject]) => {
       const { get, stateOwnersUpdateHandlers = [] } = stateObject;
-      
+
       if (!stateUpdateHandlerCleanups[stateName]) {
         stateUpdateHandlerCleanups[stateName] = [];
       }
@@ -96,7 +91,7 @@ export function createMediaStore({
       };
 
       // Execute each stateOwnersUpdateHandler
-      stateOwnersUpdateHandlers.forEach(setupHandler => {
+      stateOwnersUpdateHandlers.forEach((setupHandler) => {
         const cleanup = setupHandler(updateHandler, stateOwners);
         if (typeof cleanup === 'function') {
           stateUpdateHandlerCleanups[stateName]?.push(cleanup);
@@ -115,10 +110,7 @@ export function createMediaStore({
         updateStateOwners({ container: detail });
       } else {
         for (const stateObject of Object.values(stateMediator).filter(
-          (
-            stateMediatorEntry,
-          ): stateMediatorEntry is FacadeProp<any, any, any> =>
-            'set' in stateMediatorEntry,
+          (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry
         )) {
           const { set, actions } = stateObject;
           if (actions[type]) {
@@ -135,10 +127,13 @@ export function createMediaStore({
     },
 
     getKeys(keys: string[]) {
-      return keys.reduce((acc, k) => {
-        acc[k] = getKey(store, k);
-        return acc;
-      }, {} as { [k: string]: any });
+      return keys.reduce(
+        (acc, k) => {
+          acc[k] = getKey(store, k);
+          return acc;
+        },
+        {} as { [k: string]: any }
+      );
     },
 
     subscribeKeys(keys: string[], callback: (state: any) => void) {
@@ -152,10 +147,7 @@ export function createMediaStore({
   };
 }
 
-function getInitialState(
-  stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>,
-  stateOwners: any,
-) {
+function getInitialState(stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>, stateOwners: any) {
   let initialState: any = {};
   for (const [stateName, { get }] of Object.entries(stateMediator)) {
     initialState[stateName] = get(stateOwners);

@@ -10,9 +10,7 @@ export interface TimeRangeMethods {
 export interface TimeRangeStateDefinition {
   keys: string[];
   stateTransform: (rawState: any) => TimeRangeState;
-  createRequestMethods: (
-    dispatch: (action: { type: string; detail?: any }) => void,
-  ) => TimeRangeMethods;
+  createRequestMethods: (dispatch: (action: { type: string; detail?: any }) => void) => TimeRangeMethods;
 }
 
 /**

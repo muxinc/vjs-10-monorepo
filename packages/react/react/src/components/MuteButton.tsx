@@ -1,23 +1,18 @@
-import {
-  shallowEqual,
-  useMediaSelector,
-  useMediaStore,
-} from '@vjs-10/react-media-store';
 import * as React from 'react';
-import { toConnectedComponent } from '../utils/component-factory';
+
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
+import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+
+import { toConnectedComponent } from '../utils/component-factory';
 
 export const useMuteButtonState = (_props: any) => {
   const mediaStore = useMediaStore();
   /** @TODO Fix type issues with hooks (CJP) */
-  const mediaState = useMediaSelector(
-    muteButtonStateDefinition.stateTransform,
-    shallowEqual,
-  );
+  const mediaState = useMediaSelector(muteButtonStateDefinition.stateTransform, shallowEqual);
 
   const methods = React.useMemo(
     () => muteButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore],
+    [mediaStore]
   );
 
   return {
@@ -33,7 +28,7 @@ export type MuteButtonState = ReturnType<useMuteButtonState>;
 
 export const useMuteButtonProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
-  state: ReturnType<typeof useMuteButtonState>,
+  state: ReturnType<typeof useMuteButtonState>
 ) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props - non-boolean */
@@ -59,10 +54,7 @@ export const useMuteButtonProps = (
 export type useMuteButtonProps = typeof useMuteButtonProps;
 type MuteButtonProps = ReturnType<useMuteButtonProps>;
 
-export const renderMuteButton = (
-  props: MuteButtonProps,
-  state: MuteButtonState,
-) => {
+export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState) => {
   return (
     <button
       {...props}
@@ -83,10 +75,5 @@ export const renderMuteButton = (
 
 export type renderMuteButton = typeof renderMuteButton;
 
-export const MuteButton = toConnectedComponent(
-  useMuteButtonState,
-  useMuteButtonProps,
-  renderMuteButton,
-  'MuteButton',
-);
+export const MuteButton = toConnectedComponent(useMuteButtonState, useMuteButtonProps, renderMuteButton, 'MuteButton');
 export default MuteButton;

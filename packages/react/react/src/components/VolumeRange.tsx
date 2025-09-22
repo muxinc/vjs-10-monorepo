@@ -1,23 +1,18 @@
-import {
-  shallowEqual,
-  useMediaSelector,
-  useMediaStore,
-} from '@vjs-10/react-media-store';
 import * as React from 'react';
-import { toConnectedComponent } from '../utils/component-factory';
+
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
+import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+
+import { toConnectedComponent } from '../utils/component-factory';
 
 export const useVolumeRangeState = (_props: any) => {
   const mediaStore = useMediaStore();
   /** @TODO Fix type issues with hooks (CJP) */
-  const mediaState = useMediaSelector(
-    volumeRangeStateDefinition.stateTransform,
-    shallowEqual,
-  );
+  const mediaState = useMediaSelector(volumeRangeStateDefinition.stateTransform, shallowEqual);
 
   const methods = React.useMemo(
     () => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore],
+    [mediaStore]
   );
 
   return {
@@ -33,7 +28,7 @@ export type VolumeRangeState = ReturnType<useVolumeRangeState>;
 
 export const useVolumeRangeProps = (
   props: React.PropsWithChildren<{ [k: string]: any }>,
-  state: ReturnType<typeof useVolumeRangeState>,
+  state: ReturnType<typeof useVolumeRangeState>
 ) => {
   const displayValue = state.muted ? 0 : state.volume;
 
@@ -65,10 +60,7 @@ type VolumeRangeProps = ReturnType<useVolumeRangeProps>;
  * @TODO This is just a simple render function to demonstrate functionality.
  * A full implementation will need to implement a "compound component" architecture. (CJP)
  **/
-export const renderVolumeRange = (
-  props: VolumeRangeProps,
-  state: VolumeRangeState,
-) => {
+export const renderVolumeRange = (props: VolumeRangeProps, state: VolumeRangeState) => {
   return (
     <input
       {...props}
@@ -90,6 +82,6 @@ export const VolumeRange = toConnectedComponent(
   useVolumeRangeState,
   useVolumeRangeProps,
   renderVolumeRange,
-  'VolumeRange',
+  'VolumeRange'
 );
 export default VolumeRange;

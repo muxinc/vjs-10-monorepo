@@ -12,7 +12,7 @@ module.exports = [
       sourcemap: true,
     },
     watch: {
-      clearScreen: false
+      clearScreen: false,
     },
     external: (id) => {
       // Don't externalize relative imports (starts with . or /)
@@ -24,7 +24,7 @@ module.exports = [
     },
     plugins: [
       resolve({
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       }),
       commonjs(),
       typescript({
@@ -43,7 +43,7 @@ module.exports = [
       sourcemap: true,
     },
     watch: {
-      clearScreen: false
+      clearScreen: false,
     },
     external: (id) => {
       // Don't externalize relative imports (starts with . or /)
@@ -55,7 +55,7 @@ module.exports = [
     },
     plugins: [
       resolve({
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       }),
       commonjs(),
       typescript({

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
+import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent, toContextComponent } from '../utils/component-factory';
 
@@ -20,10 +21,7 @@ const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => 
   return (ratio / 100) * duration;
 };
 
-const calculateSeekTimeFromPointerEvent = (
-  e: React.PointerEvent<HTMLDivElement>,
-  duration: number
-): number => {
+const calculateSeekTimeFromPointerEvent = (e: React.PointerEvent<HTMLDivElement>, duration: number): number => {
   const rect = e.currentTarget.getBoundingClientRect();
   const ratio = calculatePointerRatio(e.clientX, rect);
   return calculateSeekTimeFromRatio(ratio, duration);
@@ -37,10 +35,7 @@ export const useTimeRangeRootState = (_props: any) => {
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
 
-  const methods = React.useMemo(
-    () => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore]
-  );
+  const methods = React.useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   const { requestSeek } = methods;
   const [pointerPosition, setPointerPosition] = React.useState<number | null>(null);
@@ -114,14 +109,7 @@ export const useTimeRangeRootProps = (
       }
       state.setDragging(false);
     },
-    [
-      state.dragging,
-      state.trackRef,
-      state.pointerPosition,
-      state.requestSeek,
-      state.duration,
-      state.setDragging,
-    ]
+    [state.dragging, state.trackRef, state.pointerPosition, state.requestSeek, state.duration, state.setDragging]
   );
 
   const handlePointerEnter = React.useCallback(() => {
@@ -148,9 +136,7 @@ export const useTimeRangeRootProps = (
       ...props.style,
       '--slider-fill': `${sliderFill.toFixed(3)}%`,
       '--slider-pointer':
-        state.hovering && state.pointerPosition !== null
-          ? `${state.pointerPosition.toFixed(3)}%`
-          : '0%',
+        state.hovering && state.pointerPosition !== null ? `${state.pointerPosition.toFixed(3)}%` : '0%',
     },
     onPointerDown: handlePointerDown,
     onPointerMove: handlePointerMove,
@@ -166,9 +152,7 @@ type useTimeRangeRootProps = typeof useTimeRangeRootProps;
 type TimeRangeRootProps = ReturnType<useTimeRangeRootProps>;
 
 export const renderTimeRangeRoot = (props: TimeRangeRootProps) => {
-  return (
-    <div {...props} />
-  );
+  return <div {...props} />;
 };
 
 const TimeRangeRoot = toConnectedComponent(
@@ -198,11 +182,7 @@ export const renderTimeRangeTrack = (props: TimeRangeTrackProps) => {
   return <div {...props} />;
 };
 
-const TimeRangeTrack = toContextComponent(
-  useTimeRangeTrackProps,
-  renderTimeRangeTrack,
-  'TimeRange.Track'
-);
+const TimeRangeTrack = toContextComponent(useTimeRangeTrackProps, renderTimeRangeTrack, 'TimeRange.Track');
 
 // ============================================================================
 // THUMB COMPONENT
@@ -228,11 +208,7 @@ export const renderTimeRangeThumb = (props: TimeRangeThumbProps) => {
   return <div {...props} />;
 };
 
-const TimeRangeThumb = toContextComponent(
-  useTimeRangeThumbProps,
-  renderTimeRangeThumb,
-  'TimeRange.Thumb'
-);
+const TimeRangeThumb = toContextComponent(useTimeRangeThumbProps, renderTimeRangeThumb, 'TimeRange.Thumb');
 
 // ============================================================================
 // POINTER COMPONENT
@@ -257,11 +233,7 @@ export const renderTimeRangePointer = (props: TimeRangePointerProps) => {
   return <div {...props} />;
 };
 
-const TimeRangePointer = toContextComponent(
-  useTimeRangePointerProps,
-  renderTimeRangePointer,
-  'TimeRange.Pointer'
-);
+const TimeRangePointer = toContextComponent(useTimeRangePointerProps, renderTimeRangePointer, 'TimeRange.Pointer');
 
 // ============================================================================
 // PROGRESS COMPONENT
@@ -286,11 +258,7 @@ export const renderTimeRangeProgress = (props: TimeRangeProgressProps) => {
   return <div {...props} />;
 };
 
-const TimeRangeProgress = toContextComponent(
-  useTimeRangeProgressProps,
-  renderTimeRangeProgress,
-  'TimeRange.Progress'
-);
+const TimeRangeProgress = toContextComponent(useTimeRangeProgressProps, renderTimeRangeProgress, 'TimeRange.Progress');
 
 // ============================================================================
 // EXPORTS

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 // @ts-ignore - Placeholder interfaces for future implementation
 interface MediaElementLike {
@@ -19,19 +19,45 @@ interface MediaElementLike {
 // @ts-ignore - Placeholder function for future implementation
 const createMediaElementAdapter = (element: HTMLMediaElement): MediaElementLike => {
   return {
-    get currentTime() { return element.currentTime; },
-    set currentTime(value: number) { element.currentTime = value; },
-    get duration() { return element.duration; },
-    get paused() { return element.paused; },
-    get ended() { return element.ended; },
-    get volume() { return element.volume; },
-    set volume(value: number) { element.volume = value; },
-    get muted() { return element.muted; },
-    set muted(value: boolean) { element.muted = value; },
-    get playbackRate() { return element.playbackRate; },
-    set playbackRate(value: number) { element.playbackRate = value; },
-    get readyState() { return element.readyState; },
-    get networkState() { return element.networkState; },
+    get currentTime() {
+      return element.currentTime;
+    },
+    set currentTime(value: number) {
+      element.currentTime = value;
+    },
+    get duration() {
+      return element.duration;
+    },
+    get paused() {
+      return element.paused;
+    },
+    get ended() {
+      return element.ended;
+    },
+    get volume() {
+      return element.volume;
+    },
+    set volume(value: number) {
+      element.volume = value;
+    },
+    get muted() {
+      return element.muted;
+    },
+    set muted(value: boolean) {
+      element.muted = value;
+    },
+    get playbackRate() {
+      return element.playbackRate;
+    },
+    set playbackRate(value: number) {
+      element.playbackRate = value;
+    },
+    get readyState() {
+      return element.readyState;
+    },
+    get networkState() {
+      return element.networkState;
+    },
     play: () => element.play(),
     pause: () => element.pause(),
     load: () => element.load(),
@@ -43,11 +69,11 @@ class NativePlaybackEngine {
   attach(_element: HTMLMediaElement) {
     // Placeholder implementation
   }
-  
+
   detach() {
     // Placeholder implementation
   }
-  
+
   load(_source: { src: string; type: string }) {
     // Placeholder implementation
   }
@@ -77,24 +103,27 @@ export interface MediaElementRef extends MediaElementLike {
 }
 
 export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
-  ({
-    src,
-    controls = false,
-    autoplay = false,
-    preload = 'metadata',
-    muted = false,
-    loop = false,
-    playsInline = true,
-    crossOrigin,
-    onPlay,
-    onPause,
-    onTimeUpdate,
-    onLoadedMetadata,
-    onVolumeChange,
-    onEnded,
-    className,
-    style,
-  }, ref) => {
+  (
+    {
+      src,
+      controls = false,
+      autoplay = false,
+      preload = 'metadata',
+      muted = false,
+      loop = false,
+      playsInline = true,
+      crossOrigin,
+      onPlay,
+      onPause,
+      onTimeUpdate,
+      onLoadedMetadata,
+      onVolumeChange,
+      onEnded,
+      className,
+      style,
+    },
+    ref
+  ) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const engineRef = useRef(new NativePlaybackEngine());
     const adapterRef = useRef<MediaElementLike | null>(null);
@@ -102,7 +131,7 @@ export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
     useEffect(() => {
       const video = videoRef.current;
       const engine = engineRef.current;
-      
+
       if (!video) return;
 
       engine.attach(video);
@@ -139,59 +168,63 @@ export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
       }
     }, [src]);
 
-    useImperativeHandle(ref, () => ({
-      element: videoRef.current,
-      get currentTime() {
-        return adapterRef.current?.currentTime ?? 0;
-      },
-      set currentTime(value: number) {
-        if (adapterRef.current) {
-          adapterRef.current.currentTime = value;
-        }
-      },
-      get duration() {
-        return adapterRef.current?.duration ?? 0;
-      },
-      get paused() {
-        return adapterRef.current?.paused ?? true;
-      },
-      get ended() {
-        return adapterRef.current?.ended ?? false;
-      },
-      get volume() {
-        return adapterRef.current?.volume ?? 1;
-      },
-      set volume(value: number) {
-        if (adapterRef.current) {
-          adapterRef.current.volume = value;
-        }
-      },
-      get muted() {
-        return adapterRef.current?.muted ?? false;
-      },
-      set muted(value: boolean) {
-        if (adapterRef.current) {
-          adapterRef.current.muted = value;
-        }
-      },
-      get playbackRate() {
-        return adapterRef.current?.playbackRate ?? 1;
-      },
-      set playbackRate(value: number) {
-        if (adapterRef.current) {
-          adapterRef.current.playbackRate = value;
-        }
-      },
-      get readyState() {
-        return adapterRef.current?.readyState ?? 0;
-      },
-      get networkState() {
-        return adapterRef.current?.networkState ?? 0;
-      },
-      play: () => adapterRef.current?.play() ?? Promise.resolve(),
-      pause: () => adapterRef.current?.pause(),
-      load: () => adapterRef.current?.load(),
-    }), []);
+    useImperativeHandle(
+      ref,
+      () => ({
+        element: videoRef.current,
+        get currentTime() {
+          return adapterRef.current?.currentTime ?? 0;
+        },
+        set currentTime(value: number) {
+          if (adapterRef.current) {
+            adapterRef.current.currentTime = value;
+          }
+        },
+        get duration() {
+          return adapterRef.current?.duration ?? 0;
+        },
+        get paused() {
+          return adapterRef.current?.paused ?? true;
+        },
+        get ended() {
+          return adapterRef.current?.ended ?? false;
+        },
+        get volume() {
+          return adapterRef.current?.volume ?? 1;
+        },
+        set volume(value: number) {
+          if (adapterRef.current) {
+            adapterRef.current.volume = value;
+          }
+        },
+        get muted() {
+          return adapterRef.current?.muted ?? false;
+        },
+        set muted(value: boolean) {
+          if (adapterRef.current) {
+            adapterRef.current.muted = value;
+          }
+        },
+        get playbackRate() {
+          return adapterRef.current?.playbackRate ?? 1;
+        },
+        set playbackRate(value: number) {
+          if (adapterRef.current) {
+            adapterRef.current.playbackRate = value;
+          }
+        },
+        get readyState() {
+          return adapterRef.current?.readyState ?? 0;
+        },
+        get networkState() {
+          return adapterRef.current?.networkState ?? 0;
+        },
+        play: () => adapterRef.current?.play() ?? Promise.resolve(),
+        pause: () => adapterRef.current?.pause(),
+        load: () => adapterRef.current?.load(),
+      }),
+      []
+    );
 
     return (
       <video
@@ -213,23 +246,26 @@ export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
 VideoElement.displayName = 'VideoElement';
 
 export const AudioElement = forwardRef<MediaElementRef, MediaElementProps>(
-  ({
-    src,
-    controls = false,
-    autoplay = false,
-    preload = 'metadata',
-    muted = false,
-    loop = false,
-    crossOrigin,
-    onPlay,
-    onPause,
-    onTimeUpdate,
-    onLoadedMetadata,
-    onVolumeChange,
-    onEnded,
-    className,
-    style,
-  }, ref) => {
+  (
+    {
+      src,
+      controls = false,
+      autoplay = false,
+      preload = 'metadata',
+      muted = false,
+      loop = false,
+      crossOrigin,
+      onPlay,
+      onPause,
+      onTimeUpdate,
+      onLoadedMetadata,
+      onVolumeChange,
+      onEnded,
+      className,
+      style,
+    },
+    ref
+  ) => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const engineRef = useRef(new NativePlaybackEngine());
     const adapterRef = useRef<MediaElementLike | null>(null);
@@ -237,7 +273,7 @@ export const AudioElement = forwardRef<MediaElementRef, MediaElementProps>(
     useEffect(() => {
       const audio = audioRef.current;
       const engine = engineRef.current;
-      
+
       if (!audio) return;
 
       engine.attach(audio);
@@ -274,59 +310,63 @@ export const AudioElement = forwardRef<MediaElementRef, MediaElementProps>(
       }
     }, [src]);
 
-    useImperativeHandle(ref, () => ({
-      element: audioRef.current,
-      get currentTime() {
-        return adapterRef.current?.currentTime ?? 0;
-      },
-      set currentTime(value: number) {
-        if (adapterRef.current) {
-          adapterRef.current.currentTime = value;
-        }
-      },
-      get duration() {
-        return adapterRef.current?.duration ?? 0;
-      },
-      get paused() {
-        return adapterRef.current?.paused ?? true;
-      },
-      get ended() {
-        return adapterRef.current?.ended ?? false;
-      },
-      get volume() {
-        return adapterRef.current?.volume ?? 1;
-      },
-      set volume(value: number) {
-        if (adapterRef.current) {
-          adapterRef.current.volume = value;
-        }
-      },
-      get muted() {
-        return adapterRef.current?.muted ?? false;
-      },
-      set muted(value: boolean) {
-        if (adapterRef.current) {
-          adapterRef.current.muted = value;
-        }
-      },
-      get playbackRate() {
-        return adapterRef.current?.playbackRate ?? 1;
-      },
-      set playbackRate(value: number) {
-        if (adapterRef.current) {
-          adapterRef.current.playbackRate = value;
-        }
-      },
-      get readyState() {
-        return adapterRef.current?.readyState ?? 0;
-      },
-      get networkState() {
-        return adapterRef.current?.networkState ?? 0;
-      },
-      play: () => adapterRef.current?.play() ?? Promise.resolve(),
-      pause: () => adapterRef.current?.pause(),
-      load: () => adapterRef.current?.load(),
-    }), []);
+    useImperativeHandle(
+      ref,
+      () => ({
+        element: audioRef.current,
+        get currentTime() {
+          return adapterRef.current?.currentTime ?? 0;
+        },
+        set currentTime(value: number) {
+          if (adapterRef.current) {
+            adapterRef.current.currentTime = value;
+          }
+        },
+        get duration() {
+          return adapterRef.current?.duration ?? 0;
+        },
+        get paused() {
+          return adapterRef.current?.paused ?? true;
+        },
+        get ended() {
+          return adapterRef.current?.ended ?? false;
+        },
+        get volume() {
+          return adapterRef.current?.volume ?? 1;
+        },
+        set volume(value: number) {
+          if (adapterRef.current) {
+            adapterRef.current.volume = value;
+          }
+        },
+        get muted() {
+          return adapterRef.current?.muted ?? false;
+        },
+        set muted(value: boolean) {
+          if (adapterRef.current) {
+            adapterRef.current.muted = value;
+          }
+        },
+        get playbackRate() {
+          return adapterRef.current?.playbackRate ?? 1;
+        },
+        set playbackRate(value: number) {
+          if (adapterRef.current) {
+            adapterRef.current.playbackRate = value;
+          }
+        },
+        get readyState() {
+          return adapterRef.current?.readyState ?? 0;
+        },
+        get networkState() {
+          return adapterRef.current?.networkState ?? 0;
+        },
+        play: () => adapterRef.current?.play() ?? Promise.resolve(),
+        pause: () => adapterRef.current?.pause(),
+        load: () => adapterRef.current?.load(),
+      }),
+      []
+    );
 
     return (
       <audio
