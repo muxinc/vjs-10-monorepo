@@ -29,16 +29,17 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/react-native-icons": "*",
-    "@vjs-10/react-native-media-elements": "*"
+    "@vjs-10/react-native-icons": "workspace:*",
+    "@vjs-10/react-native-media-elements": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
     "@types/react": "^18.0.0",
-    "react": "^18.0.0"
+    "react": "^18.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public"

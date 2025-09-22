@@ -71,26 +71,26 @@ interface IconProps extends SVGAttributes<SVGElement> {
 ### Adding New Icons
 
 1. **Add SVG file** to `packages/core/icons/assets/filename.svg`
-2. **Regenerate components**: Run `npm run generate` in this package
+2. **Regenerate components**: Run `pnpm generate` in this package
 3. **New component** will be available as `FilenameIcon`
 
 ### Modifying Existing Icons
 
 1. **Edit SVG file** in `packages/core/icons/assets/`
-2. **Regenerate components**: Run `npm run generate` in this package
+2. **Regenerate components**: Run `pnpm generate` in this package
 3. **Component updates automatically**
 
 ### Build Process
 
 ```bash
 # Generate React components from SVG files
-npm run generate
+pnpm generate
 
 # Build the package (includes generation step)
-npm run build
+pnpm build
 
 # Clean generated files and dist
-npm run clean
+pnpm clean
 ```
 
 ## 📦 Package Scripts

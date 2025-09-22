@@ -16,7 +16,8 @@
     "dist"
   ],
   "scripts": {
-    "generate": "svgr --config-file svgr.config.js --out-dir src/generated-icons ../../core/icons/assets",
+    "generate": "svgr --config-file svgr.config.js --out-dir src/generated-icons ../../core/icons/assets && pnpm format:icons",
+    "format:icons": "prettier src/generated-icons --write --log-level warn --cache",
     "build": "npm run generate && rollup -c && tsc --project tsconfig.build.json",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist src/generated-icons"
@@ -30,24 +31,24 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/icons": "*"
+    "@vjs-10/icons": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "rollup": "^4.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
-    "tslib": "^2.6.0",
-    "typescript": "^5.9.2",
-    "@types/react": "^18.0.0",
-    "react": "^18.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@svgr/babel-plugin-add-jsx-attribute": "^8.0.0",
     "@svgr/cli": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
-    "@svgr/plugin-prettier": "^8.1.0",
-    "@svgr/babel-plugin-add-jsx-attribute": "^8.0.0"
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "rollup": "^4.0.0",
+    "tslib": "^2.6.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public"

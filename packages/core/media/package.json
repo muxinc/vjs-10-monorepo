@@ -29,9 +29,10 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/playback-engine": "*"
+    "@vjs-10/playback-engine": "workspace:*"
   },
   "devDependencies": {
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

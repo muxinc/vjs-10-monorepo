@@ -63,7 +63,11 @@ vjs-10-monorepo/
 ### Installation
 
 ```bash
-npm install
+nvm use
+```
+
+```bash
+pnpm install
 ```
 
 ### Building
@@ -71,32 +75,38 @@ npm install
 Build all packages:
 
 ```bash
-npm run build
+pnpm build
 ```
 
-Build specific package:
+Build specific packages:
 
 ```bash
-npm run build --workspace=@vjs-10/core
+pnpm -F media build
+
+pnpm -F html build
+pnpm -F html-icons build
+
+pnpm -F react build
+pnpm -F react-icons build
 ```
 
 ### Development
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Build all packages
-npm run build
+pnpm build
 
 # Run type checking
-npm run typecheck
+pnpm typecheck
 
 # Run linting
-npm run lint
+pnpm lint
 
 # Run dev build
-npm run dev
+pnpm dev
 ```
 
 ## Package Dependencies

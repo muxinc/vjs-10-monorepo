@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  plugins: ['@svgr/plugin-jsx', '@svgr/plugin-prettier'],
+  plugins: ['@svgr/plugin-jsx'],
   typescript: true,
   jsxRuntime: 'automatic',
   icon: false, // Don't set height/width attributes.
@@ -28,7 +28,7 @@ module.exports = {
  *
  * To modify this icon:
  * 1. Edit the corresponding SVG file in packages/core/icons/assets/
- * 2. Run \`npm run generate\` in this package to regenerate components
+ * 2. Run \`pnpm generate\` in this package to regenerate components
  *
  * @generated
  */
@@ -62,7 +62,7 @@ ${variables.exports};
  *
  * To modify icons or add new ones:
  * 1. Add/edit SVG files in packages/core/icons/assets/
- * 2. Run \`npm run generate\` in this package to regenerate components
+ * 2. Run \`pnpm generate\` in this package to regenerate components
  *
  * @generated
  */
