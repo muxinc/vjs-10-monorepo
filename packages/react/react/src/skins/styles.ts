@@ -7,7 +7,7 @@ const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(
 // Improve types here to infer the keys from the object - not working with isolated declarations (rahim)
 const styles: Record<string, string> = {
   MediaContainer: cn(
-    'relative @container/root group/root overflow-clip rounded-4xl',
+    'relative @container/root group/root overflow-clip',
     // Base typography
     'antialiased font-[510] font-sans text-[0.8125rem] @7xl/root:text-[0.9375rem] leading-normal tracking-[-0.0125em]',
     // Prevent rounded corners in fullscreen.
