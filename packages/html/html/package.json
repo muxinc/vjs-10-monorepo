@@ -30,16 +30,19 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/html-icons": "*",
-    "@vjs-10/html-media-elements": "*",
-    "@vjs-10/html-media-store": "*"
+    "@open-wc/context-protocol": "^0.0.9",
+    "@vjs-10/html-icons": "workspace:*",
+    "@vjs-10/html-media-elements": "workspace:*",
+    "@vjs-10/html-media-store": "workspace:*",
+    "@vjs-10/media-store": "workspace:*"
   },
   "devDependencies": {
-    "rollup": "^4.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rollup": "^4.0.0",
     "tslib": "^2.6.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

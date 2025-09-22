@@ -30,24 +30,26 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/media": "*",
-    "@vjs-10/react-icons": "*",
-    "@vjs-10/react-media-elements": "*",
-    "@vjs-10/react-media-store": "*"
+    "@vjs-10/media": "workspace:*",
+    "@vjs-10/media-store": "workspace:*",
+    "@vjs-10/react-icons": "workspace:*",
+    "@vjs-10/react-media-elements": "workspace:*",
+    "@vjs-10/react-media-store": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "rollup": "^4.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "rollup": "^4.0.0",
     "rollup-plugin-postcss": "^4.0.0",
     "tslib": "^2.6.0",
-    "typescript": "^5.9.2",
-    "@types/react": "^18.0.0",
-    "react": "^18.0.0"
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public"

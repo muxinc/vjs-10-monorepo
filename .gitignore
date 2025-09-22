@@ -93,10 +93,10 @@ temp/
 .fusebox/
 .dynamodb/
 
-# Package manager lock files (keeping npm for this setup)
-# package-lock.json  # Uncommented for npm workspace
+# Package manager lock files (keeping pnpm for this setup)
+package-lock.json  
 yarn.lock
-pnpm-lock.yaml
+# pnpm-lock.yaml # Uncommented for pnpm workspace
 bun.lockb
 
 # Monorepo specific

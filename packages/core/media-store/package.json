@@ -32,11 +32,12 @@
     "nanostores": "^1.0.1"
   },
   "devDependencies": {
-    "rollup": "^4.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rollup": "^4.0.0",
     "tslib": "^2.6.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

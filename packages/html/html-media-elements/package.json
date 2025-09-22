@@ -31,9 +31,10 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@open-wc/context-protocol": "^0.0.9",
-    "@vjs-10/media-store": "*"
+    "@vjs-10/media-store": "workspace:*"
   },
   "devDependencies": {
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

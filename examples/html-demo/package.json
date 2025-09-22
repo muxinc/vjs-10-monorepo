@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vjs-10/html": "*"
+    "@vjs-10/html": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

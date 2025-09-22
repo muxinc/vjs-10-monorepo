@@ -1,0 +1,7 @@
+packages:
+  - 'packages/core/*'
+  - 'packages/html/*'
+  - 'packages/react/*'
+  - 'packages/react-native/*'
+  - 'examples/*'
+minimumReleaseAge: 1440

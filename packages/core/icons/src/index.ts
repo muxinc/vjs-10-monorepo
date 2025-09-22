@@ -16,7 +16,7 @@ export const SVG_ICONS = {
   volumeOff: volumeOffSvg,
   fullscreenEnter: fullscreenEnterSvg,
   fullscreenExit: fullscreenExitSvg,
-} as const;
+};
 
 // Legacy interface for backward compatibility
 export interface IconDefinition {
