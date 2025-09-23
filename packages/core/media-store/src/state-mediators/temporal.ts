@@ -82,5 +82,5 @@ export const temporal = {
         return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
       },
     ] as const,
-  },
+  },  
 };
