@@ -1,12 +1,10 @@
-import { SelectorStrategy, SelectorContext, ClassUsage, SemanticMapping } from './types.js';
+import type { ClassUsage, SelectorContext, SelectorStrategy, SemanticMapping } from './types.js';
 
 /**
  * Convert PascalCase to kebab-case
  */
 function toKebabCase(str: string): string {
-  return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase();
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
 /**
@@ -17,7 +15,7 @@ export abstract class BaseSelectorStrategy implements SelectorStrategy {
 
   abstract generateSelector(context: SelectorContext): string;
 
-  needsDeduplication(usage: ClassUsage): boolean {
+  needsDeduplication(_usage: ClassUsage): boolean {
     // All usages might need deduplication if there are multiple instances
     return true;
   }
@@ -31,9 +29,7 @@ export abstract class BaseSelectorStrategy implements SelectorStrategy {
    * Find a custom mapping for the given usage
    */
   protected findCustomMapping(usage: ClassUsage): SemanticMapping | undefined {
-    return this.mappings.find(m =>
-      m.component === usage.component && m.element === usage.element
-    );
+    return this.mappings.find((m) => m.component === usage.component && m.element === usage.element);
   }
 }
 
@@ -81,7 +77,7 @@ export class VanillaSelectorStrategy extends BaseSelectorStrategy {
     if (elementType === 'icon') {
       const iconClass = elementType;
       baseSelector = `${componentName} .${iconClass}`;
-    } else if (usage.component.toLowerCase().includes(elementType)) {
+    } else if (elementType && usage.component.toLowerCase().includes(elementType)) {
       // Don't add media- prefix if the original component name already starts with "Media"
       baseSelector = usage.component.startsWith('Media') ? componentName : `media-${componentName}`;
     } else {

@@ -16,7 +16,7 @@ import type {
   ExportDefaultDeclaration,
 } from '@babel/types';
 import { readFileSync } from 'fs';
-import { ClassUsage, ParsedFile } from './types.js';
+import type { ClassUsage, ParsedFile } from './types.js';
 
 /**
  * Parse space-separated class string

@@ -1,4 +1,4 @@
-import { SelectorStrategy, SelectorContext, ClassUsage } from './types.js';
+import type { SelectorContext, SelectorStrategy } from './types.js';
 
 export interface SelectorWithContext<T extends SelectorContext = SelectorContext> {
   context: T;
@@ -17,7 +17,6 @@ export class SelectorDeduplicationService {
     contexts: T[],
     strategy: SelectorStrategy
   ): SelectorWithContext<T>[] {
-
     // First pass: group contexts by deduplication key
     const keyGroups = new Map<string, T[]>();
 
@@ -56,7 +55,7 @@ export class SelectorDeduplicationService {
 
       results.push({
         context: selectorContext,
-        selector
+        selector,
       });
     }
 
@@ -76,10 +75,7 @@ export class SelectorDeduplicationService {
 
       if (existing) {
         // Merge classes from multiple usages with the same selector
-        const mergedClasses = [...new Set([
-          ...existing.context.usage.classes,
-          ...result.context.usage.classes
-        ])];
+        const mergedClasses = [...new Set([...existing.context.usage.classes, ...result.context.usage.classes])];
 
         // Update the existing entry with merged classes
         existing.context.usage.classes = mergedClasses;
@@ -87,12 +83,12 @@ export class SelectorDeduplicationService {
         // Create a deep copy to avoid mutating the original
         const contextCopy = {
           ...result.context,
-          usage: { ...result.context.usage }
+          usage: { ...result.context.usage },
         };
 
         selectorMap.set(result.selector, {
           context: contextCopy,
-          selector: result.selector
+          selector: result.selector,
         });
       }
     }
@@ -103,10 +99,7 @@ export class SelectorDeduplicationService {
   /**
    * Complete pipeline: generate unique selectors and merge duplicates
    */
-  processSelectors<T extends SelectorContext>(
-    contexts: T[],
-    strategy: SelectorStrategy
-  ): SelectorWithContext<T>[] {
+  processSelectors<T extends SelectorContext>(contexts: T[], strategy: SelectorStrategy): SelectorWithContext<T>[] {
     const uniqueSelectors = this.generateUniqueSelectors(contexts, strategy);
     return this.mergeUsagesBySelector(uniqueSelectors);
   }
