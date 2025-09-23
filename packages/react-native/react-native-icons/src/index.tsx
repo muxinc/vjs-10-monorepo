@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 // Placeholder exports for React Native Icons package
 // These will be implemented in a future step
 

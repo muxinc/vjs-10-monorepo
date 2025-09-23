@@ -29,7 +29,7 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
   set: FacadeSetter<S>;
   /** @TODO We probably need to refactor this for more complex cases where we can't simply translate to a setter */
   actions: {
-    [k: string]: (val: Pick<CustomEvent<any>, 'type' | 'detail'>) => ReturnType<FacadeGetter<T, D>>;
+    [k: string]: (val: { type: string; detail?: unknown }) => ReturnType<FacadeGetter<T, D>>;
   };
 };
 
@@ -45,7 +45,7 @@ export type StateMediator = {
 };
 
 export interface MediaStore {
-  dispatch(action: Pick<CustomEvent<any>, 'type' | 'detail'>): void;
+  dispatch(action: { type: string; detail?: unknown }): void;
   getState(): any;
   getKeys(keys: string[]): Record<string, any>;
   subscribeKeys(keys: string[], callback: (state: any) => void): void;

@@ -1,4 +1,6 @@
-import * as React from 'react';
+import type { FC, HTMLProps, PropsWithChildren, RefCallback } from 'react';
+
+import { useCallback } from 'react';
 
 import { useMediaStore } from '@vjs-10/react-media-store';
 
@@ -17,10 +19,10 @@ import { useMediaStore } from '@vjs-10/react-media-store';
  *   return <div ref={containerRef}>{children}</div>;
  * };
  */
-export const useMediaContainerRef = () => {
+export const useMediaContainerRef = (): RefCallback<HTMLElement | null> => {
   const mediaStore = useMediaStore();
 
-  return React.useCallback(
+  return useCallback(
     (containerElement: HTMLElement | null) => {
       if (!mediaStore) return;
 
@@ -48,10 +50,7 @@ export const useMediaContainerRef = () => {
  *   </MediaContainer>
  * );
  */
-export const MediaContainer: React.FC<React.PropsWithChildren<React.HTMLProps<HTMLDivElement>>> = ({
-  children,
-  ...props
-}) => {
+export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement>>> = ({ children, ...props }) => {
   const containerRef = useMediaContainerRef();
 
   return (

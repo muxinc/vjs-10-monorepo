@@ -1,9 +1,11 @@
 // Utility to merge class names
 // Usually I'd use something like `clsx` or `classnames` but this is ok for our simple use case.
 // It just makes the billions of Tailwind classes a little easier to read.
+
 const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
 
-const styles = {
+// Improve types here to infer the keys from the object - not working with isolated declarations (rahim)
+const styles: Record<string, string> = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip rounded-4xl',
     // Base typography

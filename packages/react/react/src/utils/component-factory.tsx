@@ -1,8 +1,7 @@
-import * as React from 'react';
+import type { FC, ReactElement } from 'react';
 
-/**
- * Generic types for the component factory pattern
- */
+import { createContext, useContext } from 'react';
+
 export type StateHookFn<TProps = any, TState = any> = (props: TProps) => TState;
 
 export type PropsHookFn<TProps = any, TState = any, TResultProps = any> = (
@@ -10,9 +9,9 @@ export type PropsHookFn<TProps = any, TState = any, TResultProps = any> = (
   state: TState
 ) => TResultProps;
 
-export type RenderFn<TProps = any, TState = any> = (props: TProps, state: TState) => React.ReactElement;
+export type RenderFn<TProps = any, TState = any> = (props: TProps, state: TState) => ReactElement;
 
-const Context = React.createContext<any | null>(null);
+const Context = createContext<any>(null);
 
 /**
  * Generic factory function to create connected components following the hooks pattern
@@ -34,7 +33,7 @@ export const toConnectedComponent = <
   usePropsHook: PropsHookFn<TProps, TState, TResultProps>,
   defaultRender: TRenderFn,
   displayName: string
-) => {
+): ConnectedComponent<TProps, TRenderFn> => {
   const ConnectedComponent = ({ render = defaultRender, ...props }: TProps & { render?: TRenderFn }) => {
     const connectedState = useStateHook(props as TProps);
     const connectedProps = usePropsHook(props as TProps, connectedState);
@@ -42,13 +41,14 @@ export const toConnectedComponent = <
   };
 
   ConnectedComponent.displayName = displayName;
+
   return ConnectedComponent;
 };
 
 /**
  * Type helper to infer the component type from the factory
  */
-export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn extends RenderFn<any, any>> = React.FC<
+export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn extends RenderFn<any, any>> = FC<
   TProps & { render?: TRenderFn }
 >;
 
@@ -64,19 +64,20 @@ export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn ext
 export const toContextComponent = <
   TProps extends Record<string, any>,
   TResultProps extends Record<string, any>,
-  TRenderFn extends (props: TResultProps, context: any) => React.ReactElement,
+  TRenderFn extends (props: TResultProps, context: any) => ReactElement,
 >(
   usePropsHook: (props: TProps, context: any) => TResultProps,
   defaultRender: TRenderFn,
   displayName: string
-) => {
+): ContextComponent<TProps, TRenderFn> => {
   const ContextComponent = ({ render = defaultRender, ...props }: TProps & { render?: TRenderFn }) => {
-    const context = React.useContext(Context);
+    const context = useContext(Context);
     const contextProps = usePropsHook(props as TProps, context);
     return render(contextProps, context);
   };
 
   ContextComponent.displayName = displayName;
+
   return ContextComponent;
 };
 
@@ -85,5 +86,5 @@ export const toContextComponent = <
  */
 export type ContextComponent<
   TProps extends Record<string, any>,
-  TRenderFn extends (props: any, context: any) => React.ReactElement,
-> = React.FC<TProps & { render?: TRenderFn }>;
+  TRenderFn extends (props: any, context: any) => ReactElement,
+> = FC<TProps & { render?: TRenderFn }>;

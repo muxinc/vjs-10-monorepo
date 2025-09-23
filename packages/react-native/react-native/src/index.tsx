@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 // Placeholder exports for React Native package
 // These will be implemented in a future step
 

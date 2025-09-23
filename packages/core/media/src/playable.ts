@@ -14,10 +14,8 @@ export const Events = [
   'durationchange',
 ] as const;
 
-export interface IBaseMediaStateOwner<T extends Pick<HTMLMediaElement, 'src'> = Pick<HTMLMediaElement, 'src'>>
-  extends EventTarget,
-    Pick<HTMLMediaElement, 'src'> {
-  mediaElement?: T | undefined;
+export interface IBaseMediaStateOwner extends EventTarget, Pick<HTMLMediaElement, 'src'> {
+  mediaElement?: HTMLMediaElement | undefined;
 }
 
 export interface IPlayableMediaStateOwner
@@ -43,7 +41,7 @@ export class PlayableMediaStateOwner extends EventTarget implements IPlayableMed
     this._playbackEngine = createPlaybackEngine();
   }
 
-  get mediaElement(): HTMLMediaElement {
+  get mediaElement(): HTMLMediaElement | undefined {
     return this._playbackEngine.mediaElement;
   }
 
