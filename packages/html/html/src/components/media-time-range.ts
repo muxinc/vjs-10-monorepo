@@ -26,13 +26,15 @@ export class TimeRangeRootBase extends HTMLElement {
         currentTime: number;
         duration: number;
         requestSeek: (time: number) => void;
+        pointerPosition: number | null;
+        hovering: boolean;
+        dragging: boolean;
       }
     | undefined;
 
   _trackElement: HTMLElement | null = null;
-  _pointerPosition: number | null = null;
-  _hovering: boolean = false;
-  _dragging: boolean = false;
+  _seekingTime: number | null = null;
+  _currentTime: number | null = null;
 
   constructor() {
     super();
@@ -43,6 +45,11 @@ export class TimeRangeRootBase extends HTMLElement {
     this.addEventListener('pointerup', this);
     this.addEventListener('pointerenter', this);
     this.addEventListener('pointerleave', this);
+  }
+
+  _setState(state: any): void {
+    this._state = { ...this._state, ...state };
+    this._update(useTimeRangeRootProps(this._state!, this), this._state!);
   }
 
   handleEvent(event: Event): void {
@@ -71,9 +78,11 @@ export class TimeRangeRootBase extends HTMLElement {
 
   private _handlePointerDown(event: PointerEvent) {
     event.preventDefault();
-    this._dragging = true;
+    this._setState({ dragging: true });
+
     const seekTime = calculateSeekTimeFromPointerEvent(event, this._state!.duration);
     this._state!.requestSeek(seekTime);
+    this._seekingTime = seekTime;
 
     // Capture pointer events
     this.setPointerCapture(event.pointerId);
@@ -84,30 +93,32 @@ export class TimeRangeRootBase extends HTMLElement {
 
     const rect = this._trackElement.getBoundingClientRect();
     const ratio = calculatePointerRatio(event.clientX, rect);
-    this._pointerPosition = ratio;
+    this._setState({ pointerPosition: ratio });
 
-    if (this._dragging) {
+    if (this._state!.dragging) {
       const seekTime = calculateSeekTimeFromRatio(ratio, this._state!.duration);
       this._state!.requestSeek(seekTime);
+      this._seekingTime = seekTime;
     }
   }
 
   private _handlePointerUp(event: PointerEvent) {
     this.releasePointerCapture(event.pointerId);
 
-    if (this._dragging && this._trackElement && this._pointerPosition !== null) {
-      const seekTime = calculateSeekTimeFromRatio(this._pointerPosition, this._state!.duration);
+    if (this._state!.dragging && this._trackElement && this._state!.pointerPosition !== null) {
+      const seekTime = calculateSeekTimeFromRatio(this._state!.pointerPosition, this._state!.duration);
       this._state!.requestSeek(seekTime);
+      this._seekingTime = seekTime;
     }
-    this._dragging = false;
+    this._setState({ dragging: false });
   }
 
   private _handlePointerEnter() {
-    this._hovering = true;
+    this._setState({ hovering: true });
   }
 
   private _handlePointerLeave() {
-    this._hovering = false;
+    this._setState({ hovering: false });
   }
 
   get currentTime(): number {
@@ -119,24 +130,32 @@ export class TimeRangeRootBase extends HTMLElement {
   }
 
   _update(props: any, state: any): void {
-    this._state = state;
+    this._state = { ...this._state, ...state };
 
-    // Find track element
     this._trackElement = this.querySelector('media-time-range-track') as HTMLElement;
-
-    // Calculate slider fill percentage
-    const sliderFill =
-      this._dragging && this._pointerPosition !== null
-        ? this._pointerPosition
-        : state.duration > 0
-          ? (state.currentTime / state.duration) * 100
-          : 0;
+    
+    // When dragging, use pointer position for immediate feedback;
+    // While seeking, use seeking time so it doesn't jump back to the current time;
+    // Otherwise, use current time;
+    let sliderFill = 0;
+    if (state.dragging && state.pointerPosition !== null) {
+      sliderFill = state.pointerPosition;
+    } else if (state.duration > 0) {
+      if (this._seekingTime !== null && this._currentTime === state.currentTime) {
+        sliderFill = (this._seekingTime / state.duration) * 100;
+      } else {
+        sliderFill = (state.currentTime / state.duration) * 100;
+        this._seekingTime = null;
+      }
+    }
+  
+    this._currentTime = state.currentTime;
 
     // Update CSS custom properties
     this.style.setProperty('--slider-fill', `${Math.round(sliderFill)}%`);
     this.style.setProperty(
       '--slider-pointer',
-      this._hovering && this._pointerPosition !== null ? `${Math.round(this._pointerPosition)}%` : '0%'
+      this._state!.hovering && this._state!.pointerPosition !== null ? `${Math.round(this._state!.pointerPosition)}%` : '0%'
     );
 
     // Update ARIA attributes

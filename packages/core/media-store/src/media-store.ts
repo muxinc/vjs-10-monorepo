@@ -4,7 +4,7 @@ import { createMediaStore as factory } from './factory';
 import { audible } from './state-mediators/audible';
 import { fullscreenable } from './state-mediators/fullscreenable';
 import { playable } from './state-mediators/playable';
-import { temporal } from './utils/temporal';
+import { temporal } from './state-mediators/temporal';
 
 // Example of default media store with default state mediator definitions. (CJP)
 // NOTE: We can also change the API to take an array of stateMediators (or either/both) (CJP)

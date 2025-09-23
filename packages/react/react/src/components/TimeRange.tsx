@@ -1,7 +1,7 @@
 import type { ConnectedComponent } from '../utils/component-factory';
 import type { PointerEvent, PropsWithChildren } from 'react';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useRef } from 'react';
 
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
@@ -79,13 +79,25 @@ export const useTimeRangeRootProps = (
   props: PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useTimeRangeRootState>
 ) => {
-  // When dragging, use pointer position for immediate feedback; otherwise use current time
-  const sliderFill =
-    state.dragging && state.pointerPosition !== null
-      ? state.pointerPosition
-      : state.duration > 0
-        ? (state.currentTime / state.duration) * 100
-        : 0;
+  const seekingTime = useRef<number | null>(null);
+  const currentTime = useRef<number | null>(null);
+  
+  // When dragging, use pointer position for immediate feedback;
+  // While seeking, use seeking time so it doesn't jump back to the current time;
+  // Otherwise, use current time;
+  let sliderFill = 0;
+  if (state.dragging && state.pointerPosition !== null) {
+    sliderFill = state.pointerPosition;
+  } else if (state.duration > 0) {
+    if (seekingTime.current !== null && currentTime.current === state.currentTime) {
+      sliderFill = (seekingTime.current / state.duration) * 100;
+    } else {
+      sliderFill = (state.currentTime / state.duration) * 100;
+      seekingTime.current = null;
+    }
+  }
+
+  currentTime.current = state.currentTime;
 
   const handlePointerDown = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
@@ -93,6 +105,7 @@ export const useTimeRangeRootProps = (
       state.setDragging(true);
       const seekTime = calculateSeekTimeFromPointerEvent(e, state.duration);
       state.requestSeek(seekTime);
+      seekingTime.current = seekTime;
 
       // Capture pointer events to ensure we receive move and up events even if pointer leaves element
       e.currentTarget.setPointerCapture(e.pointerId);
@@ -111,6 +124,7 @@ export const useTimeRangeRootProps = (
       if (state.dragging) {
         const seekTime = calculateSeekTimeFromRatio(ratio, state.duration);
         state.requestSeek(seekTime);
+        seekingTime.current = seekTime;
       }
     },
     [state.trackRef, state.setPointerPosition, state.dragging, state.requestSeek, state.duration]
@@ -123,6 +137,7 @@ export const useTimeRangeRootProps = (
       if (state.dragging && state.trackRef && state.pointerPosition !== null) {
         const seekTime = calculateSeekTimeFromRatio(state.pointerPosition, state.duration);
         state.requestSeek(seekTime);
+        seekingTime.current = seekTime;
       }
       state.setDragging(false);
     },
