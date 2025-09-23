@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'node:path';
 
-module.exports = {
+export default {
   plugins: ['@svgr/plugin-jsx'],
   typescript: true,
   jsxRuntime: 'automatic',
@@ -36,7 +36,7 @@ import type { IconProps } from '../types';
 
 ${variables.interfaces};
 
-const ${variables.componentName} = ({ color = 'currentColor', ...props }: IconProps) => (
+const ${variables.componentName} = ({ color = 'currentColor', ...props }: IconProps): JSX.Element => (
   ${variables.jsx}
 );
 

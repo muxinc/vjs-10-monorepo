@@ -2,7 +2,7 @@
   "name": "@vjs-10/react",
   "type": "module",
   "version": "0.1.0",
-  "description": "React library for building media players with Video.js",
+  "description": "React library for building media players",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

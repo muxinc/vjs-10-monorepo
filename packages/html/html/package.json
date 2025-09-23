@@ -2,7 +2,7 @@
   "name": "@vjs-10/html",
   "type": "module",
   "version": "0.1.0",
-  "description": "HTML library for building media players with Video.js",
+  "description": "HTML library for building media players",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
