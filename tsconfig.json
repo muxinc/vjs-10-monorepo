@@ -1,5 +1,25 @@
 {
   "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "references": [
+    { "path": "packages/core/media-store" },
+    { "path": "packages/core/playback-engine" },
+    { "path": "packages/core/media" },
+    { "path": "packages/core/icons" },
+    { "path": "packages/html/html-icons" },
+    { "path": "packages/html/html-media-elements" },
+    { "path": "packages/html/html-media-store" },
+    { "path": "packages/html/html" },
+    { "path": "packages/react/react-icons" },
+    { "path": "packages/react/react-media-elements" },
+    { "path": "packages/react/react-media-store" },
+    { "path": "packages/react/react" },
+    { "path": "packages/react-native/react-native-icons" },
+    { "path": "packages/react-native/react-native-media-elements" },
+    { "path": "packages/react-native/react-native" }
+  ],
   "files": [],
   "include": []
 }

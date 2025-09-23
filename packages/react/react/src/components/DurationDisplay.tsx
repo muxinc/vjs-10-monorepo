@@ -2,7 +2,7 @@ import type { ConnectedComponent } from '../utils/component-factory';
 import type { PropsWithChildren } from 'react';
 
 import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
-import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+import { shallowEqual, useMediaSelector } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
@@ -11,8 +11,6 @@ export const useDurationDisplayState = (
 ): {
   duration: number;
 } => {
-  const mediaStore = useMediaStore();
-
   /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(durationDisplayStateDefinition.stateTransform, shallowEqual);
 
@@ -25,10 +23,7 @@ export const useDurationDisplayState = (
 export type useDurationDisplayState = typeof useDurationDisplayState;
 export type DurationDisplayState = ReturnType<useDurationDisplayState>;
 
-export const useDurationDisplayProps = (
-  props: PropsWithChildren,
-  state: ReturnType<typeof useDurationDisplayState>
-): PropsWithChildren<Record<string, unknown>> => {
+export const useDurationDisplayProps = (props: PropsWithChildren): PropsWithChildren<Record<string, unknown>> => {
   const baseProps: Record<string, any> = {
     /** external props spread last to allow for overriding */
     ...props,
