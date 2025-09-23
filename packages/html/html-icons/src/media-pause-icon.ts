@@ -10,7 +10,7 @@ export function getTemplateHTML() {
 }
 
 export class MediaPauseIcon extends MediaChromeIcon {
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 }
 
 customElements.define('media-pause-icon', MediaPauseIcon);

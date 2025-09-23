@@ -15,7 +15,7 @@ export function getTemplateHTML() {
 }
 
 export class MediaFullscreenExitIcon extends MediaChromeIcon {
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 }
 
 customElements.define('media-fullscreen-exit-icon', MediaFullscreenExitIcon);

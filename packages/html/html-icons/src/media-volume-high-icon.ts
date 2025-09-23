@@ -15,7 +15,7 @@ export function getTemplateHTML() {
 }
 
 export class MediaVolumeHighIcon extends MediaChromeIcon {
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 }
 
 customElements.define('media-volume-high-icon', MediaVolumeHighIcon);
