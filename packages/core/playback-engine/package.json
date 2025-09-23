@@ -35,7 +35,7 @@
     "hls.js": "^1.6.7"
   },
   "devDependencies": {
-    "tsup": "^8.5.0",
+    "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

@@ -18,17 +18,19 @@ export class HlsJSPlaybackEngine extends EventTarget {
 
   protected _hlsInstance: Hls | undefined;
 
-  get src() {
+  get src(): string | undefined {
     return this._hlsInstance?.url ?? undefined;
   }
 
-  set src(val) {
-    if (this.src === val) return;
+  set src(src: string | undefined) {
+    if (this.src === src) return;
+
     if (!this._hlsInstance) {
       this._createHlsInstance();
     }
-    if (!this.src && val) {
-      this._hlsInstance?.loadSource(val);
+
+    if (!this.src && src) {
+      this._hlsInstance?.loadSource(src);
     }
   }
 
@@ -45,32 +47,34 @@ export class HlsJSPlaybackEngine extends EventTarget {
     this.mediaElement = val as HTMLMediaElement;
   }
 
-  get mediaElement() {
+  get mediaElement(): HTMLMediaElement | undefined {
     return this._hlsInstance?.media ?? undefined;
   }
 
   set mediaElement(val) {
     if (this.mediaElement === val) return;
+
     if (!this._hlsInstance) {
       this._createHlsInstance();
     }
+
     if (!this.mediaElement && val) {
       this._hlsInstance?.attachMedia(val);
     }
   }
 
-  protected _createHlsInstance() {
+  protected _createHlsInstance(): void {
     this._hlsInstance = new Hls();
   }
 
-  protected _destroyHlsInstance() {
+  protected _destroyHlsInstance(): void {
     this._hlsInstance?.destroy();
     this._hlsInstance = undefined;
   }
 
-  destroy() {
+  destroy(): void {
     this._destroyHlsInstance();
   }
 }
 
-export const createPlaybackEngine = () => new HlsJSPlaybackEngine();
+export const createPlaybackEngine = (): IBasePlaybackEngine => new HlsJSPlaybackEngine();
