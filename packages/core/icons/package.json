@@ -2,7 +2,7 @@
   "name": "@vjs-10/icons",
   "type": "module",
   "version": "0.1.0",
-  "description": "Base icon library for Video.js",
+  "description": "SVG icon library for Video.js",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
