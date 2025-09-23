@@ -1,4 +1,4 @@
-import type { ClassUsage, SelectorContext, SelectorStrategy, SemanticMapping } from './types.js';
+import type { EnhancedClassUsage, SelectorContext, SelectorStrategy, SemanticMapping } from './types.js';
 
 /**
  * Convert PascalCase to kebab-case
@@ -15,12 +15,12 @@ export abstract class BaseSelectorStrategy implements SelectorStrategy {
 
   abstract generateSelector(context: SelectorContext): string;
 
-  needsDeduplication(_usage: ClassUsage): boolean {
+  needsDeduplication(_usage: EnhancedClassUsage): boolean {
     // All usages might need deduplication if there are multiple instances
     return true;
   }
 
-  getDeduplicationKey(usage: ClassUsage): string {
+  getDeduplicationKey(usage: EnhancedClassUsage): string {
     // Default deduplication by component-element combination
     return `${usage.component}-${usage.element}`;
   }
@@ -28,7 +28,7 @@ export abstract class BaseSelectorStrategy implements SelectorStrategy {
   /**
    * Find a custom mapping for the given usage
    */
-  protected findCustomMapping(usage: ClassUsage): SemanticMapping | undefined {
+  protected findCustomMapping(usage: EnhancedClassUsage): SemanticMapping | undefined {
     return this.mappings.find((m) => m.component === usage.component && m.element === usage.element);
   }
 }

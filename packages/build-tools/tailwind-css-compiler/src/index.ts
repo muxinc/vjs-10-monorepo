@@ -15,12 +15,18 @@ export {
 export { semanticCSSGenerator } from './semantic-css-generator.js';
 export { semanticTransform } from './semantic-transform.js';
 
+// Enhanced class parsing functions
+export { enhanceClassUsage, enhanceClassUsages, parseEnhancedClassString } from './class-parser.js';
+
 // Type exports
 export type {
   ClassUsage,
+  EnhancedClassUsage,
   SemanticMapping,
   CompilerConfig,
-  ParsedFile
+  ParsedFile,
+  ContainerQuery,
+  ArbitraryValue
 } from './types.js';
 
 // New types

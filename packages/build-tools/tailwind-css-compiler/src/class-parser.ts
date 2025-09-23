@@ -1,5 +1,5 @@
 import { parseClassString as parseClasses } from '@toddledev/tailwind-parser';
-import type { ArbitraryValue, ContainerQuery } from './types.js';
+import type { ArbitraryValue, ContainerQuery, ClassUsage, EnhancedClassUsage } from './types.js';
 
 /**
  * Enhanced class parsing result with container query and arbitrary value support
@@ -174,4 +174,27 @@ function parseArbitraryValueManual(cls: string): ArbitraryValue | null {
   }
 
   return null;
+}
+
+/**
+ * Transform a ClassUsage into an EnhancedClassUsage by parsing the classes
+ */
+export function enhanceClassUsage(usage: ClassUsage): EnhancedClassUsage {
+  const classString = usage.classes.join(' ');
+  const parsed = parseEnhancedClassString(classString);
+
+  return {
+    ...usage,
+    simpleClasses: parsed.simpleClasses,
+    containerDeclarations: parsed.containerDeclarations,
+    containerQueries: parsed.containerQueries,
+    arbitraryValues: parsed.arbitraryValues,
+  };
+}
+
+/**
+ * Transform multiple ClassUsages into EnhancedClassUsages
+ */
+export function enhanceClassUsages(usages: ClassUsage[]): EnhancedClassUsage[] {
+  return usages.map(enhanceClassUsage);
 }

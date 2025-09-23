@@ -19,7 +19,6 @@ import type {
 } from '@babel/types';
 import { readFileSync } from 'fs';
 import type { ClassUsage, ParsedFile } from './types.js';
-import { parseEnhancedClassString } from './class-parser.js';
 
 /**
  * Parse space-separated class string
@@ -270,17 +269,7 @@ export function extractClassUsage(
     node.value as JSXExpressionContainer | StringLiteral | null,
   );
 
-  // Parse classes using enhanced parser
-  const classString = classes.join(' ');
-  const parsed = parseEnhancedClassString(classString);
-
-  // If no classes at all, return null
-  if (
-    parsed.simpleClasses.length === 0 &&
-    parsed.containerDeclarations.length === 0 &&
-    parsed.containerQueries.length === 0 &&
-    parsed.arbitraryValues.length === 0
-  ) {
+  if (classes.length === 0) {
     return null;
   }
 
@@ -289,10 +278,7 @@ export function extractClassUsage(
   return {
     component,
     element,
-    classes: parsed.simpleClasses,
-    containerDeclarations: parsed.containerDeclarations,
-    containerQueries: parsed.containerQueries,
-    arbitraryValues: parsed.arbitraryValues,
+    classes,
     line: loc?.start.line || 0,
     column: loc?.start.column || 0,
     componentType,

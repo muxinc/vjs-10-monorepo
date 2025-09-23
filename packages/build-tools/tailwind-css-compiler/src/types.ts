@@ -23,20 +23,25 @@ export interface ClassUsage {
   component: string;
   /** Element type (e.g., "button", "icon", "div") */
   element: string | undefined;
-  /** Simple Tailwind classes (can use @apply) */
+  /** Raw Tailwind classes found */
   classes: string[];
-  /** Container declarations (e.g., ["@container/root"]) */
-  containerDeclarations: string[];
-  /** Container query usages */
-  containerQueries: ContainerQuery[];
-  /** Arbitrary value usages */
-  arbitraryValues: ArbitraryValue[];
   /** Line number in source file */
   line: number;
   /** Column number in source file */
   column: number;
   /** Type of component - distinguishes library vs native elements */
   componentType: 'library' | 'native' | 'unknown';
+}
+
+export interface EnhancedClassUsage extends ClassUsage {
+  /** Simple Tailwind classes (can use @apply) */
+  simpleClasses: string[];
+  /** Container declarations (e.g., ["@container/root"]) */
+  containerDeclarations: string[];
+  /** Container query usages */
+  containerQueries: ContainerQuery[];
+  /** Arbitrary value usages */
+  arbitraryValues: ArbitraryValue[];
 }
 
 export interface SemanticMapping {
@@ -51,7 +56,7 @@ export interface SemanticMapping {
 }
 
 export interface SelectorContext {
-  usage: ClassUsage;
+  usage: EnhancedClassUsage;
   targetType: 'vanilla' | 'modules';
   instanceSuffix?: string;
 }
@@ -60,9 +65,9 @@ export interface SelectorStrategy {
   /** Generate a CSS selector for the given context */
   generateSelector(context: SelectorContext): string;
   /** Determine if this usage needs deduplication */
-  needsDeduplication(usage: ClassUsage): boolean;
+  needsDeduplication(usage: EnhancedClassUsage): boolean;
   /** Generate a key for deduplication grouping */
-  getDeduplicationKey(usage: ClassUsage): string;
+  getDeduplicationKey(usage: EnhancedClassUsage): string;
 }
 
 export interface CompilerConfig {

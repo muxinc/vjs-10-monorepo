@@ -4,7 +4,8 @@ import postcss, { Root } from 'postcss';
 import containerQueries from '@tailwindcss/container-queries';
 import { parseClassString as parseClasses } from '@toddledev/tailwind-parser';
 
-import type { ClassUsage, SelectorContext, SemanticMapping } from './types.js';
+import type { ClassUsage, EnhancedClassUsage, SelectorContext, SemanticMapping } from './types.js';
+import { enhanceClassUsages } from './class-parser.js';
 import type { Helpers, Plugin } from 'postcss';
 
 import { SelectorDeduplicationService } from './selector-deduplication.js';
@@ -34,8 +35,11 @@ const semanticCSSGenerator: {
     Once(root: Root, _helpers: Helpers) {
       const { usages, mappings = [], generateVanilla = true, generateModules = true } = options;
 
-      // Create selector contexts from usages
-      const contexts: SelectorContext[] = usages.map((usage) => ({
+      // Enhance usages with parsed class information
+      const enhancedUsages = enhanceClassUsages(usages);
+
+      // Create selector contexts from enhanced usages
+      const contexts: SelectorContext[] = enhancedUsages.map((usage) => ({
         usage,
         targetType: 'vanilla' as const, // This will be overridden per strategy
       }));
@@ -93,15 +97,15 @@ function getContainerBreakpoints(): Record<string, string> {
 /**
  * Generate enhanced CSS rule with container queries and arbitrary values
  */
-function generateEnhancedCSSRule(root: Root, selector: string, usage: ClassUsage, isModule: boolean) {
+function generateEnhancedCSSRule(root: Root, selector: string, usage: EnhancedClassUsage, isModule: boolean) {
   const rule = postcss.rule({ selector });
   let hasContent = false;
 
   // 1. Add simple classes via @apply
-  if (usage.classes.length > 0) {
+  if (usage.simpleClasses.length > 0) {
     const applyRule = postcss.atRule({
       name: 'apply',
-      params: usage.classes.join(' '),
+      params: usage.simpleClasses.join(' '),
     });
     rule.append(applyRule);
     hasContent = true;
