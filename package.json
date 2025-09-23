@@ -8,7 +8,7 @@
     "clean": "turbo run clean",
     "dev:html": "turbo run dev --filter=html-demo...",
     "dev:react": "turbo run dev --filter=react-demo...",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev --parallel --filter=./packages/**",
     "format:check": "prettier . --check --log-level warn --cache",
     "format": "prettier . --write --log-level warn --cache",
     "lint": "turbo run lint",

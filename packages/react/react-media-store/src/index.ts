@@ -6,7 +6,7 @@ export {
   useMediaRef,
   useMediaSelector,
   shallowEqual,
-} from './MediaProvider.js';
+} from './MediaProvider';
 
 export type MediaStore = any;
 export type MediaState = any;
