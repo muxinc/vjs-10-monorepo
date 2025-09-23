@@ -1,6 +1,6 @@
 import { glob } from 'glob';
 import postcss from 'postcss';
-import tailwindcss from 'tailwindcss';
+import tailwindcss from '@tailwindcss/postcss';
 import { ASTParser, extractComponentName } from './ast-parser.js';
 import { semanticCSSGenerator } from './semantic-css-generator.js';
 import { semanticTransform } from './semantic-transform.js';
@@ -107,7 +107,7 @@ export class TailwindCSSCompiler {
       }),
 
       // Step 2: Process @apply directives with Tailwind
-      tailwindcss(this.config.tailwindConfig ? require(require.resolve(this.config.tailwindConfig, { paths: [process.cwd()] })) : {}),
+      tailwindcss(),
 
       // Step 3: Transform selectors and add enhancements
       semanticTransform({
