@@ -1,22 +1,24 @@
 {
   "name": "@vjs-10/icons",
   "version": "0.1.0",
-  "description": "Environment-agnostic library of SVG icons and possibly transforms or tooling for them.",
+  "description": "Base icon library for Video.js",
+  "type": "module",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c && tsc --project tsconfig.build.json",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
@@ -29,13 +31,7 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "rollup": "^4.0.0",
-    "rollup-plugin-string": "^3.0.0",
-    "tslib": "^2.6.0",
-    "tsup": "^8.5.0",
+    "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

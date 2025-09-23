@@ -7,8 +7,7 @@ import volumeHighSvg from '../assets/volume-high.svg';
 import volumeLowSvg from '../assets/volume-low.svg';
 import volumeOffSvg from '../assets/volume-off.svg';
 
-// Export SVG strings directly
-export const SVG_ICONS = {
+export const SVG_ICONS: Record<string, string> = {
   play: playSvg,
   pause: pauseSvg,
   volumeHigh: volumeHighSvg,
