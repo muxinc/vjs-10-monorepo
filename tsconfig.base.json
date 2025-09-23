@@ -4,7 +4,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
     "declaration": true,
     "declarationMap": true,
@@ -26,7 +26,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "verbatimModuleSyntax": false
+    "isolatedDeclarations": true,
+    "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "dist", "build", "coverage"]
 }
