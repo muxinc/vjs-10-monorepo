@@ -12,6 +12,10 @@
       "interactive": false,
       "dependsOn": ["^build"]
     },
+    "generate:icons": {
+      "inputs": ["./packages/core/icons/assets/**"],
+      "outputs": ["src/generated-icons/**"]
+    },
     "clean": {
       "cache": false
     },

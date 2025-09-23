@@ -18,10 +18,10 @@
   "scripts": {
     "build": "tsdown",
     "build:watch": "tsdown --watch --silent",
-    "dev": "pnpm run build:watch",
+    "dev": "pnpm generate:icons && pnpm run build:watch",
     "clean": "rm -rf dist src/generated-icons",
     "format:icons": "prettier src/generated-icons --write --log-level warn --cache",
-    "generate": "svgr --config-file svgr.config.js --out-dir src/generated-icons ../../core/icons/assets && pnpm format:icons",
+    "generate:icons": "svgr --config-file svgr.config.js --out-dir src/generated-icons ../../core/icons/assets && pnpm format:icons",
     "test": "echo \"No tests yet\""
   },
   "keywords": [

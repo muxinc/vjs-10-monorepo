@@ -28,7 +28,7 @@ export default {
  *
  * To modify this icon:
  * 1. Edit the corresponding SVG file in packages/core/icons/assets/
- * 2. Run \`pnpm -F react-icons generate\` in this package to regenerate components
+ * 2. Run \`pnpm -F react-icons generate:icons\` in this package to regenerate components
  *
  * @generated
  */
@@ -61,7 +61,7 @@ ${variables.exports};
  *
  * To modify icons or add new ones:
  * 1. Add/edit SVG files in packages/core/icons/assets/
- * 2. Run \`pnpm -F react-icons generate\` in this package to regenerate components
+ * 2. Run \`pnpm -F react-icons generate:icons\` in this package to regenerate components
  *
  * @generated
  */
