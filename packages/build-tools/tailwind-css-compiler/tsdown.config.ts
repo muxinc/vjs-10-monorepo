@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown';
 export default defineConfig([
   {
     entry: 'src/index.ts',
-    platform: 'browser',
+    platform: 'node',
     format: 'es',
     sourcemap: true,
     clean: true,

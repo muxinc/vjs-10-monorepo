@@ -4,6 +4,7 @@ import type { CompilerConfig } from './types.js';
 import { resolve } from 'path';
 
 import { TailwindCSSCompiler } from './compiler.js';
+import { createFileWriterCallback, createConsoleOutputCallback } from './side-effects.js';
 
 /**
  * CLI for the Tailwind CSS compiler
@@ -26,6 +27,7 @@ async function main(): Promise<void> {
 
   // Parse command line arguments
   let configPath: string | undefined;
+  let outputToStdout = false;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -61,6 +63,9 @@ async function main(): Promise<void> {
           config.tailwindConfig = tailwindConfigValue;
         }
         break;
+      case '--stdout':
+        outputToStdout = true;
+        break;
     }
   }
 
@@ -77,7 +82,12 @@ async function main(): Promise<void> {
 
   // Run the compiler
   try {
-    const compiler = new TailwindCSSCompiler(config);
+    // Choose output callback based on CLI options
+    const outputCallback = outputToStdout
+      ? createConsoleOutputCallback(config.generateVanilla, config.generateModules)
+      : createFileWriterCallback(config.outputDir);
+
+    const compiler = new TailwindCSSCompiler(config, outputCallback);
     await compiler.compile();
   } catch (error) {
     console.error('❌ Compilation failed:', error);
@@ -98,6 +108,7 @@ Options:
   --no-vanilla              Skip vanilla CSS generation
   --no-modules              Skip CSS modules generation
   --tailwind-config <path>  Path to tailwind config
+  --stdout                  Output CSS to stdout instead of files
   --help, -h                Show this help
 
 Examples:
@@ -105,6 +116,7 @@ Examples:
   tailwind-css-compiler --output ./build/css
   tailwind-css-compiler --sources "src/**/*.tsx,src/**/*.ts"
   tailwind-css-compiler --config ./compiler.config.js
+  tailwind-css-compiler --stdout > output.css
 `);
 }
 

@@ -1,5 +1,7 @@
 import { parse } from '@babel/parser';
 import traverse, { NodePath } from '@babel/traverse';
+// @ts-ignore - ESM compatibility fix for Babel traverse
+const babelTraverse = traverse.default || traverse;
 import * as t from '@babel/types';
 import type {
   JSXOpeningElement,
@@ -307,7 +309,7 @@ export function parseSourceCode(
 
     let currentComponent = defaultComponentName;
 
-    traverse(ast, {
+    babelTraverse(ast, {
       // Track imported components
       ImportDeclaration(path: NodePath<ImportDeclaration>) {
         const specifiers = path.node.specifiers;
@@ -390,5 +392,15 @@ export class ASTParser {
    */
   parseFile(filePath: string): ParsedFile {
     return parseFile(filePath);
+  }
+
+  /**
+   * Parse source code string and extract className usage
+   */
+  parseString(sourceCode: string, filename: string = 'input.tsx'): ClassUsage[] {
+    const defaultComponentName = extractComponentName(filename);
+    const usages = parseSourceCode(sourceCode, defaultComponentName);
+    // Add filename to all usages
+    return usages.map((usage) => ({ ...usage, file: filename }));
   }
 }
