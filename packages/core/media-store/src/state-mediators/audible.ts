@@ -1,10 +1,10 @@
 export const audible = {
   muted: {
-    get(stateOwners: any) {
+    get(stateOwners: any): boolean {
       const { media } = stateOwners;
       return media?.muted ?? false;
     },
-    set(value: boolean, stateOwners: any) {
+    set(value: boolean, stateOwners: any): void {
       const { media } = stateOwners;
       if (!media) return;
       media.muted = value;
@@ -13,7 +13,7 @@ export const audible = {
       }
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: boolean) => void, stateOwners: any) => {
+      (handler: (value?: boolean) => void, stateOwners: any): (() => void) | void => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -22,7 +22,7 @@ export const audible = {
 
         return () => media.removeEventListener('volumechange', eventHandler);
       },
-    ],
+    ] as const,
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API or aren't simple 1:1 with getter vs. setter (CJP) */
       muterequest: () => true,
@@ -30,11 +30,11 @@ export const audible = {
     },
   },
   volume: {
-    get(stateOwners: any) {
+    get(stateOwners: any): number {
       const { media } = stateOwners;
       return media?.volume ?? 1.0;
     },
-    set(value: number, stateOwners: any) {
+    set(value: number, stateOwners: any): void {
       const { media } = stateOwners;
       if (!media) return;
       const numericValue = +value;
@@ -45,7 +45,7 @@ export const audible = {
       }
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: number) => void, stateOwners: any) => {
+      (handler: (value?: number) => void, stateOwners: any): (() => void) | void => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -54,15 +54,15 @@ export const audible = {
 
         return () => media.removeEventListener('volumechange', eventHandler);
       },
-    ],
+    ] as const,
     actions: {
       /** @TODO Refactor me to play more nicely with side effects that don't/can't correlate with set() API (CJP) */
-      volumerequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }) => +detail,
+      volumerequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }): number => +detail,
     },
   },
   // NOTE: This could be (re)implemented as "derived state" in some manner (e.g. selectors but also other patterns/conventions) if preferred. (CJP)
   volumeLevel: {
-    get(stateOwners: any) {
+    get(stateOwners: any): 'high' | 'medium' | 'low' | 'off' {
       const { media } = stateOwners;
       if (typeof media?.volume == 'undefined') return 'high';
       if (media.muted || media.volume === 0) return 'off';
@@ -71,7 +71,7 @@ export const audible = {
       return 'high';
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: 'high' | 'medium' | 'low' | 'off') => void, stateOwners: any) => {
+      (handler: (value?: 'high' | 'medium' | 'low' | 'off') => void, stateOwners: any): void | (() => void) => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -80,6 +80,6 @@ export const audible = {
 
         return () => media.removeEventListener('volumechange', eventHandler);
       },
-    ],
+    ] as const,
   },
 };

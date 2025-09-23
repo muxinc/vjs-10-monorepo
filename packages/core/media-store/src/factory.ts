@@ -44,6 +44,14 @@ export type StateMediator = {
   fullscreen: FacadeProp<boolean>;
 };
 
+export interface MediaStore {
+  dispatch(action: Pick<CustomEvent<any>, 'type' | 'detail'>): void;
+  getState(): any;
+  getKeys(keys: string[]): Record<string, any>;
+  subscribeKeys(keys: string[], callback: (state: any) => void): void;
+  subscribe(callback: (state: any) => void): void;
+}
+
 export function createMediaStore({
   // media,
   stateMediator,
@@ -51,7 +59,7 @@ export function createMediaStore({
   media?: any;
   container?: any;
   stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>;
-}) {
+}): MediaStore {
   const stateOwners: StateOwners = {};
   const store = map<any>({});
   const stateUpdateHandlerCleanups: Record<string, (() => void)[]> = {};
@@ -101,7 +109,7 @@ export function createMediaStore({
   }
 
   return {
-    dispatch(action: Pick<CustomEvent<any>, 'type' | 'detail'>) {
+    dispatch(action: Pick<CustomEvent<any>, 'type' | 'detail'>): void {
       const { type, detail } = action;
 
       if (type === 'mediastateownerchangerequest') {
@@ -122,11 +130,11 @@ export function createMediaStore({
       }
     },
 
-    getState() {
+    getState(): any {
       return store.get();
     },
 
-    getKeys(keys: string[]) {
+    getKeys(keys: string[]): Record<string, any> {
       return keys.reduce(
         (acc, k) => {
           acc[k] = getKey(store, k);
@@ -136,12 +144,12 @@ export function createMediaStore({
       );
     },
 
-    subscribeKeys(keys: string[], callback: (state: any) => void) {
+    subscribeKeys(keys: string[], callback: (state: any) => void): void {
       subscribeKeys(store, keys, callback);
     },
 
     // NOTE: In the POC architecture using nano-stores, subscribe is simply subscribeKeys across all keys. (CJP)
-    subscribe(callback: (state: any) => void) {
+    subscribe(callback: (state: any) => void): void {
       subscribeKeys(store, keys, callback);
     },
   };

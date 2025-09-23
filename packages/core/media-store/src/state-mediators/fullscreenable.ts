@@ -12,7 +12,7 @@ const containsComposedNode = (rootNode: Node, childNode: Node): boolean => {
 /** @TODO This is implemented for web/browser only! We will need an alternative state mediator model for e.g. React Native. (CJP) */
 export const fullscreenable = {
   fullscreen: {
-    get(stateOwners: any) {
+    get(stateOwners: any): boolean {
       const { container } = stateOwners;
       if (!container || !globalThis?.document) return false;
 
@@ -64,7 +64,7 @@ export const fullscreenable = {
 
       return false;
     },
-    set(value: boolean, stateOwners: any) {
+    set(value: boolean, stateOwners: any): void {
       const { container } = stateOwners;
       if (!container || !globalThis?.document) return;
 
@@ -105,7 +105,7 @@ export const fullscreenable = {
       }
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: boolean) => void, _stateOwners: any) => {
+      (handler: (value?: boolean) => void, _stateOwners: any): void | (() => void) => {
         if (!globalThis?.document) return;
 
         const eventHandler = () => handler();
@@ -121,10 +121,10 @@ export const fullscreenable = {
           });
         };
       },
-    ],
+    ] as const,
     actions: {
       /** Toggle fullscreen state or explicitly enter/exit based on detail */
-      fullscreenrequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: undefined }) => {
+      fullscreenrequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: undefined }): boolean => {
         // If detail is provided, use it; otherwise toggle current state
         if (typeof detail === 'boolean') {
           return detail;

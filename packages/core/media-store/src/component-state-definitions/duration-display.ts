@@ -43,7 +43,7 @@ export const durationDisplayStateDefinition = {
    * @returns Empty object (no request methods)
    */
   createRequestMethods: (_dispatch: (action: { type: string; detail?: any }) => void) => ({}),
-} as const;
+};
 
 /**
  * Type helper to extract the state type from the duration display state definition
