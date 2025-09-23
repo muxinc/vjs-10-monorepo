@@ -1,5 +1,5 @@
 import type { ConnectedComponent } from '../utils/component-factory';
-import type { HTMLAttributes, PointerEvent, PropsWithChildren } from 'react';
+import type { PointerEvent, PropsWithChildren } from 'react';
 
 import { useCallback, useMemo, useState } from 'react';
 
@@ -212,7 +212,7 @@ const TimeRangeTrack: ConnectedComponent<TimeRangeTrackProps, typeof renderTimeR
 // THUMB COMPONENT
 // ============================================================================
 
-export const useTimeRangeThumbProps = (props: HTMLAttributes<HTMLDivElement>): Record<string, unknown> => {
+export const useTimeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
   return {
     ...props,
     style: {
@@ -242,7 +242,7 @@ const TimeRangeThumb: ConnectedComponent<TimeRangeThumbProps, typeof renderTimeR
 // POINTER COMPONENT
 // ============================================================================
 
-export const useTimeRangePointerProps = (props: HTMLAttributes<HTMLDivElement>): Record<string, unknown> => {
+export const useTimeRangePointerProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
   return {
     ...props,
     style: {
@@ -271,7 +271,7 @@ const TimeRangePointer: ConnectedComponent<TimeRangePointerProps, typeof renderT
 // PROGRESS COMPONENT
 // ============================================================================
 
-export const useTimeRangeProgressProps = (props: HTMLAttributes<HTMLDivElement>): Record<string, unknown> => {
+export const useTimeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
   return {
     ...props,
     style: {

@@ -1,97 +1,265 @@
-import type { ConnectedComponent } from '../utils/component-factory';
-import type { ChangeEvent, PropsWithChildren } from 'react';
+import type { ConnectedComponent, ContextComponent } from '../utils/component-factory';
 
-import { useMemo } from 'react';
+import React from 'react';
 
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
-import { toConnectedComponent } from '../utils/component-factory';
+import { toConnectedComponent, toContextComponent } from '../utils/component-factory';
+// Utility functions for pointer position and volume calculations
+const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
+  const x = clientX - rect.left;
+  return Math.max(0, Math.min(100, (x / rect.width) * 100));
+};
 
-export const useVolumeRangeState = (
-  _props: any
-): {
+const calculateVolumeFromRatio = (ratio: number): number => {
+  return ratio / 100;
+};
+
+const calculateVolumeFromPointerEvent = (e: React.PointerEvent<HTMLDivElement>): number => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const ratio = calculatePointerRatio(e.clientX, rect);
+  return calculateVolumeFromRatio(ratio);
+};
+
+// ============================================================================
+// ROOT COMPONENT
+// ============================================================================
+
+export const useVolumeRangeRootState = (_props: any): {
   volume: number;
   muted: boolean;
-  volumeLevel: 'off' | 'low' | 'medium' | 'high';
+  volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
+  pointerPosition: number | null;
+  setPointerPosition: (position: number | null) => void;
+  hovering: boolean;
+  setHovering: (hovering: boolean) => void;
+  dragging: boolean;
+  setDragging: (dragging: boolean) => void;
+  trackRef: HTMLDivElement | null;
+  setTrackRef: (ref: HTMLDivElement | null) => void;
 } => {
   const mediaStore = useMediaStore();
-
-  /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(volumeRangeStateDefinition.stateTransform, shallowEqual);
 
-  const methods = useMemo(() => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
+  const methods = React.useMemo(() => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
+
+  const { requestVolumeChange } = methods;
+  const [pointerPosition, setPointerPosition] = React.useState<number | null>(null);
+  const [hovering, setHovering] = React.useState(false);
+  const [dragging, setDragging] = React.useState(false);
+  const [trackRef, setTrackRef] = React.useState<HTMLDivElement | null>(null);
 
   return {
     volume: mediaState.volume,
     muted: mediaState.muted,
     volumeLevel: mediaState.volumeLevel,
-    requestVolumeChange: methods.requestVolumeChange,
+    requestVolumeChange: requestVolumeChange,
+    pointerPosition: pointerPosition,
+    setPointerPosition: setPointerPosition,
+    hovering: hovering,
+    setHovering: setHovering,
+    dragging: dragging,
+    setDragging: setDragging,
+    trackRef: trackRef,
+    setTrackRef: setTrackRef,
   };
 };
 
-export type useVolumeRangeState = typeof useVolumeRangeState;
+export const useVolumeRangeRootProps = (
+  props: React.PropsWithChildren<{ [k: string]: any }>,
+  state: ReturnType<typeof useVolumeRangeRootState>
+) => {
+  // When dragging, use pointer position for immediate feedback; otherwise use current volume
+  const sliderFill =
+    state.dragging && state.pointerPosition !== null
+      ? state.pointerPosition
+      : state.muted
+        ? 0
+        : state.volume * 100;
 
-export type VolumeRangeState = ReturnType<useVolumeRangeState>;
+  const handlePointerDown = React.useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      state.setDragging(true);
+      const volume = calculateVolumeFromPointerEvent(e);
+      state.requestVolumeChange(volume);
 
-export const useVolumeRangeProps = (
-  props: PropsWithChildren<{ [k: string]: any }>,
-  state: ReturnType<typeof useVolumeRangeState>
-): Record<string, any> => {
-  const displayValue = state.muted ? 0 : state.volume;
+      // Capture pointer events to ensure we receive move and up events even if pointer leaves element
+      e.currentTarget.setPointerCapture(e.pointerId);
+    },
+    [state.setDragging, state.requestVolumeChange]
+  );
 
-  const baseProps: Record<string, any> = {
-    /** @TODO These should probably be defined in the render function (CJP) */
-    /** input properties */
-    type: 'range',
-    min: '0',
-    max: '1',
-    step: '0.01',
-    value: displayValue,
-    /** aria attributes/props */
+  const handlePointerMove = React.useCallback(
+    (e: PointerEvent) => {
+      if (!state.trackRef) return;
+
+      const rect = state.trackRef.getBoundingClientRect();
+      const ratio = calculatePointerRatio(e.clientX, rect);
+      state.setPointerPosition(ratio);
+
+      if (state.dragging) {
+        const volume = calculateVolumeFromRatio(ratio);
+        state.requestVolumeChange(volume);
+      }
+    },
+    [state.trackRef, state.setPointerPosition, state.dragging, state.requestVolumeChange]
+  );
+
+  const handlePointerUp = React.useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+
+      if (state.dragging && state.trackRef && state.pointerPosition !== null) {
+        const volume = calculateVolumeFromRatio(state.pointerPosition);
+        state.requestVolumeChange(volume);
+      }
+      state.setDragging(false);
+    },
+    [state.dragging, state.trackRef, state.pointerPosition, state.requestVolumeChange, state.setDragging]
+  );
+
+  const handlePointerEnter = React.useCallback(() => {
+    state.setHovering(true);
+  }, [state.setHovering]);
+
+  const handlePointerLeave = React.useCallback(() => {
+    state.setHovering(false);
+  }, [state.setHovering]);
+
+  const volumeText = `${Math.round(state.muted ? 0 : state.volume * 100)}%`;
+
+  return {
+    role: 'slider',
     'aria-label': 'Volume',
-    'aria-valuetext': `${Math.round(displayValue * 100)}%`,
-    /** data attributes */
+    'aria-valuemin': 0,
+    'aria-valuemax': 100,
+    'aria-valuenow': sliderFill,
+    'aria-valuetext': volumeText,
     'data-muted': state.muted,
     'data-volume-level': state.volumeLevel,
-    /** external props spread last to allow for overriding */
+    style: {
+      ...props.style,
+      '--slider-fill': `${sliderFill.toFixed(3)}%`,
+      '--slider-pointer':
+        state.hovering && state.pointerPosition !== null ? `${state.pointerPosition.toFixed(3)}%` : '0%',
+    },
+    onPointerDown: handlePointerDown,
+    onPointerMove: handlePointerMove,
+    onPointerUp: handlePointerUp,
+    onPointerEnter: handlePointerEnter,
+    onPointerLeave: handlePointerLeave,
     ...props,
-  };
-
-  return baseProps;
+  } as React.PropsWithChildren<{ [k: string]: any }>;
 };
 
-export type useVolumeRangeProps = typeof useVolumeRangeProps;
-type VolumeRangeProps = ReturnType<useVolumeRangeProps>;
+type useVolumeRangeRootState = typeof useVolumeRangeRootState;
+type useVolumeRangeRootProps = typeof useVolumeRangeRootProps;
+type VolumeRangeRootProps = ReturnType<useVolumeRangeRootProps>;
 
-/**
- * @TODO This is just a simple render function to demonstrate functionality.
- * A full implementation will need to implement a "compound component" architecture. (CJP)
- **/
-export const renderVolumeRange = (props: VolumeRangeProps, state: VolumeRangeState): JSX.Element => {
-  return (
-    <input
-      {...props}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => {
-        /** @ts-ignore */
-        if (props.disabled) return;
-        state.requestVolumeChange(parseFloat(e.target.value));
-      }}
-    />
-  );
+export const renderVolumeRangeRoot = (props: VolumeRangeRootProps): JSX.Element => {
+  return <div {...props} />;
 };
 
-export type renderVolumeRange = typeof renderVolumeRange;
-
-/**
- * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
- */
-export const VolumeRange: ConnectedComponent<VolumeRangeProps, typeof renderVolumeRange> = toConnectedComponent(
-  useVolumeRangeState,
-  useVolumeRangeProps,
-  renderVolumeRange,
-  'VolumeRange'
+const VolumeRangeRoot: ConnectedComponent<VolumeRangeRootProps, typeof renderVolumeRangeRoot> = toConnectedComponent(
+  useVolumeRangeRootState,
+  useVolumeRangeRootProps,
+  renderVolumeRangeRoot,
+  'VolumeRange.Root'
 );
+
+// ============================================================================
+// TRACK COMPONENT
+// ============================================================================
+
+export const useVolumeRangeTrackProps = (props: React.PropsWithChildren<{ [k: string]: any }>, context: any): React.PropsWithChildren<{ [k: string]: any }> & { ref: (ref: HTMLDivElement | null) => void } => {
+  const { setTrackRef } = context;
+
+  return {
+    ref: setTrackRef,
+    ...props,
+  } as React.PropsWithChildren<{ [k: string]: any }> & { ref: (ref: HTMLDivElement | null) => void };
+};
+
+type useVolumeRangeTrackProps = typeof useVolumeRangeTrackProps;
+type VolumeRangeTrackProps = ReturnType<useVolumeRangeTrackProps>;
+
+export const renderVolumeRangeTrack = (props: VolumeRangeTrackProps): JSX.Element => {
+  return <div {...props} />;
+};
+
+const VolumeRangeTrack: ContextComponent<any, any> = toContextComponent(useVolumeRangeTrackProps, renderVolumeRangeTrack, 'VolumeRange.Track');
+
+// ============================================================================
+// THUMB COMPONENT
+// ============================================================================
+
+export const useVolumeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
+  return {
+    ...props,
+    style: {
+      ...props.style,
+      insetInlineStart: 'var(--slider-fill)',
+      position: 'absolute' as const,
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  };
+};
+
+type useVolumeRangeThumbProps = typeof useVolumeRangeThumbProps;
+type VolumeRangeThumbProps = ReturnType<useVolumeRangeThumbProps>;
+
+export const renderVolumeRangeThumb = (props: VolumeRangeThumbProps): JSX.Element => {
+  return <div {...props} />;
+};
+
+const VolumeRangeThumb: ContextComponent<any, any> = toContextComponent(useVolumeRangeThumbProps, renderVolumeRangeThumb, 'VolumeRange.Thumb');
+
+// ============================================================================
+// PROGRESS COMPONENT
+// ============================================================================
+
+export const useVolumeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
+  return {
+    ...props,
+    style: {
+      ...props.style,
+      width: 'var(--slider-fill, 0%)',
+      position: 'absolute' as const,
+      height: '100%',
+    },
+  };
+};
+
+type useVolumeRangeProgressProps = typeof useVolumeRangeProgressProps;
+type VolumeRangeProgressProps = ReturnType<useVolumeRangeProgressProps>;
+
+export const renderVolumeRangeProgress = (props: VolumeRangeProgressProps): JSX.Element => {
+  return <div {...props} />;
+};
+
+const VolumeRangeProgress: ContextComponent<any, any> = toContextComponent(useVolumeRangeProgressProps, renderVolumeRangeProgress, 'VolumeRange.Progress');
+
+// ============================================================================
+// EXPORTS
+// ============================================================================
+
+export const VolumeRange = Object.assign(
+  {},
+  {
+    Root: VolumeRangeRoot,
+    Track: VolumeRangeTrack,
+    Thumb: VolumeRangeThumb,
+    Progress: VolumeRangeProgress,
+  }
+) as {
+  Root: typeof VolumeRangeRoot;
+  Track: typeof VolumeRangeTrack;
+  Thumb: typeof VolumeRangeThumb;
+  Progress: typeof VolumeRangeProgress;
+};
 
 export default VolumeRange;

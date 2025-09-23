@@ -142,6 +142,40 @@ export function getTemplateHTML() {
         background-color: #007bff;
         border-radius: inherit;
       }
+
+      /* VolumeRange Component Styles */
+      media-volume-range-root {
+        display: flex;
+        align-items: center;
+        position: relative;
+        min-width: 80px;
+        width: 80px;
+        padding-block: .75rem;
+        margin: 0 .5rem;
+      }
+
+      media-volume-range-track {
+        position: relative;
+        width: 100%;
+        height: .375rem;
+        background-color: #e0e0e0;
+        border-radius: .25rem;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      media-volume-range-thumb {
+        width: .75rem;
+        height: .75rem;
+        background-color: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      media-volume-range-progress {
+        background-color: #007bff;
+        border-radius: inherit;
+      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
@@ -168,7 +202,12 @@ export function getTemplateHTML() {
             <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
             <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
           </media-mute-button>
-          <media-volume-range></media-volume-range>
+          <media-volume-range-root>
+            <media-volume-range-track>
+              <media-volume-range-progress></media-volume-range-progress>
+            </media-volume-range-track>
+            <media-volume-range-thumb></media-volume-range-thumb>
+          </media-volume-range-root>
           <media-fullscreen-button class="button">
             <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
             <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
