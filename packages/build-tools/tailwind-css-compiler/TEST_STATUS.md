@@ -62,17 +62,17 @@ The failing tests are providing excellent value by:
 
 ```bash
 # Run all tests
-npm run test
+pnpm run test
 
 # Run tests with coverage
-npm run test:coverage
+pnpm run test:coverage
 
 # Run tests in watch mode
-npm run test:watch
+pnpm run test:watch
 
 # Run only unit tests
-npm run test -- test/unit
+pnpm run test -- test/unit
 
 # Run only e2e tests
-npm run test -- test/e2e
+pnpm run test -- test/e2e
 ```

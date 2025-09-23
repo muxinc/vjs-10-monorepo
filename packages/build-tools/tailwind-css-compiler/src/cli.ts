@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+import type { CompilerConfig } from './types.js';
+
+import { resolve } from 'path';
 
 import { TailwindCSSCompiler } from './compiler.js';
-import { CompilerConfig } from './types.js';
-import { resolve } from 'path';
 
 /**
  * CLI for the Tailwind CSS compiler
  */
-async function main() {
+async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
   if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
@@ -17,15 +18,10 @@ async function main() {
 
   // Default configuration
   const config: CompilerConfig = {
-    sources: [
-      'packages/react/**/*.tsx',
-      'packages/react/**/*.ts',
-      'examples/**/*.tsx',
-      'examples/**/*.ts'
-    ],
+    sources: ['packages/react/**/*.tsx', 'packages/react/**/*.ts', 'examples/**/*.tsx', 'examples/**/*.ts'],
     outputDir: './dist/css',
     generateVanilla: true,
-    generateModules: true
+    generateModules: true,
   };
 
   // Parse command line arguments
@@ -112,8 +108,8 @@ Examples:
 `);
 }
 
-// Run if called directly
-if (require.main === module) {
+// Run if called directly (ESM version)
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 

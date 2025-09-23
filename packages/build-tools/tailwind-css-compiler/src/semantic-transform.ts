@@ -1,5 +1,4 @@
-import { Plugin, Root, Rule } from 'postcss';
-import postcss from 'postcss';
+import type { Plugin, Root, Rule } from 'postcss';
 
 export interface SemanticTransformOptions {
   /** Component-specific selector mappings */
@@ -14,13 +13,14 @@ export interface SemanticTransformOptions {
  * PostCSS plugin that transforms compiled CSS with semantic enhancements
  * Runs after Tailwind has processed @apply directives
  */
-export const semanticTransform = (options: SemanticTransformOptions = {}): Plugin => {
+const semanticTransform: {
+  (options?: SemanticTransformOptions): Plugin;
+  postcss: boolean;
+} = (options: SemanticTransformOptions = {}): Plugin => {
   const plugin = {
     postcssPlugin: 'semantic-transform',
     Rule(rule: Rule) {
       const { componentMappings = {}, elementMappings = {}, isModule = false } = options;
-
-      const originalSelector = rule.selector;
 
       // Transform component-specific selectors
       rule.selector = plugin.transformComponentSelectors(rule.selector, componentMappings);
@@ -35,10 +35,9 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
 
       // Handle nested icon states for better specificity
       rule.selector = plugin.enhanceIconStates(rule.selector, isModule);
-
     },
 
-    OnceExit(root: Root) {
+    OnceExit(_root: Root) {
       // Add any additional enhancements after all rules are processed
       // Note: Utility classes removed - only generate CSS for actual component usage
     },
@@ -80,7 +79,7 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
       }
 
       // Handle complex selectors
-      const parts = selector.split(',').map(part => {
+      const parts = selector.split(',').map((part) => {
         const trimmed = part.trim();
 
         // Skip pseudo-classes and attribute selectors
@@ -134,10 +133,7 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
                 `.MuteButton[data-volume-level="${state}"] .Volume${this.capitalize(state)}Icon`
               );
             } else {
-              return selector.replace(
-                '.icon',
-                `media-mute-button[data-volume-level="${state}"] .volume-${state}-icon`
-              );
+              return selector.replace('.icon', `media-mute-button[data-volume-level="${state}"] .volume-${state}-icon`);
             }
           }
         }
@@ -155,7 +151,10 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
 
         if (selector.includes(':not([data-fullscreen])')) {
           if (isModule) {
-            return selector.replace('.FullscreenEnterIcon', '.FullscreenButton:not([data-fullscreen]) .FullscreenEnterIcon');
+            return selector.replace(
+              '.FullscreenEnterIcon',
+              '.FullscreenButton:not([data-fullscreen]) .FullscreenEnterIcon'
+            );
           } else {
             return selector.replace('.icon', 'media-fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon');
           }
@@ -165,16 +164,17 @@ export const semanticTransform = (options: SemanticTransformOptions = {}): Plugi
       return selector;
     },
 
-
     /**
      * Capitalize first letter
      */
     capitalize(str: string): string {
       return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+    },
   };
 
   return plugin;
 };
 
 semanticTransform.postcss = true;
+
+export { semanticTransform };

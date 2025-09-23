@@ -1,11 +1,14 @@
-import { glob } from 'glob';
-import postcss from 'postcss';
 import tailwindcss from '@tailwindcss/postcss';
+import postcss from 'postcss';
+
+import type { ClassUsage, CompilerConfig, ParsedFile } from './types.js';
+
+import { glob } from 'glob';
+
 import { ASTParser, extractComponentName } from './ast-parser.js';
+import { multiFormatOutput } from './multi-format-output.js';
 import { semanticCSSGenerator } from './semantic-css-generator.js';
 import { semanticTransform } from './semantic-transform.js';
-import { multiFormatOutput } from './multi-format-output.js';
-import { ClassUsage, CompilerConfig, ParsedFile } from './types.js';
 
 export class TailwindCSSCompiler {
   private parser = new ASTParser();
@@ -23,7 +26,7 @@ export class TailwindCSSCompiler {
 
     // Step 1: Parse source files and extract className usage
     const parsedFiles = await this.parseSourceFiles();
-    const allUsages = parsedFiles.flatMap(file => file.usages);
+    const allUsages = parsedFiles.flatMap((file) => file.usages);
 
     console.log(`📄 Parsed ${parsedFiles.length} files`);
     console.log(`🎯 Found ${allUsages.length} className usages`);
@@ -103,7 +106,7 @@ export class TailwindCSSCompiler {
         usages,
         mappings: this.config.mappings || [],
         generateVanilla: !isModule,
-        generateModules: isModule
+        generateModules: isModule,
       }),
 
       // Step 2: Process @apply directives with Tailwind
@@ -113,7 +116,7 @@ export class TailwindCSSCompiler {
       semanticTransform({
         isModule,
         componentMappings: isModule ? {} : this.getComponentMappings(),
-        elementMappings: isModule ? {} : this.getElementMappings()
+        elementMappings: isModule ? {} : this.getElementMappings(),
       }),
 
       // Step 4: Output files
@@ -122,8 +125,8 @@ export class TailwindCSSCompiler {
         generateVanilla: !isModule,
         generateModules: isModule,
         vanillaFilename,
-        modulesFilename
-      })
+        modulesFilename,
+      }),
     ]);
 
     try {
@@ -140,23 +143,24 @@ export class TailwindCSSCompiler {
   private generateFilenames(parsedFiles: ParsedFile[]): { vanillaFilename: string; modulesFilename: string } {
     if (parsedFiles.length === 1) {
       // Single component: use component name from file path
+      // @ts-ignore
       const componentName = extractComponentName(parsedFiles[0].path);
       const kebabComponentName = this.toKebabCase(componentName);
       return {
         vanillaFilename: `${kebabComponentName}.css`,
-        modulesFilename: `${componentName}.module.css`
+        modulesFilename: `${componentName}.module.css`,
       };
     } else if (parsedFiles.length > 1) {
       // Multiple components: use generic naming
       return {
         vanillaFilename: 'media-chrome-vanilla.css',
-        modulesFilename: 'media-chrome-modules.css'
+        modulesFilename: 'media-chrome-modules.css',
       };
     } else {
       // No files (shouldn't happen): fallback to generic
       return {
         vanillaFilename: 'vanilla.css',
-        modulesFilename: 'modules.css'
+        modulesFilename: 'modules.css',
       };
     }
   }
@@ -165,9 +169,7 @@ export class TailwindCSSCompiler {
    * Convert PascalCase to kebab-case
    */
   private toKebabCase(str: string): string {
-    return str
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      .toLowerCase();
+    return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
   }
 
   /**
@@ -175,14 +177,14 @@ export class TailwindCSSCompiler {
    */
   private getComponentMappings(): Record<string, string> {
     return {
-      'PlayButton': 'media-play-button',
-      'MuteButton': 'media-mute-button',
-      'FullscreenButton': 'media-fullscreen-button',
-      'VolumeRange': 'media-volume-range',
-      'TimeRange': 'media-time-range',
-      'CurrentTimeDisplay': 'media-current-time-display',
-      'DurationDisplay': 'media-duration-display',
-      'MediaContainer': 'media-container'
+      PlayButton: 'media-play-button',
+      MuteButton: 'media-mute-button',
+      FullscreenButton: 'media-fullscreen-button',
+      VolumeRange: 'media-volume-range',
+      TimeRange: 'media-time-range',
+      CurrentTimeDisplay: 'media-current-time-display',
+      DurationDisplay: 'media-duration-display',
+      MediaContainer: 'media-container',
     };
   }
 
@@ -194,8 +196,7 @@ export class TailwindCSSCompiler {
       '.button': '.control-button',
       '.icon': '.icon',
       '.display': '.time-display',
-      '.range': '.range-control'
+      '.range': '.range-control',
     };
   }
-
 }

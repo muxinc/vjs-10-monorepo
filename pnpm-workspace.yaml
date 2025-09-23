@@ -3,5 +3,6 @@ packages:
   - 'packages/html/*'
   - 'packages/react/*'
   - 'packages/react-native/*'
+  - 'packages/build-tools/*'
   - 'examples/*'
 minimumReleaseAge: 1440

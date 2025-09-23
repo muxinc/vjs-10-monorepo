@@ -1,5 +1,6 @@
-import { Plugin, Root, Helpers } from 'postcss';
-import { writeFileSync, mkdirSync } from 'fs';
+import type { Helpers, Plugin, Root } from 'postcss';
+
+import { mkdirSync, writeFileSync } from 'fs';
 
 export interface MultiFormatOutputOptions {
   /** Output directory */
@@ -17,7 +18,10 @@ export interface MultiFormatOutputOptions {
 /**
  * PostCSS plugin that outputs the final CSS in multiple formats
  */
-export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => {
+const multiFormatOutput: {
+  (options: MultiFormatOutputOptions): Plugin;
+  postcss: boolean;
+} = (options: MultiFormatOutputOptions): Plugin => {
   const plugin = {
     postcssPlugin: 'multi-format-output',
     OnceExit(root: Root, _helpers: Helpers) {
@@ -26,7 +30,7 @@ export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => 
         generateVanilla = true,
         generateModules = true,
         vanillaFilename = 'vanilla.css',
-        modulesFilename = 'modules.css'
+        modulesFilename = 'modules.css',
       } = options;
 
       // Ensure output directory exists
@@ -106,7 +110,7 @@ export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => 
         '.VolumeOffIcon': '.volume-off-icon',
         '.FullscreenEnterIcon': '.fullscreen-enter-icon',
         '.FullscreenExitIcon': '.fullscreen-exit-icon',
-        '.Icon': '.icon'
+        '.Icon': '.icon',
       };
 
       for (const [from, to] of Object.entries(transformations)) {
@@ -134,7 +138,7 @@ export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => 
         '.volume-off-icon': '.VolumeOffIcon',
         '.fullscreen-enter-icon': '.FullscreenEnterIcon',
         '.fullscreen-exit-icon': '.FullscreenExitIcon',
-        '.icon': '.Icon'
+        '.icon': '.Icon',
       };
 
       for (const [from, to] of Object.entries(iconTransformations)) {
@@ -161,10 +165,12 @@ export const multiFormatOutput = (options: MultiFormatOutputOptions): Plugin => 
      */
     escapeRegex(string: string): string {
       return string.replace(/[.*+?^${}()|[\\]\\]/g, '\\\\$&');
-    }
+    },
   };
 
   return plugin;
 };
 
 multiFormatOutput.postcss = true;
+
+export { multiFormatOutput };

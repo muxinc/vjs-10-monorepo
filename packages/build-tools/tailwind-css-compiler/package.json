@@ -1,9 +1,17 @@
 {
   "name": "@vjs-10/tailwind-css-compiler",
+  "type": "module",
   "version": "1.0.0",
   "description": "Tailwind CSS to semantic CSS compiler for VJS-10",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -11,8 +19,9 @@
     "tailwind-css-compiler": "dist/cli.js"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/cli.ts --format cjs,esm",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "dev": "pnpm run build:watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -35,9 +44,9 @@
     "@types/fs-extra": "^11.0.0",
     "@types/node": "^20.0.0",
     "@vitest/coverage-v8": "^2.0.0",
-    "tsup": "^8.0.0",
+    "tsdown": "^0.15.4",
     "tsx": "^4.0.0",
-    "typescript": "^5.3.0",
+    "typescript": "^5.9.2",
     "vitest": "^2.0.0"
   },
   "keywords": [
