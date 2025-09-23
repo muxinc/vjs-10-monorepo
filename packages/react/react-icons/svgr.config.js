@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'node:path';
 
-module.exports = {
+export default {
   plugins: ['@svgr/plugin-jsx'],
   typescript: true,
   jsxRuntime: 'automatic',
@@ -28,16 +28,15 @@ module.exports = {
  *
  * To modify this icon:
  * 1. Edit the corresponding SVG file in packages/core/icons/assets/
- * 2. Run \`pnpm generate\` in this package to regenerate components
+ * 2. Run \`pnpm -F react-icons generate:icons\` in this package to regenerate components
  *
  * @generated
  */
-import * as React from 'react';
 import type { IconProps } from '../types';
 
 ${variables.interfaces};
 
-const ${variables.componentName} = ({ color = 'currentColor', ...props }: IconProps) => (
+const ${variables.componentName} = ({ color = 'currentColor', ...props }: IconProps): JSX.Element => (
   ${variables.jsx}
 );
 
@@ -62,7 +61,7 @@ ${variables.exports};
  *
  * To modify icons or add new ones:
  * 1. Add/edit SVG files in packages/core/icons/assets/
- * 2. Run \`pnpm generate\` in this package to regenerate components
+ * 2. Run \`pnpm -F react-icons generate:icons\` in this package to regenerate components
  *
  * @generated
  */

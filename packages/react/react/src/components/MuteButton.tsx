@@ -1,19 +1,27 @@
-import * as React from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
+import type { PropsWithChildren } from 'react';
+
+import { useMemo } from 'react';
 
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const useMuteButtonState = (_props: any) => {
+export const useMuteButtonState = (
+  _props: any
+): {
+  volumeLevel: string;
+  muted: boolean;
+  requestMute: () => void;
+  requestUnmute: () => void;
+} => {
   const mediaStore = useMediaStore();
+
   /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(muteButtonStateDefinition.stateTransform, shallowEqual);
 
-  const methods = React.useMemo(
-    () => muteButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore]
-  );
+  const methods = useMemo(() => muteButtonStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   return {
     volumeLevel: mediaState.volumeLevel,
@@ -27,9 +35,9 @@ export type useMuteButtonState = typeof useMuteButtonState;
 export type MuteButtonState = ReturnType<useMuteButtonState>;
 
 export const useMuteButtonProps = (
-  props: React.PropsWithChildren<{ [k: string]: any }>,
+  props: PropsWithChildren,
   state: ReturnType<typeof useMuteButtonState>
-) => {
+): PropsWithChildren<Record<string, unknown>> => {
   const baseProps: Record<string, any> = {
     /** data attributes/props - non-boolean */
     ['data-volume-level']: state.volumeLevel,
@@ -54,7 +62,7 @@ export const useMuteButtonProps = (
 export type useMuteButtonProps = typeof useMuteButtonProps;
 type MuteButtonProps = ReturnType<useMuteButtonProps>;
 
-export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState) => {
+export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState): JSX.Element => {
   return (
     <button
       {...props}
@@ -75,5 +83,11 @@ export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState)
 
 export type renderMuteButton = typeof renderMuteButton;
 
-export const MuteButton = toConnectedComponent(useMuteButtonState, useMuteButtonProps, renderMuteButton, 'MuteButton');
+export const MuteButton: ConnectedComponent<MuteButtonProps, typeof renderMuteButton> = toConnectedComponent(
+  useMuteButtonState,
+  useMuteButtonProps,
+  renderMuteButton,
+  'MuteButton'
+);
+
 export default MuteButton;

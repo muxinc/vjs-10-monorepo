@@ -1,16 +1,16 @@
 'use client';
 
-import * as React from 'react';
-import {
+import type {
   CSSProperties,
   DetailedHTMLProps,
   ElementType,
+  FC,
   PropsWithChildren,
   Ref,
-  useImperativeHandle,
-  useRef,
   VideoHTMLAttributes,
 } from 'react';
+
+import { useImperativeHandle, useRef } from 'react';
 
 import { createMediaStateOwner } from '@vjs-10/media';
 import { useMediaRef } from '@vjs-10/react-media-store';
@@ -94,16 +94,14 @@ const ConnectedVideo = ({
   );
 };
 
-// Main Video component with default component
-export const Video = ({
-  component = DefaultVideoComponent,
-  children,
-  ...props
-}: PropsWithChildren<{
+export type VideoProps = PropsWithChildren<{
   component?: ComponentType;
   className?: string | undefined;
   style?: CSSProperties | undefined;
-}>) => {
+}>;
+
+// Main Video component with default component
+export const Video = ({ component = DefaultVideoComponent, children, ...props }: VideoProps): JSX.Element => {
   return (
     <ConnectedVideo {...props} component={component}>
       {children}
@@ -112,6 +110,6 @@ export const Video = ({
 };
 
 // MediaElementVideo export (same as Video but for backwards compatibility)
-export const MediaElementVideo = Video;
+export const MediaElementVideo: FC<VideoProps> = Video;
 
 export default Video;

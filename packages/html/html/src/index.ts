@@ -9,7 +9,7 @@ export { FullscreenButton } from './components/media-fullscreen-button.js';
 export { DurationDisplay } from './components/media-duration-display.js';
 export { CurrentTimeDisplay } from './components/media-current-time-display.js';
 
-export function defineVjsPlayer() {
+export function defineVjsPlayer(): void {
   /** @TODO - Reimplement me (at least as a POC) (CJP) */
   // defineVideoProvider();
   // defineVideoDefaultSkin();

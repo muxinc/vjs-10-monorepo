@@ -1,7 +1,4 @@
-import * as React from 'react';
-
-// Placeholder exports for React Native Media Elements package
-// These will be implemented in a future step
+import { createElement, forwardRef } from 'react';
 
 export interface MediaElementProps {
   source?: { uri: string };
@@ -36,9 +33,11 @@ export interface MediaElementRef {
   seek(time: number): void;
 }
 
-// Placeholder component - will be implemented later
-export const VideoElement = React.forwardRef<MediaElementRef, MediaElementProps>((_, __) => {
-  return React.createElement('div', { children: 'React Native VideoElement - Coming Soon' });
+export const VideoElement: React.ForwardRefExoticComponent<MediaElementProps> = forwardRef<
+  MediaElementRef,
+  MediaElementProps
+>((_, __) => {
+  return createElement('div', { children: 'React Native VideoElement - Coming Soon' });
 });
 
 VideoElement.displayName = 'VideoElement';

@@ -1,9 +1,10 @@
 'use client';
 
 /** @TODO !!! Revisit for SSR (CJP) */
+import type { MediaStore } from '@vjs-10/media-store';
 import type { Context, ReactNode } from 'react';
 
-import React, { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import { createMediaStore } from '@vjs-10/media-store';
 
@@ -22,8 +23,9 @@ const identity = (x?: any) => x;
  */
 export const MediaContext: Context<any | null> = createContext<any | null>(null);
 
-export const MediaProvider = ({ children }: { children: ReactNode }) => {
+export const MediaProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const value = useMemo(() => createMediaStore(), []);
+
   // useEffect(() => {
   //   value?.dispatch({
   //     type: 'documentelementchangerequest',
@@ -36,15 +38,15 @@ export const MediaProvider = ({ children }: { children: ReactNode }) => {
   //     });
   //   };
   // }, []);
+
   return <MediaContext.Provider value={value}>{children}</MediaContext.Provider>;
 };
 
-export const useMediaStore = () => {
-  const store = useContext(MediaContext);
-  return store;
+export const useMediaStore = (): MediaStore => {
+  return useContext(MediaContext);
 };
 
-export const useMediaDispatch = () => {
+export const useMediaDispatch = (): ((value: any) => unknown) => {
   const store = useContext(MediaContext);
   const dispatch = store?.dispatch ?? identity;
   return (value: any) => {
@@ -54,17 +56,18 @@ export const useMediaDispatch = () => {
 
 export const useMediaRef = () => {
   const dispatch = useMediaDispatch();
-  return (mediaEl: any | null | undefined) => {
+
+  return (element: any): void => {
     // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
     // the corresponding react media element instance (e.g. a `<video>`) is being removed.
     /*
     { type: 'mediastateownerchangerequest', detail: media }
     */
-    dispatch({ type: 'mediastateownerchangerequest', detail: mediaEl });
+    dispatch({ type: 'mediastateownerchangerequest', detail: element });
   };
 };
 
-export const refEquality = (a: any, b: any) => a === b;
+export const refEquality = (a: any, b: any): boolean => a === b;
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -115,7 +118,10 @@ export const shallowEqual = (objA: any, objB: any): boolean => {
   return true;
 };
 
-export const useMediaSelector = <S = any,>(selector: (state: any) => S, equalityFn = refEquality) => {
+export const useMediaSelector = <S = any,>(
+  selector: (state: any) => S,
+  equalityFn: (a: S, b: S) => boolean = refEquality
+): S => {
   const store = useContext(MediaContext);
   const selectedState = useSyncExternalStoreWithSelector(
     store?.subscribe ?? identity,

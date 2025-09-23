@@ -1,22 +1,24 @@
 {
   "name": "@vjs-10/html-media-elements",
+  "type": "module",
   "version": "0.1.0",
-  "description": "HTML/DOM-specific media element components and utilities",
+  "description": "HTML media element components and utilities",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
@@ -34,7 +36,7 @@
     "@vjs-10/media-store": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.5.0",
+    "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

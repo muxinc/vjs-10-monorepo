@@ -11,6 +11,10 @@ export type StateHook<T = any> = {
 
 export type PropsHook<T = any, P = any> = (state: T, element: HTMLElement) => P;
 
+export type ConnectedComponentConstructor<State> = {
+  new (state: State): HTMLElement;
+};
+
 /**
  * Generic factory function to create connected HTML components using hooks pattern.
  * Provides equivalent functionality to React's toConnectedComponent but for custom elements.
@@ -22,12 +26,12 @@ export type PropsHook<T = any, P = any> = (state: T, element: HTMLElement) => P;
  * @param displayName - Display name for debugging
  * @returns Connected custom element class with media store integration
  */
-export const toConnectedHTMLComponent = <TState = any>(
+export const toConnectedHTMLComponent = <State = any>(
   BaseClass: CustomElementConstructor,
-  stateHook: StateHook<TState>,
-  propsHook: PropsHook<TState>,
+  stateHook: StateHook<State>,
+  propsHook: PropsHook<State>,
   displayName?: string
-) => {
+): ConnectedComponentConstructor<State> => {
   const ConnectedComponent = class extends ConsumerMixin(BaseClass) {
     static get observedAttributes(): string[] {
       return [

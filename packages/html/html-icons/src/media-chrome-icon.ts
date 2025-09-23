@@ -13,7 +13,7 @@ export function getTemplateHTML() {
 
 export class MediaChromeIcon extends HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 
   constructor() {
     super();

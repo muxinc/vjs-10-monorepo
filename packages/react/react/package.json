@@ -1,23 +1,24 @@
 {
   "name": "@vjs-10/react",
+  "type": "module",
   "version": "0.1.0",
-  "description": "React equivalent to @vjs-10/html - comprehensive React components for building media player UIs",
+  "description": "React library for building media players",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
@@ -40,15 +41,9 @@
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
     "@types/react": "^18.0.0",
     "react": "^18.0.0",
-    "rollup": "^4.0.0",
-    "rollup-plugin-postcss": "^4.0.0",
-    "tslib": "^2.6.0",
-    "tsup": "^8.5.0",
+    "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

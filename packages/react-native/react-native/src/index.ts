@@ -1,7 +1,4 @@
-import * as React from 'react';
-
-// Placeholder exports for React Native package
-// These will be implemented in a future step
+import { createElement } from 'react';
 
 export interface PlayerProps {
   source?: { uri: string };
@@ -23,13 +20,9 @@ export interface PlayerProps {
   onEnd?: () => void;
 }
 
-// Placeholder component - will be implemented later
 export const Player: React.FC<PlayerProps> = () => {
-  return React.createElement('div', { children: 'React Native Player - Coming Soon' });
+  return createElement('div', { children: 'React Native Player - Coming Soon' });
 };
 
-// Re-export placeholder packages (will be available at runtime)
-// @ts-ignore - Package imports for placeholder stubs
 export * from '@vjs-10/react-native-icons';
-// @ts-ignore - Package imports for placeholder stubs
 export * from '@vjs-10/react-native-media-elements';

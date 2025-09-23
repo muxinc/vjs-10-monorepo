@@ -1,6 +1,9 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { MuteButtonState } from '@vjs-10/media-store';
+
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class MuteButtonBase extends MediaChromeButton {
@@ -13,9 +16,10 @@ export class MuteButtonBase extends MediaChromeButton {
       }
     | undefined;
 
-  handleEvent(event: Event) {
-    const { type } = event;
-    const state = this._state;
+  handleEvent(event: Event): void {
+    const { type } = event,
+      state = this._state;
+
     if (state) {
       if (type === 'click') {
         if (state.volumeLevel === 'off') {
@@ -27,15 +31,15 @@ export class MuteButtonBase extends MediaChromeButton {
     }
   }
 
-  get muted() {
-    return this._state?.muted;
+  get muted(): boolean {
+    return this._state?.muted ?? false;
   }
 
-  get volumeLevel() {
-    return this._state?.volumeLevel;
+  get volumeLevel(): string {
+    return this._state?.volumeLevel ?? 'high';
   }
 
-  _update(props: any, state: any) {
+  _update(props: any, state: any): void {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
     // Make generic
@@ -47,10 +51,6 @@ export class MuteButtonBase extends MediaChromeButton {
   }
 }
 
-/**
- * MuteButton state hook - equivalent to React's useMuteButtonState
- * Handles media store state subscription and transformation
- */
 export const useMuteButtonState: StateHook<{
   muted: boolean;
   volumeLevel: string;
@@ -62,10 +62,6 @@ export const useMuteButtonState: StateHook<{
   }),
 };
 
-/**
- * MuteButton props hook - equivalent to React's useMuteButtonProps
- * Handles element attributes and properties based on state
- */
 export const useMuteButtonProps: PropsHook<{
   muted: boolean;
   volumeLevel: string;
@@ -88,11 +84,7 @@ export const useMuteButtonProps: PropsHook<{
   return baseProps;
 };
 
-/**
- * Connected MuteButton component using hook-style architecture
- * Equivalent to React's MuteButton = toConnectedComponent(...)
- */
-export const MuteButton = toConnectedHTMLComponent(
+export const MuteButton: ConnectedComponentConstructor<MuteButtonState> = toConnectedHTMLComponent(
   MuteButtonBase,
   useMuteButtonState,
   useMuteButtonProps,

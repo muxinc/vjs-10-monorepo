@@ -4,17 +4,17 @@ const isValidNumber = (value: any): value is number => {
 
 export const temporal = {
   currentTime: {
-    get(stateOwners: any) {
+    get(stateOwners: any): number {
       const { media } = stateOwners;
       return media?.currentTime ?? 0;
     },
-    set(value: number, stateOwners: any) {
+    set(value: number, stateOwners: any): void {
       const { media } = stateOwners;
       if (!media || !isValidNumber(value)) return;
       media.currentTime = value;
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: number) => void, stateOwners: any) => {
+      (handler: (value?: number) => void, stateOwners: any): void | (() => void) => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -24,15 +24,15 @@ export const temporal = {
 
         return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
       },
-    ],
+    ] as const,
     actions: {
       /** @TODO Support more sophisticated seeking patterns like seek-to-live, relative seeking, etc. (CJP) */
-      seekrequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }) => +detail,
+      seekrequest: ({ detail }: Pick<CustomEvent<any>, 'detail'> = { detail: 0 }): number => +detail,
     },
   },
 
   duration: {
-    get(stateOwners: any) {
+    get(stateOwners: any): number {
       const { media } = stateOwners;
 
       // Return 0 if no media or invalid duration
@@ -43,7 +43,7 @@ export const temporal = {
       return media.duration;
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: number) => void, stateOwners: any) => {
+      (handler: (value?: number) => void, stateOwners: any): void | (() => void) => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -53,7 +53,7 @@ export const temporal = {
 
         return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
       },
-    ],
+    ] as const,
   },
 
   seekable: {
@@ -71,7 +71,7 @@ export const temporal = {
       return [Number(start.toFixed(3)), Number(end.toFixed(3))];
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: [number, number] | undefined) => void, stateOwners: any) => {
+      (handler: (value?: [number, number] | undefined) => void, stateOwners: any): void | (() => void) => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -81,6 +81,6 @@ export const temporal = {
 
         return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
       },
-    ],
+    ] as const,
   },
 };

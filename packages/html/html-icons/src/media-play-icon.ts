@@ -15,7 +15,7 @@ export function getTemplateHTML() {
 }
 
 export class MediaPlayIcon extends MediaChromeIcon {
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 }
 
 customElements.define('media-play-icon', MediaPlayIcon);

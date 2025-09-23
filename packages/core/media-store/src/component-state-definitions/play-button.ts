@@ -10,7 +10,7 @@ export interface PlayButtonMethods {
 export interface PlayButtonStateDefinition {
   keys: string[];
   stateTransform: (rawState: any) => PlayButtonState;
-  createRequestMethods: (dispatch: (action: { type: string }) => void) => PlayButtonMethods;
+  createRequestMethods: (dispatch: (action: { type: string; detail?: unknown }) => void) => PlayButtonMethods;
 }
 
 /**

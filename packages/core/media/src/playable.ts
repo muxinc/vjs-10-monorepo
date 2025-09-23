@@ -14,10 +14,8 @@ export const Events = [
   'durationchange',
 ] as const;
 
-export interface IBaseMediaStateOwner<T extends Pick<HTMLMediaElement, 'src'> = Pick<HTMLMediaElement, 'src'>>
-  extends EventTarget,
-    Pick<HTMLMediaElement, 'src'> {
-  mediaElement?: T | undefined;
+export interface IBaseMediaStateOwner extends EventTarget, Pick<HTMLMediaElement, 'src'> {
+  mediaElement?: HTMLMediaElement | undefined;
 }
 
 export interface IPlayableMediaStateOwner
@@ -37,23 +35,27 @@ export interface ITemporalMediaStateOwner
 
 export class PlayableMediaStateOwner extends EventTarget implements IPlayableMediaStateOwner, IAudibleMediaStateOwner {
   protected _playbackEngine: IBasePlaybackEngine;
+
   constructor() {
     super();
     this._playbackEngine = createPlaybackEngine();
   }
 
-  get mediaElement() {
+  get mediaElement(): HTMLMediaElement | undefined {
     return this._playbackEngine.mediaElement;
   }
 
   set mediaElement(value) {
     if (this.mediaElement === value) return;
+
     if (this.mediaElement != null) {
       Events.forEach((eventType) => {
         this.mediaElement?.removeEventListener(eventType, this);
       });
     }
+
     this._playbackEngine.mediaElement = value;
+
     if (this.mediaElement) {
       Events.forEach((eventType) => {
         this.mediaElement?.addEventListener(eventType, this);
@@ -61,64 +63,64 @@ export class PlayableMediaStateOwner extends EventTarget implements IPlayableMed
     }
   }
 
-  get paused() {
+  get paused(): boolean {
     return this.mediaElement?.paused ?? false;
   }
 
-  pause() {
+  pause(): void {
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
     if (!this.mediaElement) return;
     return this.mediaElement.pause();
   }
 
-  play() {
+  play(): Promise<void> {
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
     if (!this.mediaElement) return Promise.reject();
     return this.mediaElement.play();
   }
 
-  get muted() {
+  get muted(): boolean {
     return this.mediaElement?.muted ?? false;
   }
 
-  set muted(value) {
+  set muted(value: boolean) {
     if (value === this.muted) return;
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
     if (!this.mediaElement) return;
     this.mediaElement.muted = value;
   }
 
-  get volume() {
+  get volume(): number {
     return this.mediaElement?.volume ?? 0;
   }
 
-  set volume(value) {
+  set volume(value: number) {
     if (value === this.volume) return;
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
     if (!this.mediaElement) return;
     this.mediaElement.volume = value;
   }
 
-  get duration() {
+  get duration(): number {
     return this.mediaElement?.duration ?? 0;
   }
 
-  get currentTime() {
+  get currentTime(): number {
     return this.mediaElement?.currentTime ?? 0;
   }
 
-  set currentTime(value) {
+  set currentTime(value: number) {
     if (value === this.currentTime) return;
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
     if (!this.mediaElement) return;
     this.mediaElement.currentTime = value;
   }
 
-  get src() {
+  get src(): string {
     return this._playbackEngine.src ?? '';
   }
 
-  set src(value) {
+  set src(value: string) {
     this._playbackEngine.src = value;
   }
 
@@ -129,10 +131,9 @@ export class PlayableMediaStateOwner extends EventTarget implements IPlayableMed
     }
   }
 
-  destroy() {
-    this.mediaElement = undefined;
+  destroy(): void {
     this._playbackEngine.destroy();
   }
 }
 
-export const createMediaStateOwner = () => new PlayableMediaStateOwner();
+export const createMediaStateOwner = (): PlayableMediaStateOwner => new PlayableMediaStateOwner();

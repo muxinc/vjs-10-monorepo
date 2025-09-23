@@ -1,3 +1,5 @@
+import type { Constructor, CustomElement } from '@open-wc/context-protocol';
+
 import { ConsumerMixin } from '@open-wc/context-protocol';
 
 export function getTemplateHTML() {
@@ -7,16 +9,16 @@ export function getTemplateHTML() {
   `;
 }
 
-// @ts-ignore - Custom element constructor compatibility
-export class MediaContainer extends ConsumerMixin(HTMLElement) {
+const CustomElementConsumer: Constructor<CustomElement> = ConsumerMixin(HTMLElement);
+
+export class MediaContainer extends CustomElementConsumer {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 
   _mediaStore: any;
   _mediaSlot: HTMLSlotElement;
-
   contexts = {
-    mediaStore: (mediaStore: any) => {
+    mediaStore: (mediaStore: any): void => {
       this._mediaStore = mediaStore;
       this._handleMediaSlotChange();
       this._registerContainerStateOwner();
@@ -39,27 +41,27 @@ export class MediaContainer extends ConsumerMixin(HTMLElement) {
     this._mediaSlot.addEventListener('slotchange', this._handleMediaSlotChange);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback?.();
     this._registerContainerStateOwner();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback?.();
     this._unregisterContainerStateOwner();
   }
 
-  _registerContainerStateOwner = () => {
+  _registerContainerStateOwner = (): void => {
     if (!this._mediaStore) return;
     this._mediaStore.dispatch({ type: 'containerstateownerchangerequest', detail: this });
   };
 
-  _unregisterContainerStateOwner = () => {
+  _unregisterContainerStateOwner = (): void => {
     if (!this._mediaStore) return;
     this._mediaStore.dispatch({ type: 'containerstateownerchangerequest', detail: null });
   };
 
-  _handleMediaSlotChange = () => {
+  _handleMediaSlotChange = (): void => {
     const media = this._mediaSlot.assignedElements({ flatten: true })[0];
     this._mediaStore.dispatch({ type: 'mediastateownerchangerequest', detail: media });
   };

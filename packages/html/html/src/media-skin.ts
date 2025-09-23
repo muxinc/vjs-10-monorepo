@@ -17,7 +17,7 @@ export function getTemplateHTML() {
 
 export class MediaSkin extends HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 
   constructor() {
     super();

@@ -1,35 +1,44 @@
-import * as React from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
+import type { ChangeEvent, PropsWithChildren } from 'react';
+
+import { useMemo } from 'react';
 
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const useVolumeRangeState = (_props: any) => {
+export const useVolumeRangeState = (
+  _props: any
+): {
+  volume: number;
+  muted: boolean;
+  volumeLevel: 'off' | 'low' | 'medium' | 'high';
+  requestVolumeChange: (volume: number) => void;
+} => {
   const mediaStore = useMediaStore();
+
   /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(volumeRangeStateDefinition.stateTransform, shallowEqual);
 
-  const methods = React.useMemo(
-    () => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore]
-  );
+  const methods = useMemo(() => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   return {
     volume: mediaState.volume,
     muted: mediaState.muted,
     volumeLevel: mediaState.volumeLevel,
     requestVolumeChange: methods.requestVolumeChange,
-  } as const;
+  };
 };
 
 export type useVolumeRangeState = typeof useVolumeRangeState;
+
 export type VolumeRangeState = ReturnType<useVolumeRangeState>;
 
 export const useVolumeRangeProps = (
-  props: React.PropsWithChildren<{ [k: string]: any }>,
+  props: PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useVolumeRangeState>
-) => {
+): Record<string, any> => {
   const displayValue = state.muted ? 0 : state.volume;
 
   const baseProps: Record<string, any> = {
@@ -60,11 +69,11 @@ type VolumeRangeProps = ReturnType<useVolumeRangeProps>;
  * @TODO This is just a simple render function to demonstrate functionality.
  * A full implementation will need to implement a "compound component" architecture. (CJP)
  **/
-export const renderVolumeRange = (props: VolumeRangeProps, state: VolumeRangeState) => {
+export const renderVolumeRange = (props: VolumeRangeProps, state: VolumeRangeState): JSX.Element => {
   return (
     <input
       {...props}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
         /** @ts-ignore */
         if (props.disabled) return;
         state.requestVolumeChange(parseFloat(e.target.value));
@@ -78,10 +87,11 @@ export type renderVolumeRange = typeof renderVolumeRange;
 /**
  * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
  */
-export const VolumeRange = toConnectedComponent(
+export const VolumeRange: ConnectedComponent<VolumeRangeProps, typeof renderVolumeRange> = toConnectedComponent(
   useVolumeRangeState,
   useVolumeRangeProps,
   renderVolumeRange,
   'VolumeRange'
 );
+
 export default VolumeRange;

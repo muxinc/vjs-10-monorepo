@@ -1,4 +1,6 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import type { CSSProperties, ForwardRefExoticComponent } from 'react';
+
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 // @ts-ignore - Placeholder interfaces for future implementation
 interface MediaElementLike {
@@ -95,14 +97,17 @@ export interface MediaElementProps {
   onVolumeChange?: (volume: number, muted: boolean) => void;
   onEnded?: () => void;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 export interface MediaElementRef extends MediaElementLike {
   element: HTMLVideoElement | HTMLAudioElement | null;
 }
 
-export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
+export const VideoElement: ForwardRefExoticComponent<MediaElementProps> = forwardRef<
+  MediaElementRef,
+  MediaElementProps
+>(
   (
     {
       src,
@@ -245,7 +250,10 @@ export const VideoElement = forwardRef<MediaElementRef, MediaElementProps>(
 
 VideoElement.displayName = 'VideoElement';
 
-export const AudioElement = forwardRef<MediaElementRef, MediaElementProps>(
+export const AudioElement: ForwardRefExoticComponent<MediaElementProps> = forwardRef<
+  MediaElementRef,
+  MediaElementProps
+>(
   (
     {
       src,

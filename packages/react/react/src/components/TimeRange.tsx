@@ -1,4 +1,7 @@
-import * as React from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
+import type { HTMLAttributes, PointerEvent, PropsWithChildren } from 'react';
+
+import { useCallback, useMemo, useState } from 'react';
 
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
@@ -21,7 +24,7 @@ const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => 
   return (ratio / 100) * duration;
 };
 
-const calculateSeekTimeFromPointerEvent = (e: React.PointerEvent<HTMLDivElement>, duration: number): number => {
+const calculateSeekTimeFromPointerEvent = (e: PointerEvent<HTMLDivElement>, duration: number): number => {
   const rect = e.currentTarget.getBoundingClientRect();
   const ratio = calculatePointerRatio(e.clientX, rect);
   return calculateSeekTimeFromRatio(ratio, duration);
@@ -31,17 +34,31 @@ const calculateSeekTimeFromPointerEvent = (e: React.PointerEvent<HTMLDivElement>
 // ROOT COMPONENT
 // ============================================================================
 
-export const useTimeRangeRootState = (_props: any) => {
+export const useTimeRangeRootState = (
+  _props: any
+): {
+  currentTime: number;
+  duration: number;
+  requestSeek: (time: number) => void;
+  pointerPosition: number | null;
+  setPointerPosition: (pos: number | null) => void;
+  hovering: boolean;
+  setHovering: (hovering: boolean) => void;
+  dragging: boolean;
+  setDragging: (dragging: boolean) => void;
+  trackRef: HTMLDivElement | null;
+  setTrackRef: (el: HTMLDivElement | null) => void;
+} => {
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
 
-  const methods = React.useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
+  const methods = useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   const { requestSeek } = methods;
-  const [pointerPosition, setPointerPosition] = React.useState<number | null>(null);
-  const [hovering, setHovering] = React.useState(false);
-  const [dragging, setDragging] = React.useState(false);
-  const [trackRef, setTrackRef] = React.useState<HTMLDivElement | null>(null);
+  const [pointerPosition, setPointerPosition] = useState<number | null>(null);
+  const [hovering, setHovering] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [trackRef, setTrackRef] = useState<HTMLDivElement | null>(null);
 
   return {
     currentTime: mediaState.currentTime,
@@ -55,11 +72,11 @@ export const useTimeRangeRootState = (_props: any) => {
     setDragging,
     trackRef,
     setTrackRef,
-  } as const;
+  };
 };
 
 export const useTimeRangeRootProps = (
-  props: React.PropsWithChildren<{ [k: string]: any }>,
+  props: PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useTimeRangeRootState>
 ) => {
   // When dragging, use pointer position for immediate feedback; otherwise use current time
@@ -70,8 +87,8 @@ export const useTimeRangeRootProps = (
         ? (state.currentTime / state.duration) * 100
         : 0;
 
-  const handlePointerDown = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerDown = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
       state.setDragging(true);
       const seekTime = calculateSeekTimeFromPointerEvent(e, state.duration);
@@ -83,7 +100,7 @@ export const useTimeRangeRootProps = (
     [state.setDragging, state.requestSeek, state.duration]
   );
 
-  const handlePointerMove = React.useCallback(
+  const handlePointerMove = useCallback(
     (e: PointerEvent) => {
       if (!state.trackRef) return;
 
@@ -99,8 +116,8 @@ export const useTimeRangeRootProps = (
     [state.trackRef, state.setPointerPosition, state.dragging, state.requestSeek, state.duration]
   );
 
-  const handlePointerUp = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
       e.currentTarget.releasePointerCapture(e.pointerId);
 
       if (state.dragging && state.trackRef && state.pointerPosition !== null) {
@@ -112,11 +129,11 @@ export const useTimeRangeRootProps = (
     [state.dragging, state.trackRef, state.pointerPosition, state.requestSeek, state.duration, state.setDragging]
   );
 
-  const handlePointerEnter = React.useCallback(() => {
+  const handlePointerEnter = useCallback(() => {
     state.setHovering(true);
   }, [state.setHovering]);
 
-  const handlePointerLeave = React.useCallback(() => {
+  const handlePointerLeave = useCallback(() => {
     state.setHovering(false);
   }, [state.setHovering]);
 
@@ -144,18 +161,18 @@ export const useTimeRangeRootProps = (
     onPointerEnter: handlePointerEnter,
     onPointerLeave: handlePointerLeave,
     ...props,
-  } as React.PropsWithChildren<{ [k: string]: any }>;
+  } as PropsWithChildren<{ [k: string]: any }>;
 };
 
 type useTimeRangeRootState = typeof useTimeRangeRootState;
 type useTimeRangeRootProps = typeof useTimeRangeRootProps;
 type TimeRangeRootProps = ReturnType<useTimeRangeRootProps>;
 
-export const renderTimeRangeRoot = (props: TimeRangeRootProps) => {
+export const renderTimeRangeRoot = (props: TimeRangeRootProps): JSX.Element => {
   return <div {...props} />;
 };
 
-const TimeRangeRoot = toConnectedComponent(
+const TimeRangeRoot: ConnectedComponent<TimeRangeRootProps, typeof renderTimeRangeRoot> = toConnectedComponent(
   useTimeRangeRootState,
   useTimeRangeRootProps,
   renderTimeRangeRoot,
@@ -166,7 +183,10 @@ const TimeRangeRoot = toConnectedComponent(
 // TRACK COMPONENT
 // ============================================================================
 
-export const useTimeRangeTrackProps = (props: React.PropsWithChildren<{ [k: string]: any }>, context: any) => {
+export const useTimeRangeTrackProps = (
+  props: PropsWithChildren<Record<string, unknown>>,
+  context: any
+): PropsWithChildren<Record<string, unknown>> & { ref?: any } => {
   const { setTrackRef } = context;
 
   return {
@@ -178,17 +198,21 @@ export const useTimeRangeTrackProps = (props: React.PropsWithChildren<{ [k: stri
 type useTimeRangeTrackProps = typeof useTimeRangeTrackProps;
 type TimeRangeTrackProps = ReturnType<useTimeRangeTrackProps>;
 
-export const renderTimeRangeTrack = (props: TimeRangeTrackProps) => {
+export const renderTimeRangeTrack = (props: TimeRangeTrackProps): JSX.Element => {
   return <div {...props} />;
 };
 
-const TimeRangeTrack = toContextComponent(useTimeRangeTrackProps, renderTimeRangeTrack, 'TimeRange.Track');
+const TimeRangeTrack: ConnectedComponent<TimeRangeTrackProps, typeof renderTimeRangeTrack> = toContextComponent(
+  useTimeRangeTrackProps,
+  renderTimeRangeTrack,
+  'TimeRange.Track'
+);
 
 // ============================================================================
 // THUMB COMPONENT
 // ============================================================================
 
-export const useTimeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
+export const useTimeRangeThumbProps = (props: HTMLAttributes<HTMLDivElement>): Record<string, unknown> => {
   return {
     ...props,
     style: {
@@ -204,17 +228,21 @@ export const useTimeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElemen
 type useTimeRangeThumbProps = typeof useTimeRangeThumbProps;
 type TimeRangeThumbProps = ReturnType<useTimeRangeThumbProps>;
 
-export const renderTimeRangeThumb = (props: TimeRangeThumbProps) => {
+export const renderTimeRangeThumb = (props: TimeRangeThumbProps): JSX.Element => {
   return <div {...props} />;
 };
 
-const TimeRangeThumb = toContextComponent(useTimeRangeThumbProps, renderTimeRangeThumb, 'TimeRange.Thumb');
+const TimeRangeThumb: ConnectedComponent<TimeRangeThumbProps, typeof renderTimeRangeThumb> = toContextComponent(
+  useTimeRangeThumbProps,
+  renderTimeRangeThumb,
+  'TimeRange.Thumb'
+);
 
 // ============================================================================
 // POINTER COMPONENT
 // ============================================================================
 
-export const useTimeRangePointerProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
+export const useTimeRangePointerProps = (props: HTMLAttributes<HTMLDivElement>): Record<string, unknown> => {
   return {
     ...props,
     style: {
@@ -229,17 +257,21 @@ export const useTimeRangePointerProps = (props: React.HTMLAttributes<HTMLDivElem
 type useTimeRangePointerProps = typeof useTimeRangePointerProps;
 type TimeRangePointerProps = ReturnType<useTimeRangePointerProps>;
 
-export const renderTimeRangePointer = (props: TimeRangePointerProps) => {
+export const renderTimeRangePointer = (props: TimeRangePointerProps): JSX.Element => {
   return <div {...props} />;
 };
 
-const TimeRangePointer = toContextComponent(useTimeRangePointerProps, renderTimeRangePointer, 'TimeRange.Pointer');
+const TimeRangePointer: ConnectedComponent<TimeRangePointerProps, typeof renderTimeRangePointer> = toContextComponent(
+  useTimeRangePointerProps,
+  renderTimeRangePointer,
+  'TimeRange.Pointer'
+);
 
 // ============================================================================
 // PROGRESS COMPONENT
 // ============================================================================
 
-export const useTimeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivElement>) => {
+export const useTimeRangeProgressProps = (props: HTMLAttributes<HTMLDivElement>): Record<string, unknown> => {
   return {
     ...props,
     style: {
@@ -254,11 +286,12 @@ export const useTimeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivEle
 type useTimeRangeProgressProps = typeof useTimeRangeProgressProps;
 type TimeRangeProgressProps = ReturnType<useTimeRangeProgressProps>;
 
-export const renderTimeRangeProgress = (props: TimeRangeProgressProps) => {
+export const renderTimeRangeProgress = (props: TimeRangeProgressProps): JSX.Element => {
   return <div {...props} />;
 };
 
-const TimeRangeProgress = toContextComponent(useTimeRangeProgressProps, renderTimeRangeProgress, 'TimeRange.Progress');
+const TimeRangeProgress: ConnectedComponent<TimeRangeProgressProps, typeof renderTimeRangeProgress> =
+  toContextComponent(useTimeRangeProgressProps, renderTimeRangeProgress, 'TimeRange.Progress');
 
 // ============================================================================
 // EXPORTS

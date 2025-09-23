@@ -1,7 +1,5 @@
 import styles from './styles';
 
-import * as React from 'react';
-
 import {
   FullscreenEnterIcon,
   FullscreenExitIcon,

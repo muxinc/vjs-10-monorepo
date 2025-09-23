@@ -1,34 +1,41 @@
-import * as React from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
+import type { PropsWithChildren } from 'react';
+
+import { useMemo } from 'react';
 
 import { playButtonStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const usePlayButtonState = (_props: any) => {
+export const usePlayButtonState = (
+  _props: any
+): {
+  paused: boolean;
+  requestPlay: () => void;
+  requestPause: () => void;
+} => {
   const mediaStore = useMediaStore();
+
   /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(playButtonStateDefinition.stateTransform, shallowEqual);
 
-  const methods = React.useMemo(
-    () => playButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore]
-  );
+  const methods = useMemo(() => playButtonStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   return {
     paused: mediaState.paused,
     requestPlay: methods.requestPlay,
     requestPause: methods.requestPause,
-  } as const;
+  };
 };
 
 export type usePlayButtonState = typeof usePlayButtonState;
 export type PlayButtonState = ReturnType<usePlayButtonState>;
 
 export const usePlayButtonProps = (
-  props: React.PropsWithChildren<{ [k: string]: any }>,
+  props: Record<string, unknown>,
   state: ReturnType<typeof usePlayButtonState>
-) => {
+): PropsWithChildren<Record<string, unknown>> => {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
@@ -51,7 +58,7 @@ export const usePlayButtonProps = (
 export type usePlayButtonProps = typeof usePlayButtonProps;
 type PlayButtonProps = ReturnType<usePlayButtonProps>;
 
-export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState) => {
+export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState): JSX.Element => {
   return (
     <button
       {...props}
@@ -72,5 +79,11 @@ export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState)
 
 export type renderPlayButton = typeof renderPlayButton;
 
-export const PlayButton = toConnectedComponent(usePlayButtonState, usePlayButtonProps, renderPlayButton, 'PlayButton');
+export const PlayButton: ConnectedComponent<PlayButtonProps, typeof renderPlayButton> = toConnectedComponent(
+  usePlayButtonState,
+  usePlayButtonProps,
+  renderPlayButton,
+  'PlayButton'
+);
+
 export default PlayButton;
