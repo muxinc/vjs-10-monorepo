@@ -1,10 +1,14 @@
+import type { Constructor, CustomElement } from '@open-wc/context-protocol';
+import type { MediaStore } from '@vjs-10/media-store';
+
 import { ProviderMixin } from '@open-wc/context-protocol';
 import { createMediaStore } from '@vjs-10/media-store';
 
-// @ts-ignore - Custom element constructor compatibility
-export class MediaProvider extends ProviderMixin(HTMLElement) {
+export const CustomElementProvider: Constructor<CustomElement> = ProviderMixin(HTMLElement);
+
+export class MediaProvider extends CustomElementProvider {
   contexts = {
-    mediaStore: () => {
+    mediaStore: (): MediaStore => {
       return createMediaStore();
     },
   };

@@ -1,23 +1,23 @@
 {
   "name": "@vjs-10/html",
   "version": "0.1.0",
-  "description": "Core UI components for building media player UIs. Also an import + export of various other HTML packages for convenience and discoverability.",
+  "description": "HTML library for Video.js",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c && tsc --project tsconfig.build.json",
-    "dev": "rollup -c -w",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
@@ -37,12 +37,7 @@
     "@vjs-10/media-store": "workspace:*"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "rollup": "^4.0.0",
-    "tslib": "^2.6.0",
-    "tsup": "^8.5.0",
+    "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

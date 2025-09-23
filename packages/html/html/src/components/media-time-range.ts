@@ -1,8 +1,10 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { TimeRangeState } from '@vjs-10/media-store';
+
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-// Utility functions for pointer position and seek time calculations
 const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
   const x = clientX - rect.left;
   return Math.max(0, Math.min(100, (x / rect.width) * 100));
@@ -18,9 +20,6 @@ const calculateSeekTimeFromPointerEvent = (event: PointerEvent, duration: number
   return calculateSeekTimeFromRatio(ratio, duration);
 };
 
-/**
- * TimeRange Root component - Main container with pointer event handling
- */
 export class TimeRangeRootBase extends HTMLElement {
   _state:
     | {
@@ -29,6 +28,7 @@ export class TimeRangeRootBase extends HTMLElement {
         requestSeek: (time: number) => void;
       }
     | undefined;
+
   _trackElement: HTMLElement | null = null;
   _pointerPosition: number | null = null;
   _hovering: boolean = false;
@@ -45,7 +45,7 @@ export class TimeRangeRootBase extends HTMLElement {
     this.addEventListener('pointerleave', this);
   }
 
-  handleEvent(event: Event) {
+  handleEvent(event: Event): void {
     const { type } = event;
     const state = this._state;
     if (!state) return;
@@ -110,15 +110,15 @@ export class TimeRangeRootBase extends HTMLElement {
     this._hovering = false;
   }
 
-  get currentTime() {
-    return this._state?.currentTime;
+  get currentTime(): number {
+    return this._state?.currentTime ?? 0;
   }
 
-  get duration() {
-    return this._state?.duration;
+  get duration(): number {
+    return this._state?.duration ?? 0;
   }
 
-  _update(props: any, state: any) {
+  _update(props: any, state: any): void {
     this._state = state;
 
     // Find track element
@@ -153,22 +153,16 @@ export class TimeRangeRootBase extends HTMLElement {
   }
 }
 
-/**
- * TimeRange Track component - Track element that captures pointer events
- */
 export class TimeRangeTrackBase extends HTMLElement {
   constructor() {
     super();
   }
 
-  _update(_props: any, _state: any) {
+  _update(_props: any, _state: any): void {
     // Track doesn't need much state management
   }
 }
 
-/**
- * TimeRange Progress component - Shows current progress
- */
 export class TimeRangeProgressBase extends HTMLElement {
   constructor() {
     super();
@@ -177,14 +171,11 @@ export class TimeRangeProgressBase extends HTMLElement {
     this.style.height = '100%';
   }
 
-  _update(_props: any, _state: any) {
+  _update(_props: any, _state: any): void {
     // Progress updates are handled by CSS custom properties
   }
 }
 
-/**
- * TimeRange Pointer component - Shows hover position
- */
 export class TimeRangePointerBase extends HTMLElement {
   constructor() {
     super();
@@ -193,14 +184,11 @@ export class TimeRangePointerBase extends HTMLElement {
     this.style.height = '100%';
   }
 
-  _update(_props: any, _state: any) {
+  _update(_props: any, _state: any): void {
     // Pointer updates are handled by CSS custom properties
   }
 }
 
-/**
- * TimeRange Thumb component - Draggable thumb element
- */
 export class TimeRangeThumbBase extends HTMLElement {
   constructor() {
     super();
@@ -210,15 +198,11 @@ export class TimeRangeThumbBase extends HTMLElement {
     this.style.transform = 'translate(-50%, -50%)';
   }
 
-  _update(_props: any, _state: any) {
+  _update(_props: any, _state: any): void {
     // Thumb updates are handled by CSS custom properties
   }
 }
 
-/**
- * TimeRange Root state hook - equivalent to React's useTimeRangeRootState
- * Handles media store state subscription and transformation
- */
 export const useTimeRangeRootState: StateHook<{
   currentTime: number;
   duration: number;
@@ -230,10 +214,6 @@ export const useTimeRangeRootState: StateHook<{
   }),
 };
 
-/**
- * TimeRange Root props hook - equivalent to React's useTimeRangeRootProps
- * Handles element attributes and properties based on state
- */
 export const useTimeRangeRootProps: PropsHook<{
   currentTime: number;
   duration: number;
@@ -259,87 +239,57 @@ export const useTimeRangeRootProps: PropsHook<{
   return baseProps;
 };
 
-/**
- * TimeRange Track props hook
- */
 export const useTimeRangeTrackProps: PropsHook<{}> = (_state, _element) => {
   return {};
 };
 
-/**
- * TimeRange Progress props hook
- */
 export const useTimeRangeProgressProps: PropsHook<{}> = (_state, _element) => {
   return {};
 };
 
-/**
- * TimeRange Pointer props hook
- */
 export const useTimeRangePointerProps: PropsHook<{}> = (_state, _element) => {
   return {};
 };
 
-/**
- * TimeRange Thumb props hook
- */
 export const useTimeRangeThumbProps: PropsHook<{}> = (_state, _element) => {
   return {};
 };
 
-/**
- * Connected TimeRange Root component using hook-style architecture
- */
-export const TimeRangeRoot = toConnectedHTMLComponent(
+export const TimeRangeRoot: ConnectedComponentConstructor<TimeRangeState> = toConnectedHTMLComponent(
   TimeRangeRootBase,
   useTimeRangeRootState,
   useTimeRangeRootProps,
   'TimeRangeRoot'
 );
 
-/**
- * Connected TimeRange Track component
- */
-export const TimeRangeTrack = toConnectedHTMLComponent(
+export const TimeRangeTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangeTrackBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeTrackProps,
   'TimeRangeTrack'
 );
 
-/**
- * Connected TimeRange Progress component
- */
-export const TimeRangeProgress = toConnectedHTMLComponent(
+export const TimeRangeProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangeProgressBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeProgressProps,
   'TimeRangeProgress'
 );
 
-/**
- * Connected TimeRange Pointer component
- */
-export const TimeRangePointer = toConnectedHTMLComponent(
+export const TimeRangePointer: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangePointerBase,
   { keys: [], transform: () => ({}) },
   useTimeRangePointerProps,
   'TimeRangePointer'
 );
 
-/**
- * Connected TimeRange Thumb component
- */
-export const TimeRangeThumb = toConnectedHTMLComponent(
+export const TimeRangeThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangeThumbBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeThumbProps,
   'TimeRangeThumb'
 );
 
-/**
- * Compound TimeRange component object
- */
 export const TimeRange = Object.assign(
   {},
   {

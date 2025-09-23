@@ -1,6 +1,9 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { VolumeRangeState } from '@vjs-10/media-store';
+
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class VolumeRangeBase extends HTMLElement {
   _state:
@@ -11,6 +14,7 @@ export class VolumeRangeBase extends HTMLElement {
         requestVolumeChange: (volume: number) => void;
       }
     | undefined;
+
   _input: HTMLInputElement;
 
   constructor() {
@@ -28,7 +32,7 @@ export class VolumeRangeBase extends HTMLElement {
     this.appendChild(this._input);
   }
 
-  handleEvent(event: Event) {
+  handleEvent(event: Event): void {
     const { type } = event;
     const state = this._state;
     if (state) {
@@ -38,19 +42,19 @@ export class VolumeRangeBase extends HTMLElement {
     }
   }
 
-  get volume() {
-    return this._state?.volume;
+  get volume(): number {
+    return this._state?.volume ?? 0;
   }
 
-  get muted() {
-    return this._state?.muted;
+  get muted(): boolean {
+    return this._state?.muted ?? false;
   }
 
-  get volumeLevel() {
-    return this._state?.volumeLevel;
+  get volumeLevel(): string {
+    return this._state?.volumeLevel ?? 'high';
   }
 
-  _update(props: any, state: any) {
+  _update(props: any, state: any): void {
     this._state = state;
     const displayValue = state.muted ? 0 : state.volume;
     this._input.value = displayValue.toString();
@@ -64,10 +68,6 @@ export class VolumeRangeBase extends HTMLElement {
   }
 }
 
-/**
- * VolumeRange state hook - equivalent to React's useVolumeRangeState
- * Handles media store state subscription and transformation
- */
 export const useVolumeRangeState: StateHook<{
   volume: number;
   muted: boolean;
@@ -80,10 +80,6 @@ export const useVolumeRangeState: StateHook<{
   }),
 };
 
-/**
- * VolumeRange props hook - equivalent to React's useVolumeRangeProps
- * Handles element attributes and properties based on state
- */
 export const useVolumeRangeProps: PropsHook<{
   volume: number;
   muted: boolean;
@@ -105,14 +101,9 @@ export const useVolumeRangeProps: PropsHook<{
   return baseProps;
 };
 
-/**
- * @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
- */
-/**
- * Connected VolumeRange component using hook-style architecture
- * Equivalent to React's VolumeRange = toConnectedComponent(...)
- */
-export const VolumeRange = toConnectedHTMLComponent(
+// @TODO When implementing compound components, this function may need to be swapped out, modified, or augmented in some way or another. (CJP)
+
+export const VolumeRange: ConnectedComponentConstructor<VolumeRangeState> = toConnectedHTMLComponent(
   VolumeRangeBase,
   useVolumeRangeState,
   useVolumeRangeProps,

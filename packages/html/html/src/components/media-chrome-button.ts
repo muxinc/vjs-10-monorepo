@@ -4,7 +4,7 @@ export function getTemplateHTML(
   this: typeof MediaChromeButton,
   _attrs: Record<string, string>,
   _props: Record<string, any> = {}
-) {
+): string {
   return /* html */ `
     <style>
       /*
@@ -24,7 +24,8 @@ export class MediaChromeButton extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
-  static getTemplateHTML = getTemplateHTML;
+
+  static getTemplateHTML: typeof getTemplateHTML = getTemplateHTML;
 
   constructor() {
     super();
@@ -44,5 +45,5 @@ export class MediaChromeButton extends HTMLElement {
     this.addEventListener('click', this);
   }
 
-  handleEvent(_event: Event) {}
+  handleEvent(_event: Event): void {}
 }

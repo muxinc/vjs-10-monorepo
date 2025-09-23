@@ -1,7 +1,9 @@
-export function namedNodeMapToObject(namedNodeMap: NamedNodeMap) {
+export function namedNodeMapToObject(namedNodeMap: NamedNodeMap): Record<string, string> {
   const obj: Record<string, string> = {};
+
   for (const attr of namedNodeMap) {
     obj[attr.name] = attr.value;
   }
+
   return obj;
 }

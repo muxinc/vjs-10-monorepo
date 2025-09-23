@@ -1,6 +1,9 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { FullscreenButtonState } from '@vjs-10/media-store';
+
 import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class FullscreenButtonBase extends MediaChromeButton {
@@ -12,7 +15,7 @@ export class FullscreenButtonBase extends MediaChromeButton {
       }
     | undefined;
 
-  handleEvent(event: Event) {
+  handleEvent(event: Event): void {
     const { type } = event;
     const state = this._state;
     if (state && type === 'click') {
@@ -24,11 +27,11 @@ export class FullscreenButtonBase extends MediaChromeButton {
     }
   }
 
-  get fullscreen() {
-    return this._state?.fullscreen;
+  get fullscreen(): boolean {
+    return this._state?.fullscreen ?? false;
   }
 
-  _update(props: any, state: any, _mediaStore?: any) {
+  _update(props: any, state: any, _mediaStore?: any): void {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
     // Make generic
@@ -51,10 +54,6 @@ export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
   }),
 };
 
-/**
- * FullscreenButton props hook - equivalent to React's useFullscreenButtonProps
- * Handles element attributes and properties based on state
- */
 export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
@@ -73,11 +72,7 @@ export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (sta
   return baseProps;
 };
 
-/**
- * Connected FullscreenButton component using hook-style architecture
- * Equivalent to React's FullscreenButton = toConnectedComponent(...)
- */
-export const FullscreenButton = toConnectedHTMLComponent(
+export const FullscreenButton: ConnectedComponentConstructor<FullscreenButtonState> = toConnectedHTMLComponent(
   FullscreenButtonBase,
   useFullscreenButtonState,
   useFullscreenButtonProps,

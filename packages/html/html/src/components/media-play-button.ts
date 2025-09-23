@@ -1,6 +1,9 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { PlayButtonState } from '@vjs-10/media-store';
+
 import { playButtonStateDefinition } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class PlayButtonBase extends MediaChromeButton {
@@ -10,7 +13,7 @@ export class PlayButtonBase extends MediaChromeButton {
     super();
   }
 
-  handleEvent(event: Event) {
+  handleEvent(event: Event): void {
     const { type } = event;
     const state = this._state;
     if (state && type === 'click') {
@@ -22,11 +25,11 @@ export class PlayButtonBase extends MediaChromeButton {
     }
   }
 
-  get paused() {
-    return this._state?.paused;
+  get paused(): boolean {
+    return this._state?.paused ?? true;
   }
 
-  _update(props: any, state: any, _mediaStore?: any) {
+  _update(props: any, state: any, _mediaStore?: any): void {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
     // Make generic
@@ -37,10 +40,6 @@ export class PlayButtonBase extends MediaChromeButton {
   }
 }
 
-/**
- * PlayButton state hook - equivalent to React's usePlayButtonState
- * Handles media store state subscription and transformation
- */
 export const usePlayButtonState: StateHook<{ paused: boolean }> = {
   keys: playButtonStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
@@ -49,10 +48,6 @@ export const usePlayButtonState: StateHook<{ paused: boolean }> = {
   }),
 };
 
-/**
- * PlayButton props hook - equivalent to React's usePlayButtonProps
- * Handles element attributes and properties based on state
- */
 export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
@@ -71,11 +66,7 @@ export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (state, _eleme
   return baseProps;
 };
 
-/**
- * Connected PlayButton component using hook-style architecture
- * Equivalent to React's PlayButton = toConnectedComponent(...)
- */
-export const PlayButton = toConnectedHTMLComponent(
+export const PlayButton: ConnectedComponentConstructor<PlayButtonState> = toConnectedHTMLComponent(
   PlayButtonBase,
   usePlayButtonState,
   usePlayButtonProps,

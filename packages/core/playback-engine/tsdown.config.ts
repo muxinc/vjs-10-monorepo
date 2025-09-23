@@ -9,7 +9,4 @@ export default defineConfig({
   dts: {
     oxc: true,
   },
-  loader: {
-    '.svg': 'text',
-  },
 });

@@ -1,12 +1,16 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { CurrentTimeDisplayState } from '@vjs-10/media-store';
+
 import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class CurrentTimeDisplayBase extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
-  static observedAttributes = ['show-remaining'];
+
+  static observedAttributes: string[] = ['show-remaining'];
 
   _state:
     | {
@@ -23,26 +27,26 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     }
   }
 
-  get currentTime() {
-    return this._state?.currentTime;
+  get currentTime(): number {
+    return this._state?.currentTime ?? 0;
   }
 
-  get duration() {
-    return this._state?.duration;
+  get duration(): number {
+    return this._state?.duration ?? 0;
   }
 
-  get showRemaining() {
+  get showRemaining(): boolean {
     return this.hasAttribute('show-remaining');
   }
 
-  attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null) {
+  attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null): void {
     if (name === 'show-remaining' && this._state) {
       // Re-render with current state when show-remaining attribute changes
       this._update({}, this._state);
     }
   }
 
-  _update(_props: any, state: any) {
+  _update(_props: any, state: any): void {
     this._state = state;
 
     /** @TODO Should this live here or elsewhere? (CJP) */
@@ -57,10 +61,6 @@ export class CurrentTimeDisplayBase extends HTMLElement {
   }
 }
 
-/**
- * CurrentTimeDisplay state hook - equivalent to React's useCurrentTimeDisplayState
- * Handles media store state subscription and transformation
- */
 export const useCurrentTimeDisplayState: StateHook<{
   currentTime: number | undefined;
   duration: number | undefined;
@@ -72,10 +72,6 @@ export const useCurrentTimeDisplayState: StateHook<{
   }),
 };
 
-/**
- * CurrentTimeDisplay props hook - equivalent to React's useCurrentTimeDisplayProps
- * Handles element attributes and properties based on state
- */
 export const useCurrentTimeDisplayProps: PropsHook<{
   currentTime: number | undefined;
   duration: number | undefined;
@@ -84,11 +80,7 @@ export const useCurrentTimeDisplayProps: PropsHook<{
   return baseProps;
 };
 
-/**
- * Connected CurrentTimeDisplay component using hook-style architecture
- * Equivalent to React's CurrentTimeDisplay = toConnectedComponent(...)
- */
-export const CurrentTimeDisplay = toConnectedHTMLComponent(
+export const CurrentTimeDisplay: ConnectedComponentConstructor<CurrentTimeDisplayState> = toConnectedHTMLComponent(
   CurrentTimeDisplayBase,
   useCurrentTimeDisplayState,
   useCurrentTimeDisplayProps,

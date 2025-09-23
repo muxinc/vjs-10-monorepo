@@ -1,6 +1,9 @@
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { DurationDisplayState } from '@vjs-10/media-store';
+
 import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 
-import { PropsHook, StateHook, toConnectedHTMLComponent } from '../utils/component-factory';
+import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { namedNodeMapToObject } from '../utils/element-utils.js';
 
 export function getTemplateHTML(
@@ -17,7 +20,8 @@ export class DurationDisplayBase extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
-  static getTemplateHTML = getTemplateHTML;
+
+  static getTemplateHTML: typeof getTemplateHTML = getTemplateHTML;
 
   _state:
     | {
@@ -38,11 +42,11 @@ export class DurationDisplayBase extends HTMLElement {
     }
   }
 
-  get duration() {
-    return this._state?.duration;
+  get duration(): number {
+    return this._state?.duration ?? 0;
   }
 
-  _update(_props: any, state: any) {
+  _update(_props: any, state: any): void {
     this._state = state;
 
     // Update the span content with formatted duration
@@ -53,10 +57,6 @@ export class DurationDisplayBase extends HTMLElement {
   }
 }
 
-/**
- * DurationDisplay state hook - equivalent to React's useDurationDisplayState
- * Handles media store state subscription and transformation
- */
 export const useDurationDisplayState: StateHook<{
   duration: number | undefined;
 }> = {
@@ -67,10 +67,6 @@ export const useDurationDisplayState: StateHook<{
   }),
 };
 
-/**
- * DurationDisplay props hook - equivalent to React's useDurationDisplayProps
- * Handles element attributes and properties based on state
- */
 export const useDurationDisplayProps: PropsHook<{
   duration: number | undefined;
 }> = (_state, _element) => {
@@ -78,11 +74,7 @@ export const useDurationDisplayProps: PropsHook<{
   return baseProps;
 };
 
-/**
- * Connected DurationDisplay component using hook-style architecture
- * Equivalent to React's DurationDisplay = toConnectedComponent(...)
- */
-export const DurationDisplay = toConnectedHTMLComponent(
+export const DurationDisplay: ConnectedComponentConstructor<DurationDisplayState> = toConnectedHTMLComponent(
   DurationDisplayBase,
   useDurationDisplayState,
   useDurationDisplayProps,

@@ -180,7 +180,7 @@ export function getTemplateHTML() {
 }
 
 export class MediaSkinDefault extends MediaSkin {
-  static getTemplateHTML = getTemplateHTML;
+  static getTemplateHTML: () => string = getTemplateHTML;
 }
 
 customElements.define('media-skin-default', MediaSkinDefault);
