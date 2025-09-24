@@ -1,8 +1,8 @@
 {
-  "name": "@vjs-10/react",
+  "name": "@vjs-10/core",
   "type": "module",
   "version": "0.1.0",
-  "description": "React library for building media players",
+  "description": "Core components and utilities for Video.js",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,27 +23,18 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "core",
+    "components",
     "media",
     "player",
-    "react",
-    "components",
-    "hooks"
+    "ui",
+    "time-range"
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/core": "workspace:*",
-    "@vjs-10/media": "workspace:*",
-    "@vjs-10/media-store": "workspace:*",
-    "@vjs-10/react-icons": "workspace:*",
-    "@vjs-10/react-media-elements": "workspace:*",
-    "@vjs-10/react-media-store": "workspace:*"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0"
+    "nanostores": "^1.0.1"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "react": "^18.0.0",
     "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },

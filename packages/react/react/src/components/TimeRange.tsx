@@ -1,34 +1,14 @@
 import type { ConnectedComponent } from '../utils/component-factory';
-import type { PointerEvent, PropsWithChildren } from 'react';
+import type { TimeRangeState as CoreTimeRangeState } from '@vjs-10/core';
+import type { MutableRefObject, PropsWithChildren } from 'react';
 
-import { useCallback, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { TimeRange as CoreTimeRange } from '@vjs-10/core';
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent, toContextComponent } from '../utils/component-factory';
-
-const formatTime = (time: number): string => {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
-
-// Utility functions for pointer position and seek time calculations
-const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
-  const x = clientX - rect.left;
-  return Math.max(0, Math.min(100, (x / rect.width) * 100));
-};
-
-const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => {
-  return (ratio / 100) * duration;
-};
-
-const calculateSeekTimeFromPointerEvent = (e: PointerEvent<HTMLDivElement>, duration: number): number => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const ratio = calculatePointerRatio(e.clientX, rect);
-  return calculateSeekTimeFromRatio(ratio, duration);
-};
 
 // ============================================================================
 // ROOT COMPONENT
@@ -40,14 +20,7 @@ export const useTimeRangeRootState = (
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
-  pointerPosition: number | null;
-  setPointerPosition: (pos: number | null) => void;
-  hovering: boolean;
-  setHovering: (hovering: boolean) => void;
-  dragging: boolean;
-  setDragging: (dragging: boolean) => void;
-  trackRef: HTMLDivElement | null;
-  setTrackRef: (el: HTMLDivElement | null) => void;
+  coreRef: MutableRefObject<CoreTimeRange | null>;
 } => {
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
@@ -55,23 +28,30 @@ export const useTimeRangeRootState = (
   const methods = useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   const { requestSeek } = methods;
-  const [pointerPosition, setPointerPosition] = useState<number | null>(null);
-  const [hovering, setHovering] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [trackRef, setTrackRef] = useState<HTMLDivElement | null>(null);
+
+  const [_coreState, onCoreStateChange] = useState<CoreTimeRangeState | null>(null);
+  const coreRef = useRef<CoreTimeRange | null>(null);
+  if (!coreRef.current) {
+    coreRef.current = new CoreTimeRange();
+  }
+
+  useEffect(() => {
+    if (coreRef.current) {
+      coreRef.current.onStateChange(onCoreStateChange);
+    }
+  }, [coreRef]);
+
+  coreRef.current.setState({
+    currentTime: mediaState.currentTime,
+    duration: mediaState.duration,
+    requestSeek,
+  });
 
   return {
     currentTime: mediaState.currentTime,
     duration: mediaState.duration,
     requestSeek,
-    pointerPosition,
-    setPointerPosition,
-    hovering,
-    setHovering,
-    dragging,
-    setDragging,
-    trackRef,
-    setTrackRef,
+    coreRef,
   };
 };
 
@@ -79,102 +59,30 @@ export const useTimeRangeRootProps = (
   props: PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useTimeRangeRootState>
 ) => {
-  const seekingTime = useRef<number | null>(null);
-  const currentTime = useRef<number | null>(null);
-  
-  // When dragging, use pointer position for immediate feedback;
-  // While seeking, use seeking time so it doesn't jump back to the current time;
-  // Otherwise, use current time;
-  let sliderFill = 0;
-  if (state.dragging && state.pointerPosition !== null) {
-    sliderFill = state.pointerPosition;
-  } else if (state.duration > 0) {
-    if (seekingTime.current !== null && currentTime.current === state.currentTime) {
-      sliderFill = (seekingTime.current / state.duration) * 100;
-    } else {
-      sliderFill = (state.currentTime / state.duration) * 100;
-      seekingTime.current = null;
-    }
-  }
-
-  currentTime.current = state.currentTime;
-
-  const handlePointerDown = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      state.setDragging(true);
-      const seekTime = calculateSeekTimeFromPointerEvent(e, state.duration);
-      state.requestSeek(seekTime);
-      seekingTime.current = seekTime;
-
-      // Capture pointer events to ensure we receive move and up events even if pointer leaves element
-      e.currentTarget.setPointerCapture(e.pointerId);
-    },
-    [state.setDragging, state.requestSeek, state.duration]
-  );
-
-  const handlePointerMove = useCallback(
-    (e: PointerEvent) => {
-      if (!state.trackRef) return;
-
-      const rect = state.trackRef.getBoundingClientRect();
-      const ratio = calculatePointerRatio(e.clientX, rect);
-      state.setPointerPosition(ratio);
-
-      if (state.dragging) {
-        const seekTime = calculateSeekTimeFromRatio(ratio, state.duration);
-        state.requestSeek(seekTime);
-        seekingTime.current = seekTime;
-      }
-    },
-    [state.trackRef, state.setPointerPosition, state.dragging, state.requestSeek, state.duration]
-  );
-
-  const handlePointerUp = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-
-      if (state.dragging && state.trackRef && state.pointerPosition !== null) {
-        const seekTime = calculateSeekTimeFromRatio(state.pointerPosition, state.duration);
-        state.requestSeek(seekTime);
-        seekingTime.current = seekTime;
-      }
-      state.setDragging(false);
-    },
-    [state.dragging, state.trackRef, state.pointerPosition, state.requestSeek, state.duration, state.setDragging]
-  );
-
-  const handlePointerEnter = useCallback(() => {
-    state.setHovering(true);
-  }, [state.setHovering]);
-
-  const handlePointerLeave = useCallback(() => {
-    state.setHovering(false);
-  }, [state.setHovering]);
-
-  const currentTimeText = formatTime(state.currentTime);
-  const durationText = formatTime(state.duration);
+  const {
+    _fillWidth = 0,
+    _pointerWidth = 0,
+    _currentTimeText = '0',
+    _durationText = '0',
+  } = state.coreRef.current?.getState() ?? {};
 
   return {
+    ref: useCallback((el: HTMLDivElement) => {
+      state.coreRef.current?.attach(el);
+    }, []),
     role: 'slider',
     'aria-label': 'Seek',
     'aria-valuemin': 0,
     'aria-valuemax': 100,
-    'aria-valuenow': sliderFill,
-    'aria-valuetext': `${currentTimeText} of ${durationText}`,
+    'aria-valuenow': _fillWidth,
+    'aria-valuetext': `${_currentTimeText} of ${_durationText}`,
     'data-current-time': state.currentTime,
     'data-duration': state.duration,
     style: {
       ...props.style,
-      '--slider-fill': `${sliderFill.toFixed(3)}%`,
-      '--slider-pointer':
-        state.hovering && state.pointerPosition !== null ? `${state.pointerPosition.toFixed(3)}%` : '0%',
+      '--slider-fill': `${_fillWidth.toFixed(3)}%`,
+      '--slider-pointer': `${_pointerWidth.toFixed(3)}%`,
     },
-    onPointerDown: handlePointerDown,
-    onPointerMove: handlePointerMove,
-    onPointerUp: handlePointerUp,
-    onPointerEnter: handlePointerEnter,
-    onPointerLeave: handlePointerLeave,
     ...props,
   } as PropsWithChildren<{ [k: string]: any }>;
 };
@@ -202,10 +110,10 @@ export const useTimeRangeTrackProps = (
   props: PropsWithChildren<Record<string, unknown>>,
   context: any
 ): PropsWithChildren<Record<string, unknown>> & { ref?: any } => {
-  const { setTrackRef } = context;
-
   return {
-    ref: setTrackRef,
+    ref: useCallback((el: HTMLDivElement) => {
+      context.coreRef.current?.setState({ _trackElement: el });
+    }, []),
     ...props,
   };
 };
@@ -227,7 +135,9 @@ const TimeRangeTrack: ConnectedComponent<TimeRangeTrackProps, typeof renderTimeR
 // THUMB COMPONENT
 // ============================================================================
 
-export const useTimeRangeThumbProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
+export const useTimeRangeThumbProps = (
+  props: React.HTMLAttributes<HTMLDivElement>
+): React.HTMLAttributes<HTMLDivElement> => {
   return {
     ...props,
     style: {
@@ -257,7 +167,9 @@ const TimeRangeThumb: ConnectedComponent<TimeRangeThumbProps, typeof renderTimeR
 // POINTER COMPONENT
 // ============================================================================
 
-export const useTimeRangePointerProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
+export const useTimeRangePointerProps = (
+  props: React.HTMLAttributes<HTMLDivElement>
+): React.HTMLAttributes<HTMLDivElement> => {
   return {
     ...props,
     style: {
@@ -286,7 +198,9 @@ const TimeRangePointer: ConnectedComponent<TimeRangePointerProps, typeof renderT
 // PROGRESS COMPONENT
 // ============================================================================
 
-export const useTimeRangeProgressProps = (props: React.HTMLAttributes<HTMLDivElement>): React.HTMLAttributes<HTMLDivElement> => {
+export const useTimeRangeProgressProps = (
+  props: React.HTMLAttributes<HTMLDivElement>
+): React.HTMLAttributes<HTMLDivElement> => {
   return {
     ...props,
     style: {
