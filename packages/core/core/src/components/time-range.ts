@@ -121,7 +121,7 @@ export class TimeRange extends EventTarget {
     event.preventDefault();
     this.#element?.setPointerCapture(event.pointerId);
 
-    this.#state.setKey('_dragging', true);
+    this.setState({ _dragging: true });
 
     const { duration, requestSeek } = this.#state.get();
     const seekTime = calculateSeekTimeFromPointerEvent(event, duration);
@@ -135,7 +135,7 @@ export class TimeRange extends EventTarget {
 
     const rect = _trackElement.getBoundingClientRect();
     const ratio = calculatePointerRatio(event.clientX, rect);
-    this.#state.setKey('_pointerPosition', ratio);
+    this.setState({ _pointerPosition: ratio });
 
     if (_dragging) {
       const seekTime = calculateSeekTimeFromRatio(ratio, duration);
@@ -152,17 +152,17 @@ export class TimeRange extends EventTarget {
       this.#seekingTime = seekTime;
     }
 
-    this.#state.setKey('_dragging', false);
+    this.setState({ _dragging: false });
 
     this.#element?.releasePointerCapture(event.pointerId);
   }
 
   #handlePointerEnter(_event: PointerEvent) {
-    this.#state.setKey('_hovering', true);
+    this.setState({ _hovering: true });
   }
 
   #handlePointerLeave(_event: PointerEvent) {
-    this.#state.setKey('_hovering', false);
+    this.setState({ _hovering: false });
   }
 }
 
