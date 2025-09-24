@@ -174,8 +174,8 @@ function generateEnhancedCSSRule(root: Root, selector: string, usage: EnhancedCl
           // Arbitrary value utility - parse and add directly
           try {
             const parsed = parseClasses(query.utility);
-            if (parsed && parsed.styles) {
-              const styles = parsed.styles as Record<string, string | number>;
+            if (parsed && parsed.style) {
+              const styles = parsed.style as Record<string, string | number>;
               for (const [property, value] of Object.entries(styles)) {
                 innerRule.append(postcss.decl({
                   prop: property,

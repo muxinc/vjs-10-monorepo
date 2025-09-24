@@ -36,14 +36,14 @@ export function parseEnhancedClassString(classString: string): ParsedClasses {
       if (parsed) {
         result.containerQueries.push(parsed);
       }
+    } else if (isComplexUtility(cls)) {
+      // Complex utilities that need special handling - skip for now
+      console.log('SKIPPING COMPLEX UTILITY:', cls);
     } else if (isArbitraryValue(cls)) {
       const parsed = parseArbitraryValue(cls);
       if (parsed) {
         result.arbitraryValues.push(parsed);
       }
-    } else if (isComplexUtility(cls)) {
-      // Complex utilities that need special handling - skip for now
-      console.log('SKIPPING COMPLEX UTILITY:', cls);
     } else {
       // Simple class that can use @apply
       result.simpleClasses.push(cls);
@@ -82,8 +82,9 @@ function isComplexUtility(cls: string): boolean {
   if (/^group(\/\w+|$)/.test(cls)) return true;
   if (/^group-\w+(\/\w+|$)/.test(cls)) return true;
 
-  // Complex selectors with &
+  // Complex selectors with & (including [&:fullscreen] patterns)
   if (cls.includes('&')) return true;
+  if (cls.includes('[&')) return true;
 
   // Pseudo-selectors that need special handling
   if (cls.includes(':not(') || cls.includes('[data-')) return true;
@@ -118,13 +119,34 @@ function parseArbitraryValue(cls: string): ArbitraryValue | null {
     // Use the @toddledev/tailwind-parser library to parse the class
     const parsed = parseClasses(cls);
 
-    // The parser should return an object with styles
-    if (parsed && typeof parsed === 'object' && parsed.styles) {
-      const styles = parsed.styles as Record<string, string | number>;
+    // The parser should return an object with style
+    if (parsed && typeof parsed === 'object' && parsed.style) {
+      const styles = parsed.style as Record<string, string | number>;
       const firstRule = Object.entries(styles)[0];
 
       if (firstRule) {
         const [property, value] = firstRule;
+        // Only trust the library if it returns sensible results for the given class
+        // If it's returning generic/wrong styles like flex-direction for font-[510], fall back to manual parsing
+        if (cls.startsWith('font-[') && property !== 'font-weight' && property !== 'font-family') {
+          return parseArbitraryValueManual(cls);
+        }
+        if (cls.startsWith('text-[') && property !== 'font-size') {
+          return parseArbitraryValueManual(cls);
+        }
+        if (cls.startsWith('w-[') && property !== 'width') {
+          return parseArbitraryValueManual(cls);
+        }
+        if (cls.startsWith('h-[') && property !== 'height') {
+          return parseArbitraryValueManual(cls);
+        }
+        if (cls.startsWith('bg-[') && !property.includes('background')) {
+          return parseArbitraryValueManual(cls);
+        }
+        if (cls.startsWith('tracking-[') && property !== 'letter-spacing') {
+          return parseArbitraryValueManual(cls);
+        }
+
         return {
           property: property,
           value: String(value),
@@ -160,6 +182,8 @@ function parseArbitraryValueManual(cls: string): ArbitraryValue | null {
     { regex: /^p-\[(.+)\]$/, property: 'padding' },
     // m-[value] -> margin
     { regex: /^m-\[(.+)\]$/, property: 'margin' },
+    // tracking-[value] -> letter-spacing
+    { regex: /^tracking-\[(.+)\]$/, property: 'letter-spacing' },
   ];
 
   for (const { regex, property } of patterns) {

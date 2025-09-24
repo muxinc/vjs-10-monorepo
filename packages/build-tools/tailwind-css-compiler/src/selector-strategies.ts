@@ -65,10 +65,10 @@ export class VanillaSelectorStrategy extends BaseSelectorStrategy {
     if (usage.componentType === 'library') {
       if (elementType === 'icon') {
         const iconClass = elementType; // 'icon'
-        baseSelector = `${componentName} .${iconClass}`;
+        baseSelector = `${usage.component} .${iconClass}`;
       } else {
-        // Don't add media- prefix if the original component name already starts with "Media"
-        baseSelector = usage.component.startsWith('Media') ? componentName : `media-${componentName}`;
+        // For library components, preserve the original PascalCase component name
+        baseSelector = usage.component;
       }
       return instanceSuffix ? `${baseSelector}${instanceSuffix}` : baseSelector;
     }
@@ -76,13 +76,10 @@ export class VanillaSelectorStrategy extends BaseSelectorStrategy {
     // Handle unknown type - fall back to original logic
     if (elementType === 'icon') {
       const iconClass = elementType;
-      baseSelector = `${componentName} .${iconClass}`;
-    } else if (elementType && usage.component.toLowerCase().includes(elementType)) {
-      // Don't add media- prefix if the original component name already starts with "Media"
-      baseSelector = usage.component.startsWith('Media') ? componentName : `media-${componentName}`;
+      baseSelector = `${usage.component} .${iconClass}`;
     } else {
-      // Don't add media- prefix if the original component name already starts with "Media"
-      baseSelector = usage.component.startsWith('Media') ? componentName : `media-${componentName}`;
+      // For unknown type components, use kebab-case with media- prefix
+      baseSelector = `media-${componentName}`;
     }
 
     return instanceSuffix ? `${baseSelector}${instanceSuffix}` : baseSelector;
