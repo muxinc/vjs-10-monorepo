@@ -78,19 +78,19 @@ describe('Enhanced Class Parsing', () => {
       ]);
     });
 
-    it('should skip complex utilities', () => {
+    it('should now parse previously complex utilities with official parser', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       const result = parseEnhancedClassString('group/root after:absolute before:ring-white/15 hover:bg-blue-500');
 
-      expect(result.simpleClasses).toEqual(['hover:bg-blue-500']);
+      // group/root still can't be parsed (not in our design system), but other complex utilities now work!
+      expect(result.simpleClasses).toEqual(['group/root', 'after:absolute', 'before:ring-white/15', 'hover:bg-blue-500']);
       expect(result.containerDeclarations).toEqual([]);
       expect(result.containerQueries).toEqual([]);
       expect(result.arbitraryValues).toEqual([]);
 
-      expect(consoleSpy).toHaveBeenCalledWith('SKIPPING COMPLEX UTILITY:', 'group/root');
-      expect(consoleSpy).toHaveBeenCalledWith('SKIPPING COMPLEX UTILITY:', 'after:absolute');
-      expect(consoleSpy).toHaveBeenCalledWith('SKIPPING COMPLEX UTILITY:', 'before:ring-white/15');
+      // Only group/root should be unparseable now
+      expect(consoleSpy).toHaveBeenCalledWith('UNPARSEABLE CLASS (adding as simple):', 'group/root');
 
       consoleSpy.mockRestore();
     });
@@ -102,13 +102,19 @@ describe('Enhanced Class Parsing', () => {
 
       const result = parseEnhancedClassString(classString);
 
+      // With the official parser, complex utilities that were previously skipped are now handled
       expect(result.simpleClasses).toEqual([
         'relative',
+        'group/root', // Still unparseable (not in design system)
         'overflow-clip',
         'rounded-4xl',
         'antialiased',
         'font-sans',
-        'leading-normal'
+        'leading-normal',
+        '[&:fullscreen]:rounded-none', // Now parsed correctly!
+        'after:absolute',  // Now parsed correctly!
+        'after:inset-0',   // Now parsed correctly!
+        'before:absolute'  // Now parsed correctly!
       ]);
       expect(result.containerDeclarations).toEqual(['@container/root']);
       expect(result.containerQueries).toEqual([

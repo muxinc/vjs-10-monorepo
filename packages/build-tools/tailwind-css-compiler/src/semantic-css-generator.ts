@@ -2,7 +2,7 @@ import postcss, { Root } from 'postcss';
 // Note: TailwindCSS v4 has different exports, so we'll handle configuration differently
 // @ts-ignore - Container queries plugin types not yet available
 import containerQueries from '@tailwindcss/container-queries';
-import { parseClassString as parseClasses } from '@toddledev/tailwind-parser';
+import { parseCandidate, createSimplifiedDesignSystem } from './tailwind-ast/index.js'
 
 import type { ClassUsage, EnhancedClassUsage, SelectorContext, SemanticMapping } from './types.js';
 import { enhanceClassUsages } from './class-parser.js';
@@ -171,15 +171,33 @@ function generateEnhancedCSSRule(root: Root, selector: string, usage: EnhancedCl
 
         // Handle the utility within the container query
         if (query.utility.includes('[') && query.utility.includes(']')) {
-          // Arbitrary value utility - parse and add directly
+          // Arbitrary value utility - parse and add directly using official parsing
           try {
-            const parsed = parseClasses(query.utility);
-            if (parsed && parsed.style) {
-              const styles = parsed.style as Record<string, string | number>;
-              for (const [property, value] of Object.entries(styles)) {
+            const designSystem = createSimplifiedDesignSystem();
+            const candidates = Array.from(parseCandidate(query.utility, designSystem));
+
+            if (candidates.length > 0) {
+              const candidate = candidates[0];
+              if (candidate.kind === 'functional' && candidate.value?.kind === 'arbitrary') {
+                // Map utility root to CSS property
+                const propertyMap: Record<string, string> = {
+                  'text': 'font-size',
+                  'font': 'font-weight',
+                  'w': 'width',
+                  'h': 'height',
+                  'bg': 'background-color',
+                  'tracking': 'letter-spacing',
+                };
+                const property = propertyMap[candidate.root] || candidate.root;
+
                 innerRule.append(postcss.decl({
                   prop: property,
-                  value: String(value),
+                  value: candidate.value.value,
+                }));
+              } else if (candidate.kind === 'arbitrary') {
+                innerRule.append(postcss.decl({
+                  prop: candidate.property,
+                  value: candidate.value,
                 }));
               }
             }

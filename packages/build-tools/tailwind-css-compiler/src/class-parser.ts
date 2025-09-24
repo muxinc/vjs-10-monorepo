@@ -1,211 +1,232 @@
-import { parseClassString as parseClasses } from '@toddledev/tailwind-parser';
-import type { ArbitraryValue, ContainerQuery, ClassUsage, EnhancedClassUsage } from './types.js';
+import { parseCandidate, createSimplifiedDesignSystem } from './tailwind-ast/index.js'
+import type { Candidate, Variant } from './tailwind-ast/index.js'
+import type { ArbitraryValue, ContainerQuery, ClassUsage, EnhancedClassUsage } from './types.js'
 
 /**
  * Enhanced class parsing result with container query and arbitrary value support
  */
 export interface ParsedClasses {
   /** Simple utilities that can use @apply */
-  simpleClasses: string[];
+  simpleClasses: string[]
   /** Container declarations like @container/name */
-  containerDeclarations: string[];
+  containerDeclarations: string[]
   /** Container query usages like @7xl/root:text-lg */
-  containerQueries: ContainerQuery[];
+  containerQueries: ContainerQuery[]
   /** Arbitrary value usages like text-[0.9375rem] */
-  arbitraryValues: ArbitraryValue[];
+  arbitraryValues: ArbitraryValue[]
 }
 
+// Create the design system once and reuse it
+const designSystem = createSimplifiedDesignSystem()
+
 /**
- * Parse space-separated class string into categorized parts
+ * Parse space-separated class string into categorized parts using official Tailwind parsing
  */
 export function parseEnhancedClassString(classString: string): ParsedClasses {
-  const classes = classString.split(/\s+/).filter((cls) => cls);
+  const classes = classString.split(/\s+/).filter((cls) => cls)
 
   const result: ParsedClasses = {
     simpleClasses: [],
     containerDeclarations: [],
     containerQueries: [],
     arbitraryValues: [],
-  };
+  }
 
   for (const cls of classes) {
-    if (isContainerDeclaration(cls)) {
-      result.containerDeclarations.push(cls);
-    } else if (isContainerQuery(cls)) {
-      const parsed = parseContainerQuery(cls);
-      if (parsed) {
-        result.containerQueries.push(parsed);
+    // Parse the class using official Tailwind parsing
+    const candidates = Array.from(parseCandidate(cls, designSystem))
+
+    if (candidates.length === 0) {
+      // If no candidates were parsed, it might be an invalid class or unsupported pattern
+      // For now, try to handle container declarations manually as they're special
+      if (isContainerDeclaration(cls)) {
+        result.containerDeclarations.push(cls)
+        continue
       }
-    } else if (isComplexUtility(cls)) {
-      // Complex utilities that need special handling - skip for now
-      console.log('SKIPPING COMPLEX UTILITY:', cls);
-    } else if (isArbitraryValue(cls)) {
-      const parsed = parseArbitraryValue(cls);
+
+      // Skip unknown classes but don't throw an error
+      console.log('UNPARSEABLE CLASS (adding as simple):', cls)
+      result.simpleClasses.push(cls)
+      continue
+    }
+
+    // Process the first candidate (there's usually only one)
+    const candidate = candidates[0]
+
+    // Categorize based on the parsed candidate
+    if (isContainerDeclaration(cls)) {
+      result.containerDeclarations.push(cls)
+    } else if (isContainerQuery(candidate)) {
+      const parsed = parseContainerQueryFromCandidate(candidate, cls)
       if (parsed) {
-        result.arbitraryValues.push(parsed);
+        result.containerQueries.push(parsed)
+      } else {
+        result.simpleClasses.push(cls)
+      }
+    } else if (hasArbitraryValue(candidate)) {
+      const parsed = parseArbitraryValueFromCandidate(candidate, cls)
+      if (parsed) {
+        result.arbitraryValues.push(parsed)
+      } else {
+        result.simpleClasses.push(cls)
       }
     } else {
-      // Simple class that can use @apply
-      result.simpleClasses.push(cls);
+      // Everything else is a simple class that can use @apply
+      result.simpleClasses.push(cls)
     }
   }
 
-  return result;
+  return result
 }
 
 /**
  * Check if a class is a container declaration (e.g., @container/root)
  */
 function isContainerDeclaration(cls: string): boolean {
-  return /^@container(\/\w+)?$/.test(cls);
+  return /^@container(\/\w+)?$/.test(cls)
 }
 
 /**
- * Check if a class is a container query usage (e.g., @7xl/root:text-lg)
+ * Check if a parsed candidate represents a container query
  */
-function isContainerQuery(cls: string): boolean {
-  return /^@\w+\/\w+:.+/.test(cls);
+function isContainerQuery(candidate: Candidate): boolean {
+  // Container queries have variants that start with @ and have functional variant modifiers
+  return candidate.variants.some(variant =>
+    variant.kind === 'functional' &&
+    variant.root.startsWith('@') &&
+    variant.modifier !== null
+  )
 }
 
 /**
- * Check if a class contains arbitrary values (e.g., text-[0.9375rem])
+ * Check if a parsed candidate has arbitrary values
  */
-function isArbitraryValue(cls: string): boolean {
-  return /\[.+\]/.test(cls);
+function hasArbitraryValue(candidate: Candidate): boolean {
+  if (candidate.kind === 'arbitrary') return true
+  if (candidate.kind === 'functional' && candidate.value?.kind === 'arbitrary') return true
+
+  // Check if any variant has arbitrary values
+  return candidate.variants.some(variant =>
+    (variant.kind === 'functional' || variant.kind === 'compound') &&
+    variant.value?.kind === 'arbitrary'
+  )
 }
 
 /**
- * Check if a class is a complex utility that needs special handling
+ * Parse a container query from a parsed candidate
  */
-function isComplexUtility(cls: string): boolean {
-  // Group variants (group/name, group-hover/name, etc.)
-  if (/^group(\/\w+|$)/.test(cls)) return true;
-  if (/^group-\w+(\/\w+|$)/.test(cls)) return true;
+function parseContainerQueryFromCandidate(candidate: Candidate, originalClass: string): ContainerQuery | null {
+  // Look for @-variants in the candidate
+  for (const variant of candidate.variants) {
+    if (variant.kind === 'functional' && variant.root.startsWith('@') && variant.modifier?.kind === 'named') {
+      // This is a container query like @7xl/root:text-lg
+      // Extract breakpoint from variant root (remove @), container from modifier, utility from candidate root+value
+      const breakpoint = variant.root.slice(1) // Remove @ prefix
+      const container = variant.modifier.value
 
-  // Complex selectors with & (including [&:fullscreen] patterns)
-  if (cls.includes('&')) return true;
-  if (cls.includes('[&')) return true;
-
-  // Pseudo-selectors that need special handling
-  if (cls.includes(':not(') || cls.includes('[data-')) return true;
-
-  // Other patterns that typically don't work with @apply
-  if (cls.includes('before:') || cls.includes('after:')) return true;
-  if (cls.includes('::')) return true;
-
-  return false;
-}
-
-/**
- * Parse a container query class into its components
- */
-function parseContainerQuery(cls: string): ContainerQuery | null {
-  const match = cls.match(/^@(\w+)\/(\w+):(.+)$/);
-  if (!match) return null;
-
-  const [, breakpoint, container, utility] = match;
-  return {
-    breakpoint,
-    container,
-    utility,
-  };
-}
-
-/**
- * Parse an arbitrary value class into CSS property and value
- */
-function parseArbitraryValue(cls: string): ArbitraryValue | null {
-  try {
-    // Use the @toddledev/tailwind-parser library to parse the class
-    const parsed = parseClasses(cls);
-
-    // The parser should return an object with style
-    if (parsed && typeof parsed === 'object' && parsed.style) {
-      const styles = parsed.style as Record<string, string | number>;
-      const firstRule = Object.entries(styles)[0];
-
-      if (firstRule) {
-        const [property, value] = firstRule;
-        // Only trust the library if it returns sensible results for the given class
-        // If it's returning generic/wrong styles like flex-direction for font-[510], fall back to manual parsing
-        if (cls.startsWith('font-[') && property !== 'font-weight' && property !== 'font-family') {
-          return parseArbitraryValueManual(cls);
+      // Build utility string from candidate
+      let utility = candidate.root
+      if (candidate.kind === 'functional' && candidate.value) {
+        if (candidate.value.kind === 'named') {
+          utility += `-${candidate.value.value}`
+        } else if (candidate.value.kind === 'arbitrary') {
+          utility += `-[${candidate.value.value}]`
         }
-        if (cls.startsWith('text-[') && property !== 'font-size') {
-          return parseArbitraryValueManual(cls);
-        }
-        if (cls.startsWith('w-[') && property !== 'width') {
-          return parseArbitraryValueManual(cls);
-        }
-        if (cls.startsWith('h-[') && property !== 'height') {
-          return parseArbitraryValueManual(cls);
-        }
-        if (cls.startsWith('bg-[') && !property.includes('background')) {
-          return parseArbitraryValueManual(cls);
-        }
-        if (cls.startsWith('tracking-[') && property !== 'letter-spacing') {
-          return parseArbitraryValueManual(cls);
-        }
+      }
 
-        return {
-          property: property,
-          value: String(value),
-          originalClass: cls,
-        };
+      return {
+        breakpoint,
+        container,
+        utility,
       }
     }
-  } catch (error) {
-    // Library parsing failed, fall back to manual parsing
   }
 
-  // Fallback to manual parsing for common patterns
-  return parseArbitraryValueManual(cls);
+  return null
 }
 
 /**
- * Manual fallback parser for arbitrary values
+ * Parse arbitrary values from a parsed candidate
  */
-function parseArbitraryValueManual(cls: string): ArbitraryValue | null {
-  // Common patterns for arbitrary values
-  const patterns = [
-    // text-[value] -> font-size
-    { regex: /^text-\[(.+)\]$/, property: 'font-size' },
-    // font-\[value\] -> font-weight (if numeric) or font-family
-    { regex: /^font-\[(.+)\]$/, property: 'font-weight' },
-    // w-[value] -> width
-    { regex: /^w-\[(.+)\]$/, property: 'width' },
-    // h-[value] -> height
-    { regex: /^h-\[(.+)\]$/, property: 'height' },
-    // bg-\[value\] -> background-color
-    { regex: /^bg-\[(.+)\]$/, property: 'background-color' },
-    // p-[value] -> padding
-    { regex: /^p-\[(.+)\]$/, property: 'padding' },
-    // m-[value] -> margin
-    { regex: /^m-\[(.+)\]$/, property: 'margin' },
-    // tracking-[value] -> letter-spacing
-    { regex: /^tracking-\[(.+)\]$/, property: 'letter-spacing' },
-  ];
-
-  for (const { regex, property } of patterns) {
-    const match = cls.match(regex);
-    if (match) {
-      return {
-        property,
-        value: match[1],
-        originalClass: cls,
-      };
+function parseArbitraryValueFromCandidate(candidate: Candidate, originalClass: string): ArbitraryValue | null {
+  // Handle arbitrary properties like [color:red]
+  if (candidate.kind === 'arbitrary') {
+    return {
+      property: candidate.property,
+      value: candidate.value,
+      originalClass,
     }
   }
 
-  return null;
+  // Handle functional utilities with arbitrary values like text-[14px]
+  if (candidate.kind === 'functional' && candidate.value?.kind === 'arbitrary') {
+    const property = mapUtilityToProperty(candidate.root, candidate.value.value)
+    return {
+      property,
+      value: candidate.value.value,
+      originalClass,
+    }
+  }
+
+  return null
+}
+
+/**
+ * Map utility root names to CSS properties
+ */
+function mapUtilityToProperty(root: string, value: string): string {
+  const propertyMap: Record<string, string> = {
+    'text': 'font-size',
+    'font': isNumeric(value) ? 'font-weight' : 'font-family',
+    'w': 'width',
+    'h': 'height',
+    'bg': isColorValue(value) ? 'background-color' : 'background',
+    'p': 'padding',
+    'px': 'padding-left',
+    'py': 'padding-top',
+    'pt': 'padding-top',
+    'pr': 'padding-right',
+    'pb': 'padding-bottom',
+    'pl': 'padding-left',
+    'm': 'margin',
+    'mx': 'margin-left',
+    'my': 'margin-top',
+    'mt': 'margin-top',
+    'mr': 'margin-right',
+    'mb': 'margin-bottom',
+    'ml': 'margin-left',
+    'tracking': 'letter-spacing',
+    'leading': 'line-height',
+    'rounded': 'border-radius',
+    'shadow': 'box-shadow',
+    'ring': 'box-shadow',
+    'opacity': 'opacity',
+    'z': 'z-index',
+  }
+
+  return propertyMap[root] || root
+}
+
+/**
+ * Check if a value looks numeric
+ */
+function isNumeric(value: string): boolean {
+  return /^\d+(\.\d+)?$/.test(value)
+}
+
+/**
+ * Check if a value looks like a color
+ */
+function isColorValue(value: string): boolean {
+  return value.startsWith('#') || value.startsWith('rgb') || value.startsWith('hsl')
 }
 
 /**
  * Transform a ClassUsage into an EnhancedClassUsage by parsing the classes
  */
 export function enhanceClassUsage(usage: ClassUsage): EnhancedClassUsage {
-  const classString = usage.classes.join(' ');
-  const parsed = parseEnhancedClassString(classString);
+  const classString = usage.classes.join(' ')
+  const parsed = parseEnhancedClassString(classString)
 
   return {
     ...usage,
@@ -213,12 +234,12 @@ export function enhanceClassUsage(usage: ClassUsage): EnhancedClassUsage {
     containerDeclarations: parsed.containerDeclarations,
     containerQueries: parsed.containerQueries,
     arbitraryValues: parsed.arbitraryValues,
-  };
+  }
 }
 
 /**
  * Transform multiple ClassUsages into EnhancedClassUsages
  */
 export function enhanceClassUsages(usages: ClassUsage[]): EnhancedClassUsage[] {
-  return usages.map(enhanceClassUsage);
+  return usages.map(enhanceClassUsage)
 }

@@ -18,6 +18,9 @@ export { semanticTransform } from './semantic-transform.js';
 // Enhanced class parsing functions
 export { enhanceClassUsage, enhanceClassUsages, parseEnhancedClassString } from './class-parser.js';
 
+// Official Tailwind parsing exports
+export { parseCandidate, createSimplifiedDesignSystem } from './tailwind-ast/index.js';
+
 // Type exports
 export type {
   ClassUsage,
