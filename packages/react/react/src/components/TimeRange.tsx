@@ -41,11 +41,15 @@ export const useTimeRangeRootState = (
     }
   }, [coreRef]);
 
-  coreRef.current.setState({
-    currentTime: mediaState.currentTime,
-    duration: mediaState.duration,
-    requestSeek,
-  });
+  useEffect(() => {
+    if (coreRef.current) {
+      coreRef.current.setState({
+        currentTime: mediaState.currentTime,
+        duration: mediaState.duration,
+        requestSeek,
+      });
+    }
+  }, [mediaState.currentTime, mediaState.duration, requestSeek]);
 
   return {
     currentTime: mediaState.currentTime,
