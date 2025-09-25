@@ -1,8 +1,20 @@
 {
   "name": "vjs-10-monorepo",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.17.0",
   "description": "A monorepo for Video.js 10 related library packages",
+  "author": "Video.js Contributors",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/videojs/vjs-10-monorepo.git"
+  },
+  "engines": {
+    "node": ">=22.19.0",
+    "npm": ">=10.9.3"
+  },
   "scripts": {
+    "//prepare": "simple-git-hooks",
     "build:libs": "turbo run build --filter=!./examples/*",
     "build": "turbo run build",
     "clean": "turbo run clean",
@@ -12,27 +24,33 @@
     "generate:icons": "turbo run generate:icons",
     "format:check": "prettier . --check --log-level warn --cache",
     "format": "prettier . --write --log-level warn --cache",
-    "lint": "turbo run lint",
+    "lint": "eslint . --cache",
     "test": "turbo run test",
     "typecheck": "pnpm run generate:icons && tsc --build --noEmit"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
-    "@types/node": "^20.0.0",
+    "@antfu/eslint-config": "^5.4.1",
+    "@eslint-react/eslint-plugin": "^1.53.1",
+    "@eslint/eslintrc": "^3.3.1",
+    "@prettier/plugin-xml": "^3.4.2",
+    "@types/node": "^22.18.6",
+    "eslint": "^9.36.0",
+    "eslint-plugin-format": "^1.0.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.21",
+    "lint-staged": "^16.2.0",
     "prettier": "^3.6.2",
-    "react": "^18.0.0",
-    "turbo": "^2.5.5",
+    "react": "^18.3.1",
+    "simple-git-hooks": "^2.13.1",
+    "turbo": "^2.5.8",
     "typescript": "^5.9.2"
   },
-  "packageManager": "pnpm@10.17.0",
-  "engines": {
-    "node": ">=22.19.0",
-    "npm": ">=10.9.3"
+  "//simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/videojs/vjs-10-monorepo.git"
-  },
-  "license": "Apache-2.0",
-  "author": "Video.js Contributors"
+  "//lint-staged": {
+    "*": "eslint --fix"
+  }
 }

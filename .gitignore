@@ -34,7 +34,7 @@ __tests__/coverage/
 # Environment
 # -------------------------
 .env
-.env.* 
+.env.*
 !.env.example
 
 # -------------------------
@@ -108,6 +108,9 @@ ios/Podfile.lock
 # CocoaPods
 Podfile.lock
 Pods/
+
+# Linting
+.eslintcache
 
 # -------------------------
 # Package Manager Locks
