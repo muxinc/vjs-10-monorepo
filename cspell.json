@@ -1,11 +1,21 @@
 {
   "version": "0.2",
-  "ignorePaths": [],
+  "ignorePaths": [
+    "package.json",
+    "tsconfig.json"
+  ],
   "dictionaryDefinitions": [],
-  "dictionaries": [],
+  "dictionaries": [
+    "css",
+    "html",
+    "node",
+    "typescript",
+    "npm"
+  ],
   "words": [
     "antfu",
-    "nums"
+    "nums",
+    "rahim"
   ],
   "ignoreWords": [],
   "import": []
