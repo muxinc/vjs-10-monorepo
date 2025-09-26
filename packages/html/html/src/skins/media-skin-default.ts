@@ -8,7 +8,9 @@ import '../components/media-time-range';
 import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
-import '@vjs-10/html-icons';
+
+// TODO: FIX ICONS
+// import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
   return /* html */ `

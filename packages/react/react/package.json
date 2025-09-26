@@ -33,7 +33,6 @@
   "dependencies": {
     "@vjs-10/media": "workspace:*",
     "@vjs-10/media-store": "workspace:*",
-    "@vjs-10/react-icons": "workspace:*",
     "@vjs-10/react-media-elements": "workspace:*",
     "@vjs-10/react-media-store": "workspace:*"
   },

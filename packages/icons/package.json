@@ -1,0 +1,51 @@
+{
+  "name": "@vjs-10/icons",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Open-source and beautifully hand-crafted collection of media icons.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./element": {
+      "types": "./dist/element.d.ts",
+      "browser": "./dist/element.js",
+      "default": "./dist/server/element.js"
+    },
+    "./svg/*": "./svg/*.svg"
+  },
+  "sideEffects": [
+    "./dist/element.js"
+  ],
+  "files": [
+    "dist/",
+    "svg/",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "dev": "pnpm run build:watch",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "icons",
+    "svg",
+    "media",
+    "player",
+    "ui"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "tsdown": "^0.15.4",
+    "typescript": "^5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

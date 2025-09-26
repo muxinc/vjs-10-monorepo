@@ -31,7 +31,6 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@vjs-10/react-native-icons": "workspace:*",
     "@vjs-10/react-native-media-elements": "workspace:*"
   },
   "peerDependencies": {

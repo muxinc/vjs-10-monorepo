@@ -1,14 +1,17 @@
+import styles from './styles';
+
 import type { PropsWithChildren } from 'react';
 
-import {
-  FullscreenEnterIcon,
-  FullscreenExitIcon,
-  PauseIcon,
-  PlayIcon,
-  VolumeHighIcon,
-  VolumeLowIcon,
-  VolumeOffIcon,
-} from '@vjs-10/react-icons';
+// TODO: FIX ICONS
+// import {
+//   FullscreenEnterIcon,
+//   FullscreenExitIcon,
+//   PauseIcon,
+//   PlayIcon,
+//   VolumeHighIcon,
+//   VolumeLowIcon,
+//   VolumeOffIcon,
+// } from '@vjs-10/react-icons';
 
 import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
 import { DurationDisplay } from '../../components/DurationDisplay';
@@ -18,7 +21,6 @@ import MuteButton from '../../components/MuteButton';
 import PlayButton from '../../components/PlayButton';
 import { TimeRange } from '../../components/TimeRange';
 import { VolumeRange } from '../../components/VolumeRange';
-import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
   className?: string;
@@ -76,4 +78,4 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
       </div>
     </MediaContainer>
   );
-};
+}

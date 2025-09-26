@@ -24,5 +24,4 @@ export const Player: React.FC<PlayerProps> = () => {
   return createElement('div', { children: 'React Native Player - Coming Soon' });
 };
 
-export * from '@vjs-10/react-native-icons';
 export * from '@vjs-10/react-native-media-elements';

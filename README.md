@@ -7,23 +7,20 @@ A monorepo for Video.js 10 related library packages, organized by platform and r
 ```bash
 vjs-10-monorepo/
 ├── packages/
+│   ├── icons/              # Environment-agnostic SVG icons
 │   ├── core/               # Runtime-agnostic packages
 │   │   ├── media-store/    # State abstraction for media
 │   │   ├── playback-engine/# Abstraction for media source management
 │   │   ├── media/          # HTMLMediaElement contracts and utilities
-│   │   └── icons/          # Environment-agnostic SVG icons
 │   ├── html/               # DOM/Browser packages
-│   │   ├── html-icons/     # HTML/DOM icon components
 │   │   ├── html-media-elements/ # HTML media element components
 │   │   ├── html-media-store/    # HTML media store integration
 │   │   └── html/           # Complete HTML UI library
 │   ├── react/              # React packages
-│   │   ├── react-icons/    # React icon components
 │   │   ├── react-media-elements/ # React media element components
 │   │   ├── react-media-store/   # React media store hooks and context
 │   │   └── react/          # Complete React UI library
 │   └── react-native/       # React Native packages
-│       ├── react-native-icons/  # React Native icon components
 │       ├── react-native-media-elements/ # React Native media components
 │       └── react-native/   # Complete React Native UI library
 └── apps/                   # Example applications (coming soon)
@@ -40,21 +37,18 @@ vjs-10-monorepo/
 
 ### HTML/DOM Packages
 
-- **@vjs-10/html-icons** - Web component icon elements
 - **@vjs-10/html-media-elements** - Web component media elements
 - **@vjs-10/html-media-store** - DOM integration for media store
 - **@vjs-10/html** - Complete HTML media player UI library
 
 ### React Packages
 
-- **@vjs-10/react-icons** - React icon components
 - **@vjs-10/react-media-elements** - React media element components
 - **@vjs-10/react-media-store** - React hooks and context for media state
 - **@vjs-10/react** - Complete React media player UI library
 
 ### React Native Packages
 
-- **@vjs-10/react-native-icons** - React Native icon components (requires react-native-svg)
 - **@vjs-10/react-native-media-elements** - React Native media components (requires react-native-video)
 - **@vjs-10/react-native** - Complete React Native media player UI library
 
@@ -84,10 +78,10 @@ Build specific packages:
 pnpm -F media build
 
 pnpm -F html build
-pnpm -F html-icons build
+pnpm -F html-media-store build
 
 pnpm -F react build
-pnpm -F react-icons build
+pnpm -F react-media-store build
 ```
 
 ### Development
