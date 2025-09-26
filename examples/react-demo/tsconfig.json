@@ -3,11 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "jsx": "react-jsx",
-    "paths": {
-      "@vjs/react": ["../../packages/react/src"],
-      "@vjs/html": ["../../packages/html/src"],
-      "@vjs/core": ["../../packages/core/src"]
-    }
+    "jsxImportSource": "react"
   },
   "include": ["src"]
 }
