@@ -32,6 +32,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@open-wc/context-protocol": "^0.0.9",
+    "@vjs-10/core": "workspace:*",
     "@vjs-10/html-icons": "workspace:*",
     "@vjs-10/html-media-elements": "workspace:*",
     "@vjs-10/html-media-store": "workspace:*",

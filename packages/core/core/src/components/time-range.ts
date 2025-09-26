@@ -1,4 +1,5 @@
 import { map } from 'nanostores';
+import { shallowEqual } from '../utils/state';
 
 export interface TimeRangeState {
   currentTime: number;
@@ -14,7 +15,7 @@ export interface TimeRangeState {
   _durationText: string;
 }
 
-export class TimeRange extends EventTarget {
+export class TimeRange {
   #element: HTMLElement | null = null;
   #abortController: AbortController | null = null;
   #seekingTime: number | null = null;
@@ -29,8 +30,8 @@ export class TimeRange extends EventTarget {
     _dragging: false,
     _fillWidth: 0,
     _pointerWidth: 0,
-    _currentTimeText: '',
-    _durationText: '',
+    _currentTimeText: '0:00',
+    _durationText: '0:00',
   });
 
   attach(target: HTMLElement): void {
@@ -52,13 +53,13 @@ export class TimeRange extends EventTarget {
     this.#abortController = null;
   }
 
+  subscribe(callback: (state: TimeRangeState) => void): () => void {
+    return this.#state.listen(callback);
+  }
+
   setState(state: Partial<TimeRangeState>): void {
-    for (const key in state) {
-      const value = state[key as keyof TimeRangeState];
-      if (value !== undefined && value !== this.#state.get()[key as keyof TimeRangeState]) {
-        this.#state.setKey(key as keyof TimeRangeState, value);
-      }
-    }
+    if (shallowEqual(state, this.#state.get())) return;
+    this.#state.set({ ...this.#state.get(), ...state });
   }
 
   getState(): TimeRangeState {
@@ -90,10 +91,6 @@ export class TimeRange extends EventTarget {
     const _durationText = formatTime(state.duration);
 
     return { ...state, _fillWidth, _pointerWidth, _currentTimeText, _durationText };
-  }
-
-  onStateChange(callback: (state: TimeRangeState) => void): () => void {
-    return this.#state.listen(callback);
   }
 
   handleEvent(event: Event): void {
@@ -188,3 +185,4 @@ const calculateSeekTimeFromPointerEvent = (e: PointerEvent, duration: number): n
   const ratio = calculatePointerRatio(e.clientX, rect);
   return calculateSeekTimeFromRatio(ratio, duration);
 };
+

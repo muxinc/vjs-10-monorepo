@@ -176,6 +176,9 @@ importers:
       '@open-wc/context-protocol':
         specifier: ^0.0.9
         version: 0.0.9
+      '@vjs-10/core':
+        specifier: workspace:*
+        version: link:../../core/core
       '@vjs-10/html-icons':
         specifier: workspace:*
         version: link:../html-icons

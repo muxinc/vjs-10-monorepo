@@ -1,6 +1,6 @@
 import type { FC, ReactElement } from 'react';
 
-import { createContext, useContext } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useSyncExternalStore } from 'react';
 
 export type StateHookFn<TProps = any, TState = any> = (props: TProps) => TState;
 
@@ -88,3 +88,49 @@ export type ContextComponent<
   TProps extends Record<string, any>,
   TRenderFn extends (props: any, context: any) => ReactElement,
 > = FC<TProps & { render?: TRenderFn }>;
+
+
+/**
+ * Hook that manages a CoreClass instance and triggers re-renders when state changes.
+ * Uses useSyncExternalStore for optimal performance with external state subscriptions.
+ */
+export const useCore = <
+  T extends {
+    subscribe: (callback: (state: any) => void) => () => void;
+    getState: () => any;
+    setState: (state: any) => void;
+  },
+>(
+  CoreClass: new () => T,
+  state: any,
+): T => {
+  const coreRef = useRef<T | null>(null);
+  const snapshotRef = useRef<any>(null);
+
+  // Initialize the core instance
+  if (!coreRef.current) {
+    coreRef.current = new CoreClass();
+    snapshotRef.current = coreRef.current.getState();
+  }
+
+  useEffect(() => {
+    coreRef.current?.setState(state);
+  }, [...Object.values(state)]);
+
+  // Use useSyncExternalStore to subscribe to state changes
+  useSyncExternalStore(
+    useCallback((onStoreChange) => {
+      if (!coreRef.current) return () => {};
+      return coreRef.current.subscribe((newState) => {
+        snapshotRef.current = newState;
+        onStoreChange();
+      });
+    }, []),
+    useCallback(() => {
+      return snapshotRef.current;
+    }, []),
+    () => null // server snapshot
+  );
+
+  return coreRef.current;
+};

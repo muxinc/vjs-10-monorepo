@@ -1,14 +1,13 @@
 import type { ConnectedComponent } from '../utils/component-factory';
-import type { TimeRangeState as CoreTimeRangeState } from '@vjs-10/core';
-import type { MutableRefObject, PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { TimeRange as CoreTimeRange } from '@vjs-10/core';
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
-import { toConnectedComponent, toContextComponent } from '../utils/component-factory';
+import { toConnectedComponent, toContextComponent, useCore } from '../utils/component-factory';
 
 // ============================================================================
 // ROOT COMPONENT
@@ -20,42 +19,17 @@ export const useTimeRangeRootState = (
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
-  coreRef: MutableRefObject<CoreTimeRange | null>;
+  core: CoreTimeRange;
 } => {
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
-
-  const methods = useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
-
-  const { requestSeek } = methods;
-
-  const [_coreState, onCoreStateChange] = useState<CoreTimeRangeState | null>(null);
-  const coreRef = useRef<CoreTimeRange | null>(null);
-  if (!coreRef.current) {
-    coreRef.current = new CoreTimeRange();
-  }
-
-  useEffect(() => {
-    if (coreRef.current) {
-      coreRef.current.onStateChange(onCoreStateChange);
-    }
-  }, [coreRef]);
-
-  useEffect(() => {
-    if (coreRef.current) {
-      coreRef.current.setState({
-        currentTime: mediaState.currentTime,
-        duration: mediaState.duration,
-        requestSeek,
-      });
-    }
-  }, [mediaState.currentTime, mediaState.duration, requestSeek]);
+  const mediaMethods = useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
+  const core = useCore(CoreTimeRange, { ...mediaState, ...mediaMethods });
 
   return {
-    currentTime: mediaState.currentTime,
-    duration: mediaState.duration,
-    requestSeek,
-    coreRef,
+    ...mediaState,
+    ...mediaMethods,
+    core,
   };
 };
 
@@ -64,15 +38,15 @@ export const useTimeRangeRootProps = (
   state: ReturnType<typeof useTimeRangeRootState>
 ) => {
   const {
-    _fillWidth = 0,
-    _pointerWidth = 0,
-    _currentTimeText = '0',
-    _durationText = '0',
-  } = state.coreRef.current?.getState() ?? {};
+    _fillWidth,
+    _pointerWidth,
+    _currentTimeText,
+    _durationText,
+  } = state.core.getState();
 
   return {
     ref: useCallback((el: HTMLDivElement) => {
-      state.coreRef.current?.attach(el);
+      state.core?.attach(el);
     }, []),
     role: 'slider',
     'aria-label': 'Seek',
@@ -116,7 +90,7 @@ export const useTimeRangeTrackProps = (
 ): PropsWithChildren<Record<string, unknown>> & { ref?: any } => {
   return {
     ref: useCallback((el: HTMLDivElement) => {
-      context.coreRef.current?.setState({ _trackElement: el });
+      context.core?.setState({ _trackElement: el });
     }, []),
     ...props,
   };
