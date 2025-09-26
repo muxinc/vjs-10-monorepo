@@ -55,7 +55,7 @@ export class Range {
     const state = this.#state.get();
 
     let _pointerWidth = 0;
-    if (state._hovering && state._pointerRatio !== null) {
+    if (state._hovering) {
       _pointerWidth = state._pointerRatio;
     }
 
