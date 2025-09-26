@@ -21,12 +21,11 @@
     "dev:html": "turbo run dev --filter=html-demo...",
     "dev:react": "turbo run dev --filter=react-demo...",
     "dev": "turbo run dev --parallel",
-    "generate:icons": "turbo run generate:icons",
     "format:check": "prettier . --check --log-level warn --cache",
     "format": "prettier . --write --log-level warn --cache",
     "lint": "eslint . --cache",
     "test": "turbo run test",
-    "typecheck": "pnpm run generate:icons && tsc --build --noEmit"
+    "typecheck": "tsc --build --noEmit"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",

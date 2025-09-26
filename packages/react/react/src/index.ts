@@ -9,3 +9,4 @@ export { VolumeRange } from './components/VolumeRange';
 export { FullscreenButton } from './components/FullscreenButton';
 export { DurationDisplay } from './components/DurationDisplay';
 export { CurrentTimeDisplay } from './components/CurrentTimeDisplay';
+export { Icon, type IconProps, type IconComponent } from './components/Icon';

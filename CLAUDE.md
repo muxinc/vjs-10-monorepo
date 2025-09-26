@@ -137,7 +137,7 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/en/
 Use package names or areas of the codebase:
 
 - `feat(media-store): add pause state management`
-- `fix(react-icons): resolve SVG rendering issue`
+- `fix(icons): resolve SVG rendering issue`
 - `docs(readme): update installation instructions`
 - `chore(deps): update typescript to 5.4.0`
 

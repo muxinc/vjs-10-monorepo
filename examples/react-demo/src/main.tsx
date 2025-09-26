@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 
-import { MediaProvider, MediaSkinDefault, Video } from '@vjs-10/react';
+import { defaultSkinIcons, MediaProvider, MediaSkinDefault, Video } from '@vjs-10/react';
 
 import './globals.css';
 
@@ -10,7 +10,7 @@ function DemoPlayer() {
       <div className="space-y-12 w-full">
         <MediaProvider>
           <div className="w-full max-w-4xl mx-auto">
-            <MediaSkinDefault className="rounded-4xl aspect-video">
+            <MediaSkinDefault icons={defaultSkinIcons} className="rounded-4xl aspect-video">
               {/* @ts-ignore -- types are incorrect */}
               {/* <Video
                 muted
@@ -24,7 +24,7 @@ function DemoPlayer() {
 
         <MediaProvider>
           <div className="w-full max-w-4xl mx-auto">
-            <MediaSkinDefault className="aspect-video">
+            <MediaSkinDefault icons={defaultSkinIcons} className="aspect-video">
               {/* @ts-ignore -- types are incorrect */}
               <Video muted src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8" />
             </MediaSkinDefault>

@@ -1,0 +1,56 @@
+{
+  "name": "@vjs-10/icons",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Open-source and beautifully hand-crafted collection of media icons.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./element": {
+      "types": "./dist/element/browser.d.ts",
+      "browser": "./dist/element/browser.js",
+      "default": "./dist/element/server.js"
+    },
+    "./svg/*": "./svg/*.svg",
+    "./icons.json": "./icons.json"
+  },
+  "sideEffects": [
+    "./dist/element.js"
+  ],
+  "files": [
+    "dist/",
+    "svg/",
+    "*.d.ts",
+    "icons.json"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
+    "clean": "rm -rf dist",
+    "dev": "pnpm run build:watch",
+    "format": "prettier src --write --log-level warn --cache",
+    "generate": "tsx .scripts/generate.ts && pnpm run format",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "icons",
+    "svg",
+    "media",
+    "player",
+    "ui"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "tsdown": "^0.15.4",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
