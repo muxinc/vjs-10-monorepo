@@ -9,8 +9,15 @@ import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
 
-// TODO: FIX ICONS
-// import '@vjs-10/html-icons';
+import {
+  fullscreenEnterIcon,
+  fullscreenExitIcon,
+  pauseIcon,
+  playIcon,
+  volumeHighIcon,
+  volumeLowIcon,
+  volumeOffIcon,
+} from './icons';
 
 export function getTemplateHTML() {
   return /* html */ `
@@ -186,8 +193,8 @@ export function getTemplateHTML() {
         <div class="control-bar">
           <!-- NOTE: We can decide if we further want to provide a further, "themed" media-play-button that comes with baked in default styles and icons. (CJP) -->
           <media-play-button class="button">
-            <media-play-icon class="icon play-icon"></media-play-icon>
-            <media-pause-icon class="icon pause-icon"></media-pause-icon>
+            ${playIcon}
+            ${pauseIcon}
           </media-play-button>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
@@ -200,9 +207,9 @@ export function getTemplateHTML() {
           </media-time-range-root>
           <media-duration-display></media-duration-display>
           <media-mute-button class="button">
-            <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
-            <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
-            <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
+            ${volumeHighIcon}
+            ${volumeLowIcon}
+            ${volumeOffIcon}
           </media-mute-button>
           <media-volume-range-root>
             <media-volume-range-track>
@@ -211,8 +218,8 @@ export function getTemplateHTML() {
             <media-volume-range-thumb></media-volume-range-thumb>
           </media-volume-range-root>
           <media-fullscreen-button class="button">
-            <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
-            <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
+            ${fullscreenEnterIcon}
+            ${fullscreenExitIcon}
           </media-fullscreen-button>
         </div>
       </div>

@@ -37,9 +37,8 @@ Use the element (icons are lazy loaded):
 
 ## JS Frameworks
 
-We recommend using [unplugin-icons](https://github.com/antfu/unplugin-icons) as it has many
-bundler (Vite/Rollup/Webpack), framework (React/Vue/Preact/Solid/Svelte) and customization
-options.
+We recommend using [unplugin-icons][unplugin-icons] as it has many bundler (Vite/Rollup/Webpack),
+framework (React/Vue/Preact/Solid/Svelte) and customization options.
 
 First, install the package:
 
@@ -119,3 +118,4 @@ Video.js Icons is [MIT licensed](./LICENSE).
 [vidstack]: https://vidstack.io
 [package]: https://www.npmjs.com/package/@vjs-10/icons
 [package-badge]: https://img.shields.io/npm/v/@vjs-10/icons
+[unplugin-icons]: https://github.com/antfu/unplugin-icons

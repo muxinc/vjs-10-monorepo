@@ -12,7 +12,7 @@
       "default": "./dist/index.js"
     },
     "./element": {
-      "types": "./dist/element.d.ts",
+      "types": "./dist/element/browser.d.ts",
       "browser": "./dist/element/browser.js",
       "default": "./dist/element/server.js"
     },

@@ -1,17 +1,7 @@
 import styles from './styles';
 
-import type { PropsWithChildren } from 'react';
-
-// TODO: FIX ICONS
-// import {
-//   FullscreenEnterIcon,
-//   FullscreenExitIcon,
-//   PauseIcon,
-//   PlayIcon,
-//   VolumeHighIcon,
-//   VolumeLowIcon,
-//   VolumeOffIcon,
-// } from '@vjs-10/react-icons';
+import type { DefaultSkinIcons } from './icons';
+import type { ReactNode } from 'react';
 
 import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
 import { DurationDisplay } from '../../components/DurationDisplay';
@@ -22,11 +12,17 @@ import PlayButton from '../../components/PlayButton';
 import { TimeRange } from '../../components/TimeRange';
 import { VolumeRange } from '../../components/VolumeRange';
 
-type SkinProps = PropsWithChildren<{
+export type MediaSkinDefaultProps = {
+  icons: DefaultSkinIcons;
   className?: string;
-}>;
+  children?: ReactNode;
+};
 
-export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
+export default function MediaSkinDefault({
+  icons: Icon,
+  children,
+  className = '',
+}: MediaSkinDefaultProps): JSX.Element {
   return (
     <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
@@ -36,8 +32,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
 
       <div className={styles.Controls} data-testid="media-controls">
         <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-          <PlayIcon className={styles.PlayIcon}></PlayIcon>
-          <PauseIcon className={styles.PauseIcon}></PauseIcon>
+          <Icon.PlayButton.Play className={styles.PlayIcon} />
+          <Icon.PlayButton.Pause className={styles.PauseIcon} />
         </PlayButton>
 
         <div className={styles.TimeControls}>
@@ -59,9 +55,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         </div>
 
         <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.VolumeButton}`}>
-          <VolumeHighIcon className={styles.VolumeHighIcon} />
-          <VolumeLowIcon className={styles.VolumeLowIcon} />
-          <VolumeOffIcon className={styles.VolumeOffIcon} />
+          <Icon.MuteButton.VolumeHigh className={styles.VolumeHighIcon} />
+          <Icon.MuteButton.VolumeLow className={styles.VolumeLowIcon} />
+          <Icon.MuteButton.VolumeOff className={styles.VolumeOffIcon} />
         </MuteButton>
 
         <VolumeRange.Root className={styles.VolumeRangeRoot}>
@@ -72,8 +68,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         </VolumeRange.Root>
 
         <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
-          <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
-          <FullscreenExitIcon className={styles.FullScreenExitIcon} />
+          <Icon.FullscreenButton.Enter className={styles.FullScreenEnterIcon} />
+          <Icon.FullscreenButton.Exit className={styles.FullScreenExitIcon} />
         </FullscreenButton>
       </div>
     </MediaContainer>

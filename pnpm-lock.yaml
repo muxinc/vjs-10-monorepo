@@ -160,6 +160,9 @@ importers:
       '@vjs-10/html-media-store':
         specifier: workspace:*
         version: link:../html-media-store
+      '@vjs-10/icons':
+        specifier: workspace:*
+        version: link:../../icons
       '@vjs-10/media-store':
         specifier: workspace:*
         version: link:../../core/media-store
@@ -251,6 +254,9 @@ importers:
 
   packages/react/react:
     dependencies:
+      '@vjs-10/icons':
+        specifier: workspace:*
+        version: link:../../icons
       '@vjs-10/media':
         specifier: workspace:*
         version: link:../../core/media
