@@ -1,5 +1,5 @@
 export * from '@vjs-10/react-media-store';
-export * from './skins/MediaSkinDefault';
+export * from './skins';
 export { Video, MediaElementVideo } from './components/Video';
 export { MediaContainer, useMediaContainerRef } from './components/MediaContainer';
 
