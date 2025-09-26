@@ -21,7 +21,7 @@ export const shallowEqual = (objA: any, objB: any): boolean => {
     // Early "cheap" array compares
     if (!Array.isArray(objB) || objA.length !== objB.length) return false;
     // Shallow compare for arrays
-    return objA.some((vVal, i) => objB[i] === vVal);
+    return objA.every((vVal, i) => objB[i] === vVal);
   }
 
   const keysA = Object.keys(objA);
