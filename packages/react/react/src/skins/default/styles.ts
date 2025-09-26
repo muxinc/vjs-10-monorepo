@@ -127,8 +127,8 @@ const styles: MediaDefaultSkinStyles = {
   ),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
-  TimeRangeRoot: cn('flex h-5 items-center flex-1 group/slider relative'),
-  TimeRangeTrack: cn('h-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
+  TimeRangeRoot: cn('flex [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20 items-center justify-center flex-1 group/slider relative'),
+  TimeRangeTrack: cn('[&[data-orientation="horizontal"]]:h-1 [&[data-orientation="vertical"]]:w-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
   TimeRangeProgress: cn('bg-white rounded-[inherit]'),
   // TODO: Work out what we want to do here.
   TimeRangePointer: cn('rounded-[inherit]'),
@@ -139,8 +139,8 @@ const styles: MediaDefaultSkinStyles = {
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
     'size-2.5 active:size-3 group-active/slider:size-3'
   ),
-  VolumeRangeRoot: cn('flex h-5 items-center w-20 group/slider relative'),
-  VolumeRangeTrack: cn('h-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
+  VolumeRangeRoot: cn('flex [&[data-orientation="horizontal"]]:w-20 [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20 items-center justify-center group/slider relative'),
+  VolumeRangeTrack: cn('[&[data-orientation="horizontal"]]:h-1 [&[data-orientation="vertical"]]:w-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
   VolumeRangeProgress: cn('bg-white rounded-[inherit]'),
   VolumeRangeThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',

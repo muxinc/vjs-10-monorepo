@@ -62,7 +62,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <VolumeOffIcon className={styles.VolumeOffIcon} />
         </MuteButton>
 
-        <VolumeRange.Root className={styles.VolumeRangeRoot}>
+        <VolumeRange.Root className={styles.VolumeRangeRoot} orientation="vertical">
           <VolumeRange.Track className={styles.VolumeRangeTrack}>
             <VolumeRange.Progress className={styles.VolumeRangeProgress} />
           </VolumeRange.Track>

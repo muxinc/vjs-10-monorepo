@@ -91,8 +91,8 @@ export class Range {
     return getPointProgressOnLine(
       evt.clientX,
       evt.clientY,
-      { x: rect.left, y: rect.top },
-      { x: rect.right, y: rect.bottom }
+      { x: rect.left, y: rect.bottom },
+      { x: rect.right, y: rect.top }
     );
   }
 
