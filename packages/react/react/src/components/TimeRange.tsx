@@ -37,12 +37,7 @@ export const useTimeRangeRootProps = (
   props: PropsWithChildren<{ [k: string]: any }>,
   state: ReturnType<typeof useTimeRangeRootState>
 ) => {
-  const {
-    _fillWidth,
-    _pointerWidth,
-    _currentTimeText,
-    _durationText,
-  } = state.core.getState();
+  const { _fillWidth, _pointerWidth, _currentTimeText, _durationText } = state.core.getState();
 
   return {
     ref: useCallback((el: HTMLDivElement) => {
