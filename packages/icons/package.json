@@ -13,10 +13,11 @@
     },
     "./element": {
       "types": "./dist/element.d.ts",
-      "browser": "./dist/element.js",
-      "default": "./dist/server/element.js"
+      "browser": "./dist/element/browser.js",
+      "default": "./dist/element/server.js"
     },
-    "./svg/*": "./svg/*.svg"
+    "./svg/*": "./svg/*.svg",
+    "./icons.json": "./icons.json"
   },
   "sideEffects": [
     "./dist/element.js"
@@ -24,14 +25,17 @@
   "files": [
     "dist/",
     "svg/",
-    "*.d.ts"
+    "*.d.ts",
+    "icons.json"
   ],
   "scripts": {
     "build": "tsdown",
     "build:watch": "tsdown --watch --silent",
+    "clean": "rm -rf dist",
     "dev": "pnpm run build:watch",
-    "test": "echo \"No tests yet\"",
-    "clean": "rm -rf dist"
+    "format": "prettier src --write --log-level warn --cache",
+    "generate": "tsx .scripts/generate.ts && pnpm run format",
+    "test": "echo \"No tests yet\""
   },
   "keywords": [
     "icons",
@@ -43,6 +47,7 @@
   "license": "MIT",
   "devDependencies": {
     "tsdown": "^0.15.4",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   },
   "publishConfig": {

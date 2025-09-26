@@ -1,4 +1,5 @@
 packages:
+  - 'packages/icons'
   - 'packages/core/*'
   - 'packages/html/*'
   - 'packages/react/*'
