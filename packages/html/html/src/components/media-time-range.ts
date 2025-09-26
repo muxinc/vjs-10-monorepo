@@ -1,125 +1,20 @@
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
-import type { TimeRangeState } from '@vjs-10/media-store';
 
+import { TimeRange as CoreTimeRange } from '@vjs-10/core';
 import { timeRangeStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
-  const x = clientX - rect.left;
-  return Math.max(0, Math.min(100, (x / rect.width) * 100));
-};
-
-const calculateSeekTimeFromRatio = (ratio: number, duration: number): number => {
-  return (ratio / 100) * duration;
-};
-
-const calculateSeekTimeFromPointerEvent = (event: PointerEvent, duration: number): number => {
-  const rect = (event.target as HTMLElement).getBoundingClientRect();
-  const ratio = calculatePointerRatio(event.clientX, rect);
-  return calculateSeekTimeFromRatio(ratio, duration);
+type TimeRangeRootState = {
+  currentTime: number;
+  duration: number;
+  requestSeek: (time: number) => void;
+  core: CoreTimeRange | null;
 };
 
 export class TimeRangeRootBase extends HTMLElement {
-  _state:
-    | {
-        currentTime: number;
-        duration: number;
-        requestSeek: (time: number) => void;
-        pointerPosition: number | null;
-        hovering: boolean;
-        dragging: boolean;
-      }
-    | undefined;
-
-  _trackElement: HTMLElement | null = null;
-  _seekingTime: number | null = null;
-  _currentTime: number | null = null;
-
-  constructor() {
-    super();
-
-    // Add pointer event listeners
-    this.addEventListener('pointerdown', this);
-    this.addEventListener('pointermove', this);
-    this.addEventListener('pointerup', this);
-    this.addEventListener('pointerenter', this);
-    this.addEventListener('pointerleave', this);
-  }
-
-  _setState(state: any): void {
-    this._state = { ...this._state, ...state };
-    this._update(useTimeRangeRootProps(this._state!, this), this._state!);
-  }
-
-  handleEvent(event: Event): void {
-    const { type } = event;
-    const state = this._state;
-    if (!state) return;
-
-    switch (type) {
-      case 'pointerdown':
-        this._handlePointerDown(event as PointerEvent);
-        break;
-      case 'pointermove':
-        this._handlePointerMove(event as PointerEvent);
-        break;
-      case 'pointerup':
-        this._handlePointerUp(event as PointerEvent);
-        break;
-      case 'pointerenter':
-        this._handlePointerEnter();
-        break;
-      case 'pointerleave':
-        this._handlePointerLeave();
-        break;
-    }
-  }
-
-  private _handlePointerDown(event: PointerEvent) {
-    event.preventDefault();
-    this._setState({ dragging: true });
-
-    const seekTime = calculateSeekTimeFromPointerEvent(event, this._state!.duration);
-    this._state!.requestSeek(seekTime);
-    this._seekingTime = seekTime;
-
-    // Capture pointer events
-    this.setPointerCapture(event.pointerId);
-  }
-
-  private _handlePointerMove(event: PointerEvent) {
-    if (!this._trackElement) return;
-
-    const rect = this._trackElement.getBoundingClientRect();
-    const ratio = calculatePointerRatio(event.clientX, rect);
-    this._setState({ pointerPosition: ratio });
-
-    if (this._state!.dragging) {
-      const seekTime = calculateSeekTimeFromRatio(ratio, this._state!.duration);
-      this._state!.requestSeek(seekTime);
-      this._seekingTime = seekTime;
-    }
-  }
-
-  private _handlePointerUp(event: PointerEvent) {
-    this.releasePointerCapture(event.pointerId);
-
-    if (this._state!.dragging && this._trackElement && this._state!.pointerPosition !== null) {
-      const seekTime = calculateSeekTimeFromRatio(this._state!.pointerPosition, this._state!.duration);
-      this._state!.requestSeek(seekTime);
-      this._seekingTime = seekTime;
-    }
-    this._setState({ dragging: false });
-  }
-
-  private _handlePointerEnter() {
-    this._setState({ hovering: true });
-  }
-
-  private _handlePointerLeave() {
-    this._setState({ hovering: false });
-  }
+  _state: TimeRangeRootState | undefined;
+  _core: CoreTimeRange | null = null;
 
   get currentTime(): number {
     return this._state?.currentTime ?? 0;
@@ -129,44 +24,33 @@ export class TimeRangeRootBase extends HTMLElement {
     return this._state?.duration ?? 0;
   }
 
-  _update(props: any, state: any): void {
-    this._state = { ...this._state, ...state };
+  _update(_props: any, state: any): void {
+    this._state = state;
 
-    this._trackElement = this.querySelector('media-time-range-track') as HTMLElement;
-    
-    // When dragging, use pointer position for immediate feedback;
-    // While seeking, use seeking time so it doesn't jump back to the current time;
-    // Otherwise, use current time;
-    let sliderFill = 0;
-    if (state.dragging && state.pointerPosition !== null) {
-      sliderFill = state.pointerPosition;
-    } else if (state.duration > 0) {
-      if (this._seekingTime !== null && this._currentTime === state.currentTime) {
-        sliderFill = (this._seekingTime / state.duration) * 100;
-      } else {
-        sliderFill = (state.currentTime / state.duration) * 100;
-        this._seekingTime = null;
-      }
+    if (state && !this._core) {
+      this._core = new CoreTimeRange();
+      this._core.subscribe(() => this._render(useTimeRangeRootProps(state, this), state));
+      this._core.attach(this);
+      state.core = this._core;
     }
-  
-    this._currentTime = state.currentTime;
 
-    // Update CSS custom properties
-    this.style.setProperty('--slider-fill', `${Math.round(sliderFill)}%`);
-    this.style.setProperty(
-      '--slider-pointer',
-      this._state!.hovering && this._state!.pointerPosition !== null ? `${Math.round(this._state!.pointerPosition)}%` : '0%'
-    );
+    this._core?.setState(state);
+  }
 
-    // Update ARIA attributes
+  _render(props: any, state: any): void {
+    const coreState = state?.core?.getState();
+    if (!coreState) return;
+
+    this.style.setProperty('--slider-fill', `${Math.round(coreState._fillWidth)}%`);
+    this.style.setProperty('--slider-pointer', `${Math.round(coreState._pointerWidth)}%`);
+
     this.setAttribute('role', 'slider');
     this.setAttribute('aria-label', props['aria-label'] || 'Seek');
     this.setAttribute('aria-valuemin', '0');
     this.setAttribute('aria-valuemax', '100');
-    this.setAttribute('aria-valuenow', sliderFill.toString());
+    this.setAttribute('aria-valuenow', coreState._fillWidth.toString());
     this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
 
-    // Update data attributes
     this.setAttribute('data-current-time', state.currentTime.toString());
     this.setAttribute('data-duration', state.duration.toString());
   }
@@ -175,6 +59,14 @@ export class TimeRangeRootBase extends HTMLElement {
 export class TimeRangeTrackBase extends HTMLElement {
   constructor() {
     super();
+  }
+
+  connectedCallback(): void {
+    // Set this element as the track element in the core TimeRange
+    const rootElement = this.closest('media-time-range-root') as any;
+    if (rootElement?._state?.core) {
+      rootElement._state.core.setState({ _trackElement: this });
+    }
   }
 
   _update(_props: any, _state: any): void {
@@ -225,17 +117,22 @@ export class TimeRangeThumbBase extends HTMLElement {
 export const useTimeRangeRootState: StateHook<{
   currentTime: number;
   duration: number;
+  requestSeek: (time: number) => void;
+  core: CoreTimeRange | null;
 }> = {
   keys: timeRangeStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
     ...timeRangeStateDefinition.stateTransform(rawState),
     ...timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
+    core: null,
   }),
 };
 
 export const useTimeRangeRootProps: PropsHook<{
   currentTime: number;
   duration: number;
+  requestSeek: (time: number) => void;
+  core: CoreTimeRange | null;
 }> = (state, _element) => {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -274,12 +171,12 @@ export const useTimeRangeThumbProps: PropsHook<{}> = (_state, _element) => {
   return {};
 };
 
-export const TimeRangeRoot: ConnectedComponentConstructor<TimeRangeState> = toConnectedHTMLComponent(
-  TimeRangeRootBase,
-  useTimeRangeRootState,
-  useTimeRangeRootProps,
-  'TimeRangeRoot'
-);
+export const TimeRangeRoot: ConnectedComponentConstructor<{
+  currentTime: number;
+  duration: number;
+  requestSeek: (time: number) => void;
+  core: CoreTimeRange | null;
+}> = toConnectedHTMLComponent(TimeRangeRootBase, useTimeRangeRootState, useTimeRangeRootProps, 'TimeRangeRoot');
 
 export const TimeRangeTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangeTrackBase,

@@ -1,8 +1,8 @@
 {
-  "name": "@vjs-10/html",
+  "name": "@vjs-10/core",
   "type": "module",
   "version": "0.1.0",
-  "description": "HTML library for building media players",
+  "description": "Core components and utilities for Video.js",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,20 +23,16 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "core",
+    "components",
     "media",
     "player",
-    "html",
     "ui",
-    "components"
+    "time-range"
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-wc/context-protocol": "^0.0.9",
-    "@vjs-10/core": "workspace:*",
-    "@vjs-10/html-icons": "workspace:*",
-    "@vjs-10/html-media-elements": "workspace:*",
-    "@vjs-10/html-media-store": "workspace:*",
-    "@vjs-10/media-store": "workspace:*"
+    "nanostores": "^1.0.1"
   },
   "devDependencies": {
     "tsdown": "^0.15.4",

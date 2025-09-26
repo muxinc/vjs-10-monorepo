@@ -1,118 +1,24 @@
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
-import type { VolumeRangeState } from '@vjs-10/media-store';
 
+import { VolumeRange as CoreVolumeRange } from '@vjs-10/core';
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-// Utility functions for pointer position and volume calculations
-const calculatePointerRatio = (clientX: number, rect: DOMRect): number => {
-  const x = clientX - rect.left;
-  return Math.max(0, Math.min(100, (x / rect.width) * 100));
-};
-
-const calculateVolumeFromRatio = (ratio: number): number => {
-  return ratio / 100;
-};
-
-const calculateVolumeFromPointerEvent = (event: PointerEvent): number => {
-  const rect = (event.target as HTMLElement).getBoundingClientRect();
-  const ratio = calculatePointerRatio(event.clientX, rect);
-  return calculateVolumeFromRatio(ratio);
-};
-
 /**
  * VolumeRange Root component - Main container with pointer event handling
  */
+type VolumeRangeRootState = {
+  volume: number;
+  muted: boolean;
+  volumeLevel: string;
+  requestVolumeChange: (volume: number) => void;
+  core: CoreVolumeRange | null;
+};
+
 export class VolumeRangeRootBase extends HTMLElement {
-  _state:
-    | {
-        volume: number;
-        muted: boolean;
-        volumeLevel: string;
-        requestVolumeChange: (volume: number) => void;
-      }
-    | undefined;
-  _trackElement: HTMLElement | null = null;
-  _pointerPosition: number | null = null;
-  _hovering: boolean = false;
-  _dragging: boolean = false;
-
-  constructor() {
-    super();
-
-    // Add pointer event listeners
-    this.addEventListener('pointerdown', this);
-    this.addEventListener('pointermove', this);
-    this.addEventListener('pointerup', this);
-    this.addEventListener('pointerenter', this);
-    this.addEventListener('pointerleave', this);
-  }
-
-  handleEvent(event: Event): void {
-    const { type } = event;
-    const state = this._state;
-    if (!state) return;
-
-    switch (type) {
-      case 'pointerdown':
-        this._handlePointerDown(event as PointerEvent);
-        break;
-      case 'pointermove':
-        this._handlePointerMove(event as PointerEvent);
-        break;
-      case 'pointerup':
-        this._handlePointerUp(event as PointerEvent);
-        break;
-      case 'pointerenter':
-        this._handlePointerEnter();
-        break;
-      case 'pointerleave':
-        this._handlePointerLeave();
-        break;
-    }
-  }
-
-  private _handlePointerDown(event: PointerEvent) {
-    event.preventDefault();
-    this._dragging = true;
-    const volume = calculateVolumeFromPointerEvent(event);
-    this._state!.requestVolumeChange(volume);
-
-    // Capture pointer events
-    this.setPointerCapture(event.pointerId);
-  }
-
-  private _handlePointerMove(event: PointerEvent) {
-    if (!this._trackElement) return;
-
-    const rect = this._trackElement.getBoundingClientRect();
-    const ratio = calculatePointerRatio(event.clientX, rect);
-    this._pointerPosition = ratio;
-
-    if (this._dragging) {
-      const volume = calculateVolumeFromRatio(ratio);
-      this._state!.requestVolumeChange(volume);
-    }
-  }
-
-  private _handlePointerUp(event: PointerEvent) {
-    this.releasePointerCapture(event.pointerId);
-
-    if (this._dragging && this._trackElement && this._pointerPosition !== null) {
-      const volume = calculateVolumeFromRatio(this._pointerPosition);
-      this._state!.requestVolumeChange(volume);
-    }
-    this._dragging = false;
-  }
-
-  private _handlePointerEnter() {
-    this._hovering = true;
-  }
-
-  private _handlePointerLeave() {
-    this._hovering = false;
-  }
+  _state: VolumeRangeRootState | undefined;
+  _core: CoreVolumeRange | null = null;
 
   get volume(): number | undefined {
     return this._state?.volume;
@@ -126,36 +32,33 @@ export class VolumeRangeRootBase extends HTMLElement {
     return this._state?.volumeLevel ?? 'high';
   }
 
-  _update(props: any, state: any): void {
+  _update(_props: any, state: any): void {
     this._state = state;
 
-    // Find track element
-    this._trackElement = this.querySelector('media-volume-range-track') as HTMLElement;
+    if (state && !this._core) {
+      this._core = new CoreVolumeRange();
+      this._core.subscribe(() => this._render(useVolumeRangeRootProps(state, this), state));
+      this._core.attach(this);
+      state.core = this._core;
+    }
 
-    // Calculate slider fill percentage
-    const sliderFill =
-      this._dragging && this._pointerPosition !== null
-        ? this._pointerPosition
-        : state.muted
-          ? 0
-          : state.volume * 100;
+    this._core?.setState(state);
+  }
 
-    // Update CSS custom properties
-    this.style.setProperty('--slider-fill', `${Math.round(sliderFill)}%`);
-    this.style.setProperty(
-      '--slider-pointer',
-      this._hovering && this._pointerPosition !== null ? `${Math.round(this._pointerPosition)}%` : '0%'
-    );
+  _render(props: any, state: any): void {
+    const coreState = state?.core?.getState();
+    if (!coreState) return;
 
-    // Update ARIA attributes
+    this.style.setProperty('--slider-fill', `${coreState._fillWidth.toFixed(3)}%`);
+    this.style.setProperty('--slider-pointer', `${coreState._pointerWidth.toFixed(3)}%`);
+
     this.setAttribute('role', 'slider');
     this.setAttribute('aria-label', props['aria-label'] || 'Volume');
     this.setAttribute('aria-valuemin', '0');
     this.setAttribute('aria-valuemax', '100');
-    this.setAttribute('aria-valuenow', sliderFill.toString());
+    this.setAttribute('aria-valuenow', coreState._fillWidth.toString());
     this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
 
-    // Update data attributes
     this.setAttribute('data-muted', state.muted.toString());
     this.setAttribute('data-volume-level', state.volumeLevel);
   }
@@ -167,6 +70,14 @@ export class VolumeRangeRootBase extends HTMLElement {
 export class VolumeRangeTrackBase extends HTMLElement {
   constructor() {
     super();
+  }
+
+  connectedCallback(): void {
+    // Set this element as the track element in the core VolumeRange
+    const rootElement = this.closest('media-volume-range-root') as any;
+    if (rootElement?._state?.core) {
+      rootElement._state.core.setState({ _trackElement: this });
+    }
   }
 
   _update(_props: any, _state: any): void {
@@ -215,11 +126,14 @@ export const useVolumeRangeRootState: StateHook<{
   volume: number;
   muted: boolean;
   volumeLevel: string;
+  requestVolumeChange: (volume: number) => void;
+  core: CoreVolumeRange | null;
 }> = {
   keys: volumeRangeStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
     ...volumeRangeStateDefinition.stateTransform(rawState),
     ...volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
+    core: null,
   }),
 };
 
@@ -231,6 +145,8 @@ export const useVolumeRangeRootProps: PropsHook<{
   volume: number;
   muted: boolean;
   volumeLevel: string;
+  requestVolumeChange: (volume: number) => void;
+  core: CoreVolumeRange | null;
 }> = (state, _element) => {
   const volumeText = `${Math.round(state.muted ? 0 : state.volume * 100)}%`;
 
@@ -270,12 +186,13 @@ export const useVolumeRangeThumbProps: PropsHook<{}> = (_state, _element) => {
 /**
  * Connected VolumeRange Root component using hook-style architecture
  */
-export const VolumeRangeRoot: ConnectedComponentConstructor<VolumeRangeState> = toConnectedHTMLComponent(
-  VolumeRangeRootBase,
-  useVolumeRangeRootState,
-  useVolumeRangeRootProps,
-  'VolumeRangeRoot'
-);
+export const VolumeRangeRoot: ConnectedComponentConstructor<{
+  volume: number;
+  muted: boolean;
+  volumeLevel: string;
+  requestVolumeChange: (volume: number) => void;
+  core: CoreVolumeRange | null;
+}> = toConnectedHTMLComponent(VolumeRangeRootBase, useVolumeRangeRootState, useVolumeRangeRootProps, 'VolumeRangeRoot');
 
 /**
  * Connected VolumeRange Track component
