@@ -3,7 +3,7 @@
 // It just makes the billions of Tailwind classes a little easier to read.
 const cn = (...classes: (string | undefined)[]): string => classes.filter(Boolean).join(' ');
 
-export interface MediaSkinStyles {
+export interface MediaDefaultSkinStyles {
   readonly MediaContainer: string;
   readonly Overlay: string;
   readonly Controls: string;
@@ -32,7 +32,7 @@ export interface MediaSkinStyles {
   readonly VolumeRangeThumb: string;
 }
 
-const styles: MediaSkinStyles = {
+const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip',
     // Base typography

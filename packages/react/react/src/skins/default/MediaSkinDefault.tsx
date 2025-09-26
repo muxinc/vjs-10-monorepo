@@ -19,7 +19,6 @@ import PlayButton from '../../components/PlayButton';
 import { TimeRange } from '../../components/TimeRange';
 import { VolumeRange } from '../../components/VolumeRange';
 import styles from './styles';
-import twStyles from './styles.module.css';
 
 type SkinProps = PropsWithChildren<{
   className?: string;
@@ -27,7 +26,7 @@ type SkinProps = PropsWithChildren<{
 
 export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
   return (
-    <MediaContainer className={`${twStyles.Container} ${className}`}>
+    <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
 
       {/* Background gradient to help with controls contrast. */}
