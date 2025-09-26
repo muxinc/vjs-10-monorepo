@@ -1,4 +1,4 @@
-import styles from './styles';
+import type { PropsWithChildren } from 'react';
 
 import {
   FullscreenEnterIcon,
@@ -10,23 +10,24 @@ import {
   VolumeOffIcon,
 } from '@vjs-10/react-icons';
 
-import { CurrentTimeDisplay } from '../components/CurrentTimeDisplay';
-import { DurationDisplay } from '../components/DurationDisplay';
-import { FullscreenButton } from '../components/FullscreenButton';
-import { MediaContainer } from '../components/MediaContainer';
-import MuteButton from '../components/MuteButton';
-import PlayButton from '../components/PlayButton';
-import { VolumeRange } from '../components/VolumeRange';
-import { TimeRange } from '../components/TimeRange';
-import { PropsWithChildren } from 'react';
+import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
+import { DurationDisplay } from '../../components/DurationDisplay';
+import { FullscreenButton } from '../../components/FullscreenButton';
+import { MediaContainer } from '../../components/MediaContainer';
+import MuteButton from '../../components/MuteButton';
+import PlayButton from '../../components/PlayButton';
+import { TimeRange } from '../../components/TimeRange';
+import { VolumeRange } from '../../components/VolumeRange';
+import styles from './styles';
+import twStyles from './styles.module.css';
 
 type SkinProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export default function MediaSkinDefault({ children, className = '' }: SkinProps) {
+export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
   return (
-    <MediaContainer className={`${styles.MediaContainer} ${className}`}>
+    <MediaContainer className={`${twStyles.Container} ${className}`}>
       {children}
 
       {/* Background gradient to help with controls contrast. */}

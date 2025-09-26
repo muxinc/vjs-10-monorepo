@@ -1,11 +1,38 @@
-// Utility to merge class names
+// A (very crude) utility to merge class names
 // Usually I'd use something like `clsx` or `classnames` but this is ok for our simple use case.
 // It just makes the billions of Tailwind classes a little easier to read.
+const cn = (...classes: (string | undefined)[]): string => classes.filter(Boolean).join(' ');
 
-const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
+export interface MediaSkinStyles {
+  readonly MediaContainer: string;
+  readonly Overlay: string;
+  readonly Controls: string;
+  readonly Button: string;
+  readonly IconButton: string;
+  readonly PlayButton: string;
+  readonly PlayIcon: string;
+  readonly PauseIcon: string;
+  readonly VolumeButton: string;
+  readonly VolumeHighIcon: string;
+  readonly VolumeLowIcon: string;
+  readonly VolumeOffIcon: string;
+  readonly FullScreenButton: string;
+  readonly FullScreenEnterIcon: string;
+  readonly FullScreenExitIcon: string;
+  readonly TimeControls: string;
+  readonly TimeDisplay: string;
+  readonly TimeRangeRoot: string;
+  readonly TimeRangeTrack: string;
+  readonly TimeRangeProgress: string;
+  readonly TimeRangePointer: string;
+  readonly TimeRangeThumb: string;
+  readonly VolumeRangeRoot: string;
+  readonly VolumeRangeTrack: string;
+  readonly VolumeRangeProgress: string;
+  readonly VolumeRangeThumb: string;
+}
 
-// Improve types here to infer the keys from the object - not working with isolated declarations (rahim)
-const styles: Record<string, string> = {
+const styles: MediaSkinStyles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip',
     // Base typography
