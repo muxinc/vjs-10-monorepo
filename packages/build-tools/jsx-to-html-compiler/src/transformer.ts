@@ -1,6 +1,6 @@
 import babelTraverse from '@babel/traverse';
 import * as t from '@babel/types';
-import { toCustomElementName, toAttributeName } from './utils/naming.js';
+import { toCustomElementName } from './utils/naming.js';
 
 const traverse = (babelTraverse as any).default || babelTraverse;
 
@@ -27,13 +27,8 @@ export function transformJSXToHTML(jsxElement: t.JSXElement): t.JSXElement {
           transformElementName(closingElement.name);
         }
 
-        // Transform attributes
-        openingElement.attributes.forEach((attr) => {
-          if (t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name)) {
-            const newName = toAttributeName(attr.name.name);
-            attr.name.name = newName;
-          }
-        });
+        // NOTE: Attribute name transformation is now handled by AttributeProcessorPipeline
+        // in the serializer, which has access to full element context
 
         // Convert self-closing to explicit closing
         if (openingElement.selfClosing) {

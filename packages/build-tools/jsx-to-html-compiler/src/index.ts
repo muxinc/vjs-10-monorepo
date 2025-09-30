@@ -37,3 +37,13 @@ export { serializeToHTML } from './serializer.js';
 export { defaultAttributeTransformer } from './attributeTransformer.js';
 export * from './utils/naming.js';
 export type { AttributeTransformer, CompileOptions, SerializeOptions } from './types.js';
+
+// Export new attribute processing architecture
+export {
+  AttributeProcessorPipeline,
+  DefaultAttributeProcessor,
+  createDefaultPipeline,
+  type AttributeContext,
+  type AttributeProcessor,
+  type AttributeTransformResult,
+} from './attributeProcessing/index.js';

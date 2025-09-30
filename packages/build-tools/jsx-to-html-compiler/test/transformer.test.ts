@@ -71,7 +71,7 @@ describe('transformJSXToHTML', () => {
     });
   });
 
-  it('transforms className to class', () => {
+  it('leaves attribute names unchanged (transformation happens in serializer)', () => {
     const source = `
       export const Component = () => <div className="container">Hello</div>;
     `;
@@ -80,13 +80,14 @@ describe('transformJSXToHTML', () => {
     expect(jsx).not.toBeNull();
 
     const transformed = transformJSXToHTML(jsx!);
-    const classAttr = transformed.openingElement.attributes.find(
-      (attr) => t.isJSXAttribute(attr) && attr.name.name === 'class'
+    // Transformer no longer transforms attribute names - that's done in the serializer
+    const classNameAttr = transformed.openingElement.attributes.find(
+      (attr) => t.isJSXAttribute(attr) && attr.name.name === 'className'
     );
-    expect(classAttr).toBeDefined();
+    expect(classNameAttr).toBeDefined();
   });
 
-  it('transforms camelCase attributes to kebab-case', () => {
+  it('preserves attribute names in camelCase (transformation happens in serializer)', () => {
     const source = `
       export const Component = () => <div showRemaining dataTestId="test">Hello</div>;
     `;
@@ -97,10 +98,11 @@ describe('transformJSXToHTML', () => {
     const transformed = transformJSXToHTML(jsx!);
     const attrs = transformed.openingElement.attributes.filter(t.isJSXAttribute);
 
-    const showRemainingAttr = attrs.find((attr) => attr.name.name === 'show-remaining');
+    // Transformer no longer transforms attribute names - that's done in the serializer
+    const showRemainingAttr = attrs.find((attr) => attr.name.name === 'showRemaining');
     expect(showRemainingAttr).toBeDefined();
 
-    const dataTestIdAttr = attrs.find((attr) => attr.name.name === 'data-test-id');
+    const dataTestIdAttr = attrs.find((attr) => attr.name.name === 'dataTestId');
     expect(dataTestIdAttr).toBeDefined();
   });
 
@@ -173,11 +175,11 @@ describe('transformJSXToHTML', () => {
       name: 'media-container',
     });
 
-    // Check class attribute
-    const classAttr = transformed.openingElement.attributes.find(
-      (attr) => t.isJSXAttribute(attr) && attr.name.name === 'class'
+    // Check className attribute (not transformed in transformer anymore)
+    const classNameAttr = transformed.openingElement.attributes.find(
+      (attr) => t.isJSXAttribute(attr) && attr.name.name === 'className'
     );
-    expect(classAttr).toBeDefined();
+    expect(classNameAttr).toBeDefined();
 
     // Check nested PlayButton
     const playButton = transformed.children.find((child) =>
