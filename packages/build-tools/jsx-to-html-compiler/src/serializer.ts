@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 import babelGenerate from '@babel/generator';
-import type { SerializeOptions, AttributeTransformer } from './types.js';
+import type { SerializeOptions } from './types.js';
 import {
   AttributeProcessorPipeline,
   createDefaultPipeline,
@@ -14,31 +14,18 @@ export function serializeToHTML(
   jsxElement: t.JSXElement,
   options: SerializeOptions = {}
 ): string {
-  const {
-    indent = 0,
-    indentSize = 2,
-    attributeTransformer,
-    attributePipeline,
-  } = options;
+  const { indent = 0, indentSize = 2, attributePipeline } = options;
 
-  // Prefer new pipeline, but support legacy attributeTransformer
   const pipeline = attributePipeline ?? createDefaultPipeline();
 
-  return serializeJSXElement(
-    jsxElement,
-    indent,
-    indentSize,
-    pipeline,
-    attributeTransformer
-  );
+  return serializeJSXElement(jsxElement, indent, indentSize, pipeline);
 }
 
 function serializeJSXElement(
   element: t.JSXElement,
   indent: number,
   indentSize: number,
-  pipeline: AttributeProcessorPipeline,
-  legacyTransformer?: AttributeTransformer
+  pipeline: AttributeProcessorPipeline
 ): string {
   const openingElement = element.openingElement;
   const children = element.children;
@@ -56,13 +43,7 @@ function serializeJSXElement(
   // Serialize attributes
   for (const attr of openingElement.attributes) {
     if (t.isJSXAttribute(attr)) {
-      html += serializeAttribute(
-        attr,
-        elementName,
-        htmlElementName,
-        pipeline,
-        legacyTransformer
-      );
+      html += serializeAttribute(attr, elementName, htmlElementName, pipeline);
     } else if (t.isJSXSpreadAttribute(attr)) {
       // Skip spread attributes for now
       // In the future, we might want to handle these differently
@@ -92,13 +73,7 @@ function serializeJSXElement(
       if (t.isJSXElement(child)) {
         hasComplexChildren = true;
         serializedChildren.push(
-          serializeJSXElement(
-            child,
-            indent + indentSize,
-            indentSize,
-            pipeline,
-            legacyTransformer
-          )
+          serializeJSXElement(child, indent + indentSize, indentSize, pipeline)
         );
       } else if (t.isJSXText(child)) {
         const text = child.value.trim();
@@ -136,31 +111,8 @@ function serializeAttribute(
   attr: t.JSXAttribute,
   elementName: string,
   htmlElementName: string,
-  pipeline: AttributeProcessorPipeline,
-  legacyTransformer?: AttributeTransformer
+  pipeline: AttributeProcessorPipeline
 ): string {
-  // Support legacy attributeTransformer for backward compatibility
-  if (legacyTransformer) {
-    const name = t.isJSXIdentifier(attr.name)
-      ? attr.name.name
-      : t.isJSXNamespacedName(attr.name)
-        ? `${attr.name.namespace.name}:${attr.name.name.name}`
-        : '';
-
-    const transformedValue = legacyTransformer(name, attr.value);
-
-    if (transformedValue === null) {
-      return '';
-    }
-
-    if (transformedValue === '') {
-      return ` ${name}`;
-    }
-
-    return ` ${name}="${transformedValue}"`;
-  }
-
-  // Use new pipeline with full context
   const context: AttributeContext = {
     attribute: attr,
     elementName,

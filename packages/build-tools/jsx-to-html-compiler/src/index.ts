@@ -34,11 +34,10 @@ export function compileJSXToHTML(
 export { parseReactComponent } from './parser.js';
 export { transformJSXToHTML } from './transformer.js';
 export { serializeToHTML } from './serializer.js';
-export { defaultAttributeTransformer } from './attributeTransformer.js';
 export * from './utils/naming.js';
-export type { AttributeTransformer, CompileOptions, SerializeOptions } from './types.js';
+export type { CompileOptions, SerializeOptions } from './types.js';
 
-// Export new attribute processing architecture
+// Export attribute processing architecture
 export {
   AttributeProcessorPipeline,
   DefaultAttributeProcessor,
