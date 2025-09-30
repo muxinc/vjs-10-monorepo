@@ -1,0 +1,13 @@
+.demo-container h1 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.video-wrapper {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 1rem;
+  overflow: hidden;
+}

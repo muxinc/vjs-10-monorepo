@@ -33,6 +33,27 @@ This prevents circular dependencies and ensures maximum reusability.
 
 ## Common Development Commands
 
+### Important: Package Manager
+
+This monorepo uses **pnpm**, not npm.
+
+```bash
+# ❌ WRONG - Do not use npm
+npm install
+npm run build
+
+# ✅ CORRECT - Always use pnpm
+pnpm install
+pnpm build
+```
+
+**Why pnpm:**
+
+- Better monorepo workspace support
+- Faster installs with content-addressable storage
+- Stricter dependency resolution prevents phantom dependencies
+- Disk space efficient (global store with symlinks)
+
 ### Monorepo Commands (run from root)
 
 ```bash

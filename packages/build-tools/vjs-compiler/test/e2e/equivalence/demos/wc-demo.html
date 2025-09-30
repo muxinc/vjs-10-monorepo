@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Component Demo - MediaSkinDefault</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #1a1a1a;
+        color: white;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .demo-container {
+        max-width: 1280px;
+        width: 100%;
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .video-wrapper {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+
+      /* Ensure video fills container */
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Web component styling */
+      media-skin-default {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <h1>Web Component Demo</h1>
+      <div class="video-wrapper">
+        <media-skin-default>
+          <video
+            slot="media"
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            preload="metadata"
+          ></video>
+        </media-skin-default>
+      </div>
+    </div>
+
+    <!-- Load compiled web component -->
+    <script type="module" src="../fixtures/compiled/MediaSkinDefault.browser.js"></script>
+  </body>
+</html>

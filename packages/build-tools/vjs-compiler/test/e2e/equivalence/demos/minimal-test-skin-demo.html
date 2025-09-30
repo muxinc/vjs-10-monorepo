@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MinimalTestSkin Demo - Package Imports</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #1a1a1a;
+        color: white;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .demo-container {
+        max-width: 1280px;
+        width: 100%;
+      }
+
+      h1 {
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        margin-bottom: 1rem;
+        color: #888;
+        font-size: 0.875rem;
+      }
+
+      .video-wrapper {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+
+      /* Ensure video fills container */
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Web component styling */
+      minimal-test-skin {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Info panel */
+      .info {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      .info h2 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .info pre {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        overflow-x: auto;
+        font-size: 0.75rem;
+      }
+
+      .status {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+      }
+
+      .status.success {
+        background: rgba(34, 197, 94, 0.1);
+        color: #4ade80;
+      }
+
+      .status.error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <h1>MinimalTestSkin Demo</h1>
+      <p class="subtitle">Phase 2: Package Imports (@vjs-10/html, @vjs-10/html-icons)</p>
+
+      <div class="video-wrapper">
+        <minimal-test-skin>
+          <video
+            slot="media"
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            preload="metadata"
+          ></video>
+        </minimal-test-skin>
+      </div>
+
+      <div class="info">
+        <h2>Compilation Info</h2>
+        <div id="status" class="status">Loading...</div>
+        <pre id="imports"></pre>
+      </div>
+    </div>
+
+    <!--
+    NOTE: This demo requires the compiled MinimalTestSkin.browser.js
+    Run: pnpm test -- compile-for-e2e.test.ts
+    to generate the browser-ready compilation
+  -->
+    <script type="module">
+      // Check if component loaded successfully
+      window.addEventListener('DOMContentLoaded', () => {
+        const statusEl = document.getElementById('status');
+        const importsEl = document.getElementById('imports');
+
+        // Check if custom element is defined
+        const isRegistered = customElements.get('minimal-test-skin');
+
+        if (isRegistered) {
+          statusEl.textContent = '✅ Component loaded successfully';
+          statusEl.className = 'status success';
+
+          importsEl.textContent = `Import Mode: package
+Source: test/e2e/fixtures/MinimalTestSkin.tsx
+Output: Package imports
+
+Expected imports:
+  import { MediaSkin } from '@vjs-10/html';
+  import '@vjs-10/html/components/media-container';
+  import '@vjs-10/html/components/media-play-button';
+  import '@vjs-10/html-icons/media-play-icon';
+  import '@vjs-10/html-icons/media-pause-icon';`;
+        } else {
+          statusEl.textContent = '❌ Component not registered - compile first';
+          statusEl.className = 'status error';
+
+          importsEl.textContent = `Run the compilation command:
+  cd packages/build-tools/vjs-compiler
+  pnpm test -- compile-for-e2e.test.ts
+
+This will generate test/e2e/equivalence/fixtures/compiled/MinimalTestSkin.browser.js`;
+        }
+
+        // Log console for debugging
+        console.log('MinimalTestSkin registered:', !!isRegistered);
+      });
+    </script>
+
+    <!-- Load compiled web component (will be created by compile-for-e2e.test.ts) -->
+    <script type="module" src="../fixtures/compiled/MinimalTestSkin.browser.js"></script>
+  </body>
+</html>

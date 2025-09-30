@@ -125,3 +125,8 @@ bun.lockb
 # Monorepo / Tooling
 # -------------------------
 .playwright-mcp/
+
+# -------------------------
+# Temporary / Testing
+# -------------------------
+temp-skin-permutations/

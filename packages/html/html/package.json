@@ -15,7 +15,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./skins/media-skin-default": "./src/skins/media-skin-default.ts",
+    "./skins/compiled/inline/media-skin-default": "./src/skins/compiled/inline/media-skin-default.ts",
+    "./skins/compiled/inline/media-skin-toasted": "./src/skins/compiled/inline/media-skin-toasted.ts"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",

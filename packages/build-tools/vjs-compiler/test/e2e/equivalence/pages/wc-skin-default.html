@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Component MediaSkinDefault - E2E Test</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #1a1a1a;
+      }
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <media-skin-default>
+        <video
+          slot="media"
+          src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          preload="metadata"
+          crossorigin="anonymous"
+        ></video>
+      </media-skin-default>
+    </div>
+
+    <!-- Import compiled web component -->
+    <script type="module">
+      // Import the compiled MediaSkinDefault fixture
+      import '../fixtures/compiled/MediaSkinDefault.browser.js';
+
+      // Mark page as loaded for tests
+      window.__E2E_TEST_PAGE__ = 'web-component';
+      window.__E2E_LOADED__ = true;
+    </script>
+  </body>
+</html>
