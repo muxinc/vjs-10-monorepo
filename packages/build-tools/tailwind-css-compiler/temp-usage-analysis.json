@@ -1,0 +1,914 @@
+{
+  "file": "/Users/cpillsbury/dev/experiments/vjs-10-monorepo/packages/react/react/src/skins/MediaSkinDefaultInlineClasses.tsx",
+  "totalUsages": 21,
+  "usages": [
+    {
+      "component": "MediaContainer",
+      "element": "mediacontainer",
+      "line": 24,
+      "column": 20,
+      "componentType": "unknown",
+      "classes": [
+        "relative",
+        "@container/root",
+        "group/root",
+        "overflow-clip",
+        "rounded-4xl",
+        "antialiased",
+        "font-[510]",
+        "font-sans",
+        "text-[0.8125rem]",
+        "@7xl/root:text-[0.9375rem]",
+        "leading-normal",
+        "tracking-[-0.0125em]",
+        "[&:fullscreen]:rounded-none",
+        "[&:fullscreen]:[&_video]:h-full",
+        "[&:fullscreen]:[&_video]:w-full",
+        "after:absolute",
+        "after:inset-0",
+        "after:ring-black/10",
+        "after:ring-1",
+        "dark:after:ring-black/40",
+        "after:ring-inset",
+        "after:z-10",
+        "after:pointer-events-none",
+        "after:rounded-[inherit]",
+        "before:absolute",
+        "before:inset-px",
+        "before:rounded-[inherit]",
+        "before:ring-white/15",
+        "before:ring-1",
+        "before:ring-inset",
+        "before:z-10",
+        "before:pointer-events-none"
+      ],
+      "simpleClasses": [
+        "relative",
+        "group/root",
+        "overflow-clip",
+        "rounded-4xl",
+        "antialiased",
+        "font-sans",
+        "leading-normal",
+        "[&:fullscreen]:rounded-none",
+        "[&:fullscreen]:[&_video]:h-full",
+        "[&:fullscreen]:[&_video]:w-full",
+        "after:absolute",
+        "after:inset-0",
+        "after:ring-black/10",
+        "after:ring-1",
+        "dark:after:ring-black/40",
+        "after:ring-inset",
+        "after:z-10",
+        "after:pointer-events-none",
+        "before:absolute",
+        "before:inset-px",
+        "before:ring-white/15",
+        "before:ring-1",
+        "before:ring-inset",
+        "before:z-10",
+        "before:pointer-events-none"
+      ],
+      "containerDeclarations": [
+        "@container/root"
+      ],
+      "containerQueries": [
+        {
+          "breakpoint": "7xl",
+          "container": "root",
+          "utility": "text-[0.9375rem]"
+        }
+      ],
+      "arbitraryValues": [
+        {
+          "property": "font-weight",
+          "value": "510",
+          "originalClass": "font-[510]"
+        },
+        {
+          "property": "font-size",
+          "value": "0.8125rem",
+          "originalClass": "text-[0.8125rem]"
+        },
+        {
+          "property": "letter-spacing",
+          "value": "-0.0125em",
+          "originalClass": "tracking-[-0.0125em]"
+        },
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "after:rounded-[inherit]"
+        },
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "before:rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "component": "div",
+      "element": "div",
+      "line": 29,
+      "column": 8,
+      "componentType": "native",
+      "classes": [
+        "opacity-0",
+        "delay-500",
+        "rounded-[inherit]",
+        "absolute",
+        "inset-0",
+        "pointer-events-none",
+        "z-10",
+        "bg-gradient-to-t",
+        "from-black/50",
+        "via-black/20",
+        "to-transparent",
+        "transition-opacity",
+        "backdrop-saturate-150",
+        "backdrop-brightness-90"
+      ],
+      "simpleClasses": [
+        "opacity-0",
+        "delay-500",
+        "absolute",
+        "inset-0",
+        "pointer-events-none",
+        "z-10",
+        "bg-gradient-to-t",
+        "from-black/50",
+        "via-black/20",
+        "to-transparent",
+        "transition-opacity",
+        "backdrop-saturate-150",
+        "backdrop-brightness-90"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "component": "div",
+      "element": "div",
+      "line": 34,
+      "column": 8,
+      "componentType": "native",
+      "classes": [
+        "@container/controls",
+        "absolute",
+        "inset-x-3",
+        "bottom-3",
+        "rounded-full",
+        "z-20",
+        "flex",
+        "items-center",
+        "p-1",
+        "ring",
+        "ring-white/10",
+        "ring-inset",
+        "gap-0.5",
+        "text-white",
+        "text-shadow",
+        "shadow-sm",
+        "shadow-black/15",
+        "bg-white/10",
+        "backdrop-blur-3xl",
+        "backdrop-saturate-150",
+        "backdrop-brightness-90",
+        "transition",
+        "will-change-transform",
+        "origin-bottom",
+        "ease-out",
+        "after:absolute",
+        "after:inset-0",
+        "after:ring",
+        "after:rounded-[inherit]",
+        "after:ring-black/15",
+        "after:pointer-events-none",
+        "after:z-10",
+        "contrast-more:bg-black/90",
+        "contrast-more:ring-black",
+        "contrast-more:after:ring-white/20"
+      ],
+      "simpleClasses": [
+        "absolute",
+        "inset-x-3",
+        "bottom-3",
+        "rounded-full",
+        "z-20",
+        "flex",
+        "items-center",
+        "p-1",
+        "ring",
+        "ring-white/10",
+        "ring-inset",
+        "gap-0.5",
+        "text-white",
+        "text-shadow",
+        "shadow-sm",
+        "shadow-black/15",
+        "bg-white/10",
+        "backdrop-blur-3xl",
+        "backdrop-saturate-150",
+        "backdrop-brightness-90",
+        "transition",
+        "will-change-transform",
+        "origin-bottom",
+        "ease-out",
+        "after:absolute",
+        "after:inset-0",
+        "after:ring",
+        "after:ring-black/15",
+        "after:pointer-events-none",
+        "after:z-10",
+        "contrast-more:bg-black/90",
+        "contrast-more:ring-black",
+        "contrast-more:after:ring-white/20"
+      ],
+      "containerDeclarations": [
+        "@container/controls"
+      ],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "after:rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "component": "PlayButton",
+      "element": "button",
+      "line": 37,
+      "column": 20,
+      "componentType": "unknown",
+      "classes": [
+        "group/button",
+        "cursor-pointer",
+        "relative",
+        "shrink-0",
+        "transition",
+        "select-none",
+        "p-2",
+        "rounded-full",
+        "bg-transparent",
+        "text-white/90",
+        "hover:no-underline",
+        "hover:bg-white/10",
+        "hover:text-white",
+        "-outline-offset-2",
+        "focus-visible:no-underline",
+        "focus-visible:bg-white/10",
+        "focus-visible:text-white",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "aria-disabled:grayscale",
+        "aria-disabled:opacity-50",
+        "aria-disabled:cursor-not-allowed",
+        "aria-busy:pointer-events-none",
+        "aria-busy:cursor-not-allowed",
+        "aria-expanded:bg-white/10",
+        "aria-expanded:text-white",
+        "active:scale-95",
+        "grid",
+        "[&_svg]:[grid-area:1/1]",
+        "[&_svg]:shrink-0",
+        "[&_svg]:transition-opacity",
+        "[&_svg]:duration-300",
+        "[&_svg]:ease-out",
+        "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]",
+        "[&_svg]:shadow-black/20",
+        "[&_.pause-icon]:opacity-100",
+        "[&[data-paused]_.pause-icon]:opacity-0",
+        "[&_.play-icon]:opacity-0",
+        "[&[data-paused]_.play-icon]:opacity-100",
+        "[&_svg]:opacity-0"
+      ],
+      "simpleClasses": [
+        "group/button",
+        "cursor-pointer",
+        "relative",
+        "shrink-0",
+        "transition",
+        "select-none",
+        "p-2",
+        "rounded-full",
+        "bg-transparent",
+        "text-white/90",
+        "hover:no-underline",
+        "hover:bg-white/10",
+        "hover:text-white",
+        "-outline-offset-2",
+        "focus-visible:no-underline",
+        "focus-visible:bg-white/10",
+        "focus-visible:text-white",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "aria-disabled:grayscale",
+        "aria-disabled:opacity-50",
+        "aria-disabled:cursor-not-allowed",
+        "aria-busy:pointer-events-none",
+        "aria-busy:cursor-not-allowed",
+        "aria-expanded:bg-white/10",
+        "aria-expanded:text-white",
+        "active:scale-95",
+        "grid",
+        "[&_svg]:shrink-0",
+        "[&_svg]:transition-opacity",
+        "[&_svg]:duration-300",
+        "[&_svg]:ease-out",
+        "[&_svg]:shadow-black/20",
+        "[&_.pause-icon]:opacity-100",
+        "[&[data-paused]_.pause-icon]:opacity-0",
+        "[&_.play-icon]:opacity-0",
+        "[&[data-paused]_.play-icon]:opacity-100",
+        "[&_svg]:opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "grid-area",
+          "value": "1/1",
+          "originalClass": "[&_svg]:[grid-area:1/1]"
+        },
+        {
+          "property": "drop-shadow",
+          "value": "0 1px 0 var()",
+          "originalClass": "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]"
+        }
+      ]
+    },
+    {
+      "component": "PlayIcon",
+      "element": "icon",
+      "line": 38,
+      "column": 20,
+      "componentType": "unknown",
+      "classes": [
+        "play-icon"
+      ],
+      "simpleClasses": [
+        "play-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "PauseIcon",
+      "element": "icon",
+      "line": 39,
+      "column": 21,
+      "componentType": "unknown",
+      "classes": [
+        "pause-icon"
+      ],
+      "simpleClasses": [
+        "pause-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "div",
+      "element": "div",
+      "line": 42,
+      "column": 13,
+      "componentType": "native",
+      "classes": [
+        "flex-1",
+        "flex",
+        "items-center",
+        "gap-3",
+        "px-1.5"
+      ],
+      "simpleClasses": [
+        "flex-1",
+        "flex",
+        "items-center",
+        "gap-3",
+        "px-1.5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "CurrentTimeDisplay",
+      "element": "display",
+      "line": 46,
+      "column": 12,
+      "componentType": "unknown",
+      "classes": [
+        "tabular-nums",
+        "text-shadow-2xs",
+        "shadow-black/50"
+      ],
+      "simpleClasses": [
+        "tabular-nums",
+        "text-shadow-2xs",
+        "shadow-black/50"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "TimeRange.Root",
+      "line": 49,
+      "column": 26,
+      "componentType": "unknown",
+      "classes": [
+        "flex",
+        "h-5",
+        "items-center",
+        "flex-1",
+        "group/slider",
+        "relative"
+      ],
+      "simpleClasses": [
+        "flex",
+        "h-5",
+        "items-center",
+        "flex-1",
+        "group/slider",
+        "relative"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "TimeRange.Track",
+      "line": 50,
+      "column": 29,
+      "componentType": "unknown",
+      "classes": [
+        "h-1",
+        "w-full",
+        "relative",
+        "select-none",
+        "rounded-full",
+        "bg-white/20",
+        "ring-1",
+        "ring-black/5"
+      ],
+      "simpleClasses": [
+        "h-1",
+        "w-full",
+        "relative",
+        "select-none",
+        "rounded-full",
+        "bg-white/20",
+        "ring-1",
+        "ring-black/5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "TimeRange.Progress",
+      "line": 51,
+      "column": 34,
+      "componentType": "unknown",
+      "classes": [
+        "bg-white",
+        "rounded-[inherit]"
+      ],
+      "simpleClasses": [
+        "bg-white"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "component": "TimeRange.Pointer",
+      "line": 52,
+      "column": 33,
+      "componentType": "unknown",
+      "classes": [
+        "rounded-[inherit]"
+      ],
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "component": "TimeRange.Thumb",
+      "line": 54,
+      "column": 29,
+      "componentType": "unknown",
+      "classes": [
+        "bg-white",
+        "z-10",
+        "select-none",
+        "ring",
+        "ring-black/10",
+        "rounded-full",
+        "shadow-sm",
+        "shadow-black/15",
+        "opacity-0",
+        "transition-[opacity,height,width]",
+        "ease-in-out",
+        "-outline-offset-2",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "group-hover/slider:opacity-100",
+        "group-focus-within/slider:opacity-100",
+        "size-2.5",
+        "active:size-3",
+        "group-active/slider:size-3"
+      ],
+      "simpleClasses": [
+        "bg-white",
+        "z-10",
+        "select-none",
+        "ring",
+        "ring-black/10",
+        "rounded-full",
+        "shadow-sm",
+        "shadow-black/15",
+        "opacity-0",
+        "ease-in-out",
+        "-outline-offset-2",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "group-hover/slider:opacity-100",
+        "group-focus-within/slider:opacity-100",
+        "size-2.5",
+        "active:size-3",
+        "group-active/slider:size-3"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "transition",
+          "value": "opacity,height,width",
+          "originalClass": "transition-[opacity,height,width]"
+        }
+      ]
+    },
+    {
+      "component": "DurationDisplay",
+      "element": "display",
+      "line": 57,
+      "column": 27,
+      "componentType": "unknown",
+      "classes": [
+        "tabular-nums",
+        "text-shadow-2xs",
+        "shadow-black/50"
+      ],
+      "simpleClasses": [
+        "tabular-nums",
+        "text-shadow-2xs",
+        "shadow-black/50"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "MuteButton",
+      "element": "button",
+      "line": 60,
+      "column": 20,
+      "componentType": "unknown",
+      "classes": [
+        "group/button",
+        "cursor-pointer",
+        "relative",
+        "shrink-0",
+        "transition",
+        "select-none",
+        "p-2",
+        "rounded-full",
+        "bg-transparent",
+        "text-white/90",
+        "hover:no-underline",
+        "hover:bg-white/10",
+        "hover:text-white",
+        "-outline-offset-2",
+        "focus-visible:no-underline",
+        "focus-visible:bg-white/10",
+        "focus-visible:text-white",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "aria-disabled:grayscale",
+        "aria-disabled:opacity-50",
+        "aria-disabled:cursor-not-allowed",
+        "aria-busy:pointer-events-none",
+        "aria-busy:cursor-not-allowed",
+        "aria-expanded:bg-white/10",
+        "aria-expanded:text-white",
+        "active:scale-95",
+        "grid",
+        "[&_svg]:[grid-area:1/1]",
+        "[&_svg]:shrink-0",
+        "[&_svg]:transition-opacity",
+        "[&_svg]:duration-300",
+        "[&_svg]:ease-out",
+        "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]",
+        "[&_svg]:shadow-black/20",
+        "[&_svg]:opacity-0",
+        "[&[data-volume-level=high]_.volume-high-icon]:opacity-100",
+        "[&[data-volume-level=medium]_.volume-low-icon]:opacity-100",
+        "[&[data-volume-level=low]_.volume-low-icon]:opacity-100",
+        "[&[data-volume-level=off]_.volume-off-icon]:opacity-100"
+      ],
+      "simpleClasses": [
+        "group/button",
+        "cursor-pointer",
+        "relative",
+        "shrink-0",
+        "transition",
+        "select-none",
+        "p-2",
+        "rounded-full",
+        "bg-transparent",
+        "text-white/90",
+        "hover:no-underline",
+        "hover:bg-white/10",
+        "hover:text-white",
+        "-outline-offset-2",
+        "focus-visible:no-underline",
+        "focus-visible:bg-white/10",
+        "focus-visible:text-white",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "aria-disabled:grayscale",
+        "aria-disabled:opacity-50",
+        "aria-disabled:cursor-not-allowed",
+        "aria-busy:pointer-events-none",
+        "aria-busy:cursor-not-allowed",
+        "aria-expanded:bg-white/10",
+        "aria-expanded:text-white",
+        "active:scale-95",
+        "grid",
+        "[&_svg]:shrink-0",
+        "[&_svg]:transition-opacity",
+        "[&_svg]:duration-300",
+        "[&_svg]:ease-out",
+        "[&_svg]:shadow-black/20",
+        "[&_svg]:opacity-0",
+        "[&[data-volume-level=high]_.volume-high-icon]:opacity-100",
+        "[&[data-volume-level=medium]_.volume-low-icon]:opacity-100",
+        "[&[data-volume-level=low]_.volume-low-icon]:opacity-100",
+        "[&[data-volume-level=off]_.volume-off-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "grid-area",
+          "value": "1/1",
+          "originalClass": "[&_svg]:[grid-area:1/1]"
+        },
+        {
+          "property": "drop-shadow",
+          "value": "0 1px 0 var()",
+          "originalClass": "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]"
+        }
+      ]
+    },
+    {
+      "component": "VolumeHighIcon",
+      "element": "icon",
+      "line": 61,
+      "column": 26,
+      "componentType": "unknown",
+      "classes": [
+        "volume-high-icon"
+      ],
+      "simpleClasses": [
+        "volume-high-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "VolumeLowIcon",
+      "element": "icon",
+      "line": 62,
+      "column": 25,
+      "componentType": "unknown",
+      "classes": [
+        "volume-low-icon"
+      ],
+      "simpleClasses": [
+        "volume-low-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "VolumeOffIcon",
+      "element": "icon",
+      "line": 63,
+      "column": 25,
+      "componentType": "unknown",
+      "classes": [
+        "volume-off-icon"
+      ],
+      "simpleClasses": [
+        "volume-off-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "FullscreenButton",
+      "element": "button",
+      "line": 69,
+      "column": 26,
+      "componentType": "unknown",
+      "classes": [
+        "group/button",
+        "cursor-pointer",
+        "relative",
+        "shrink-0",
+        "transition",
+        "select-none",
+        "p-2",
+        "rounded-full",
+        "bg-transparent",
+        "text-white/90",
+        "hover:no-underline",
+        "hover:bg-white/10",
+        "hover:text-white",
+        "-outline-offset-2",
+        "focus-visible:no-underline",
+        "focus-visible:bg-white/10",
+        "focus-visible:text-white",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "aria-disabled:grayscale",
+        "aria-disabled:opacity-50",
+        "aria-disabled:cursor-not-allowed",
+        "aria-busy:pointer-events-none",
+        "aria-busy:cursor-not-allowed",
+        "aria-expanded:bg-white/10",
+        "aria-expanded:text-white",
+        "active:scale-95",
+        "grid",
+        "[&_svg]:[grid-area:1/1]",
+        "[&_svg]:shrink-0",
+        "[&_svg]:transition-opacity",
+        "[&_svg]:duration-300",
+        "[&_svg]:ease-out",
+        "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]",
+        "[&_svg]:shadow-black/20",
+        "[&_.fullscreen-enter-icon]:opacity-100",
+        "[&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0",
+        "[&_.fullscreen-exit-icon]:opacity-0",
+        "[&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100",
+        "[&_path]:transition-transform",
+        "ease-out"
+      ],
+      "simpleClasses": [
+        "group/button",
+        "cursor-pointer",
+        "relative",
+        "shrink-0",
+        "transition",
+        "select-none",
+        "p-2",
+        "rounded-full",
+        "bg-transparent",
+        "text-white/90",
+        "hover:no-underline",
+        "hover:bg-white/10",
+        "hover:text-white",
+        "-outline-offset-2",
+        "focus-visible:no-underline",
+        "focus-visible:bg-white/10",
+        "focus-visible:text-white",
+        "focus-visible:outline-2",
+        "focus-visible:outline-offset-2",
+        "focus-visible:outline-blue-500",
+        "aria-disabled:grayscale",
+        "aria-disabled:opacity-50",
+        "aria-disabled:cursor-not-allowed",
+        "aria-busy:pointer-events-none",
+        "aria-busy:cursor-not-allowed",
+        "aria-expanded:bg-white/10",
+        "aria-expanded:text-white",
+        "active:scale-95",
+        "grid",
+        "[&_svg]:shrink-0",
+        "[&_svg]:transition-opacity",
+        "[&_svg]:duration-300",
+        "[&_svg]:ease-out",
+        "[&_svg]:shadow-black/20",
+        "[&_.fullscreen-enter-icon]:opacity-100",
+        "[&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0",
+        "[&_.fullscreen-exit-icon]:opacity-0",
+        "[&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100",
+        "[&_path]:transition-transform",
+        "ease-out"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "grid-area",
+          "value": "1/1",
+          "originalClass": "[&_svg]:[grid-area:1/1]"
+        },
+        {
+          "property": "drop-shadow",
+          "value": "0 1px 0 var()",
+          "originalClass": "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]"
+        }
+      ]
+    },
+    {
+      "component": "FullscreenEnterIcon",
+      "element": "icon",
+      "line": 70,
+      "column": 31,
+      "componentType": "unknown",
+      "classes": [
+        "fullscreen-enter-icon",
+        "group-hover/button:[&_.arrow-1]:-translate-x-px",
+        "group-hover/button:[&_.arrow-1]:-translate-y-px",
+        "group-hover/button:[&_.arrow-2]:translate-x-px",
+        "group-hover/button:[&_.arrow-2]:translate-y-px"
+      ],
+      "simpleClasses": [
+        "fullscreen-enter-icon",
+        "group-hover/button:[&_.arrow-1]:-translate-x-px",
+        "group-hover/button:[&_.arrow-1]:-translate-y-px",
+        "group-hover/button:[&_.arrow-2]:translate-x-px",
+        "group-hover/button:[&_.arrow-2]:translate-y-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "component": "FullscreenExitIcon",
+      "element": "icon",
+      "line": 71,
+      "column": 30,
+      "componentType": "unknown",
+      "classes": [
+        "fullscreen-exit-icon",
+        "[&_.arrow-1]:-translate-x-px",
+        "[&_.arrow-1]:-translate-y-px",
+        "[&_.arrow-2]:translate-x-px",
+        "[&_.arrow-2]:translate-y-px",
+        "group-hover/button:[&_.arrow-1]:translate-0",
+        "group-hover/button:[&_.arrow-2]:translate-0"
+      ],
+      "simpleClasses": [
+        "fullscreen-exit-icon",
+        "[&_.arrow-1]:-translate-x-px",
+        "[&_.arrow-1]:-translate-y-px",
+        "[&_.arrow-2]:translate-x-px",
+        "[&_.arrow-2]:translate-y-px",
+        "group-hover/button:[&_.arrow-1]:translate-0",
+        "group-hover/button:[&_.arrow-2]:translate-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    }
+  ]
+}

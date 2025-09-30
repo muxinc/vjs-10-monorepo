@@ -1,0 +1,1476 @@
+{
+  "totalUniqueClasses": 159,
+  "classAnalysis": [
+    {
+      "classString": "relative",
+      "simpleClasses": [
+        "relative"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "@container/root",
+      "simpleClasses": [],
+      "containerDeclarations": [
+        "@container/root"
+      ],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group/root",
+      "simpleClasses": [
+        "group/root"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "overflow-clip",
+      "simpleClasses": [
+        "overflow-clip"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "rounded-4xl",
+      "simpleClasses": [
+        "rounded-4xl"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "antialiased",
+      "simpleClasses": [
+        "antialiased"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "font-[510]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "font-weight",
+          "value": "510",
+          "originalClass": "font-[510]"
+        }
+      ]
+    },
+    {
+      "classString": "font-sans",
+      "simpleClasses": [
+        "font-sans"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "text-[0.8125rem]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "font-size",
+          "value": "0.8125rem",
+          "originalClass": "text-[0.8125rem]"
+        }
+      ]
+    },
+    {
+      "classString": "@7xl/root:text-[0.9375rem]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [
+        {
+          "breakpoint": "7xl",
+          "container": "root",
+          "utility": "text-[0.9375rem]"
+        }
+      ],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "leading-normal",
+      "simpleClasses": [
+        "leading-normal"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "tracking-[-0.0125em]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "letter-spacing",
+          "value": "-0.0125em",
+          "originalClass": "tracking-[-0.0125em]"
+        }
+      ]
+    },
+    {
+      "classString": "[&:fullscreen]:rounded-none",
+      "simpleClasses": [
+        "[&:fullscreen]:rounded-none"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&:fullscreen]:[&_video]:h-full",
+      "simpleClasses": [
+        "[&:fullscreen]:[&_video]:h-full"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&:fullscreen]:[&_video]:w-full",
+      "simpleClasses": [
+        "[&:fullscreen]:[&_video]:w-full"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:absolute",
+      "simpleClasses": [
+        "after:absolute"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:inset-0",
+      "simpleClasses": [
+        "after:inset-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:ring-black/10",
+      "simpleClasses": [
+        "after:ring-black/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:ring-1",
+      "simpleClasses": [
+        "after:ring-1"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "dark:after:ring-black/40",
+      "simpleClasses": [
+        "dark:after:ring-black/40"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:ring-inset",
+      "simpleClasses": [
+        "after:ring-inset"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:z-10",
+      "simpleClasses": [
+        "after:z-10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:pointer-events-none",
+      "simpleClasses": [
+        "after:pointer-events-none"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:rounded-[inherit]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "after:rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "classString": "before:absolute",
+      "simpleClasses": [
+        "before:absolute"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "before:inset-px",
+      "simpleClasses": [
+        "before:inset-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "before:rounded-[inherit]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "before:rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "classString": "before:ring-white/15",
+      "simpleClasses": [
+        "before:ring-white/15"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "before:ring-1",
+      "simpleClasses": [
+        "before:ring-1"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "before:ring-inset",
+      "simpleClasses": [
+        "before:ring-inset"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "before:z-10",
+      "simpleClasses": [
+        "before:z-10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "before:pointer-events-none",
+      "simpleClasses": [
+        "before:pointer-events-none"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "opacity-0",
+      "simpleClasses": [
+        "opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "delay-500",
+      "simpleClasses": [
+        "delay-500"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "rounded-[inherit]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "originalClass": "rounded-[inherit]"
+        }
+      ]
+    },
+    {
+      "classString": "absolute",
+      "simpleClasses": [
+        "absolute"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "inset-0",
+      "simpleClasses": [
+        "inset-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "pointer-events-none",
+      "simpleClasses": [
+        "pointer-events-none"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "z-10",
+      "simpleClasses": [
+        "z-10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "bg-gradient-to-t",
+      "simpleClasses": [
+        "bg-gradient-to-t"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "from-black/50",
+      "simpleClasses": [
+        "from-black/50"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "via-black/20",
+      "simpleClasses": [
+        "via-black/20"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "to-transparent",
+      "simpleClasses": [
+        "to-transparent"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "transition-opacity",
+      "simpleClasses": [
+        "transition-opacity"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "backdrop-saturate-150",
+      "simpleClasses": [
+        "backdrop-saturate-150"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "backdrop-brightness-90",
+      "simpleClasses": [
+        "backdrop-brightness-90"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "@container/controls",
+      "simpleClasses": [],
+      "containerDeclarations": [
+        "@container/controls"
+      ],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "inset-x-3",
+      "simpleClasses": [
+        "inset-x-3"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "bottom-3",
+      "simpleClasses": [
+        "bottom-3"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "rounded-full",
+      "simpleClasses": [
+        "rounded-full"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "z-20",
+      "simpleClasses": [
+        "z-20"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "flex",
+      "simpleClasses": [
+        "flex"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "items-center",
+      "simpleClasses": [
+        "items-center"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "p-1",
+      "simpleClasses": [
+        "p-1"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ring",
+      "simpleClasses": [
+        "ring"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ring-white/10",
+      "simpleClasses": [
+        "ring-white/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ring-inset",
+      "simpleClasses": [
+        "ring-inset"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "gap-0.5",
+      "simpleClasses": [
+        "gap-0.5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "text-white",
+      "simpleClasses": [
+        "text-white"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "text-shadow",
+      "simpleClasses": [
+        "text-shadow"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "shadow-sm",
+      "simpleClasses": [
+        "shadow-sm"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "shadow-black/15",
+      "simpleClasses": [
+        "shadow-black/15"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "bg-white/10",
+      "simpleClasses": [
+        "bg-white/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "backdrop-blur-3xl",
+      "simpleClasses": [
+        "backdrop-blur-3xl"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "transition",
+      "simpleClasses": [
+        "transition"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "will-change-transform",
+      "simpleClasses": [
+        "will-change-transform"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "origin-bottom",
+      "simpleClasses": [
+        "origin-bottom"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ease-out",
+      "simpleClasses": [
+        "ease-out"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:ring",
+      "simpleClasses": [
+        "after:ring"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "after:ring-black/15",
+      "simpleClasses": [
+        "after:ring-black/15"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "contrast-more:bg-black/90",
+      "simpleClasses": [
+        "contrast-more:bg-black/90"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "contrast-more:ring-black",
+      "simpleClasses": [
+        "contrast-more:ring-black"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "contrast-more:after:ring-white/20",
+      "simpleClasses": [
+        "contrast-more:after:ring-white/20"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group/button",
+      "simpleClasses": [
+        "group/button"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "cursor-pointer",
+      "simpleClasses": [
+        "cursor-pointer"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "shrink-0",
+      "simpleClasses": [
+        "shrink-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "select-none",
+      "simpleClasses": [
+        "select-none"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "p-2",
+      "simpleClasses": [
+        "p-2"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "bg-transparent",
+      "simpleClasses": [
+        "bg-transparent"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "text-white/90",
+      "simpleClasses": [
+        "text-white/90"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "hover:no-underline",
+      "simpleClasses": [
+        "hover:no-underline"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "hover:bg-white/10",
+      "simpleClasses": [
+        "hover:bg-white/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "hover:text-white",
+      "simpleClasses": [
+        "hover:text-white"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "-outline-offset-2",
+      "simpleClasses": [
+        "-outline-offset-2"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "focus-visible:no-underline",
+      "simpleClasses": [
+        "focus-visible:no-underline"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "focus-visible:bg-white/10",
+      "simpleClasses": [
+        "focus-visible:bg-white/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "focus-visible:text-white",
+      "simpleClasses": [
+        "focus-visible:text-white"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "focus-visible:outline-2",
+      "simpleClasses": [
+        "focus-visible:outline-2"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "focus-visible:outline-offset-2",
+      "simpleClasses": [
+        "focus-visible:outline-offset-2"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "focus-visible:outline-blue-500",
+      "simpleClasses": [
+        "focus-visible:outline-blue-500"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-disabled:grayscale",
+      "simpleClasses": [
+        "aria-disabled:grayscale"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-disabled:opacity-50",
+      "simpleClasses": [
+        "aria-disabled:opacity-50"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-disabled:cursor-not-allowed",
+      "simpleClasses": [
+        "aria-disabled:cursor-not-allowed"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-busy:pointer-events-none",
+      "simpleClasses": [
+        "aria-busy:pointer-events-none"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-busy:cursor-not-allowed",
+      "simpleClasses": [
+        "aria-busy:cursor-not-allowed"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-expanded:bg-white/10",
+      "simpleClasses": [
+        "aria-expanded:bg-white/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "aria-expanded:text-white",
+      "simpleClasses": [
+        "aria-expanded:text-white"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "active:scale-95",
+      "simpleClasses": [
+        "active:scale-95"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "grid",
+      "simpleClasses": [
+        "grid"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_svg]:[grid-area:1/1]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "grid-area",
+          "value": "1/1",
+          "originalClass": "[&_svg]:[grid-area:1/1]"
+        }
+      ]
+    },
+    {
+      "classString": "[&_svg]:shrink-0",
+      "simpleClasses": [
+        "[&_svg]:shrink-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_svg]:transition-opacity",
+      "simpleClasses": [
+        "[&_svg]:transition-opacity"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_svg]:duration-300",
+      "simpleClasses": [
+        "[&_svg]:duration-300"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_svg]:ease-out",
+      "simpleClasses": [
+        "[&_svg]:ease-out"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "drop-shadow",
+          "value": "0 1px 0 var()",
+          "originalClass": "[&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)]"
+        }
+      ]
+    },
+    {
+      "classString": "[&_svg]:shadow-black/20",
+      "simpleClasses": [
+        "[&_svg]:shadow-black/20"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.pause-icon]:opacity-100",
+      "simpleClasses": [
+        "[&_.pause-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-paused]_.pause-icon]:opacity-0",
+      "simpleClasses": [
+        "[&[data-paused]_.pause-icon]:opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.play-icon]:opacity-0",
+      "simpleClasses": [
+        "[&_.play-icon]:opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-paused]_.play-icon]:opacity-100",
+      "simpleClasses": [
+        "[&[data-paused]_.play-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_svg]:opacity-0",
+      "simpleClasses": [
+        "[&_svg]:opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "play-icon",
+      "simpleClasses": [
+        "play-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "pause-icon",
+      "simpleClasses": [
+        "pause-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "flex-1",
+      "simpleClasses": [
+        "flex-1"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "gap-3",
+      "simpleClasses": [
+        "gap-3"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "px-1.5",
+      "simpleClasses": [
+        "px-1.5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "tabular-nums",
+      "simpleClasses": [
+        "tabular-nums"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "text-shadow-2xs",
+      "simpleClasses": [
+        "text-shadow-2xs"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "shadow-black/50",
+      "simpleClasses": [
+        "shadow-black/50"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "h-5",
+      "simpleClasses": [
+        "h-5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group/slider",
+      "simpleClasses": [
+        "group/slider"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "h-1",
+      "simpleClasses": [
+        "h-1"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "w-full",
+      "simpleClasses": [
+        "w-full"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "bg-white/20",
+      "simpleClasses": [
+        "bg-white/20"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ring-1",
+      "simpleClasses": [
+        "ring-1"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ring-black/5",
+      "simpleClasses": [
+        "ring-black/5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "bg-white",
+      "simpleClasses": [
+        "bg-white"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "ring-black/10",
+      "simpleClasses": [
+        "ring-black/10"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "transition-[opacity,height,width]",
+      "simpleClasses": [],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": [
+        {
+          "property": "transition",
+          "value": "opacity,height,width",
+          "originalClass": "transition-[opacity,height,width]"
+        }
+      ]
+    },
+    {
+      "classString": "ease-in-out",
+      "simpleClasses": [
+        "ease-in-out"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/slider:opacity-100",
+      "simpleClasses": [
+        "group-hover/slider:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-focus-within/slider:opacity-100",
+      "simpleClasses": [
+        "group-focus-within/slider:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "size-2.5",
+      "simpleClasses": [
+        "size-2.5"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "active:size-3",
+      "simpleClasses": [
+        "active:size-3"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-active/slider:size-3",
+      "simpleClasses": [
+        "group-active/slider:size-3"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-volume-level=high]_.volume-high-icon]:opacity-100",
+      "simpleClasses": [
+        "[&[data-volume-level=high]_.volume-high-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-volume-level=medium]_.volume-low-icon]:opacity-100",
+      "simpleClasses": [
+        "[&[data-volume-level=medium]_.volume-low-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-volume-level=low]_.volume-low-icon]:opacity-100",
+      "simpleClasses": [
+        "[&[data-volume-level=low]_.volume-low-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-volume-level=off]_.volume-off-icon]:opacity-100",
+      "simpleClasses": [
+        "[&[data-volume-level=off]_.volume-off-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "volume-high-icon",
+      "simpleClasses": [
+        "volume-high-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "volume-low-icon",
+      "simpleClasses": [
+        "volume-low-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "volume-off-icon",
+      "simpleClasses": [
+        "volume-off-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.fullscreen-enter-icon]:opacity-100",
+      "simpleClasses": [
+        "[&_.fullscreen-enter-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0",
+      "simpleClasses": [
+        "[&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.fullscreen-exit-icon]:opacity-0",
+      "simpleClasses": [
+        "[&_.fullscreen-exit-icon]:opacity-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100",
+      "simpleClasses": [
+        "[&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_path]:transition-transform",
+      "simpleClasses": [
+        "[&_path]:transition-transform"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "fullscreen-enter-icon",
+      "simpleClasses": [
+        "fullscreen-enter-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/button:[&_.arrow-1]:-translate-x-px",
+      "simpleClasses": [
+        "group-hover/button:[&_.arrow-1]:-translate-x-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/button:[&_.arrow-1]:-translate-y-px",
+      "simpleClasses": [
+        "group-hover/button:[&_.arrow-1]:-translate-y-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/button:[&_.arrow-2]:translate-x-px",
+      "simpleClasses": [
+        "group-hover/button:[&_.arrow-2]:translate-x-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/button:[&_.arrow-2]:translate-y-px",
+      "simpleClasses": [
+        "group-hover/button:[&_.arrow-2]:translate-y-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "fullscreen-exit-icon",
+      "simpleClasses": [
+        "fullscreen-exit-icon"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.arrow-1]:-translate-x-px",
+      "simpleClasses": [
+        "[&_.arrow-1]:-translate-x-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.arrow-1]:-translate-y-px",
+      "simpleClasses": [
+        "[&_.arrow-1]:-translate-y-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.arrow-2]:translate-x-px",
+      "simpleClasses": [
+        "[&_.arrow-2]:translate-x-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "[&_.arrow-2]:translate-y-px",
+      "simpleClasses": [
+        "[&_.arrow-2]:translate-y-px"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/button:[&_.arrow-1]:translate-0",
+      "simpleClasses": [
+        "group-hover/button:[&_.arrow-1]:translate-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    },
+    {
+      "classString": "group-hover/button:[&_.arrow-2]:translate-0",
+      "simpleClasses": [
+        "group-hover/button:[&_.arrow-2]:translate-0"
+      ],
+      "containerDeclarations": [],
+      "containerQueries": [],
+      "arbitraryValues": []
+    }
+  ]
+}

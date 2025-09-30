@@ -1,4 +1,5 @@
 packages:
+  - 'packages/build-tools/*'
   - 'packages/core/*'
   - 'packages/html/*'
   - 'packages/react/*'
