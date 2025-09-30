@@ -7,11 +7,14 @@ A compiler that transforms React JSX components to HTML strings for use in web c
 - **Simple Components**: `PlayButton` → `media-play-button`
 - **Compound Components**: `TimeRange.Root` → `media-time-range-root`
 - **Built-in Elements**: Preserves `div`, `span`, etc.
-- **Attribute Conversion**: `className` → `class`, `showRemaining` → `show-remaining`
+- **Attribute Processing**: Unified pipeline with element context
+  - `className` → `class`, `showRemaining` → `show-remaining`
+  - Extensible via custom processors
+  - Ready for CSS transformations (Tailwind, CSS Modules, etc.)
 - **Children Replacement**: `{children}` → `<slot name="media" slot="media"></slot>`
 - **Self-closing Tags**: Converts to explicit closing tags
 - **JSX Comments**: Automatically removed from output
-- **Expression Preservation**: Keeps JSX expressions like `{styles.Container}`
+- **HTML5 Validation**: Built-in validation for custom elements and output HTML
 
 ## Installation
 
@@ -59,6 +62,8 @@ console.log(html);
 
 ### Advanced API
 
+#### Manual Pipeline Control
+
 ```typescript
 import {
   parseReactComponent,
@@ -74,6 +79,45 @@ const transformed = transformJSXToHTML(jsxElement);
 
 // Step 3: Serialize
 const html = serializeToHTML(transformed, { indent: 0, indentSize: 2 });
+```
+
+#### Custom Attribute Processing
+
+```typescript
+import {
+  compileJSXToHTML,
+  AttributeProcessorPipeline,
+  DefaultAttributeProcessor,
+  type AttributeContext,
+  type AttributeProcessor,
+} from '@vjs-10/jsx-to-html-compiler';
+
+// Create a custom processor for className attributes
+class CustomClassProcessor implements AttributeProcessor {
+  transformName(context: AttributeContext): string | null {
+    return 'class';
+  }
+
+  transformValue(context: AttributeContext): string | null {
+    // Custom CSS processing logic here
+    // Access element context via context.elementName and context.htmlElementName
+    const value = context.attribute.value;
+
+    if (value?.type === 'StringLiteral') {
+      return value.value;
+    }
+
+    // Process JSX expressions for CSS Modules, Tailwind, etc.
+    return 'processed-classes';
+  }
+}
+
+// Create and configure pipeline
+const pipeline = new AttributeProcessorPipeline();
+pipeline.register('className', new CustomClassProcessor());
+
+// Use with compiler
+const html = compileJSXToHTML(source, { attributePipeline: pipeline });
 ```
 
 ## Testing
@@ -98,7 +142,8 @@ pnpm test -- --coverage
 - `test/naming.test.ts` - Tests for name conversion utilities
 - `test/parser.test.ts` - Tests for JSX parsing from React components
 - `test/transformer.test.ts` - Tests for JSX-to-HTML AST transformation
-- `test/integration.test.ts` - End-to-end integration tests
+- `test/integration.test.ts` - End-to-end integration tests with HTML validation
+- `test/validator.test.ts` - Tests for HTML5 validation and custom element names
 
 ### Why Vitest?
 
@@ -119,9 +164,9 @@ React TSX Source
     ↓
 [Parser] → Extract JSX from React component
     ↓
-[Transformer] → Transform JSX AST to HTML-compatible structure
+[Transformer] → Transform element names, {children} → <slot>
     ↓
-[Serializer] → Generate HTML string
+[Serializer] → Process attributes + generate HTML string
     ↓
 HTML Output
 ```
@@ -129,9 +174,15 @@ HTML Output
 ### Key Components
 
 1. **Parser** (`src/parser.ts`) - Uses `@babel/parser` to extract JSX return values
-2. **Transformer** (`src/transformer.ts`) - Traverses and transforms JSX AST nodes
-3. **Serializer** (`src/serializer.ts`) - Converts transformed AST to HTML string
-4. **Naming Utilities** (`src/utils/naming.ts`) - Handles all name conversions
+2. **Transformer** (`src/transformer.ts`) - Transforms element names and special patterns
+3. **Serializer** (`src/serializer.ts`) - Processes attributes and generates HTML
+4. **Attribute Processing** (`src/attributeProcessing/`) - Unified attribute transformation pipeline
+   - `AttributeContext` - Provides attribute + parent element context
+   - `AttributeProcessor` - Interface for name/value transformation
+   - `AttributeProcessorPipeline` - Orchestrates processors with registration
+   - `DefaultAttributeProcessor` - Standard JSX → HTML transformations
+5. **Naming Utilities** (`src/utils/naming.ts`) - Handles name conversions (PascalCase → kebab-case)
+6. **Validation** (`test/utils/validator.ts`) - HTML5 validation using html-validate
 
 ## Transformation Rules
 
@@ -144,9 +195,15 @@ HTML Output
 
 ### Attributes
 
-- `className` → `class`
-- camelCase → kebab-case (`showRemaining` → `show-remaining`)
-- Preserve JSX expressions (`{styles.Container}`)
+Attributes are processed by the `AttributeProcessorPipeline` with full element context:
+
+- **Name transformation**: `className` → `class`, camelCase → kebab-case (`showRemaining` → `show-remaining`)
+- **Value transformation**:
+  - String literals pass through unchanged
+  - JSX expressions converted to empty string (placeholder for CSS processing)
+  - Boolean attributes (e.g., `disabled`) have no value
+- **Element context**: Processors have access to parent element name for context-aware rules
+- **Extensible**: Register custom processors for specific attribute names (e.g., `className`, `style`)
 
 ### Special Cases
 
