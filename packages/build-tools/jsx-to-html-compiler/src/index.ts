@@ -1,11 +1,7 @@
 import { parseReactComponent } from './parser.js';
 import { transformJSXToHTML } from './transformer.js';
 import { serializeToHTML } from './serializer.js';
-
-export interface CompileOptions {
-  indent?: number;
-  indentSize?: number;
-}
+import type { CompileOptions } from './types.js';
 
 /**
  * Compiles React JSX component source code to HTML string
@@ -38,4 +34,6 @@ export function compileJSXToHTML(
 export { parseReactComponent } from './parser.js';
 export { transformJSXToHTML } from './transformer.js';
 export { serializeToHTML } from './serializer.js';
+export { defaultAttributeTransformer } from './attributeTransformer.js';
 export * from './utils/naming.js';
+export type { AttributeTransformer, CompileOptions, SerializeOptions } from './types.js';

@@ -1,21 +1,28 @@
 import * as t from '@babel/types';
 import babelGenerate from '@babel/generator';
+import type { SerializeOptions, AttributeTransformer } from './types.js';
+import { defaultAttributeTransformer } from './attributeTransformer.js';
 
 /**
  * Serializes a JSX AST to an HTML string
  */
 export function serializeToHTML(
   jsxElement: t.JSXElement,
-  options: { indent?: number; indentSize?: number } = {}
+  options: SerializeOptions = {}
 ): string {
-  const { indent = 0, indentSize = 2 } = options;
-  return serializeJSXElement(jsxElement, indent, indentSize);
+  const {
+    indent = 0,
+    indentSize = 2,
+    attributeTransformer = defaultAttributeTransformer,
+  } = options;
+  return serializeJSXElement(jsxElement, indent, indentSize, attributeTransformer);
 }
 
 function serializeJSXElement(
   element: t.JSXElement,
   indent: number,
-  indentSize: number
+  indentSize: number,
+  attributeTransformer: AttributeTransformer
 ): string {
   const openingElement = element.openingElement;
   const children = element.children;
@@ -29,7 +36,7 @@ function serializeJSXElement(
   // Serialize attributes
   for (const attr of openingElement.attributes) {
     if (t.isJSXAttribute(attr)) {
-      html += serializeAttribute(attr);
+      html += serializeAttribute(attr, attributeTransformer);
     } else if (t.isJSXSpreadAttribute(attr)) {
       // Skip spread attributes for now
       // In the future, we might want to handle these differently
@@ -59,7 +66,7 @@ function serializeJSXElement(
       if (t.isJSXElement(child)) {
         hasComplexChildren = true;
         serializedChildren.push(
-          serializeJSXElement(child, indent + indentSize, indentSize)
+          serializeJSXElement(child, indent + indentSize, indentSize, attributeTransformer)
         );
       } else if (t.isJSXText(child)) {
         const text = child.value.trim();
@@ -93,36 +100,31 @@ function serializeJSXElement(
   return html;
 }
 
-function serializeAttribute(attr: t.JSXAttribute): string {
+function serializeAttribute(
+  attr: t.JSXAttribute,
+  attributeTransformer: AttributeTransformer
+): string {
   const name = t.isJSXIdentifier(attr.name)
     ? attr.name.name
     : t.isJSXNamespacedName(attr.name)
       ? `${attr.name.namespace.name}:${attr.name.name.name}`
       : '';
 
-  if (!attr.value) {
-    // Boolean attribute: <input disabled />
+  // Use the attribute transformer to get the value
+  const transformedValue = attributeTransformer(name, attr.value);
+
+  // If transformer returns null, omit the attribute
+  if (transformedValue === null) {
+    return '';
+  }
+
+  // If transformer returns empty string, it's a boolean attribute
+  if (transformedValue === '') {
     return ` ${name}`;
   }
 
-  if (t.isStringLiteral(attr.value)) {
-    // String attribute: class="foo"
-    return ` ${name}="${attr.value.value}"`;
-  }
-
-  if (t.isJSXExpressionContainer(attr.value)) {
-    // Expression attribute: class={styles.foo}
-    const generated = babelGenerate as any;
-    const exprCode = (generated.default || generated)(attr.value.expression).code;
-    return ` ${name}={${exprCode}}`;
-  }
-
-  if (t.isJSXElement(attr.value)) {
-    // JSX element as attribute value (rare)
-    return ` ${name}={...}`;
-  }
-
-  return '';
+  // Otherwise, serialize as name="value"
+  return ` ${name}="${transformedValue}"`;
 }
 
 function getElementName(

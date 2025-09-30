@@ -1,0 +1,23 @@
+<media-container class="media-skin">
+  <slot name="media" slot="media"></slot>
+  <div class="controls">
+    <media-play-button class="play-btn">
+      <media-play-icon></media-play-icon>
+      <media-pause-icon></media-pause-icon>
+    </media-play-button>
+    <media-current-time-display show-remaining></media-current-time-display>
+    <media-time-range-root class="time-range">
+      <media-time-range-track>
+        <media-time-range-progress></media-time-range-progress>
+        <media-time-range-pointer></media-time-range-pointer>
+      </media-time-range-track>
+      <media-time-range-thumb></media-time-range-thumb>
+    </media-time-range-root>
+    <media-duration-display></media-duration-display>
+    <media-mute-button class="mute-btn">
+      <media-volume-high-icon></media-volume-high-icon>
+      <media-volume-low-icon></media-volume-low-icon>
+      <media-volume-off-icon></media-volume-off-icon>
+    </media-mute-button>
+  </div>
+</media-container>
