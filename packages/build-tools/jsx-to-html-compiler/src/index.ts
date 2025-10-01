@@ -46,3 +46,23 @@ export {
   type AttributeProcessor,
   type AttributeTransformResult,
 } from './attributeProcessing/index.js';
+
+// Export skin compilation
+export { compileSkinToHTML, type CompileSkinOptions } from './compileSkin.js';
+export {
+  parseReactSkin,
+  generateSkinModule,
+  type ImportInfo,
+  type SkinMetadata,
+  type SkinModuleData,
+} from './skinGeneration/index.js';
+export {
+  transformImports,
+  defaultImportMappings,
+  type ImportMappingConfig,
+} from './importTransforming/index.js';
+export {
+  placeholderStyleProcessor,
+  type StyleProcessor,
+  type StyleContext,
+} from './styleProcessing/index.js';
