@@ -108,11 +108,26 @@ export function getTemplateHTML() {
       media-time-range-root {
         display: flex;
         align-items: center;
+        justify-content: center;
         position: relative;
         min-width: 100px;
         width: 100%;
-        padding-block: .75rem;
         margin: 0 .5rem;
+      }
+
+      /* Horizontal orientation styles */
+      media-time-range-root[data-orientation="horizontal"] {
+        min-width: 100px;
+        width: 100%;
+        height: 20px;
+      }
+
+      /* Vertical orientation styles */
+      media-time-range-root[data-orientation="vertical"] {
+        min-width: 20px;
+        width: 20px;
+        height: 100px;
+        flex-direction: column;
       }
 
       media-time-range-track {
@@ -123,6 +138,18 @@ export function getTemplateHTML() {
         border-radius: .25rem;
         overflow: hidden;
         pointer-events: none;
+      }
+
+      /* Horizontal track styles */
+      media-time-range-track[data-orientation="horizontal"] {
+        width: 100%;
+        height: .375rem;
+      }
+
+      /* Vertical track styles */
+      media-time-range-track[data-orientation="vertical"] {
+        width: .375rem;
+        height: 100%;
       }
 
       media-time-range-thumb {
@@ -147,11 +174,26 @@ export function getTemplateHTML() {
       media-volume-range-root {
         display: flex;
         align-items: center;
+        justify-content: center;
         position: relative;
         min-width: 80px;
         width: 80px;
-        padding-block: .75rem;
         margin: 0 .5rem;
+      }
+
+      /* Horizontal orientation styles */
+      media-volume-range-root[data-orientation="horizontal"] {
+        min-width: 80px;
+        width: 80px;
+        height: 20px;
+      }
+
+      /* Vertical orientation styles */
+      media-volume-range-root[data-orientation="vertical"] {
+        min-width: 20px;
+        width: 20px;
+        height: 80px;
+        flex-direction: column;
       }
 
       media-volume-range-track {
@@ -162,6 +204,18 @@ export function getTemplateHTML() {
         border-radius: .25rem;
         overflow: hidden;
         pointer-events: none;
+      }
+
+      /* Horizontal track styles */
+      media-volume-range-track[data-orientation="horizontal"] {
+        width: 100%;
+        height: .375rem;
+      }
+
+      /* Vertical track styles */
+      media-volume-range-track[data-orientation="vertical"] {
+        width: .375rem;
+        height: 100%;
       }
 
       media-volume-range-thumb {
@@ -202,7 +256,7 @@ export function getTemplateHTML() {
             <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
             <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
           </media-mute-button>
-          <media-volume-range-root>
+          <media-volume-range-root orientation="vertical">
             <media-volume-range-track>
               <media-volume-range-progress></media-volume-range-progress>
             </media-volume-range-track>

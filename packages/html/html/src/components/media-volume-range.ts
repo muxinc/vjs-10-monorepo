@@ -17,6 +17,8 @@ type VolumeRangeRootState = {
 };
 
 export class VolumeRangeRootBase extends HTMLElement {
+  static readonly observedAttributes: readonly string[] = ['orientation'];
+  
   _state: VolumeRangeRootState | undefined;
   _core: CoreVolumeRange | null = null;
 
@@ -32,7 +34,17 @@ export class VolumeRangeRootBase extends HTMLElement {
     return this._state?.volumeLevel ?? 'high';
   }
 
-  _update(_props: any, state: any): void {
+  get orientation(): 'horizontal' | 'vertical' {
+    return this.getAttribute('orientation') as 'horizontal' | 'vertical' || 'horizontal';
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null): void {
+    if (name === 'orientation' && this._state) {
+      this._render(useVolumeRangeRootProps(this._state, this), this._state);
+    }
+  }
+
+  _update(_props: any, state: any): void {    
     this._state = state;
 
     if (state && !this._core) {
@@ -58,9 +70,11 @@ export class VolumeRangeRootBase extends HTMLElement {
     this.setAttribute('aria-valuemax', '100');
     this.setAttribute('aria-valuenow', coreState._fillWidth.toString());
     this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
+    this.setAttribute('aria-orientation', props['aria-orientation']);
 
     this.setAttribute('data-muted', state.muted.toString());
     this.setAttribute('data-volume-level', state.volumeLevel);
+    this.setAttribute('data-orientation', props['data-orientation']);
   }
 }
 
@@ -80,8 +94,18 @@ export class VolumeRangeTrackBase extends HTMLElement {
     }
   }
 
-  _update(_props: any, _state: any): void {
-    // Track doesn't need much state management
+  _update(props: any, _state: any): void {
+    const orientation = props['data-orientation'] || 'horizontal';
+    this.setAttribute('data-orientation', orientation);
+    
+    // Set appropriate dimensions based on orientation
+    if (orientation === 'horizontal') {
+      this.style.width = '100%';
+      this.style.removeProperty('height');
+    } else {
+      this.style.height = '100%';
+      this.style.removeProperty('width');
+    }
   }
 }
 
@@ -96,8 +120,22 @@ export class VolumeRangeProgressBase extends HTMLElement {
     this.style.height = '100%';
   }
 
-  _update(_props: any, _state: any): void {
-    // Progress updates are handled by CSS custom properties
+  _update(props: any, _state: any): void {
+    const orientation = props['data-orientation'] || 'horizontal';
+    this.setAttribute('data-orientation', orientation);
+    
+    // Set appropriate dimensions based on orientation
+    if (orientation === 'horizontal') {
+      this.style.width = 'var(--slider-fill, 0%)';
+      this.style.height = '100%';
+      this.style.top = '0';
+      this.style.removeProperty('bottom');
+    } else {
+      this.style.height = 'var(--slider-fill, 0%)';
+      this.style.width = '100%';
+      this.style.bottom = '0';
+      this.style.removeProperty('top');
+    }
   }
 }
 
@@ -108,13 +146,22 @@ export class VolumeRangeThumbBase extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
-    this.style.top = '50%';
-    this.style.left = 'var(--slider-fill, 0%)';
-    this.style.transform = 'translate(-50%, -50%)';
   }
 
-  _update(_props: any, _state: any): void {
-    // Thumb updates are handled by CSS custom properties
+  _update(props: any, _state: any): void {
+    const orientation = props['data-orientation'] || 'horizontal';
+    this.setAttribute('data-orientation', orientation);
+    
+    // Set appropriate positioning based on orientation
+    if (orientation === 'horizontal') {
+      this.style.left = 'var(--slider-fill, 0%)';
+      this.style.top = '50%';
+      this.style.transform = 'translate(-50%, -50%)';
+    } else {
+      this.style.bottom = 'var(--slider-fill, 0%)';
+      this.style.left = '50%';
+      this.style.transform = 'translate(-50%, 50%)';
+    }
   }
 }
 
@@ -147,16 +194,18 @@ export const useVolumeRangeRootProps: PropsHook<{
   volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
   core: CoreVolumeRange | null;
-}> = (state, _element) => {
+}> = (state, element) => {
   const volumeText = `${Math.round(state.muted ? 0 : state.volume * 100)}%`;
 
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     ['data-muted']: state.muted.toString(),
     ['data-volume-level']: state.volumeLevel,
+    ['data-orientation']: (element as any).orientation || 'horizontal',
     /** aria attributes/props */
     ['aria-label']: 'Volume',
     ['aria-valuetext']: volumeText,
+    ['aria-orientation']: (element as any).orientation || 'horizontal',
   };
 
   return baseProps;
@@ -165,22 +214,34 @@ export const useVolumeRangeRootProps: PropsHook<{
 /**
  * VolumeRange Track props hook
  */
-export const useVolumeRangeTrackProps: PropsHook<{}> = (_state, _element) => {
-  return {};
+export const useVolumeRangeTrackProps: PropsHook<{}> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-volume-range-root') as any;
+  return {
+    ['data-orientation']: rootElement?.orientation || 'horizontal',
+  };
 };
 
 /**
  * VolumeRange Progress props hook
  */
-export const useVolumeRangeProgressProps: PropsHook<{}> = (_state, _element) => {
-  return {};
+export const useVolumeRangeProgressProps: PropsHook<{}> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-volume-range-root') as any;
+  return {
+    ['data-orientation']: rootElement?.orientation || 'horizontal',
+  };
 };
 
 /**
  * VolumeRange Thumb props hook
  */
-export const useVolumeRangeThumbProps: PropsHook<{}> = (_state, _element) => {
-  return {};
+export const useVolumeRangeThumbProps: PropsHook<{}> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-volume-range-root') as any;
+  return {
+    ['data-orientation']: rootElement?.orientation || 'horizontal',
+  };
 };
 
 /**
