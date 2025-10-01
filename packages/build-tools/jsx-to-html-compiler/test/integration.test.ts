@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { compileJSXToHTML } from '../src/index.js';
+import { compileJSXToHTML, compileSkinToHTML } from '../src/index.js';
 import { loadFixture } from './utils/fixtures.js';
+import { validateSkinModule } from './utils/outputValidation.js';
 import { validateHTML } from './utils/validator.js';
 
 describe('compileJSXToHTML - Integration Tests with Fixtures', () => {
@@ -203,5 +204,43 @@ describe('compileJSXToHTML - Additional Tests', () => {
     expect(html).not.toBeNull();
     expect(html).toContain('<span></span>');
     expect(html).toContain('<media-play-icon></media-play-icon>');
+  });
+});
+
+describe('compileSkinToHTML - Skin Module Output Validation', () => {
+  it('generates valid TypeScript modules from fixtures', async () => {
+    const fixtures = ['simple-component', 'compound-components', 'with-children', 'mixed-elements', 'real-world-skin'];
+
+    for (const fixtureName of fixtures) {
+      const fixture = loadFixture(fixtureName);
+      const module = compileSkinToHTML(fixture.input);
+
+      expect(module, `${fixtureName} should generate a module`).not.toBeNull();
+
+      // Validate that generated TypeScript passes ESLint and Prettier
+      const validation = await validateSkinModule(module!);
+
+      expect(validation.eslint.valid, `${fixtureName}: ESLint should pass`).toBe(true);
+      expect(validation.eslint.errors, `${fixtureName}: no ESLint errors`).toHaveLength(0);
+      expect(validation.prettier.valid, `${fixtureName}: Prettier should pass`).toBe(true);
+    }
+  });
+
+  it('generates properly formatted skin module structure', async () => {
+    const fixture = loadFixture('simple-component');
+    const module = compileSkinToHTML(fixture.input);
+
+    expect(module).not.toBeNull();
+
+    // Verify module contains expected structure
+    expect(module).toContain('export function getTemplateHTML()');
+    expect(module).toContain('export class');
+    expect(module).toContain('extends MediaSkin');
+    expect(module).toContain('customElements.define');
+
+    // Validate it's well-formed
+    const validation = await validateSkinModule(module!);
+    expect(validation.eslint.valid).toBe(true);
+    expect(validation.prettier.valid).toBe(true);
   });
 });
