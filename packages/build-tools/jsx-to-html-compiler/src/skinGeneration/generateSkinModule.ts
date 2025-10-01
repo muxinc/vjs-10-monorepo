@@ -1,4 +1,4 @@
-import type { SkinModuleData } from './types.js';
+import type { SkinModuleData, GenerateSkinModuleOptions } from './types.js';
 
 /**
  * Generate a complete HTML/Web Component skin module
@@ -10,63 +10,80 @@ import type { SkinModuleData } from './types.js';
  * - customElements.define() registration
  *
  * @param data - All data needed to generate the module
+ * @param options - Optional formatting customization
  * @returns Complete TypeScript module as a string
  */
-export function generateSkinModule(data: SkinModuleData): string {
+export function generateSkinModule(
+  data: SkinModuleData,
+  options: GenerateSkinModuleOptions = {}
+): string {
   const { imports, html, styles, className, elementName } = data;
 
-  const lines: string[] = [];
+  // Use custom formatters if provided, otherwise use defaults
+  const importsFormatter = options.formatImports ?? formatImports;
+  const stylesFormatter = options.formatStyles ?? formatStyles;
+  const htmlFormatter = options.formatHTML ?? formatHTML;
 
-  // 1. Imports
-  for (const imp of imports) {
-    lines.push(imp);
+  // Preprocess dynamic parts
+  const importsBlock = importsFormatter(imports);
+  const stylesBlock = stylesFormatter(styles);
+  const htmlBlock = htmlFormatter(html);
+
+  // Single template literal defines the entire module structure
+  return `${importsBlock}
+
+export function getTemplateHTML() {
+  return /* html */ \`
+    \${MediaSkin.getTemplateHTML()}
+${stylesBlock}
+${htmlBlock}
+  \`;
+}
+
+export class ${className} extends MediaSkin {
+  static getTemplateHTML: () => string = getTemplateHTML;
+}
+
+customElements.define('${elementName}', ${className});
+`;
+}
+
+/**
+ * Format imports with proper newlines
+ */
+export function formatImports(imports: string[]): string {
+  return imports.join('\n');
+}
+
+/**
+ * Format styles with proper indentation
+ * Returns a <style> tag with either the provided styles or a TODO placeholder
+ */
+export function formatStyles(styles: string): string {
+  if (!styles || !styles.trim()) {
+    return `    <style>
+      /* TODO: Add skin styles here */
+    </style>`;
   }
-  lines.push(''); // Blank line after imports
 
-  // 2. getTemplateHTML function
-  lines.push('export function getTemplateHTML() {');
-  lines.push('  return /* html */ `');
-  lines.push('    ${MediaSkin.getTemplateHTML()}');
+  const indentedStyles = styles
+    .split('\n')
+    .filter((line) => line.trim())
+    .map((line) => `      ${line}`)
+    .join('\n');
 
-  // Add styles if present
-  if (styles && styles.trim()) {
-    lines.push('    <style>');
-    // Indent the styles
-    const styleLines = styles.split('\n');
-    for (const line of styleLines) {
-      if (line.trim()) {
-        lines.push(`      ${line}`);
-      }
-    }
-    lines.push('    </style>');
-  } else {
-    // Empty style tag as placeholder
-    lines.push('    <style>');
-    lines.push('      /* TODO: Add skin styles here */');
-    lines.push('    </style>');
-  }
+  return `    <style>
+${indentedStyles}
+    </style>`;
+}
 
-  // Add HTML (indented)
-  const htmlLines = html.split('\n');
-  for (const line of htmlLines) {
-    if (line.trim()) {
-      lines.push(`    ${line}`);
-    }
-  }
-
-  lines.push('  `;');
-  lines.push('}');
-  lines.push(''); // Blank line
-
-  // 3. Class definition
-  lines.push(`export class ${className} extends MediaSkin {`);
-  lines.push('  static getTemplateHTML: () => string = getTemplateHTML;');
-  lines.push('}');
-  lines.push(''); // Blank line
-
-  // 4. Custom element registration
-  lines.push(`customElements.define('${elementName}', ${className});`);
-  lines.push(''); // Final newline
-
-  return lines.join('\n');
+/**
+ * Format HTML with proper indentation for template literal
+ */
+export function formatHTML(html: string): string {
+  return html
+    .split('\n')
+    .filter((line) => line.trim())
+    .map((line) => `    ${line}`)
+    .join('\n');
 }

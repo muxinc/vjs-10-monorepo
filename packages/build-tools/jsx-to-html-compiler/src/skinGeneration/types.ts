@@ -78,3 +78,33 @@ export interface SkinModuleData {
    */
   elementName: string;
 }
+
+/**
+ * Formatter function types for customizing module generation
+ */
+export type ImportsFormatter = (imports: string[]) => string;
+export type StylesFormatter = (styles: string) => string;
+export type HTMLFormatter = (html: string) => string;
+
+/**
+ * Options for customizing skin module generation
+ */
+export interface GenerateSkinModuleOptions {
+  /**
+   * Custom formatter for imports block
+   * Defaults to joining imports with newlines
+   */
+  formatImports?: ImportsFormatter;
+
+  /**
+   * Custom formatter for styles block
+   * Defaults to indented <style> tag with TODO placeholder for empty styles
+   */
+  formatStyles?: StylesFormatter;
+
+  /**
+   * Custom formatter for HTML block
+   * Defaults to indented HTML content
+   */
+  formatHTML?: HTMLFormatter;
+}
