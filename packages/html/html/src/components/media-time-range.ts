@@ -90,10 +90,10 @@ export class TimeRangeTrackBase extends HTMLElement {
     // Set appropriate dimensions based on orientation
     if (orientation === 'horizontal') {
       this.style.width = '100%';
-      this.style.height = '';
+      this.style.removeProperty('height');
     } else {
       this.style.height = '100%';
-      this.style.width = '';
+      this.style.removeProperty('width');
     }
   }
 }
@@ -115,12 +115,12 @@ export class TimeRangeProgressBase extends HTMLElement {
       this.style.width = 'var(--slider-fill, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
-      this.style.bottom = '';
+      this.style.removeProperty('bottom');
     } else {
       this.style.height = 'var(--slider-fill, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
-      this.style.top = '';
+      this.style.removeProperty('top');
     }
   }
 }
@@ -142,12 +142,12 @@ export class TimeRangePointerBase extends HTMLElement {
       this.style.width = 'var(--slider-pointer, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
-      this.style.bottom = '';
+      this.style.removeProperty('bottom');
     } else {
       this.style.height = 'var(--slider-pointer, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
-      this.style.top = '';
+      this.style.removeProperty('top');
     }
   }
 }

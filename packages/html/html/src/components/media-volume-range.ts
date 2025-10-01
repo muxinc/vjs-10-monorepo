@@ -101,10 +101,10 @@ export class VolumeRangeTrackBase extends HTMLElement {
     // Set appropriate dimensions based on orientation
     if (orientation === 'horizontal') {
       this.style.width = '100%';
-      this.style.height = '';
+      this.style.removeProperty('height');
     } else {
       this.style.height = '100%';
-      this.style.width = '';
+      this.style.removeProperty('width');
     }
   }
 }
@@ -129,12 +129,12 @@ export class VolumeRangeProgressBase extends HTMLElement {
       this.style.width = 'var(--slider-fill, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
-      this.style.bottom = '';
+      this.style.removeProperty('bottom');
     } else {
       this.style.height = 'var(--slider-fill, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
-      this.style.top = '';
+      this.style.removeProperty('top');
     }
   }
 }
