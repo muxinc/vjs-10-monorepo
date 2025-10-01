@@ -16,6 +16,7 @@ export function transformImports(
 ): string[] {
   const transformedImports: string[] = [];
   const { packageMappings, excludePatterns } = config;
+  const iconPackages = new Set<string>();
 
   for (const imp of imports) {
     // Skip excluded patterns
@@ -25,9 +26,16 @@ export function transformImports(
 
     // Transform package name if mapping exists
     let transformedSource = imp.source;
+    let isIconImport = false;
+
     for (const [reactPkg, htmlPkg] of Object.entries(packageMappings)) {
       if (imp.source === reactPkg) {
         transformedSource = htmlPkg;
+        // Check if this is an icon package
+        if (reactPkg.includes('icons')) {
+          isIconImport = true;
+          iconPackages.add(htmlPkg);
+        }
         break;
       }
       // Handle scoped paths like '@vjs-10/react/components'
@@ -35,6 +43,11 @@ export function transformImports(
         transformedSource = imp.source.replace(reactPkg, htmlPkg);
         break;
       }
+    }
+
+    // Skip individual icon imports - we'll add the package import once
+    if (isIconImport) {
+      continue;
     }
 
     // Transform relative component imports
@@ -48,9 +61,14 @@ export function transformImports(
       // This is a local component import - make it a side-effect import
       transformedImports.push(`import '${transformedSource}';`);
     } else {
-      // Icons and other package imports - just import the package
+      // Other package imports - just import the package
       transformedImports.push(`import '${transformedSource}';`);
     }
+  }
+
+  // Add icon package imports (consolidated)
+  for (const iconPkg of iconPackages) {
+    transformedImports.push(`import '${iconPkg}';`);
   }
 
   // Add base MediaSkin import
