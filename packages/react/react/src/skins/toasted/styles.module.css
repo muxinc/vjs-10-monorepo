@@ -3,9 +3,7 @@
   container-type: inline-size;
   container-name: root;
   overflow: clip;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 510;
+  font-weight: 420;
   font-size: 0.8125rem;
   letter-spacing: -0.0125em;
 }
