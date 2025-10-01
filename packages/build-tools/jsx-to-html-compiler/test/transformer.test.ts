@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { parse } from '@babel/parser';
 import * as t from '@babel/types';
 import { transformJSXToHTML } from '../src/transformer.js';
-import { parseReactComponent } from '../src/parser.js';
+import { parseReactSource, JSX_ONLY_CONFIG } from '../src/parsing/index.js';
 
 describe('transformJSXToHTML', () => {
   it('transforms simple component names to custom elements', () => {
@@ -10,10 +10,10 @@ describe('transformJSXToHTML', () => {
       export const Component = () => <PlayButton>Click</PlayButton>;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     expect(transformed.openingElement.name).toMatchObject({
       type: 'JSXIdentifier',
       name: 'media-play-button',
@@ -33,10 +33,10 @@ describe('transformJSXToHTML', () => {
       );
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     expect(transformed.openingElement.name).toMatchObject({
       type: 'JSXIdentifier',
       name: 'media-time-range-root',
@@ -61,10 +61,10 @@ describe('transformJSXToHTML', () => {
       );
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     expect(transformed.openingElement.name).toMatchObject({
       type: 'JSXIdentifier',
       name: 'div',
@@ -76,10 +76,10 @@ describe('transformJSXToHTML', () => {
       export const Component = () => <div className="container">Hello</div>;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     // Transformer no longer transforms attribute names - that's done in the serializer
     const classNameAttr = transformed.openingElement.attributes.find(
       (attr) => t.isJSXAttribute(attr) && attr.name.name === 'className'
@@ -92,10 +92,10 @@ describe('transformJSXToHTML', () => {
       export const Component = () => <div showRemaining dataTestId="test">Hello</div>;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     const attrs = transformed.openingElement.attributes.filter((attr) => t.isJSXAttribute(attr));
 
     // Transformer no longer transforms attribute names - that's done in the serializer
@@ -111,10 +111,10 @@ describe('transformJSXToHTML', () => {
       export const Component = ({ children }) => <div>{children}</div>;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     const slotChild = transformed.children.find((child) =>
       t.isJSXElement(child)
     ) as t.JSXElement;
@@ -140,10 +140,10 @@ describe('transformJSXToHTML', () => {
       export const Component = () => <PlayIcon />;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
     expect(transformed.openingElement.selfClosing).toBe(false);
     expect(transformed.closingElement).toBeDefined();
     expect(transformed.closingElement?.name).toMatchObject({
@@ -164,10 +164,10 @@ describe('transformJSXToHTML', () => {
       );
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
 
-    const transformed = transformJSXToHTML(jsx!);
+    const transformed = transformJSXToHTML(parsed.jsx!);
 
     // Check root element
     expect(transformed.openingElement.name).toMatchObject({

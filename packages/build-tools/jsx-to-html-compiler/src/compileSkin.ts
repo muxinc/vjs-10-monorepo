@@ -1,9 +1,10 @@
-import { parseReactSkin, generateSkinModule } from './skinGeneration/index.js';
+import { generateSkinModule } from './skinGeneration/index.js';
 import { transformImports, defaultImportMappings } from './importTransforming/index.js';
 import { transformJSXToHTML } from './transformer.js';
 import { serializeToHTML } from './serializer.js';
 import { placeholderStyleProcessor, type StyleProcessor } from './styleProcessing/index.js';
 import { toKebabCase } from './utils/naming.js';
+import { parseReactSource, SKIN_CONFIG } from './parsing/index.js';
 import type { ImportMappingConfig } from './importTransforming/types.js';
 import type { SerializeOptions } from './types.js';
 
@@ -55,24 +56,24 @@ export function compileSkinToHTML(
   } = options;
 
   // 1. Parse the React skin
-  const skinData = parseReactSkin(source);
-  if (!skinData) {
+  const parsed = parseReactSource(source, SKIN_CONFIG);
+  if (!parsed.jsx || !parsed.componentName || !parsed.imports) {
     return null;
   }
 
   // 2. Transform imports
-  const htmlImports = transformImports(skinData.imports, importMappings);
+  const htmlImports = transformImports(parsed.imports, importMappings);
 
   // 3. Transform JSX AST
-  const transformedJsx = transformJSXToHTML(skinData.jsx);
+  const transformedJsx = transformJSXToHTML(parsed.jsx);
 
   // 4. Serialize to HTML (with attribute processing)
   const html = serializeToHTML(transformedJsx, serializeOptions);
 
   // 5. Process styles
   const styles = styleProcessor({
-    stylesNode: skinData.stylesNode,
-    componentName: skinData.componentName,
+    stylesNode: parsed.stylesNode ?? null,
+    componentName: parsed.componentName,
   });
 
   // 6. Generate the complete module
@@ -80,7 +81,7 @@ export function compileSkinToHTML(
     imports: htmlImports,
     html,
     styles,
-    className: skinData.componentName,
-    elementName: toKebabCase(skinData.componentName),
+    className: parsed.componentName,
+    elementName: toKebabCase(parsed.componentName),
   });
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { parseReactComponent } from '../src/parser.js';
+import { parseReactSource, JSX_ONLY_CONFIG } from '../src/parsing/index.js';
 
-describe('parseReactComponent', () => {
+describe('parseReactSource', () => {
   it('extracts JSX from arrow function with implicit return', () => {
     const source = `
       import * as React from 'react';
@@ -9,10 +9,10 @@ describe('parseReactComponent', () => {
       export const Component = () => <div>Hello</div>;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
-    expect(jsx?.type).toBe('JSXElement');
-    expect(jsx?.openingElement.name).toMatchObject({ type: 'JSXIdentifier', name: 'div' });
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
+    expect(parsed.jsx?.type).toBe('JSXElement');
+    expect(parsed.jsx?.openingElement.name).toMatchObject({ type: 'JSXIdentifier', name: 'div' });
   });
 
   it('extracts JSX from arrow function with block and return', () => {
@@ -24,9 +24,9 @@ describe('parseReactComponent', () => {
       };
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
-    expect(jsx?.type).toBe('JSXElement');
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
+    expect(parsed.jsx?.type).toBe('JSXElement');
   });
 
   it('extracts JSX from React.FC with explicit types', () => {
@@ -38,9 +38,9 @@ describe('parseReactComponent', () => {
       };
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
-    expect(jsx?.type).toBe('JSXElement');
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
+    expect(parsed.jsx?.type).toBe('JSXElement');
   });
 
   it('extracts JSX from function declaration', () => {
@@ -54,9 +54,9 @@ describe('parseReactComponent', () => {
       export default Component;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
-    expect(jsx?.type).toBe('JSXElement');
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
+    expect(parsed.jsx?.type).toBe('JSXElement');
   });
 
   it('extracts complex JSX with nested elements', () => {
@@ -71,9 +71,9 @@ describe('parseReactComponent', () => {
       );
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
-    expect(jsx?.children.length).toBeGreaterThan(0);
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
+    expect(parsed.jsx?.children.length).toBeGreaterThan(0);
   });
 
   it('handles JSX with props', () => {
@@ -87,22 +87,22 @@ describe('parseReactComponent', () => {
       );
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).not.toBeNull();
-    expect(jsx?.openingElement.attributes.length).toBeGreaterThan(0);
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).not.toBeNull();
+    expect(parsed.jsx?.openingElement.attributes.length).toBeGreaterThan(0);
   });
 
-  it('returns null for non-component files', () => {
+  it('returns undefined jsx for non-component files', () => {
     const source = `
       const foo = 'bar';
       export default foo;
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).toBeUndefined();
   });
 
-  it('returns null for components without JSX', () => {
+  it('returns undefined jsx for components without JSX', () => {
     const source = `
       import * as React from 'react';
 
@@ -111,7 +111,7 @@ describe('parseReactComponent', () => {
       };
     `;
 
-    const jsx = parseReactComponent(source);
-    expect(jsx).toBeNull();
+    const parsed = parseReactSource(source, JSX_ONLY_CONFIG);
+    expect(parsed.jsx).toBeUndefined();
   });
 });
