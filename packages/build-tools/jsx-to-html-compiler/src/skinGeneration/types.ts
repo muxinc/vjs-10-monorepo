@@ -1,4 +1,4 @@
-import * as t from '@babel/types';
+import type * as t from '@babel/types';
 
 /**
  * Import statement information extracted from source

@@ -1,19 +1,15 @@
-import * as t from '@babel/types';
-import babelGenerate from '@babel/generator';
+import type { AttributeContext, AttributeProcessorPipeline } from './attributeProcessing/index.js';
 import type { SerializeOptions } from './types.js';
-import {
-  AttributeProcessorPipeline,
-  createDefaultPipeline,
-  type AttributeContext,
-} from './attributeProcessing/index.js';
+
+import babelGenerate from '@babel/generator';
+import * as t from '@babel/types';
+
+import { createDefaultPipeline } from './attributeProcessing/index.js';
 
 /**
  * Serializes a JSX AST to an HTML string
  */
-export function serializeToHTML(
-  jsxElement: t.JSXElement,
-  options: SerializeOptions = {}
-): string {
+export function serializeToHTML(jsxElement: t.JSXElement, options: SerializeOptions = {}): string {
   const { indent = 0, indentSize = 2, attributePipeline } = options;
 
   const pipeline = attributePipeline ?? createDefaultPipeline();
@@ -25,7 +21,7 @@ function serializeJSXElement(
   element: t.JSXElement,
   indent: number,
   indentSize: number,
-  pipeline: AttributeProcessorPipeline
+  pipeline: AttributeProcessorPipeline,
 ): string {
   const openingElement = element.openingElement;
   const children = element.children;
@@ -44,7 +40,8 @@ function serializeJSXElement(
   for (const attr of openingElement.attributes) {
     if (t.isJSXAttribute(attr)) {
       html += serializeAttribute(attr, elementName, htmlElementName, pipeline);
-    } else if (t.isJSXSpreadAttribute(attr)) {
+    }
+    else if (t.isJSXSpreadAttribute(attr)) {
       // Skip spread attributes for now
       // In the future, we might want to handle these differently
     }
@@ -53,16 +50,15 @@ function serializeJSXElement(
   // Check if element has children
   const hasChildren = children.length > 0;
   const hasSignificantChildren = children.some(
-    (child) =>
-      t.isJSXElement(child) ||
-      t.isJSXExpressionContainer(child) ||
-      (t.isJSXText(child) && child.value.trim() !== '')
+    child =>
+      t.isJSXElement(child) || t.isJSXExpressionContainer(child) || (t.isJSXText(child) && child.value.trim() !== ''),
   );
 
   if (!hasChildren || !hasSignificantChildren) {
     // Self-closing or empty element
     html += `></${getElementName(openingElement.name)}>`;
-  } else {
+  }
+  else {
     html += '>';
 
     // Serialize children
@@ -72,15 +68,15 @@ function serializeJSXElement(
     for (const child of children) {
       if (t.isJSXElement(child)) {
         hasComplexChildren = true;
-        serializedChildren.push(
-          serializeJSXElement(child, indent + indentSize, indentSize, pipeline)
-        );
-      } else if (t.isJSXText(child)) {
+        serializedChildren.push(serializeJSXElement(child, indent + indentSize, indentSize, pipeline));
+      }
+      else if (t.isJSXText(child)) {
         const text = child.value.trim();
         if (text) {
           serializedChildren.push(`${childIndentStr}${text}`);
         }
-      } else if (t.isJSXExpressionContainer(child)) {
+      }
+      else if (t.isJSXExpressionContainer(child)) {
         // Skip JSX comments: {/* comment */}
         if (t.isJSXEmptyExpression(child.expression)) {
           continue;
@@ -97,7 +93,8 @@ function serializeJSXElement(
       html += serializedChildren.join('\n');
       html += '\n';
       html += `${indentStr}</${getElementName(openingElement.name)}>`;
-    } else {
+    }
+    else {
       // Inline text content
       html += serializedChildren.join('').trim();
       html += `</${getElementName(openingElement.name)}>`;
@@ -111,7 +108,7 @@ function serializeAttribute(
   attr: t.JSXAttribute,
   elementName: string,
   htmlElementName: string,
-  pipeline: AttributeProcessorPipeline
+  pipeline: AttributeProcessorPipeline,
 ): string {
   const context: AttributeContext = {
     attribute: attr,
@@ -135,9 +132,7 @@ function serializeAttribute(
   return ` ${result.name}="${result.value}"`;
 }
 
-function getElementName(
-  name: t.JSXIdentifier | t.JSXMemberExpression | t.JSXNamespacedName
-): string {
+function getElementName(name: t.JSXIdentifier | t.JSXMemberExpression | t.JSXNamespacedName): string {
   if (t.isJSXIdentifier(name)) {
     return name.name;
   }

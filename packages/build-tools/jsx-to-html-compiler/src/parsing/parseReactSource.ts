@@ -1,7 +1,8 @@
+import type { ImportInfo, ParseConfig, ParsedReactSource } from './types.js';
+
 import { parse } from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as t from '@babel/types';
-import type { ParseConfig, ParsedReactSource, ImportInfo } from './types.js';
 
 const traverse = (babelTraverse as any).default || babelTraverse;
 
@@ -12,10 +13,7 @@ const traverse = (babelTraverse as any).default || babelTraverse;
  * @param config - Configuration specifying what to extract
  * @returns Parsed source with extracted data based on config
  */
-export function parseReactSource(
-  source: string,
-  config: ParseConfig = {}
-): ParsedReactSource {
+export function parseReactSource(source: string, config: ParseConfig = {}): ParsedReactSource {
   const ast = parse(source, {
     sourceType: 'module',
     plugins: ['jsx', 'typescript'],
@@ -43,10 +41,9 @@ export function parseReactSource(
           if (t.isImportDefaultSpecifier(spec)) {
             specifiers.push(spec.local.name);
             isDefault = true;
-          } else if (t.isImportSpecifier(spec)) {
-            const imported = t.isIdentifier(spec.imported)
-              ? spec.imported.name
-              : spec.imported.value;
+          }
+          else if (t.isImportSpecifier(spec)) {
+            const imported = t.isIdentifier(spec.imported) ? spec.imported.name : spec.imported.value;
             specifiers.push(imported);
           }
         }
@@ -57,14 +54,10 @@ export function parseReactSource(
 
         // Track styles import
         if (
-          config.extractStyles &&
-          (source.includes('styles') ||
-            source.endsWith('.css') ||
-            source.endsWith('.module.css'))
+          config.extractStyles
+          && (source.includes('styles') || source.endsWith('.css') || source.endsWith('.module.css'))
         ) {
-          const defaultSpec = path.node.specifiers.find((s: any) =>
-            t.isImportDefaultSpecifier(s)
-          );
+          const defaultSpec = path.node.specifiers.find((s: any) => t.isImportDefaultSpecifier(s));
           if (defaultSpec) {
             stylesIdentifierName = defaultSpec.local.name;
           }
@@ -97,12 +90,10 @@ export function parseReactSource(
             const bindingPath = binding.path;
             if (bindingPath.isFunctionDeclaration()) {
               jsxElement = extractJSXFromFunction(bindingPath.node);
-            } else if (bindingPath.isVariableDeclarator()) {
+            }
+            else if (bindingPath.isVariableDeclarator()) {
               const init = bindingPath.node.init;
-              if (
-                t.isArrowFunctionExpression(init) ||
-                t.isFunctionExpression(init)
-              ) {
+              if (t.isArrowFunctionExpression(init) || t.isFunctionExpression(init)) {
                 jsxElement = extractJSXFromFunction(init);
               }
             }
@@ -110,10 +101,7 @@ export function parseReactSource(
         }
       }
       // export default () => { ... } or export default function() { ... }
-      else if (
-        t.isArrowFunctionExpression(declaration) ||
-        t.isFunctionExpression(declaration)
-      ) {
+      else if (t.isArrowFunctionExpression(declaration) || t.isFunctionExpression(declaration)) {
         if (config.extractComponentName) {
           componentName = 'AnonymousSkin';
         }
@@ -125,19 +113,14 @@ export function parseReactSource(
 
     // Extract component name and/or JSX from named exports
     ExportNamedDeclaration(path: any) {
-      if (
-        (config.extractComponentName || config.extractJSX) &&
-        !componentName &&
-        path.node.declaration
-      ) {
+      if ((config.extractComponentName || config.extractJSX) && !componentName && path.node.declaration) {
         const declaration = path.node.declaration;
 
         if (t.isVariableDeclaration(declaration)) {
           for (const declarator of declaration.declarations) {
             if (
-              t.isIdentifier(declarator.id) &&
-              (t.isArrowFunctionExpression(declarator.init) ||
-                t.isFunctionExpression(declarator.init))
+              t.isIdentifier(declarator.id)
+              && (t.isArrowFunctionExpression(declarator.init) || t.isFunctionExpression(declarator.init))
             ) {
               if (config.extractComponentName) {
                 componentName = declarator.id.name;
@@ -148,10 +131,8 @@ export function parseReactSource(
               break;
             }
           }
-        } else if (
-          t.isFunctionDeclaration(declaration) &&
-          declaration.id
-        ) {
+        }
+        else if (t.isFunctionDeclaration(declaration) && declaration.id) {
           if (config.extractComponentName) {
             componentName = declaration.id.name;
           }
@@ -174,9 +155,7 @@ export function parseReactSource(
         }
         // Block statement with explicit return: (props) => { return <JSX /> }
         else if (t.isBlockStatement(body)) {
-          const returnStatement = body.body.find((stmt: any) =>
-            t.isReturnStatement(stmt)
-          );
+          const returnStatement = body.body.find((stmt: any) => t.isReturnStatement(stmt));
           if (returnStatement && t.isReturnStatement(returnStatement)) {
             const argument = returnStatement.argument;
             if (argument && t.isJSXElement(argument)) {
@@ -192,9 +171,7 @@ export function parseReactSource(
     FunctionDeclaration(path: any) {
       if (config.extractJSX && !jsxElement && !componentName) {
         const body = path.node.body;
-        const returnStatement = body.body.find((stmt: any) =>
-          t.isReturnStatement(stmt)
-        );
+        const returnStatement = body.body.find((stmt: any) => t.isReturnStatement(stmt));
         if (returnStatement && t.isReturnStatement(returnStatement)) {
           const argument = returnStatement.argument;
           if (argument && t.isJSXElement(argument)) {
@@ -208,10 +185,10 @@ export function parseReactSource(
     // Track styles object if defined inline
     VariableDeclarator(path: any) {
       if (
-        config.extractStyles &&
-        stylesIdentifierName &&
-        t.isIdentifier(path.node.id) &&
-        path.node.id.name === stylesIdentifierName
+        config.extractStyles
+        && stylesIdentifierName
+        && t.isIdentifier(path.node.id)
+        && path.node.id.name === stylesIdentifierName
       ) {
         stylesNode = path.node.init;
       }
@@ -240,10 +217,7 @@ export function parseReactSource(
  * Extract JSX element from a function
  */
 function extractJSXFromFunction(
-  func:
-    | t.FunctionDeclaration
-    | t.FunctionExpression
-    | t.ArrowFunctionExpression
+  func: t.FunctionDeclaration | t.FunctionExpression | t.ArrowFunctionExpression,
 ): t.JSXElement | null {
   // Arrow function with implicit return: () => <div />
   if (t.isArrowFunctionExpression(func) && t.isJSXElement(func.body)) {
@@ -254,20 +228,12 @@ function extractJSXFromFunction(
   if (t.isBlockStatement(func.body)) {
     for (const statement of func.body.body) {
       // return <div />
-      if (
-        t.isReturnStatement(statement) &&
-        statement.argument &&
-        t.isJSXElement(statement.argument)
-      ) {
+      if (t.isReturnStatement(statement) && statement.argument && t.isJSXElement(statement.argument)) {
         return statement.argument;
       }
 
       // return (<div />)
-      if (
-        t.isReturnStatement(statement) &&
-        statement.argument &&
-        t.isJSXFragment(statement.argument)
-      ) {
+      if (t.isReturnStatement(statement) && statement.argument && t.isJSXFragment(statement.argument)) {
         // For now, we don't support fragments
         continue;
       }

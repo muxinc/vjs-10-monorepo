@@ -1,5 +1,6 @@
-import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+
+import type * as t from '@babel/types';
 
 /**
  * Context provided to attribute processors containing the JSX attribute
@@ -64,7 +65,7 @@ export interface AttributeProcessor {
    * @param context - Full context about the attribute and its parent element
    * @returns The transformed HTML attribute name, or null to omit the attribute
    */
-  transformName(context: AttributeContext): string | null;
+  transformName: (context: AttributeContext) => string | null;
 
   /**
    * Transform the attribute value (e.g., JSX expression → CSS string)
@@ -72,5 +73,5 @@ export interface AttributeProcessor {
    * @param context - Full context about the attribute and its parent element
    * @returns The transformed value, or null to omit the attribute
    */
-  transformValue(context: AttributeContext): string | null;
+  transformValue: (context: AttributeContext) => string | null;
 }

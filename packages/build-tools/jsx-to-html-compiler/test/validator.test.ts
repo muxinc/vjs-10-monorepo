@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { validateHTML, isValidCustomElementName } from './utils/validator.js';
+import { describe, expect, it } from 'vitest';
+
+import { isValidCustomElementName, validateHTML } from './utils/validator.js';
 
 describe('isValidCustomElementName', () => {
   it('validates custom element names with hyphens', () => {

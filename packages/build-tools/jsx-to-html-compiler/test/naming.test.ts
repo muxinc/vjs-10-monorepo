@@ -1,9 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import {
-  toKebabCase,
-  toCustomElementName,
-  toAttributeName,
-} from '../src/utils/naming.js';
+import { describe, expect, it } from 'vitest';
+
+import { toAttributeName, toCustomElementName, toKebabCase } from '../src/utils/naming.js';
 
 describe('toKebabCase', () => {
   it('converts PascalCase to kebab-case', () => {

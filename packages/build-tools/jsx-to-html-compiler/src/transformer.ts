@@ -1,5 +1,6 @@
 import babelTraverse from '@babel/traverse';
 import * as t from '@babel/types';
+
 import { toCustomElementName } from './utils/naming.js';
 
 const traverse = (babelTraverse as any).default || babelTraverse;
@@ -34,37 +35,26 @@ export function transformJSXToHTML(jsxElement: t.JSXElement): t.JSXElement {
         if (openingElement.selfClosing) {
           openingElement.selfClosing = false;
           if (!closingElement) {
-            path.node.closingElement = t.jsxClosingElement(
-              t.cloneNode(openingElement.name)
-            );
+            path.node.closingElement = t.jsxClosingElement(t.cloneNode(openingElement.name));
           }
         }
       },
 
       JSXExpressionContainer(path) {
         // Replace {children} with <slot name="media" slot="media"></slot>
-        if (
-          t.isIdentifier(path.node.expression) &&
-          path.node.expression.name === 'children'
-        ) {
+        if (t.isIdentifier(path.node.expression) && path.node.expression.name === 'children') {
           const slotElement = t.jsxElement(
             t.jsxOpeningElement(
               t.jsxIdentifier('slot'),
               [
-                t.jsxAttribute(
-                  t.jsxIdentifier('name'),
-                  t.stringLiteral('media')
-                ),
-                t.jsxAttribute(
-                  t.jsxIdentifier('slot'),
-                  t.stringLiteral('media')
-                ),
+                t.jsxAttribute(t.jsxIdentifier('name'), t.stringLiteral('media')),
+                t.jsxAttribute(t.jsxIdentifier('slot'), t.stringLiteral('media')),
               ],
-              false
+              false,
             ),
             t.jsxClosingElement(t.jsxIdentifier('slot')),
             [],
-            false
+            false,
           );
 
           path.replaceWith(slotElement);
@@ -72,7 +62,7 @@ export function transformJSXToHTML(jsxElement: t.JSXElement): t.JSXElement {
       },
     },
     undefined,
-    {} as any
+    {} as any,
   );
 
   return cloned;
@@ -82,14 +72,13 @@ export function transformJSXToHTML(jsxElement: t.JSXElement): t.JSXElement {
  * Transforms a JSX element name (identifier or member expression)
  * to the corresponding HTML custom element name
  */
-function transformElementName(
-  name: t.JSXIdentifier | t.JSXMemberExpression | t.JSXNamespacedName
-): void {
+function transformElementName(name: t.JSXIdentifier | t.JSXMemberExpression | t.JSXNamespacedName): void {
   if (t.isJSXIdentifier(name)) {
     // Simple identifier: PlayButton → media-play-button
     const htmlName = toCustomElementName(name.name);
     name.name = htmlName;
-  } else if (t.isJSXMemberExpression(name)) {
+  }
+  else if (t.isJSXMemberExpression(name)) {
     // Member expression: TimeRange.Root → media-time-range-root
     const fullName = getFullMemberExpressionName(name);
     const htmlName = toCustomElementName(fullName);
@@ -110,7 +99,8 @@ function getFullMemberExpressionName(expr: t.JSXMemberExpression): string {
   function traverse(node: t.JSXMemberExpression | t.JSXIdentifier): void {
     if (t.isJSXIdentifier(node)) {
       parts.unshift(node.name);
-    } else if (t.isJSXMemberExpression(node)) {
+    }
+    else if (t.isJSXMemberExpression(node)) {
       parts.push(node.property.name);
       traverse(node.object);
     }

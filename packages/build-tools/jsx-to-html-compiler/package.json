@@ -1,8 +1,8 @@
 {
   "name": "@vjs-10/jsx-to-html-compiler",
+  "type": "module",
   "version": "0.1.0",
   "description": "Compiler to transform React JSX to HTML web component markup",
-  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {

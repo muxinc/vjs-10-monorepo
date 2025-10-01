@@ -1,8 +1,9 @@
-import { transformJSXToHTML } from '../transformer.js';
-import { serializeToHTML } from '../serializer.js';
-import { parseReactSource, JSX_ONLY_CONFIG } from '../parsing/index.js';
 import type { ParsedReactSource } from '../parsing/index.js';
 import type { CompileOptions } from '../types.js';
+
+import { JSX_ONLY_CONFIG, parseReactSource } from '../parsing/index.js';
+import { serializeToHTML } from '../serializer.js';
+import { transformJSXToHTML } from '../transformer.js';
 
 /**
  * Compiles React JSX component source code to HTML string
@@ -11,10 +12,7 @@ import type { CompileOptions } from '../types.js';
  * @param options - Compilation options
  * @returns The HTML string representation
  */
-export function compileJSXToHTML(
-  sourceCode: string,
-  options: CompileOptions = {}
-): string | null {
+export function compileJSXToHTML(sourceCode: string, options: CompileOptions = {}): string | null {
   // Step 1: Parse the React component and extract JSX
   const parsed = parseReactSource(sourceCode, JSX_ONLY_CONFIG);
 
@@ -35,10 +33,7 @@ export function compileJSXToHTML(
  * @param options - Compilation options
  * @returns The HTML string representation
  */
-export function compileJSXToHTMLFromParsed(
-  parsed: ParsedReactSource,
-  options: CompileOptions = {}
-): string | null {
+export function compileJSXToHTMLFromParsed(parsed: ParsedReactSource, options: CompileOptions = {}): string | null {
   if (!parsed.jsx) {
     return null;
   }

@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { parseReactSource, JSX_ONLY_CONFIG } from '../src/parsing/index.js';
+import { describe, expect, it } from 'vitest';
+
+import { JSX_ONLY_CONFIG, parseReactSource } from '../src/parsing/index.js';
 
 describe('parseReactSource', () => {
   it('extracts JSX from arrow function with implicit return', () => {

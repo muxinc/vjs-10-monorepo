@@ -1,8 +1,5 @@
-import type {
-  AttributeProcessor,
-  AttributeContext,
-  AttributeTransformResult,
-} from './types.js';
+import type { AttributeContext, AttributeProcessor, AttributeTransformResult } from './types.js';
+
 import { DefaultAttributeProcessor } from './DefaultAttributeProcessor.js';
 
 /**

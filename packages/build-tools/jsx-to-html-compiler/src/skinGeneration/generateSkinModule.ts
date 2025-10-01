@@ -1,4 +1,4 @@
-import type { SkinModuleData, GenerateSkinModuleOptions } from './types.js';
+import type { GenerateSkinModuleOptions, SkinModuleData } from './types.js';
 
 /**
  * Generate a complete HTML/Web Component skin module
@@ -11,6 +11,9 @@ import type { SkinModuleData, GenerateSkinModuleOptions } from './types.js';
  *
  * @param data - All data needed to generate the module
  * @param options - Optional formatting customization
+ * @param options.formatImports - Function to format import statements
+ * @param options.formatStyles - Function to format style content
+ * @param options.formatHTML - Function to format HTML content
  * @returns Complete TypeScript module as a string
  */
 export function generateSkinModule(
@@ -19,7 +22,7 @@ export function generateSkinModule(
     formatImports: importsFormatter = formatImports,
     formatStyles: stylesFormatter = formatStyles,
     formatHTML: htmlFormatter = formatHTML,
-  }: GenerateSkinModuleOptions = {}
+  }: GenerateSkinModuleOptions = {},
 ): string {
   const { imports, html, styles, className, elementName } = data;
 
@@ -67,8 +70,8 @@ export function formatStyles(styles: string): string {
 
   const indentedStyles = styles
     .split('\n')
-    .filter((line) => line.trim())
-    .map((line) => `      ${line}`)
+    .filter(line => line.trim())
+    .map(line => `      ${line}`)
     .join('\n');
 
   return `    <style>
@@ -82,7 +85,7 @@ ${indentedStyles}
 export function formatHTML(html: string): string {
   return html
     .split('\n')
-    .filter((line) => line.trim())
-    .map((line) => `    ${line}`)
+    .filter(line => line.trim())
+    .map(line => `    ${line}`)
     .join('\n');
 }

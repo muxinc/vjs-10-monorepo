@@ -1,18 +1,15 @@
-import { describe, it, expect } from 'vitest';
-import {
-  generateSkinModule,
-  formatImports,
-  formatStyles,
-  formatHTML,
-  type SkinModuleData,
-} from '../src/skinGeneration/index.js';
+import type { SkinModuleData } from '../src/skinGeneration/index.js';
+
+import { describe, expect, it } from 'vitest';
+
+import { formatHTML, formatImports, formatStyles, generateSkinModule } from '../src/skinGeneration/index.js';
 
 describe('formatImports', () => {
   it('joins imports with newlines', () => {
     const imports = [
-      "import { MediaSkin } from '../media-skin';",
-      "import '../components/play-button';",
-      "import '@vjs-10/html-icons';",
+      'import { MediaSkin } from \'../media-skin\';',
+      'import \'../components/play-button\';',
+      'import \'@vjs-10/html-icons\';',
     ];
     const result = formatImports(imports);
     expect(result).toBe(imports.join('\n'));
@@ -24,7 +21,7 @@ describe('formatImports', () => {
   });
 
   it('handles single import', () => {
-    const imports = ["import { MediaSkin } from '../media-skin';"];
+    const imports = ['import { MediaSkin } from \'../media-skin\';'];
     const result = formatImports(imports);
     expect(result).toBe(imports[0]);
   });
@@ -47,7 +44,7 @@ describe('formatStyles', () => {
     const styles = '.button { color: red; }';
     const result = formatStyles(styles);
     expect(result).toContain('      .button { color: red; }');
-    expect(result).toMatch(/<style>\n.*\n    <\/style>/);
+    expect(result).toMatch(/<style>\n.*\n {4}<\/style>/);
   });
 
   it('indents multi-line styles', () => {
@@ -110,10 +107,7 @@ describe('formatHTML', () => {
 
 describe('generateSkinModule', () => {
   const basicData: SkinModuleData = {
-    imports: [
-      "import { MediaSkin } from '../media-skin';",
-      "import '../components/play-button';",
-    ],
+    imports: ['import { MediaSkin } from \'../media-skin\';', 'import \'../components/play-button\';'],
     html: '<media-play-button></media-play-button>',
     styles: '',
     className: 'MediaSkinTest',
@@ -124,13 +118,13 @@ describe('generateSkinModule', () => {
     const result = generateSkinModule(basicData);
 
     // Check imports
-    expect(result).toContain("import { MediaSkin } from '../media-skin';");
-    expect(result).toContain("import '../components/play-button';");
+    expect(result).toContain('import { MediaSkin } from \'../media-skin\';');
+    expect(result).toContain('import \'../components/play-button\';');
 
     // Check getTemplateHTML function
     expect(result).toContain('export function getTemplateHTML()');
     expect(result).toContain('return /* html */ `');
-    expect(result).toContain('${MediaSkin.getTemplateHTML()}');
+    expect(result).toMatch(/\$\{MediaSkin\.getTemplateHTML\(\)\}/);
 
     // Check styles placeholder
     expect(result).toContain('<style>');
@@ -145,7 +139,7 @@ describe('generateSkinModule', () => {
     expect(result).toContain('static getTemplateHTML: () => string = getTemplateHTML;');
 
     // Check custom element registration
-    expect(result).toContain("customElements.define('media-skin-test', MediaSkinTest);");
+    expect(result).toContain('customElements.define(\'media-skin-test\', MediaSkinTest);');
   });
 
   it('includes provided styles', () => {
@@ -199,13 +193,13 @@ describe('generateSkinModule', () => {
     const result = generateSkinModule(dataWithSpecialClassName);
 
     expect(result).toContain('export class MediaSkin_V2_Default extends MediaSkin');
-    expect(result).toContain("customElements.define('media-skin-v2-default', MediaSkin_V2_Default);");
+    expect(result).toContain('customElements.define(\'media-skin-v2-default\', MediaSkin_V2_Default);');
   });
 
   describe('custom formatters', () => {
     it('uses custom imports formatter', () => {
       const customFormatImports = (imports: string[]) => {
-        return '// Custom imports\n' + imports.join('\n');
+        return `// Custom imports\n${imports.join('\n')}`;
       };
 
       const result = generateSkinModule(basicData, {
@@ -216,7 +210,7 @@ describe('generateSkinModule', () => {
     });
 
     it('uses custom styles formatter', () => {
-      const customFormatStyles = (styles: string) => {
+      const customFormatStyles = (_styles: string) => {
         return '    <style>/* Custom styles */</style>';
       };
 
@@ -230,7 +224,7 @@ describe('generateSkinModule', () => {
 
     it('uses custom HTML formatter', () => {
       const customFormatHTML = (html: string) => {
-        return '      ' + html; // Double indent
+        return `      ${html}`; // Double indent
       };
 
       const result = generateSkinModule(basicData, {
@@ -242,7 +236,7 @@ describe('generateSkinModule', () => {
 
     it('allows mixing custom and default formatters', () => {
       const customFormatImports = (imports: string[]) => {
-        return '// Custom\n' + imports.join('\n');
+        return `// Custom\n${imports.join('\n')}`;
       };
 
       const result = generateSkinModule(basicData, {
@@ -264,10 +258,10 @@ describe('generateSkinModule', () => {
       expect(result).toMatch(/import.*\n\nexport function/);
 
       // Should have blank line after getTemplateHTML
-      expect(result).toMatch(/}\n\nexport class/);
+      expect(result).toMatch(/\}\n\nexport class/);
 
       // Should have blank line after class
-      expect(result).toMatch(/}\n\ncustomElements.define/);
+      expect(result).toMatch(/\}\n\ncustomElements.define/);
     });
 
     it('ends with newline', () => {

@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import { compileJSXToHTML } from '../src/index.js';
 import { loadFixture } from './utils/fixtures.js';
 import { validateHTML } from './utils/validator.js';

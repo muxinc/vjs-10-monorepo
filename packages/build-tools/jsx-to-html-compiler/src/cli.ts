@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+import { readFileSync } from 'node:fs';
+import process from 'node:process';
 
-import { readFileSync } from 'fs';
 import { compileSkinToHTML } from './index.js';
 
 function main() {
@@ -28,16 +29,18 @@ function main() {
     if (arg === '--indent' && i + 1 < args.length) {
       const nextArg = args[i + 1];
       if (nextArg) {
-        indent = parseInt(nextArg, 10);
+        indent = Number.parseInt(nextArg, 10);
         i++;
       }
-    } else if (arg === '--indent-size' && i + 1 < args.length) {
+    }
+    else if (arg === '--indent-size' && i + 1 < args.length) {
       const nextArg = args[i + 1];
       if (nextArg) {
-        indentSize = parseInt(nextArg, 10);
+        indentSize = Number.parseInt(nextArg, 10);
         i++;
       }
-    } else if (!arg.startsWith('--')) {
+    }
+    else if (!arg.startsWith('--')) {
       inputFile = arg;
     }
   }
@@ -63,7 +66,8 @@ function main() {
 
     // Output the module
     console.log(module);
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error:', error instanceof Error ? error.message : error);
     process.exit(1);
   }

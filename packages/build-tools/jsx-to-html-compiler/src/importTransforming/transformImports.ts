@@ -1,6 +1,7 @@
-import { toKebabCase } from '../utils/naming.js';
 import type { ImportInfo } from '../skinGeneration/types.js';
 import type { ImportMappingConfig } from './types.js';
+
+import { toKebabCase } from '../utils/naming.js';
 import { defaultImportMappings } from './mappings.js';
 
 /**
@@ -10,10 +11,7 @@ import { defaultImportMappings } from './mappings.js';
  * @param config - Optional import mapping configuration
  * @returns Array of transformed import statements as strings
  */
-export function transformImports(
-  imports: ImportInfo[],
-  config: ImportMappingConfig = defaultImportMappings
-): string[] {
+export function transformImports(imports: ImportInfo[], config: ImportMappingConfig = defaultImportMappings): string[] {
   const transformedImports: string[] = [];
   const { packageMappings, excludePatterns } = config;
   const iconPackages = new Set<string>();
@@ -60,7 +58,8 @@ export function transformImports(
     if (transformedSource === imp.source && imp.source.startsWith('.')) {
       // This is a local component import - make it a side-effect import
       transformedImports.push(`import '${transformedSource}';`);
-    } else {
+    }
+    else {
       // Other package imports - just import the package
       transformedImports.push(`import '${transformedSource}';`);
     }
@@ -81,7 +80,7 @@ export function transformImports(
  * Check if an import should be excluded
  */
 function shouldExclude(source: string, patterns: string[]): boolean {
-  return patterns.some((pattern) => source.includes(pattern));
+  return patterns.some(pattern => source.includes(pattern));
 }
 
 /**

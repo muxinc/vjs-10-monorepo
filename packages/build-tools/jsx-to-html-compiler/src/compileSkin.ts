@@ -1,12 +1,14 @@
-import { generateSkinModule } from './skinGeneration/index.js';
-import { transformImports, defaultImportMappings } from './importTransforming/index.js';
-import { transformJSXToHTML } from './transformer.js';
-import { serializeToHTML } from './serializer.js';
-import { placeholderStyleProcessor, type StyleProcessor } from './styleProcessing/index.js';
-import { toKebabCase } from './utils/naming.js';
-import { parseReactSource, SKIN_CONFIG } from './parsing/index.js';
 import type { ImportMappingConfig } from './importTransforming/types.js';
+import type { StyleProcessor } from './styleProcessing/index.js';
 import type { SerializeOptions } from './types.js';
+
+import { defaultImportMappings, transformImports } from './importTransforming/index.js';
+import { parseReactSource, SKIN_CONFIG } from './parsing/index.js';
+import { serializeToHTML } from './serializer.js';
+import { generateSkinModule } from './skinGeneration/index.js';
+import { placeholderStyleProcessor } from './styleProcessing/index.js';
+import { transformJSXToHTML } from './transformer.js';
+import { toKebabCase } from './utils/naming.js';
 
 /**
  * Options for compiling a React skin to HTML
@@ -45,10 +47,7 @@ export interface CompileSkinOptions {
  * @param options - Compilation options
  * @returns Complete HTML/Web Component skin module as a string, or null if parsing fails
  */
-export function compileSkinToHTML(
-  source: string,
-  options: CompileSkinOptions = {}
-): string | null {
+export function compileSkinToHTML(source: string, options: CompileSkinOptions = {}): string | null {
   const {
     importMappings = defaultImportMappings,
     styleProcessor = placeholderStyleProcessor,

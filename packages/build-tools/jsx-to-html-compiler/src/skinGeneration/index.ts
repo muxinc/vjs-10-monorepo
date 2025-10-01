@@ -1,14 +1,9 @@
+export { formatHTML, formatImports, formatStyles, generateSkinModule } from './generateSkinModule.js';
 export type {
+  GenerateSkinModuleOptions,
+  HTMLFormatter,
+  ImportsFormatter,
   SkinMetadata,
   SkinModuleData,
-  GenerateSkinModuleOptions,
-  ImportsFormatter,
   StylesFormatter,
-  HTMLFormatter,
 } from './types.js';
-export {
-  generateSkinModule,
-  formatImports,
-  formatStyles,
-  formatHTML,
-} from './generateSkinModule.js';

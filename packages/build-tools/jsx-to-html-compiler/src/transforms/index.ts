@@ -1,4 +1,1 @@
-export {
-  compileJSXToHTML,
-  compileJSXToHTMLFromParsed,
-} from './compileJSXToHTML.js';
+export { compileJSXToHTML, compileJSXToHTMLFromParsed } from './compileJSXToHTML.js';

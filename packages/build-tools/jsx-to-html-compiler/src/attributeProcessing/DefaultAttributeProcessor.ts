@@ -1,6 +1,8 @@
+import type { AttributeContext, AttributeProcessor } from './types.js';
+
 import * as t from '@babel/types';
+
 import { toAttributeName } from '../utils/naming.js';
-import type { AttributeProcessor, AttributeContext } from './types.js';
 
 /**
  * Helper to extract attribute name from JSXAttribute node

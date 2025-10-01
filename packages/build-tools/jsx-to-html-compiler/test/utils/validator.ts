@@ -50,13 +50,13 @@ export async function validateHTML(html: string): Promise<ValidationResult> {
   }
 
   // html-validate returns messages directly on the report for string validation
-  const errors: ValidationResult['errors'] = (report.results || []).flatMap((result) =>
-    (result.messages || []).map((msg) => ({
+  const errors: ValidationResult['errors'] = (report.results || []).flatMap(result =>
+    (result.messages || []).map(msg => ({
       message: msg.message,
       line: msg.line,
       column: msg.column,
       ruleId: msg.ruleId,
-    }))
+    })),
   );
 
   return {

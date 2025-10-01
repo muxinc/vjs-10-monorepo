@@ -65,11 +65,7 @@ console.log(html);
 #### Manual Pipeline Control
 
 ```typescript
-import {
-  parseReactComponent,
-  transformJSXToHTML,
-  serializeToHTML,
-} from '@vjs-10/jsx-to-html-compiler';
+import { parseReactComponent, serializeToHTML, transformJSXToHTML } from '@vjs-10/jsx-to-html-compiler';
 
 // Step 1: Parse
 const jsxElement = parseReactComponent(sourceCode);
@@ -84,13 +80,9 @@ const html = serializeToHTML(transformed, { indent: 0, indentSize: 2 });
 #### Custom Attribute Processing
 
 ```typescript
-import {
-  compileJSXToHTML,
-  AttributeProcessorPipeline,
-  DefaultAttributeProcessor,
-  type AttributeContext,
-  type AttributeProcessor,
-} from '@vjs-10/jsx-to-html-compiler';
+import type { AttributeContext, AttributeProcessor } from '@vjs-10/jsx-to-html-compiler';
+
+import { AttributeProcessorPipeline, compileJSXToHTML, DefaultAttributeProcessor } from '@vjs-10/jsx-to-html-compiler';
 
 // Create a custom processor for className attributes
 class CustomClassProcessor implements AttributeProcessor {
@@ -216,8 +208,9 @@ Attributes are processed by the `AttributeProcessorPipeline` with full element c
 ### Input (React TSX)
 
 ```tsx
-import * as React from 'react';
 import { TimeRange } from '@vjs-10/react';
+
+import * as React from 'react';
 
 export const MediaSkin: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
