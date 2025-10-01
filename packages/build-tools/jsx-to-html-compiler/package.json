@@ -1,12 +1,12 @@
 {
-  "name": "@vjs-10/jsx-to-html-compiler",
+  "name": "@vjs-10/vjs-compiler",
   "type": "module",
   "version": "0.1.0",
-  "description": "Compiler to transform React JSX to HTML web component markup",
+  "description": "Multi-target compiler for Video.js 10 components - transforms React/JSX to various output formats",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "jsx-to-html": "./dist/cli.js"
+    "vjs-compiler": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",

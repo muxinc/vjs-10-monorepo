@@ -1,20 +1,28 @@
-# JSX to HTML Compiler
+# Video.js Compiler
 
-A compiler that transforms React JSX components to HTML strings for use in web component templates.
+A multi-target compiler for Video.js 10 components. Transforms React/JSX to various output formats including HTML web components, CSS Modules, and complete skin modules.
 
 ## Features
 
-- **Simple Components**: `PlayButton` → `media-play-button`
-- **Compound Components**: `TimeRange.Root` → `media-time-range-root`
+### Compilation Targets
+
+- **React → HTML Web Components**: Transform JSX to custom element markup
+- **React → HTML Skin Modules**: Generate complete web component skin modules
+- **React + Tailwind → React + CSS Modules**: Migrate from Tailwind styles to CSS Modules
+
+### Transformation Capabilities
+
+- **Element Names**: `PlayButton` → `media-play-button`, `TimeRange.Root` → `media-time-range-root`
 - **Built-in Elements**: Preserves `div`, `span`, etc.
 - **Attribute Processing**: Unified pipeline with element context
   - `className` → `class`, `showRemaining` → `show-remaining`
   - Extensible via custom processors
-  - Ready for CSS transformations (Tailwind, CSS Modules, etc.)
+  - CSS transformations (Tailwind, CSS Modules, etc.)
 - **Children Replacement**: `{children}` → `<slot name="media" slot="media"></slot>`
 - **Self-closing Tags**: Converts to explicit closing tags
 - **JSX Comments**: Automatically removed from output
 - **HTML5 Validation**: Built-in validation for custom elements and output HTML
+- **Output Validation**: ESLint and Prettier validation for generated code
 
 ## Installation
 
@@ -29,16 +37,18 @@ pnpm build
 
 ```bash
 # Compile a React component to HTML
-node dist/cli.js path/to/Component.tsx
+vjs-compiler path/to/Component.tsx
 
 # With custom indentation
-node dist/cli.js path/to/Component.tsx --indent 4 --indent-size 2
+vjs-compiler path/to/Component.tsx --indent 4 --indent-size 2
 ```
 
 ### Programmatic API
 
+#### React → HTML Web Components
+
 ```typescript
-import { compileJSXToHTML } from '@vjs-10/jsx-to-html-compiler';
+import { compileJSXToHTML } from '@vjs-10/vjs-compiler';
 
 const source = `
   export const Component = () => (
@@ -60,12 +70,29 @@ console.log(html);
 // </media-container>
 ```
 
+#### React + Tailwind → React + CSS Modules
+
+```typescript
+import { compileReactToReactWithCSSModules } from '@vjs-10/vjs-compiler';
+
+const source = `
+  import styles from './styles';
+  export const Button = () => <button className={styles.Button}>Click</button>;
+`;
+
+const output = compileReactToReactWithCSSModules(source);
+console.log(output);
+// Output:
+// import styles from "./styles.module.css";
+// export const Button = () => <button className={styles.Button}>Click</button>;
+```
+
 ### Advanced API
 
 #### Manual Pipeline Control
 
 ```typescript
-import { parseReactComponent, serializeToHTML, transformJSXToHTML } from '@vjs-10/jsx-to-html-compiler';
+import { parseReactComponent, serializeToHTML, transformJSXToHTML } from '@vjs-10/vjs-compiler';
 
 // Step 1: Parse
 const jsxElement = parseReactComponent(sourceCode);
@@ -80,9 +107,9 @@ const html = serializeToHTML(transformed, { indent: 0, indentSize: 2 });
 #### Custom Attribute Processing
 
 ```typescript
-import type { AttributeContext, AttributeProcessor } from '@vjs-10/jsx-to-html-compiler';
+import type { AttributeContext, AttributeProcessor } from '@vjs-10/vjs-compiler';
 
-import { AttributeProcessorPipeline, compileJSXToHTML, DefaultAttributeProcessor } from '@vjs-10/jsx-to-html-compiler';
+import { AttributeProcessorPipeline, compileJSXToHTML, DefaultAttributeProcessor } from '@vjs-10/vjs-compiler';
 
 // Create a custom processor for className attributes
 class CustomClassProcessor implements AttributeProcessor {
