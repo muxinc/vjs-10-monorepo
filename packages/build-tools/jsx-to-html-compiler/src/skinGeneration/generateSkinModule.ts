@@ -15,14 +15,13 @@ import type { SkinModuleData, GenerateSkinModuleOptions } from './types.js';
  */
 export function generateSkinModule(
   data: SkinModuleData,
-  options: GenerateSkinModuleOptions = {}
+  {
+    formatImports: importsFormatter = formatImports,
+    formatStyles: stylesFormatter = formatStyles,
+    formatHTML: htmlFormatter = formatHTML,
+  }: GenerateSkinModuleOptions = {}
 ): string {
   const { imports, html, styles, className, elementName } = data;
-
-  // Use custom formatters if provided, otherwise use defaults
-  const importsFormatter = options.formatImports ?? formatImports;
-  const stylesFormatter = options.formatStyles ?? formatStyles;
-  const htmlFormatter = options.formatHTML ?? formatHTML;
 
   // Preprocess dynamic parts
   const importsBlock = importsFormatter(imports);
