@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync } from 'fs';
-import { compileJSXToHTML } from './index.js';
+import { compileSkinToHTML } from './index.js';
 
 function main() {
   const args = process.argv.slice(2);
@@ -51,16 +51,18 @@ function main() {
     // Read the input file
     const sourceCode = readFileSync(inputFile, 'utf-8');
 
-    // Compile JSX to HTML
-    const html = compileJSXToHTML(sourceCode, { indent, indentSize });
+    // Compile skin to HTML module
+    const module = compileSkinToHTML(sourceCode, {
+      serializeOptions: { indent, indentSize },
+    });
 
-    if (html === null) {
-      console.error('Error: Could not extract JSX from the component');
+    if (module === null) {
+      console.error('Error: Could not compile skin component');
       process.exit(1);
     }
 
-    // Output the HTML
-    console.log(html);
+    // Output the module
+    console.log(module);
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : error);
     process.exit(1);
