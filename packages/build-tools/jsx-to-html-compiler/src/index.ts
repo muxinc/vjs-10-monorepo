@@ -29,6 +29,12 @@ export { placeholderStyleProcessor, type StyleContext, type StyleProcessor } fro
 // Export utilities for advanced usage
 export { transformJSXToHTML } from './transformer.js';
 // Export main compilation functions
-export { compileJSXToHTML, compileJSXToHTMLFromParsed } from './transforms/index.js';
+export {
+  compileJSXToHTML,
+  compileJSXToHTMLFromParsed,
+  compileReactToReactWithCSSModules,
+  type CompileReactToCSSModulesOptions,
+  REACT_TO_CSS_MODULES_CONFIG,
+} from './transforms/index.js';
 export type { CompileOptions, SerializeOptions } from './types.js';
 export * from './utils/naming.js';
