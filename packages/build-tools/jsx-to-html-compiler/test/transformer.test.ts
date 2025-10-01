@@ -96,7 +96,7 @@ describe('transformJSXToHTML', () => {
     expect(jsx).not.toBeNull();
 
     const transformed = transformJSXToHTML(jsx!);
-    const attrs = transformed.openingElement.attributes.filter(t.isJSXAttribute);
+    const attrs = transformed.openingElement.attributes.filter((attr) => t.isJSXAttribute(attr));
 
     // Transformer no longer transforms attribute names - that's done in the serializer
     const showRemainingAttr = attrs.find((attr) => attr.name.name === 'showRemaining');
