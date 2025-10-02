@@ -26,6 +26,7 @@ export interface MediaDefaultSkinStyles {
   readonly TimeRangeProgress: string;
   readonly TimeRangePointer: string;
   readonly TimeRangeThumb: string;
+  readonly VolumePopup: string;
   readonly VolumeRangeRoot: string;
   readonly VolumeRangeTrack: string;
   readonly VolumeRangeProgress: string;
@@ -138,6 +139,17 @@ const styles: MediaDefaultSkinStyles = {
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
     'size-2.5 active:size-3 group-active/slider:size-3'
+  ),
+  VolumePopup: cn(
+    'relative z-30 px-2 py-4 rounded-2xl',
+    'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
+    'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
+    // Border to enhance contrast on lighter videos
+    'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
+    // Reduced transparency for users with preference
+    'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
+    // High contrast mode
+    'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20'
   ),
   VolumeRangeRoot: cn('flex [&[data-orientation="horizontal"]]:w-20 [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20 items-center justify-center group/slider relative'),
   VolumeRangeTrack: cn('[&[data-orientation="horizontal"]]:h-1 [&[data-orientation="vertical"]]:w-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),

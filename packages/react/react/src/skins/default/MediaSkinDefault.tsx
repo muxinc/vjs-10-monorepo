@@ -15,6 +15,7 @@ import { DurationDisplay } from '../../components/DurationDisplay';
 import { FullscreenButton } from '../../components/FullscreenButton';
 import { MediaContainer } from '../../components/MediaContainer';
 import MuteButton from '../../components/MuteButton';
+import { Popover } from '../../components/Popover';
 import PlayButton from '../../components/PlayButton';
 import { TimeRange } from '../../components/TimeRange';
 import { VolumeRange } from '../../components/VolumeRange';
@@ -56,18 +57,25 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <DurationDisplay className={styles.TimeDisplay} />
         </div>
 
-        <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.VolumeButton}`}>
-          <VolumeHighIcon className={styles.VolumeHighIcon} />
-          <VolumeLowIcon className={styles.VolumeLowIcon} />
-          <VolumeOffIcon className={styles.VolumeOffIcon} />
-        </MuteButton>
-
-        <VolumeRange.Root className={styles.VolumeRangeRoot} orientation="vertical">
-          <VolumeRange.Track className={styles.VolumeRangeTrack}>
-            <VolumeRange.Progress className={styles.VolumeRangeProgress} />
-          </VolumeRange.Track>
-          <VolumeRange.Thumb className={styles.VolumeRangeThumb} />
-        </VolumeRange.Root>
+        <Popover.Root openOnHover delay={200} closeDelay={100}>
+          <Popover.Trigger>
+            <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.VolumeButton}`}>
+              <VolumeHighIcon className={styles.VolumeHighIcon} />
+              <VolumeLowIcon className={styles.VolumeLowIcon} />
+              <VolumeOffIcon className={styles.VolumeOffIcon} />
+            </MuteButton>
+          </Popover.Trigger>
+          <Popover.Positioner side="top" sideOffset={8}>
+            <Popover.Popup className={styles.VolumePopup}>
+              <VolumeRange.Root className={styles.VolumeRangeRoot} orientation="vertical">
+                <VolumeRange.Track className={styles.VolumeRangeTrack}>
+                  <VolumeRange.Progress className={styles.VolumeRangeProgress} />
+                </VolumeRange.Track>
+                <VolumeRange.Thumb className={styles.VolumeRangeThumb} />
+              </VolumeRange.Root>
+            </Popover.Popup>
+          </Popover.Positioner>
+        </Popover.Root>
 
         <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
           <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
