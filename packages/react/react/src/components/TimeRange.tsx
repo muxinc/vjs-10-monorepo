@@ -54,6 +54,7 @@ export const useTimeRangeRootProps = (props: TimeRange.Props, state: TimeRange.S
 
   return {
     ref: useCallback((el: HTMLDivElement) => {
+      if (!el) return;
       state.core?.attach(el);
     }, []),
     id,

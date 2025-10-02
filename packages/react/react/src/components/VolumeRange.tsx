@@ -58,6 +58,7 @@ export const useVolumeRangeRootProps = (props: VolumeRange.Props, state: VolumeR
 
   return {
     ref: useCallback((el: HTMLDivElement) => {
+      if (!el) return;
       state.core?.attach(el);
     }, []),
     id,
