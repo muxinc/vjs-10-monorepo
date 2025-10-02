@@ -1,6 +1,6 @@
 import type { FC, ReactElement } from 'react';
 
-import { createContext, useCallback, useContext, useEffect, useRef, useSyncExternalStore } from 'react';
+import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useSyncExternalStore } from 'react';
 
 export type StateHookFn<TProps = any, TState = any> = (props: TProps) => TState;
 
@@ -34,11 +34,15 @@ export const toConnectedComponent = <
   defaultRender: TRenderFn,
   displayName: string
 ): ConnectedComponent<TProps, TRenderFn> => {
-  const ConnectedComponent = ({ render = defaultRender, ...props }: TProps & { render?: TRenderFn }) => {
-    const connectedState = useStateHook(props as TProps);
-    const connectedProps = usePropsHook(props as TProps, connectedState);
-    return <Context.Provider value={connectedState}>{render(connectedProps, connectedState)}</Context.Provider>;
-  };
+  const ConnectedComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
+    ({ render = defaultRender, ...props }, ref) => {
+      const connectedState = useStateHook(props as TProps);
+      const connectedProps = usePropsHook(props as TProps, connectedState);
+      // Add ref to connectedProps if it exists
+      const propsWithRef = ref ? { ...connectedProps, ref } : connectedProps;
+      return <Context.Provider value={connectedState}>{render(propsWithRef, connectedState)}</Context.Provider>;
+    }
+  );
 
   ConnectedComponent.displayName = displayName;
 
@@ -70,11 +74,15 @@ export const toContextComponent = <
   defaultRender: TRenderFn,
   displayName: string
 ): ContextComponent<TProps, TRenderFn> => {
-  const ContextComponent = ({ render = defaultRender, ...props }: TProps & { render?: TRenderFn }) => {
-    const context = useContext(Context);
-    const contextProps = usePropsHook(props as TProps, context);
-    return render(contextProps, context);
-  };
+  const ContextComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
+    ({ render = defaultRender, ...props }, ref) => {
+      const context = useContext(Context);
+      const contextProps = usePropsHook(props as TProps, context);
+      // Add ref to contextProps if it exists
+      const propsWithRef = ref ? { ...contextProps, ref } : contextProps;
+      return render(propsWithRef, context);
+    }
+  );
 
   ContextComponent.displayName = displayName;
 

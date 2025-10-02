@@ -43,8 +43,8 @@
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
     "tsdown": "^0.15.4",
     "typescript": "^5.9.2"
   },

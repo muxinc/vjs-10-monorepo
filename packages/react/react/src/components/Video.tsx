@@ -10,7 +10,7 @@ import type {
   VideoHTMLAttributes,
 } from 'react';
 
-import { useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 import { createMediaStateOwner } from '@vjs-10/media';
 import { useMediaRef } from '@vjs-10/react-media-store';
@@ -52,7 +52,7 @@ const useMediaStateOwner = (ref: Ref<any>, createMediaStateOwner: CreateMediaSta
 
 const DefaultVideoComponent: ElementType<
   Omit<DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> & { ref: Ref<any> }
-> = ({ children, ref, ...props }) => {
+> = forwardRef<any, any>(({ children, ...props }, ref) => {
   const { updateMediaElement } = useMediaStateOwner(ref, createMediaStateOwner);
   return (
     <video
@@ -65,7 +65,7 @@ const DefaultVideoComponent: ElementType<
       {children}
     </video>
   );
-};
+});
 
 /**
  * @description This is a "thin wrapper" around the media component whose primary responsibility is to wire up the element

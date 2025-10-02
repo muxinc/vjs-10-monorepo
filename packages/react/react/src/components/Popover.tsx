@@ -1,7 +1,7 @@
 import type { Placement } from '@floating-ui/react';
 import type { ReactNode } from 'react';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import {
   autoUpdate,
@@ -117,7 +117,7 @@ function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPo
   const { open, refs, floatingStyles, updatePositioning } = usePopoverContext();
 
   // Update positioning when props change
-  React.useEffect(() => {
+  useEffect(() => {
     updatePositioning(side, sideOffset);
   }, [side, sideOffset, updatePositioning]);
 
