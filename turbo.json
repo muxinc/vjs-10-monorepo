@@ -4,7 +4,7 @@
   "concurrency": "20",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["generate:icons", "^build"],
       "outputs": ["dist/**"]
     },
     "dev": {
