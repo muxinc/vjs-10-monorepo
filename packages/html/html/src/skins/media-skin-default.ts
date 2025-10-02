@@ -8,6 +8,7 @@ import '../components/media-time-range';
 import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
+import '../components/media-popover';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
@@ -24,6 +25,7 @@ export function getTemplateHTML() {
       }
 
       media-container > ::slotted([slot=media]) {
+        display: block;
         width: 100%;
         height: 100%;
       }
@@ -45,7 +47,6 @@ export function getTemplateHTML() {
       /* Time Display Styling */
       media-current-time-display,
       media-duration-display {
-        background: rgb(20 20 30 / .7);
         padding: 4px 8px;
         color: rgb(238 238 238);
         font-family: monospace;
@@ -59,28 +60,32 @@ export function getTemplateHTML() {
       /* Generic Media Button Styling */
       .button {
         border: none;
-        background: rgb(20 20 30 / .7);
-        padding: 4px;
+        padding: 8px;
         cursor: pointer;
         color: rgb(238 238 238);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        min-height: 24px;
       }
 
       .button .icon {
-        width: 24px;
-        height: 24px;
+        width: 18px;
+        height: 18px;
         display: none;
       }
 
       /* Media Play Button UI/Styles */
       media-play-button:not([data-paused]) .pause-icon,
       media-play-button[data-paused] .play-icon {
-        display: inline-block;
+        display: block;
       }
 
       /* Media Fullscreen Button UI/Styles */
       media-fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon,
       media-fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
-        display: inline-block;
+        display: block;
       }
 
       /* One way to define the "default visible" icon (CJP) */
@@ -89,11 +94,12 @@ export function getTemplateHTML() {
       media-mute-button[data-volume-level=low] .volume-low-icon,
       media-mute-button[data-volume-level=medium] .volume-low-icon,
       media-mute-button[data-volume-level=off] .volume-off-icon {
-        display: inline-block;
+        display: block;
       }
 
       /* Media Control Bar UI/Styles */
       .control-bar {
+        background: rgb(20 20 30 / .7);
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -168,6 +174,11 @@ export function getTemplateHTML() {
       media-time-range-progress {
         background-color: #007bff;
         border-radius: inherit;
+      }
+
+      media-popover-popup {
+        background: rgb(20 20 30 / .7);
+        padding: 14px 0;
       }
 
       /* VolumeRange Component Styles */
@@ -251,17 +262,25 @@ export function getTemplateHTML() {
             <media-time-range-thumb></media-time-range-thumb>
           </media-time-range-root>
           <media-duration-display></media-duration-display>
-          <media-mute-button class="button">
-            <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
-            <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
-            <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
-          </media-mute-button>
-          <media-volume-range-root orientation="vertical">
-            <media-volume-range-track>
-              <media-volume-range-progress></media-volume-range-progress>
-            </media-volume-range-track>
-            <media-volume-range-thumb></media-volume-range-thumb>
-          </media-volume-range-root>
+          <media-popover-root openonhover delay="200" closedelay="100">
+            <media-popover-trigger>
+              <media-mute-button class="button">
+                <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
+                <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
+                <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
+              </media-mute-button>
+            </media-popover-trigger>
+            <media-popover-positioner side="top" sideOffset="0">
+              <media-popover-popup>
+                <media-volume-range-root orientation="vertical">
+                  <media-volume-range-track>
+                    <media-volume-range-progress></media-volume-range-progress>
+                  </media-volume-range-track>
+                  <media-volume-range-thumb></media-volume-range-thumb>
+                </media-volume-range-root>
+              </media-popover-popup>
+            </media-popover-positioner>
+          </media-popover-root>
           <media-fullscreen-button class="button">
             <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
             <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>

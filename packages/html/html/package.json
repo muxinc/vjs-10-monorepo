@@ -31,6 +31,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
+    "@floating-ui/dom": "^1.6.13",
     "@open-wc/context-protocol": "^0.0.9",
     "@vjs-10/core": "workspace:*",
     "@vjs-10/html-icons": "workspace:*",
