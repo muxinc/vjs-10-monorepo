@@ -173,6 +173,9 @@ importers:
 
   packages/html/html:
     dependencies:
+      '@floating-ui/dom':
+        specifier: ^1.6.13
+        version: 1.7.4
       '@open-wc/context-protocol':
         specifier: ^0.0.9
         version: 0.0.9
