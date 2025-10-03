@@ -1,0 +1,415 @@
+# Video.js Compiler
+
+A multi-target compiler for Video.js 10 components. Transforms React/JSX to various output formats using a configurable pipeline architecture.
+
+## Features
+
+### Compilation Pipelines
+
+The compiler uses a **pipeline-based architecture** where different combinations of input type, output format, and CSS strategy determine the compilation behavior:
+
+#### Available Pipelines
+
+1. **`skin-web-component-inline`**: React Skin → HTML Web Component (Inline CSS)
+   - Input: React skin component with CSS imports
+   - Output: Single TypeScript file with web component class and inline `<style>` tag
+   - CSS Strategy: Discovers and merges all imported CSS files
+
+2. **`skin-react-css-modules`**: React Skin (Tailwind) → React Skin (CSS Modules)
+   - Input: React skin component with Tailwind classes
+   - Output: React component (.tsx) + CSS Module file (.module.css)
+   - CSS Strategy: Transforms style imports to CSS Module imports (placeholder CSS generation)
+
+### Transformation Capabilities
+
+- **Element Names**: `PlayButton` → `media-play-button`, `TimeRange.Root` → `media-time-range-root`
+- **Built-in Elements**: Preserves `div`, `span`, etc.
+- **Attribute Processing**: Unified pipeline with element context
+  - `className` → `class`, `showRemaining` → `show-remaining`
+  - Extensible via custom processors
+  - CSS transformations (Tailwind, CSS Modules, etc.)
+- **Children Replacement**: `{children}` → `<slot name="media" slot="media"></slot>`
+- **Self-closing Tags**: Converts to explicit closing tags
+- **JSX Comments**: Automatically removed from output
+- **Dependency Discovery**: Automatically finds and processes CSS imports
+- **HTML5 Validation**: Built-in validation for custom elements and output HTML
+- **Output Validation**: ESLint and Prettier validation for generated code
+
+## Installation
+
+```bash
+pnpm install
+pnpm build
+```
+
+## Usage
+
+### CLI
+
+#### Compile Command (Single File)
+
+```bash
+# Compile a React skin to web component with inline CSS
+vjs-compiler compile src/MediaSkin.tsx \
+  --type skin \
+  --format web-component \
+  --css inline \
+  --out-dir dist
+
+# Compile to React with CSS Modules
+vjs-compiler compile src/MediaSkin.tsx \
+  --type skin \
+  --format react \
+  --css css-modules \
+  --out-dir dist
+```
+
+#### Build Command (Config File)
+
+```bash
+# Build using config file
+vjs-compiler build --config vjs.config.js
+
+# Default config file name is vjs.config.js
+vjs-compiler build
+```
+
+#### Config File Format
+
+```javascript
+// vjs.config.js
+export default {
+  // What type of input?
+  inputType: 'skin', // or 'component'
+
+  // Input file(s)
+  input: 'src/skins/MediaSkinDefault.tsx',
+  // or multiple files:
+  // input: ['src/skins/Skin1.tsx', 'src/skins/Skin2.tsx'],
+
+  // Output directory
+  outDir: 'dist/skins',
+
+  // What output format?
+  outputFormat: 'web-component', // or 'react'
+
+  // How to handle CSS?
+  cssStrategy: 'inline', // or 'css-modules', 'tailwind', 'vanilla'
+
+  // Optional: additional options
+  options: {
+    indent: 0,
+    indentSize: 2,
+    importMappings: {
+      '@vjs-10/react-icons': '@vjs-10/html-icons',
+      '@vjs-10/react': '@vjs-10/html'
+    }
+  }
+}
+```
+
+### Programmatic API
+
+#### Using Pipelines (Recommended)
+
+```typescript
+import { getPipeline, type CompilerConfig } from '@vjs-10/vjs-compiler';
+
+const config: CompilerConfig = {
+  inputType: 'skin',
+  input: 'src/MediaSkin.tsx',
+  outDir: 'dist',
+  outputFormat: 'web-component',
+  cssStrategy: 'inline'
+};
+
+const pipeline = getPipeline(config);
+const result = pipeline.compile('/absolute/path/to/MediaSkin.tsx', config);
+
+// result.files contains generated files
+for (const file of result.files) {
+  console.log(file.path); // 'media-skin.ts'
+  console.log(file.content); // Generated code
+  console.log(file.type); // 'ts' | 'tsx' | 'css'
+}
+```
+
+#### Dependency Discovery
+
+```typescript
+import { discoverDependencies } from '@vjs-10/vjs-compiler';
+
+const deps = discoverDependencies('/path/to/MediaSkin.tsx');
+
+console.log(deps.css); // ['/path/to/styles.module.css', '/path/to/theme.css']
+console.log(deps.components); // ['/path/to/components/PlayButton.tsx']
+```
+
+#### Legacy API (Still Supported)
+
+##### React → HTML Web Components
+
+```typescript
+import { compileJSXToHTML } from '@vjs-10/vjs-compiler';
+
+const source = `
+  export const Component = () => (
+    <MediaContainer>
+      <PlayButton>
+        <PlayIcon />
+      </PlayButton>
+    </MediaContainer>
+  );
+`;
+
+const html = compileJSXToHTML(source);
+console.log(html);
+// Output:
+// <media-container>
+//   <media-play-button>
+//     <media-play-icon></media-play-icon>
+//   </media-play-button>
+// </media-container>
+```
+
+##### React + Tailwind → React + CSS Modules
+
+```typescript
+import { compileReactToReactWithCSSModules } from '@vjs-10/vjs-compiler';
+
+const source = `
+  import styles from './styles';
+  export const Button = () => <button className={styles.Button}>Click</button>;
+`;
+
+const output = compileReactToReactWithCSSModules(source);
+console.log(output);
+// Output:
+// import styles from "./styles.module.css";
+// export const Button = () => <button className={styles.Button}>Click</button>;
+```
+
+##### Complete Skin Compilation
+
+```typescript
+import { compileSkinToHTML } from '@vjs-10/vjs-compiler';
+
+const source = `
+  import styles from './styles.css';
+  export const MediaSkin = () => (
+    <MediaContainer className={styles.wrapper}>
+      {children}
+    </MediaContainer>
+  );
+`;
+
+const module = compileSkinToHTML(source);
+// Returns complete TypeScript module with web component class
+```
+
+### Advanced API
+
+#### Custom Attribute Processing
+
+```typescript
+import type { AttributeContext, AttributeProcessor } from '@vjs-10/vjs-compiler';
+
+import { AttributeProcessorPipeline, compileJSXToHTML, DefaultAttributeProcessor } from '@vjs-10/vjs-compiler';
+
+// Create a custom processor for className attributes
+class CustomClassProcessor implements AttributeProcessor {
+  transformName(context: AttributeContext): string | null {
+    return 'class';
+  }
+
+  transformValue(context: AttributeContext): string | null {
+    // Custom CSS processing logic here
+    // Access element context via context.elementName and context.htmlElementName
+    const value = context.attribute.value;
+
+    if (value?.type === 'StringLiteral') {
+      return value.value;
+    }
+
+    // Process JSX expressions for CSS Modules, Tailwind, etc.
+    return 'processed-classes';
+  }
+}
+
+// Create and configure pipeline
+const pipeline = new AttributeProcessorPipeline();
+pipeline.register('className', new CustomClassProcessor());
+
+// Use with compiler
+const html = compileJSXToHTML(source, { attributePipeline: pipeline });
+```
+
+## Architecture
+
+### Pipeline System
+
+```
+Config (inputType + outputFormat + cssStrategy)
+    ↓
+[Pipeline Selector] → Choose compilation strategy
+    ↓
+[Dependency Discovery] → Find CSS/component imports
+    ↓
+[Pipeline Execution] → Transform source code
+    ↓
+[Output Generation] → Generate one or more files
+```
+
+### Core Pipeline
+
+```
+React TSX Source
+    ↓
+[Parser] → Extract JSX from React component
+    ↓
+[Transformer] → Transform element names, {children} → <slot>
+    ↓
+[Serializer] → Process attributes + generate HTML string
+    ↓
+HTML Output
+```
+
+### Key Components
+
+1. **Config System** (`src/config/`) - Defines compilation configuration types
+2. **Dependency Discovery** (`src/dependencies/`) - Analyzes imports to find related files
+3. **Pipeline Registry** (`src/pipelines/`) - Manages available compilation strategies
+4. **Parser** (`src/parsing/`) - Uses `@babel/parser` to extract JSX return values
+5. **Transformer** (`src/transformer.ts`) - Transforms element names and special patterns
+6. **Serializer** (`src/serializer.ts`) - Processes attributes and generates HTML
+7. **Attribute Processing** (`src/attributeProcessing/`) - Unified attribute transformation pipeline
+   - `AttributeContext` - Provides attribute + parent element context
+   - `AttributeProcessor` - Interface for name/value transformation
+   - `AttributeProcessorPipeline` - Orchestrates processors with registration
+   - `DefaultAttributeProcessor` - Standard JSX → HTML transformations
+8. **Import Transforming** (`src/importTransforming/`) - Maps React imports to HTML imports
+9. **Naming Utilities** (`src/utils/naming.ts`) - Handles name conversions (PascalCase → kebab-case)
+
+## Testing
+
+This package uses [Vitest](https://vitest.dev/) for testing.
+
+### Run Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run specific test file
+pnpm test importTransforming
+```
+
+### Test Structure
+
+- `test/naming.test.ts` - Name conversion utilities
+- `test/parser.test.ts` - JSX parsing from React components
+- `test/transformer.test.ts` - JSX-to-HTML AST transformation
+- `test/importTransforming.test.ts` - Import transformation and dependency injection
+- `test/skinGeneration.test.ts` - Skin module generation
+- `test/validator.test.ts` - HTML5 validation
+- `test/outputValidation.test.ts` - ESLint/Prettier validation
+- `test/reactToCSSModules.test.ts` - React to CSS Modules transformation
+- `test/integration.test.ts` - End-to-end integration tests
+
+## Transformation Rules
+
+### Element Names
+
+- Simple identifier: `PlayButton` → `media-play-button`
+- Member expression: `TimeRange.Root` → `media-time-range-root`
+- Built-in elements: `div` → `div` (unchanged)
+- Always prepend `media-` prefix to custom components
+
+### Attributes
+
+Attributes are processed by the `AttributeProcessorPipeline` with full element context:
+
+- **Name transformation**: `className` → `class`, camelCase → kebab-case (`showRemaining` → `show-remaining`)
+- **Value transformation**:
+  - String literals pass through unchanged
+  - JSX expressions converted to empty string (placeholder for CSS processing)
+  - Boolean attributes (e.g., `disabled`) have no value
+- **Element context**: Processors have access to parent element name for context-aware rules
+- **Extensible**: Register custom processors for specific attribute names (e.g., `className`, `style`)
+
+### Special Cases
+
+- `{children}` → `<slot name="media" slot="media"></slot>`
+- Self-closing tags → Explicit closing tags
+- JSX comments (`{/* ... */}`) → Removed
+
+## Examples
+
+### Input (React TSX)
+
+```tsx
+import { TimeRange } from '@vjs-10/react';
+
+import * as React from 'react';
+
+export const MediaSkin: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <MediaContainer className="wrapper">
+      {children}
+      <div className="controls">
+        <TimeRange.Root>
+          <TimeRange.Track>
+            <TimeRange.Progress />
+          </TimeRange.Track>
+        </TimeRange.Root>
+      </div>
+    </MediaContainer>
+  );
+};
+```
+
+### Output (HTML Web Component)
+
+```html
+<media-container class="wrapper">
+  <slot name="media" slot="media"></slot>
+  <div class="controls">
+    <media-time-range-root>
+      <media-time-range-track>
+        <media-time-range-progress></media-time-range-progress>
+      </media-time-range-track>
+    </media-time-range-root>
+  </div>
+</media-container>
+```
+
+## Extending the Compiler
+
+### Adding New Pipelines
+
+```typescript
+import { registerPipeline, type CompilationPipeline } from '@vjs-10/vjs-compiler';
+
+const myCustomPipeline: CompilationPipeline = {
+  id: 'component-vue-scoped',
+  name: 'React Component → Vue (Scoped CSS)',
+
+  compile(entryFile, config) {
+    // Your compilation logic here
+    return {
+      files: [
+        { path: 'Component.vue', content: '...', type: 'vue' }
+      ]
+    };
+  }
+};
+
+registerPipeline(myCustomPipeline);
+```
+
+## License
+
+Apache-2.0
