@@ -262,7 +262,7 @@ export function getTemplateHTML() {
             <media-time-range-thumb></media-time-range-thumb>
           </media-time-range-root>
           <media-duration-display></media-duration-display>
-          <media-popover-root openonhover delay="200" closedelay="100">
+          <media-popover-root open-on-hover delay="200" close-delay="100">
             <media-popover-trigger>
               <media-mute-button class="button">
                 <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
@@ -270,7 +270,7 @@ export function getTemplateHTML() {
                 <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
               </media-mute-button>
             </media-popover-trigger>
-            <media-popover-positioner side="top" sideOffset="0">
+            <media-popover-positioner side="top" side-offset="0">
               <media-popover-popup>
                 <media-volume-range-root orientation="vertical">
                   <media-volume-range-track>

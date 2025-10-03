@@ -23,11 +23,11 @@ export class MediaPopoverRoot extends HTMLElement {
   }
 
   static get observedAttributes(): string[] {
-    return ['openonhover', 'delay', 'closedelay'];
+    return ['open-on-hover', 'delay', 'close-delay'];
   }
 
   get openOnHover(): boolean {
-    return this.hasAttribute('openonhover');
+    return this.hasAttribute('open-on-hover');
   }
 
   get delay(): number {
@@ -35,7 +35,7 @@ export class MediaPopoverRoot extends HTMLElement {
   }
 
   get closeDelay(): number {
-    return parseInt(this.getAttribute('closedelay') ?? '0', 10);
+    return parseInt(this.getAttribute('close-delay') ?? '0', 10);
   }
 
   get #triggerElement(): MediaPopoverTrigger | null {
@@ -158,7 +158,7 @@ export class MediaPopoverPositioner extends HTMLElement {
   }
 
   get sideOffset(): number {
-    return parseInt(this.getAttribute('sideoffset') ?? '0', 10);
+    return parseInt(this.getAttribute('side-offset') ?? '0', 10);
   }
 }
 
