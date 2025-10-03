@@ -69,6 +69,53 @@ const styles: MediaDefaultSkinStyles = {
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
+  TooltipPopup: cn(
+    'whitespace-nowrap relative z-50 px-2 py-1 text-xs font-medium rounded-md',
+    'bg-black/90 text-white border border-white/10',
+    'shadow-lg shadow-black/25',
+    // Reduced transparency for users with preference
+    'reduced-transparency:bg-black/95',
+    // High contrast mode
+    'contrast-more:bg-black contrast-more:border-white/30',
+  ),
+  PlayTooltipPopup: cn(
+    '[&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden',
+    '[&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline'
+  ),
+  PlayTooltip: cn('play-tooltip'),
+  PauseTooltip: cn('pause-tooltip'),
+  TooltipArrow: cn(
+    'absolute z-50',
+    // Match the popup's visual style
+    '[&_svg]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]',
+    // Reduced transparency for users with preference
+    'reduced-transparency:[&_svg]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]',
+    // High contrast mode
+    'contrast-more:[&_svg]:drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]',
+    // Positioning based on placement
+    'data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180'
+  ),
+  ArrowFill: cn(
+    'fill-black/90',
+    // Reduced transparency for users with preference
+    'reduced-transparency:fill-black/95',
+    // High contrast mode
+    'contrast-more:fill-black'
+  ),
+  ArrowOuterStroke: cn(
+    'fill-white/10',
+    // Reduced transparency for users with preference
+    'reduced-transparency:fill-black',
+    // High contrast mode
+    'contrast-more:fill-white/30'
+  ),
+  ArrowInnerStroke: cn(
+    'fill-black/15',
+    // Reduced transparency for users with preference
+    'reduced-transparency:fill-white/20',
+    // High contrast mode
+    'contrast-more:fill-white/20'
+  ),
   VolumeButton: cn(
     '[&_svg]:opacity-0',
     '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
@@ -96,6 +143,12 @@ const styles: MediaDefaultSkinStyles = {
     'group-hover/button:[&_.arrow-1]:translate-0',
     'group-hover/button:[&_.arrow-2]:translate-0'
   ),
+  FullScreenTooltipPopup: cn(
+    '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
+    '[&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline'
+  ),
+  FullScreenEnterTooltip: cn('fullscreen-enter-tooltip'),
+  FullScreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
   SliderRoot: cn(
