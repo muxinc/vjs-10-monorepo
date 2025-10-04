@@ -1,43 +1,12 @@
-// A (very crude) utility to merge class names
-// Usually I'd use something like `clsx` or `classnames` but this is ok for our simple use case.
-// It just makes the billions of Tailwind classes a little easier to read.
-const cn = (...classes: (string | undefined)[]): string => classes.filter(Boolean).join(' ');
+import type { MediaDefaultSkinStyles } from "./types";
 
-export interface MediaDefaultSkinStyles {
-  readonly MediaContainer: string;
-  readonly Overlay: string;
-  readonly Controls: string;
-  readonly Button: string;
-  readonly IconButton: string;
-  readonly PlayButton: string;
-  readonly PlayIcon: string;
-  readonly PauseIcon: string;
-  readonly VolumeButton: string;
-  readonly VolumeHighIcon: string;
-  readonly VolumeLowIcon: string;
-  readonly VolumeOffIcon: string;
-  readonly FullScreenButton: string;
-  readonly FullScreenEnterIcon: string;
-  readonly FullScreenExitIcon: string;
-  readonly TimeControls: string;
-  readonly TimeDisplay: string;
-  readonly TimeRangeRoot: string;
-  readonly TimeRangeTrack: string;
-  readonly TimeRangeProgress: string;
-  readonly TimeRangePointer: string;
-  readonly TimeRangeThumb: string;
-  readonly VolumePopup: string;
-  readonly VolumeRangeRoot: string;
-  readonly VolumeRangeTrack: string;
-  readonly VolumeRangeProgress: string;
-  readonly VolumeRangeThumb: string;
-}
+import { cn } from "../../utils/cn";
 
 const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip',
     // Base typography
-    'antialiased font-[510] font-sans text-[0.8125rem] @7xl/root:text-[0.9375rem] leading-normal tracking-[-0.0125em]',
+    'text-sm',
     // Prevent rounded corners in fullscreen.
     '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
@@ -49,25 +18,26 @@ const styles: MediaDefaultSkinStyles = {
   Overlay: cn(
     'opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none z-10 bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90',
     // Hide when playing (for now).
-    // This is crude temporary logic, we’ll improve it later I guess with a [data-show-controls] attribute or something?
+    //  FIXME: This is crude temporary logic, we’ll improve it later I guess with a [data-show-controls] attribute or something?
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0',
     'group-hover/root:opacity-100 group-hover/root:delay-0'
   ),
   Controls: cn(
-    'controls', // Temporary className hook for above logic. Can be removed once have a proper selector as above.
+    'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
     '@container/controls absolute inset-x-3 bottom-3 rounded-full z-20 flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white text-shadow',
     'shadow-sm shadow-black/15',
     // Background
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     // Animation
     'transition will-change-transform origin-bottom ease-out',
-    // Temporary hide/show logic
+    //  FIXME: Temporary hide/show logic
     'scale-90 opacity-0 delay-500',
     'has-[[data-paused]]:scale-100 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0',
     'group-hover/root:scale-100 group-hover/root:opacity-100 group-hover/root:delay-0',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
     // Reduced transparency for users with preference
+    // XXX: This requires a Tailwind custom variant (see 1 below)
     'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
     // High contrast mode
     'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20'
@@ -77,7 +47,7 @@ const styles: MediaDefaultSkinStyles = {
     // Background/foreground
     'bg-transparent text-white/90',
     // Hover and focus states
-    'hocus:no-underline hocus:bg-white/10 hocus:text-white',
+    'hover:no-underline hover:bg-white/10 hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white',
     // Focus state
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
     // Disabled state
@@ -128,39 +98,42 @@ const styles: MediaDefaultSkinStyles = {
   ),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
-  TimeRangeRoot: cn('flex [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20 items-center justify-center flex-1 group/slider relative'),
-  TimeRangeTrack: cn('[&[data-orientation="horizontal"]]:h-1 [&[data-orientation="vertical"]]:w-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
-  TimeRangeProgress: cn('bg-white rounded-[inherit]'),
+  SliderRoot: cn(
+    'flex items-center justify-center flex-1 group/slider relative',
+    '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
+    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
+  ),
+  SliderTrack: cn(
+    'w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5',
+    '[&[data-orientation="horizontal"]]:h-1',
+    '[&[data-orientation="vertical"]]:w-1'
+  ),
+  SliderProgress: cn('bg-white rounded-[inherit]'),
   // TODO: Work out what we want to do here.
-  TimeRangePointer: cn('rounded-[inherit]'),
-  TimeRangeThumb: cn(
+  SliderPointer: cn('rounded-[inherit]'),
+  SliderThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',
     'opacity-0 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
-    'size-2.5 active:size-3 group-active/slider:size-3'
+    'size-2.5 active:size-3 group-active/slider:size-3 hover:cursor-ew-resize'
   ),
-  VolumePopup: cn(
+  PopoverPopup: cn(
     'relative z-30 px-2 py-4 rounded-2xl',
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
     // Reduced transparency for users with preference
+    // XXX: This requires a Tailwind custom variant (see 1 below)
     'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
     // High contrast mode
     'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20'
   ),
-  VolumeRangeRoot: cn('flex [&[data-orientation="horizontal"]]:w-20 [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20 items-center justify-center group/slider relative'),
-  VolumeRangeTrack: cn('[&[data-orientation="horizontal"]]:h-1 [&[data-orientation="vertical"]]:w-1 w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5'),
-  VolumeRangeProgress: cn('bg-white rounded-[inherit]'),
-  VolumeRangeThumb: cn(
-    'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',
-    'opacity-0 transition-[opacity,height,width] ease-in-out',
-    '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
-    'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
-    'size-2.5 active:size-3 group-active/slider:size-3'
-  ),
 };
+
+/*
+[1] @custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
+*/
 
 export default styles;

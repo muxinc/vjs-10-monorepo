@@ -46,12 +46,12 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             className={styles.TimeDisplay}
           />
 
-          <TimeRange.Root className={styles.TimeRangeRoot}>
-            <TimeRange.Track className={styles.TimeRangeTrack}>
-              <TimeRange.Progress className={styles.TimeRangeProgress} />
-              <TimeRange.Pointer className={styles.TimeRangePointer} />
+          <TimeRange.Root className={styles.SliderRoot}>
+            <TimeRange.Track className={styles.SliderTrack}>
+              <TimeRange.Progress className={styles.SliderProgress} />
+              <TimeRange.Pointer className={styles.SliderPointer} />
             </TimeRange.Track>
-            <TimeRange.Thumb className={styles.TimeRangeThumb} />
+            <TimeRange.Thumb className={styles.SliderThumb} />
           </TimeRange.Root>
 
           <DurationDisplay className={styles.TimeDisplay} />
@@ -66,12 +66,12 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             </MuteButton>
           </Popover.Trigger>
           <Popover.Positioner side="top" sideOffset={8}>
-            <Popover.Popup className={styles.VolumePopup}>
-              <VolumeRange.Root className={styles.VolumeRangeRoot} orientation="vertical">
-                <VolumeRange.Track className={styles.VolumeRangeTrack}>
-                  <VolumeRange.Progress className={styles.VolumeRangeProgress} />
+            <Popover.Popup className={styles.PopoverPopup}>
+              <VolumeRange.Root className={styles.SliderRoot} orientation="vertical">
+                <VolumeRange.Track className={styles.SliderTrack}>
+                  <VolumeRange.Progress className={styles.SliderProgress} />
                 </VolumeRange.Track>
-                <VolumeRange.Thumb className={styles.VolumeRangeThumb} />
+                <VolumeRange.Thumb className={styles.SliderThumb} />
               </VolumeRange.Root>
             </Popover.Popup>
           </Popover.Positioner>

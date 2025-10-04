@@ -4,18 +4,16 @@
 @source "../../../packages/react";
 
 @theme {
-  --font-sans:
-    InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.body {
+  @apply antialiased font-[510] font-sans text-[0.8125rem] @7xl/root:text-[0.9375rem] leading-normal tracking-[-0.0125em];
 }
 
 :root {
   font-feature-settings: 'cv01', 'ss01', 'ss03';
 }
 
-/* Make hocus (hover + focus-visible) variants */
-@custom-variant hocus (&:is(:hover, :focus-visible));
-@custom-variant group-hocus (&:is(:hover, :focus-visible) &);
-@custom-variant peer-hocus (&:is(:hover, :focus-visible) ~ &);
 /* Make reduced-transparency variant */
 @custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
