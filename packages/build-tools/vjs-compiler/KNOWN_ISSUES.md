@@ -12,6 +12,101 @@ This document tracks known limitations, unresolved issues, and incomplete functi
 
 ## Critical Issues
 
+### CSS Compilation Bugs (Fixed)
+
+**Status**: 🟢 Resolved (as of 2025-10-06)
+
+Three critical CSS compilation bugs were identified and fixed at the compiler level:
+
+#### 1. IconButton Grid-Area Bug
+
+**Description**: Arbitrary values with variant selectors (e.g., `[&_svg]:[grid-area:1/1]`) were incorrectly applying the property to both parent and child elements.
+
+**Example**:
+```typescript
+// Input
+IconButton: 'grid [&_svg]:[grid-area:1/1]'
+
+// Buggy output (before fix)
+.IconButton {
+  display: grid;
+  grid-area: 1/1; /* WRONG - causes layout issues */
+}
+
+// Correct output (after fix)
+.IconButton {
+  display: grid;
+}
+.IconButton svg {
+  grid-area: 1/1; /* Correct - icons overlap */
+}
+```
+
+**Root Cause**: The class parser was extracting arbitrary values but dropping variant selector information during parsing.
+
+**Resolution**: Enhanced `ArbitraryValue` type to include `variantSelector` field, updated parser to extract variant selectors from Tailwind AST, and modified CSS generation to create nested rules when variant selectors are present.
+
+#### 2. Border-Radius Inherit Override Bug
+
+**Description**: When using `rounded-full after:rounded-[inherit]`, Tailwind v4 generates duplicate border-radius declarations where `inherit` overrides the explicit value.
+
+**Example**:
+```typescript
+// Input
+Button: 'rounded-full after:rounded-[inherit]'
+
+// Buggy output (before fix)
+.Button {
+  border-radius: calc(infinity * 1px);
+  border-radius: inherit; /* Overrides the explicit value! */
+}
+
+// Correct output (after fix)
+.Button {
+  border-radius: calc(infinity * 1px);
+}
+```
+
+**Root Cause**: Tailwind v4 generates both declarations, and the existing deduplication logic only removed exact duplicates (same property AND same value).
+
+**Resolution**: Enhanced `dedupeDeclarations()` to intelligently handle duplicate properties with different values - when both explicit and `inherit` values exist, the explicit value is kept and `inherit` is removed.
+
+#### 3. Group-Hover Selector Bug
+
+**Description**: Tailwind v4 generates group-hover selectors in `:is(:where(.group\/name))` format which require the `group` class to be present on the parent element. This breaks when compiled to standalone CSS.
+
+**Example**:
+```typescript
+// Input
+MediaContainer: 'group/root'
+Controls: 'group-hover/root:scale-100'
+
+// Buggy output (before fix)
+@media (hover: hover) {
+  .Controls:is(:where(.group\/root):hover *) {
+    scale: 100% 100%;
+  }
+}
+/* Requires <div class="MediaContainer group/root"> - doesn't work! */
+
+// Correct output (after fix)
+@media (hover: hover) {
+  .MediaContainer:hover .Controls {
+    scale: 100% 100%;
+  }
+}
+/* Works without adding group class to HTML */
+```
+
+**Root Cause**: Tailwind v4's group-hover implementation uses `:where()` pseudo-class that depends on the `group/name` class being present in the DOM.
+
+**Resolution**: Added `transformGroupHoverSelectorsInAST()` that:
+1. Builds a mapping from group names to parent class names (e.g., `root` → `MediaContainer`)
+2. Transforms selectors from `.Child:is(:where(.group\/name):hover *)` to `.Parent:hover .Child`
+3. Supports `:hover`, `:focus-within`, and `:active` pseudo-classes
+
+**Impact**: All three bugs caused incorrect visual rendering. Icons didn't overlap properly, border-radius wasn't applied, and hover effects didn't work. These are now fixed at the compiler level with no post-processing workarounds needed.
+
 ### Orphaned & Selectors in CSS Output
 
 **Status**: 🟢 Resolved (as of 2025-10-06)
