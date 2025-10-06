@@ -10,11 +10,11 @@ import { createDefaultPipeline } from './attributeProcessing/index.js';
  * Serializes a JSX AST to an HTML string
  */
 export function serializeToHTML(jsxElement: t.JSXElement, options: SerializeOptions = {}): string {
-  const { indent = 0, indentSize = 2, attributePipeline } = options;
+  const { indent = 0, indentSize = 2, attributePipeline, stylesObject, componentMap } = options;
 
   const pipeline = attributePipeline ?? createDefaultPipeline();
 
-  return serializeJSXElement(jsxElement, indent, indentSize, pipeline);
+  return serializeJSXElement(jsxElement, indent, indentSize, pipeline, stylesObject, componentMap);
 }
 
 function serializeJSXElement(
@@ -22,6 +22,8 @@ function serializeJSXElement(
   indent: number,
   indentSize: number,
   pipeline: AttributeProcessorPipeline,
+  stylesObject?: Record<string, string> | null,
+  componentMap?: Record<string, string>,
 ): string {
   const openingElement = element.openingElement;
   const children = element.children;
@@ -39,7 +41,7 @@ function serializeJSXElement(
   // Serialize attributes
   for (const attr of openingElement.attributes) {
     if (t.isJSXAttribute(attr)) {
-      html += serializeAttribute(attr, elementName, htmlElementName, pipeline);
+      html += serializeAttribute(attr, elementName, htmlElementName, pipeline, stylesObject, componentMap);
     }
     else if (t.isJSXSpreadAttribute(attr)) {
       // Skip spread attributes for now
@@ -68,7 +70,7 @@ function serializeJSXElement(
     for (const child of children) {
       if (t.isJSXElement(child)) {
         hasComplexChildren = true;
-        serializedChildren.push(serializeJSXElement(child, indent + indentSize, indentSize, pipeline));
+        serializedChildren.push(serializeJSXElement(child, indent + indentSize, indentSize, pipeline, stylesObject, componentMap));
       }
       else if (t.isJSXText(child)) {
         const text = child.value.trim();
@@ -109,11 +111,15 @@ function serializeAttribute(
   elementName: string,
   htmlElementName: string,
   pipeline: AttributeProcessorPipeline,
+  stylesObject?: Record<string, string> | null,
+  componentMap?: Record<string, string>,
 ): string {
   const context: AttributeContext = {
     attribute: attr,
     elementName,
     htmlElementName,
+    ...(stylesObject !== undefined && { stylesObject }),
+    ...(componentMap !== undefined && { componentMap }),
   };
 
   const result = pipeline.process(context);

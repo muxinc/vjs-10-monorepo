@@ -29,6 +29,19 @@ export interface AttributeContext {
    * Allows access to parent nodes and scope if needed
    */
   path?: NodePath<t.JSXAttribute>;
+
+  /**
+   * Optional: The styles object extracted from the source
+   * Maps style keys to their class strings (e.g., { Button: "btn-primary" })
+   */
+  stylesObject?: Record<string, string> | null;
+
+  /**
+   * Optional: Map of component class names to their HTML element names
+   * Used to filter out classes that were transformed to element selectors
+   * Example: { PlayButton: "media-play-button", MediaContainer: "media-container" }
+   */
+  componentMap?: Record<string, string>;
 }
 
 /**

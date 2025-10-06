@@ -6,7 +6,7 @@ import { defaultImportMappings, transformImports } from './importTransforming/in
 import { parseReactSource, SKIN_CONFIG } from './parsing/index.js';
 import { serializeToHTML } from './serializer.js';
 import { generateSkinModule } from './skinGeneration/index.js';
-import { placeholderStyleProcessor } from './styleProcessing/index.js';
+import { extractStylesObject, placeholderStyleProcessor } from './styleProcessing/index.js';
 import { transformJSXToHTML } from './transformer.js';
 import { toKebabCase } from './utils/naming.js';
 
@@ -55,11 +55,12 @@ export interface CompileSkinResult {
  * This orchestrates the entire compilation pipeline:
  * 1. Parse React skin (extract JSX, imports, styles, component name)
  * 2. Build component map from imports
- * 3. Transform imports (React → HTML)
- * 4. Transform JSX (element names, {children} → <slot>)
- * 5. Process attributes (with AttributeProcessorPipeline)
- * 6. Process styles (can be async for Tailwind compilation)
- * 7. Generate complete TypeScript module
+ * 3. Extract styles object from AST (for className resolution)
+ * 4. Transform imports (React → HTML)
+ * 5. Transform JSX (element names, {children} → <slot>)
+ * 6. Serialize to HTML (with AttributeProcessorPipeline and styles context)
+ * 7. Process styles (can be async for Tailwind compilation)
+ * 8. Generate complete TypeScript module
  *
  * @param source - React/TSX source code for the skin
  * @param options - Compilation options
@@ -96,23 +97,34 @@ export async function compileSkinToHTML(source: string, options: CompileSkinOpti
     }
   }
 
-  // 3. Transform imports
+  // 3. Extract styles object from AST (before transformation)
+  // This enables className expression resolution during serialization
+  let stylesObject: Record<string, string> | null = null;
+  if (parsed.stylesNode) {
+    stylesObject = extractStylesObject(parsed.stylesNode);
+  }
+
+  // 4. Transform imports
   const htmlImports = transformImports(parsed.imports, importMappings);
 
-  // 4. Transform JSX AST
+  // 5. Transform JSX AST
   const transformedJsx = transformJSXToHTML(parsed.jsx);
 
-  // 5. Serialize to HTML (with attribute processing)
-  const html = serializeToHTML(transformedJsx, serializeOptions);
+  // 6. Serialize to HTML (with attribute processing and styles context)
+  const html = serializeToHTML(transformedJsx, {
+    ...serializeOptions,
+    stylesObject,
+    componentMap,
+  });
 
-  // 6. Process styles (await in case it's async)
+  // 7. Process styles (await in case it's async)
   const styles = await styleProcessor({
     stylesNode: parsed.stylesNode ?? null,
     componentName: parsed.componentName,
     componentMap,
   });
 
-  // 7. Generate the complete module
+  // 8. Generate the complete module
   const code = generateSkinModule({
     imports: htmlImports,
     html,

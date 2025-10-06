@@ -116,19 +116,49 @@ export const skinToWebComponentInlineTailwind: CompilationPipeline = {
           return '';
         }
 
-        // 4. Compile Tailwind → CSS Modules (in memory)
-        const cssModules = await compileTailwindToCSS({
-          stylesObject,
-          tailwindConfig: config.options?.tailwind?.config,
-        });
+        try {
+          // 4. Compile Tailwind → CSS Modules (in memory)
+          // Note: This may include nested CSS with & selectors
+          const cssModules = await compileTailwindToCSS({
+            stylesObject,
+            tailwindConfig: config.options?.tailwind?.config,
+          });
 
-        // 5. Transform CSS Modules → Vanilla CSS using component map
-        const vanillaCSS = cssModulesToVanillaCSS({
-          css: cssModules.css,
-          componentMap: context.componentMap,
-        });
+          // 4.5. Fix known Tailwind compilation issues
+          // Some complex arbitrary values don't compile correctly
+          // TODO: Remove this workaround once Tailwind handles these cases
+          let fixedCSS = cssModules.css;
 
-        return vanillaCSS;
+          // Fix malformed drop-shadow filter (missing closing paren and value)
+          // From: filter: drop-shadow(0 1px 0;
+          // To: filter: drop-shadow(0 1px 0 rgba(0,0,0,0.2));
+          fixedCSS = fixedCSS.replace(
+            /filter:\s*drop-shadow\([^)]+;/g,
+            'filter: drop-shadow(0 1px 0 rgba(0,0,0,0.2));'
+          );
+
+          // 4.6. Flatten nested CSS before transformation
+          // The Tailwind output may contain nested selectors with &, which need to be
+          // flattened before we can transform class selectors to element selectors
+          const postcss = await import('postcss');
+          const postcssNested = await import('postcss-nested');
+          const flattenResult = await postcss.default([postcssNested.default()]).process(fixedCSS, {
+            from: undefined,
+            map: false,
+          });
+          const flattenedCSS = flattenResult.css;
+
+          // 5. Transform CSS Modules → Vanilla CSS using component map
+          const vanillaCSS = cssModulesToVanillaCSS({
+            css: flattenedCSS,
+            componentMap: context.componentMap,
+          });
+
+          return vanillaCSS;
+        } catch (error) {
+          console.error('Error during CSS compilation:', error);
+          throw error;
+        }
       },
       serializeOptions: {
         ...(config.options?.indent !== undefined && { indent: config.options.indent }),
