@@ -13,26 +13,188 @@ import * as t from '@babel/types';
 const traverse = (babelTraverse as any).default || babelTraverse;
 
 /**
+ * Convert kebab-case to PascalCase
+ * e.g., "play-icon" → "PlayIcon", "volume-high-icon" → "VolumeHighIcon"
+ */
+function toPascalCase(str: string): string {
+  return str
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
+/**
+ * Remove duplicate border-radius declarations where 'inherit' overrides explicit values.
+ * This fixes a Tailwind CSS generation bug where arbitrary values like `after:rounded-[inherit]`
+ * incorrectly generate a non-modified `border-radius: inherit` declaration.
+ *
+ * Strategy: Within each CSS rule, if we find multiple border-radius declarations,
+ * keep only the non-inherit one (e.g., `calc(infinity * 1px)`).
+ */
+function removeDuplicateBorderRadius(css: string): string {
+  // Match CSS rules with their content
+  const rulePattern = /([^{]+)\{([^}]+)\}/g;
+
+  return css.replace(rulePattern, (match, selector, content) => {
+    // Check if this rule has multiple border-radius declarations
+    const borderRadiusPattern = /border-radius:\s*([^;]+);/g;
+    const matches: RegExpMatchArray[] = Array.from(content.matchAll(borderRadiusPattern));
+
+    if (matches.length <= 1) {
+      // No duplicates, return as-is
+      return match;
+    }
+
+    // Find the non-inherit value (if any)
+    const nonInheritMatch = matches.find(m => m[1] && !m[1].includes('inherit'));
+
+    if (nonInheritMatch && nonInheritMatch[1]) {
+      // Remove all border-radius declarations
+      let newContent = content.replace(borderRadiusPattern, '');
+      // Add back only the non-inherit one at the end
+      newContent = newContent.trim() + `\n  border-radius: ${nonInheritMatch[1]};`;
+      return `${selector}{${newContent}\n}`;
+    }
+
+    // If all are inherit, keep the last one
+    return match;
+  });
+}
+
+/**
+ * Fix IconButton grid-area bug where Tailwind incorrectly extracts grid-area from
+ * [&_svg]:[grid-area:1/1] and applies it to the parent .IconButton class.
+ *
+ * The source: `[&_svg]:[grid-area:1/1]` should generate: `.IconButton svg { grid-area: 1/1; }`
+ * But Tailwind also generates: `.IconButton { grid-area: 1/1; }` (incorrect!)
+ *
+ * Fix: Remove grid-area from .IconButton, ensure it's only on .IconButton svg
+ */
+function fixIconButtonGridArea(css: string): string {
+  // Match .IconButton rule block
+  const iconButtonPattern = /(\.IconButton\s*\{[^}]*)(grid-area:\s*1\/1;)([^}]*\})/g;
+
+  // Remove grid-area from .IconButton
+  let fixed = css.replace(iconButtonPattern, (_match, before, _gridArea, after) => {
+    return before + after;
+  });
+
+  // Ensure .IconButton svg has grid-area: 1/1
+  // Check if it already exists
+  if (!fixed.includes('.IconButton svg') || !fixed.match(/\.IconButton svg[^}]*grid-area:/)) {
+    // Add the rule if missing (shouldn't happen, but safeguard)
+    const iconButtonSvgPattern = /(\.IconButton svg\s*\{[^}]*)\}/g;
+    fixed = fixed.replace(iconButtonSvgPattern, '$1  grid-area: 1/1;\n}');
+  }
+
+  return fixed;
+}
+
+/**
+ * Transform group-hover selectors from Tailwind's :where(.group\/name) format
+ * to proper descendant selectors that work without the group class.
+ *
+ * Examples:
+ * - `.Controls:where(.group\/root):hover` → `.MediaContainer:hover .Controls`
+ * - `.SliderThumb:where(.group\/slider):hover` → `.SliderRoot:hover .SliderThumb`
+ * - `.FullscreenEnterIcon:where(.group\/button):hover` → `.Button:hover .FullscreenEnterIcon`
+ */
+function transformGroupHoverSelectors(css: string): string {
+  // Map group names to their parent container selectors
+  const groupMappings: Record<string, string> = {
+    'group\\/root': '.MediaContainer',
+    'group\\/button': '.Button',
+    'group\\/slider': '.SliderRoot',
+  };
+
+  let transformed = css;
+
+  // Transform each group-hover pattern
+  for (const [groupName, parentSelector] of Object.entries(groupMappings)) {
+    // Escape the forward slash for regex (it appears as \/ in CSS)
+    const escapedGroupName = groupName.replace(/\//g, '\\\\/');
+
+    // Pattern: .ChildClass:where(.group\/name):hover
+    // Replace with: .ParentClass:hover .ChildClass
+    const groupPattern = new RegExp(
+      `\\.([a-zA-Z][\\w-]*):where\\(\\.${escapedGroupName}\\):hover`,
+      'g'
+    );
+
+    transformed = transformed.replace(groupPattern, (_match, childClass) => {
+      return `${parentSelector}:hover .${childClass}`;
+    });
+
+    // Also handle focus-within variant
+    const focusWithinPattern = new RegExp(
+      `\\.([a-zA-Z][\\w-]*):where\\(\\.${escapedGroupName}\\):focus-within`,
+      'g'
+    );
+
+    transformed = transformed.replace(focusWithinPattern, (_match, childClass) => {
+      return `${parentSelector}:focus-within .${childClass}`;
+    });
+
+    // Also handle active variant
+    const activePattern = new RegExp(
+      `\\.([a-zA-Z][\\w-]*):where\\(\\.${escapedGroupName}\\):active`,
+      'g'
+    );
+
+    transformed = transformed.replace(activePattern, (_match, childClass) => {
+      return `${parentSelector}:active .${childClass}`;
+    });
+
+    // Handle complex selectors with descendant combinators
+    // Pattern: .ChildClass:where(.group\/name):hover * .GrandchildClass
+    const complexPattern = new RegExp(
+      `\\.([a-zA-Z][\\w-]*):where\\(\\.${escapedGroupName}\\):hover (\\* )?\\.([a-zA-Z][\\w-]*)`,
+      'g'
+    );
+
+    transformed = transformed.replace(complexPattern, (_match, childClass, star, grandchildClass) => {
+      return `${parentSelector}:hover .${childClass} ${star || ''}.${grandchildClass}`;
+    });
+  }
+
+  return transformed;
+}
+
+/**
  * Extract class names from CSS and generate a styles object
  * that maps class names to themselves (for CSS Modules compatibility)
+ *
+ * Also generates PascalCase aliases for kebab-case names to match
+ * the naming convention used in styles.ts (e.g., PlayIcon → play-icon)
  */
 function generateStylesObject(css: string): string {
   const classNames = new Set<string>();
-  // Match .ClassName { pattern
-  const classRegex = /\.([a-zA-Z_][\w-]*)\s*\{/g;
+
+  // Match all .ClassName patterns in selectors, not just those immediately before {
+  // This catches: .Button, .Button:hover, .Button[data-paused], .Parent .Child, etc.
+  const classRegex = /\.([a-zA-Z_][\w-]*)/g;
   let match;
 
   while ((match = classRegex.exec(css)) !== null) {
     classNames.add(match[1]);
   }
 
-  // Generate object literal
-  const entries = Array.from(classNames)
-    .sort()
-    .map(name => `  ${name}: '${name}'`)
-    .join(',\n');
+  const entries: string[] = [];
 
-  return `{\n${entries}\n}`;
+  // Generate entries for each class name
+  Array.from(classNames).sort().forEach(name => {
+    // Always add the original name
+    entries.push(`  '${name}': '${name}'`);
+
+    // If it's kebab-case (contains hyphen), also add PascalCase variant
+    // e.g., 'play-icon' → both 'play-icon' and 'PlayIcon' keys
+    if (name.includes('-')) {
+      const pascalName = toPascalCase(name);
+      entries.push(`  '${pascalName}': '${name}'`);
+    }
+  });
+
+  return `{\n${entries.join(',\n')}\n}`;
 }
 
 /**
@@ -114,8 +276,12 @@ export const skinToReactInline: CompilationPipeline = {
             warnings: true,
           });
 
-          // Get CSS content (already resolved, no need to transform selectors)
-          cssContent = result.css;
+          // Get CSS content and apply transformations
+          let transformedCSS = result.css;
+          transformedCSS = removeDuplicateBorderRadius(transformedCSS);
+          transformedCSS = fixIconButtonGridArea(transformedCSS);
+          transformedCSS = transformGroupHoverSelectors(transformedCSS);
+          cssContent = transformedCSS;
           warnings = result.warnings;
 
           if (warnings.length > 0) {
@@ -130,8 +296,22 @@ export const skinToReactInline: CompilationPipeline = {
       }
     }
 
-    // 5. Inject inline style tag into component
+    // 5. Adjust import paths for nested output directory
+    // The source file uses ../../components/ but output is in compiled/inline/
+    // which adds 2 more directory levels, so we need ../../../../components/
     let finalComponent = transformedComponent;
+
+    // Fix relative import paths: ../../ → ../../../../
+    finalComponent = finalComponent.replace(
+      /from\s+['"](\.\.(\/\.\.)+)(\/[^'"]+)['"]/g,
+      (_match, dots, _middle, rest) => {
+        // Count the number of ../ in the original path
+        const levels = (dots.match(/\.\./g) || []).length;
+        // Add 2 more levels for compiled/inline/
+        const newDots = '../'.repeat(levels + 2);
+        return `from '${newDots}${rest.slice(1)}'`;
+      }
+    );
 
     if (cssContent) {
       // Replace the styles import with inline CSS constant and styles object
