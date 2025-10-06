@@ -15,4 +15,6 @@ export class MediaProvider extends CustomElementProvider {
 }
 
 // @ts-ignore - Custom elements type compatibility
-customElements.define('media-provider', MediaProvider);
+if (!customElements.get('media-provider')) {
+  customElements.define('media-provider', MediaProvider);
+}

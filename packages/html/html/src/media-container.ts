@@ -68,4 +68,6 @@ export class MediaContainer extends CustomElementConsumer {
 }
 
 // @ts-ignore - Custom elements type compatibility
-customElements.define('media-container', MediaContainer);
+if (!customElements.get('media-container')) {
+  customElements.define('media-container', MediaContainer);
+}

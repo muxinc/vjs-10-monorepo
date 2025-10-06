@@ -1,5 +1,4 @@
 import { defineVjsPlayer } from '@vjs-10/html';
-import '@vjs-10/html/skins/media-skin-default';
 import '@vjs-10/html/skins/compiled/inline/media-skin-default';
 import '@vjs-10/html/skins/compiled/inline/media-skin-toasted';
 

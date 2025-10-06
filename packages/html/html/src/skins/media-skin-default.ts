@@ -295,4 +295,6 @@ export class MediaSkinDefault extends MediaSkin {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('media-skin-default', MediaSkinDefault);
+if (!customElements.get('media-skin-default')) {
+  customElements.define('media-skin-default', MediaSkinDefault);
+}
