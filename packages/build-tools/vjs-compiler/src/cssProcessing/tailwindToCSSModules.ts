@@ -191,6 +191,26 @@ function simplifySelectors(root: Root): void {
   });
 }
 
+/**
+ * Remove rules with orphaned & selectors that weren't properly flattened.
+ * These are invalid CSS and occur when postcss-nested can't find a parent context.
+ */
+function removeOrphanedAmpersandSelectors(root: Root): void {
+  const rulesToRemove: Rule[] = [];
+
+  root.walkRules((rule) => {
+    // Check if selector starts with &
+    if (rule.selector.trim().startsWith('&')) {
+      rulesToRemove.push(rule);
+    }
+  });
+
+  // Remove all orphaned rules
+  for (const rule of rulesToRemove) {
+    rule.remove();
+  }
+}
+
 function mergeDuplicateRules(container: Container): void {
   const seen = new Map<string, Rule>();
   container.each((node) => {
@@ -679,6 +699,7 @@ export async function compileTailwindToCSS(
   const flattenedRoot = nestedResult.root ?? outputRoot;
 
   simplifySelectors(flattenedRoot);
+  removeOrphanedAmpersandSelectors(flattenedRoot);
   mergeDuplicateRules(flattenedRoot);
   const globalTwVariables = collectGlobalTailwindVariables(tailwindRoot);
   resolveTailwindVariables(flattenedRoot, globalTwVariables);

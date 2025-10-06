@@ -108,6 +108,20 @@ describe('compileTailwindToCSS', () => {
     expect(result.css).toContain('0.9375rem');
   });
 
+  it('should remove orphaned & selectors', async () => {
+    const stylesObject = {
+      button: 'flex px-4 hover:bg-blue-500'
+    };
+
+    const result = await compileTailwindToCSS({ stylesObject });
+
+    // Should not contain any lines starting with &
+    const lines = result.css.split('\n');
+    const orphanedSelectors = lines.filter(line => line.trim().startsWith('&'));
+
+    expect(orphanedSelectors.length).toBe(0);
+  });
+
   it('should handle complex class combinations', async () => {
     const stylesObject = {
       complexButton: 'flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-lg'
