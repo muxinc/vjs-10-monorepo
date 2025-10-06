@@ -20,9 +20,9 @@ export interface CompilationPipeline {
    *
    * @param entryFile - Absolute path to the entry file
    * @param config - Compiler configuration
-   * @returns Compilation output with generated files
+   * @returns Compilation output with generated files (may be async)
    */
-  compile(entryFile: string, config: CompilerConfig): CompilationOutput;
+  compile(entryFile: string, config: CompilerConfig): CompilationOutput | Promise<CompilationOutput>;
 }
 
 /**

@@ -119,7 +119,7 @@ async function loadConfig(configPath: string): Promise<CompilerConfig> {
   }
 }
 
-function compileCommand(args: ParsedArgs) {
+async function compileCommand(args: ParsedArgs) {
   if (!args.inputFile) {
     console.error('Error: No input file specified');
     process.exit(1);
@@ -148,7 +148,7 @@ function compileCommand(args: ParsedArgs) {
     const pipeline = getPipeline(config);
 
     console.error(`Compiling ${args.inputFile} using pipeline: ${pipeline.name}`);
-    const result = pipeline.compile(entryFile, config);
+    const result = await pipeline.compile(entryFile, config);
 
     // Write output files
     const outDir = resolve(process.cwd(), args.outDir);
@@ -189,7 +189,7 @@ async function buildCommand(args: ParsedArgs) {
       const entryFile = resolve(process.cwd(), input);
       console.error(`Compiling ${input}...`);
 
-      const result = pipeline.compile(entryFile, config);
+      const result = await pipeline.compile(entryFile, config);
 
       for (const file of result.files) {
         const outputPath = join(outDir, file.path);
@@ -217,7 +217,7 @@ async function main() {
 
   switch (args.command) {
     case 'compile':
-      compileCommand(args);
+      await compileCommand(args);
       break;
     case 'build':
       await buildCommand(args);

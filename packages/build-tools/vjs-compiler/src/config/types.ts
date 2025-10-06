@@ -126,5 +126,5 @@ export interface CompilationFile {
   /**
    * File type
    */
-  type: 'ts' | 'tsx' | 'css' | 'js';
+  type: 'ts' | 'tsx' | 'css' | 'js' | 'dts';
 }
