@@ -16,7 +16,6 @@ export interface MediaToastedSkinStyles {
   readonly FullScreenButton: string;
   readonly FullScreenEnterIcon: string;
   readonly FullScreenExitIcon: string;
-  readonly TimeSlider: string;
   readonly TimeSliderThumb: string;
   readonly TimeDisplay: string;
   readonly SliderRoot: string;

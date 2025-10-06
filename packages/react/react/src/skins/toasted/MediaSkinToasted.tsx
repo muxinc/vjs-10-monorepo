@@ -35,7 +35,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <p className="text-stone-400">A story about Jon Jon Florence, a surfer from Hawaii.</p>
         </header> */}
 
-        <div className={styles.TimeSlider}>
+        <div className={styles.ControlsRow}>
           <TimeRange.Root className={styles.SliderRoot}>
             <TimeRange.Track className={styles.SliderTrack}>
               <TimeRange.Progress className={styles.SliderProgress} />

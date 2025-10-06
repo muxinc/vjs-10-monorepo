@@ -14,10 +14,10 @@ const styles: MediaToastedSkinStyles = {
     '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto',
   ),
   Controls: cn(
-    '@container/controls absolute inset-x-0 bottom-0 top-1/3 flex flex-col justify-end z-20 px-1 pb-1.5 text-white text-shadow',
+    '@container/controls absolute inset-x-0 bottom-0 top-1/3 flex flex-col justify-end z-20 px-2.5 pb-2.5 text-white text-shadow',
     'shadow-sm shadow-black/15',
     // Background
-    'bg-gradient-to-t from-stone-900/70 via-stone-900/60 via-35% to-transparent',
+    'bg-gradient-to-t from-stone-950/70 via-stone-950/60 via-35% to-transparent',
     // Animation
     'transition ease-in-out',
     //  FIXME: Temporary hide/show logic
@@ -25,13 +25,13 @@ const styles: MediaToastedSkinStyles = {
     'has-[[data-paused]]:translate-y-0 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0 has-[[data-paused]]:pointer-events-auto',
     'group-hover/root:translate-y-0 group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:pointer-events-auto',
   ),
-  ControlsRow: cn('flex items-center justify-between px-1.5 pb-0.5'),
+  ControlsRow: cn('flex items-center justify-between'),
   Button: cn(
     'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-md',
     // Background/foreground
     'bg-transparent text-white/90',
     // Hover and focus states
-    'hover:no-underline hover:bg-white/15 hover:backdrop-blur-md hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white',
+    'hover:no-underline hover:bg-stone-100/10 hover:backdrop-blur-md hover:text-white focus-visible:no-underline focus-visible:bg-stone-100/10 focus-visible:text-white',
     // Focus state
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500',
     // Disabled state
@@ -39,7 +39,7 @@ const styles: MediaToastedSkinStyles = {
     // Loading state
     'aria-busy:pointer-events-none aria-busy:cursor-not-allowed',
     // Expanded state
-    'aria-expanded:bg-white/10 aria-expanded:text-white',
+    'aria-expanded:bg-stone-100/10 aria-expanded:text-white',
     // Pressed state
     'active:scale-95',
   ),
@@ -86,7 +86,6 @@ const styles: MediaToastedSkinStyles = {
     'group-hover/button:[&_.arrow-1]:translate-0',
     'group-hover/button:[&_.arrow-2]:translate-0',
   ),
-  TimeSlider: cn('px-1.5'),
   TimeSliderThumb: cn(
     'opacity-0',
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
