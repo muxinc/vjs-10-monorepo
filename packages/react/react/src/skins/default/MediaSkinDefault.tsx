@@ -77,9 +77,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           </Popover.Positioner>
         </Popover.Root>
 
-        <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
-          <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
-          <FullscreenExitIcon className={styles.FullScreenExitIcon} />
+        <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
+          <FullscreenEnterIcon className={styles.FullscreenEnterIcon} />
+          <FullscreenExitIcon className={styles.FullscreenExitIcon} />
         </FullscreenButton>
       </div>
     </MediaContainer>

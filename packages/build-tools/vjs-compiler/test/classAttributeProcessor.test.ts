@@ -51,7 +51,7 @@ describe('ClassAttributeProcessor', () => {
     });
 
     describe('simple member expressions', () => {
-      it('should resolve styles.Button to "Button"', () => {
+      it('should resolve styles.Button to "button" (kebab-case)', () => {
         const expr = t.memberExpression(t.identifier('styles'), t.identifier('Button'));
         const attr = t.jsxAttribute(
           t.jsxIdentifier('className'),
@@ -60,7 +60,7 @@ describe('ClassAttributeProcessor', () => {
         const context = createContext(attr, { Button: 'btn-styles' });
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button');
+        expect(result).toBe('button');
       });
 
       it('should filter out component classes in componentMap', () => {
@@ -92,12 +92,28 @@ describe('ClassAttributeProcessor', () => {
         );
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button');
+        expect(result).toBe('button');
+      });
+
+      it('should handle fuzzy matching for component names (FullScreenButton vs FullscreenButton)', () => {
+        const expr = t.memberExpression(t.identifier('styles'), t.identifier('FullScreenButton'));
+        const attr = t.jsxAttribute(
+          t.jsxIdentifier('className'),
+          t.jsxExpressionContainer(expr),
+        );
+        const context = createContext(
+          attr,
+          { FullScreenButton: 'fullscreen-styles' },
+          { FullscreenButton: 'media-fullscreen-button' }, // Component uses different casing
+        );
+
+        const result = processor.transformValue(context);
+        expect(result).toBeNull(); // Should be filtered due to fuzzy match
       });
     });
 
     describe('template literals', () => {
-      it('should resolve multiple styles in template literal', () => {
+      it('should resolve multiple styles in template literal (kebab-case)', () => {
         const expr = t.templateLiteral(
           [
             t.templateElement({ raw: '', cooked: '' }, false),
@@ -119,7 +135,7 @@ describe('ClassAttributeProcessor', () => {
         });
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button IconButton');
+        expect(result).toBe('button icon-button');
       });
 
       it('should filter out component classes from template literal', () => {
@@ -153,7 +169,7 @@ describe('ClassAttributeProcessor', () => {
         );
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button IconButton'); // PlayButton filtered out
+        expect(result).toBe('button icon-button'); // PlayButton filtered out
       });
 
       it('should handle template literals with static text', () => {
@@ -171,12 +187,12 @@ describe('ClassAttributeProcessor', () => {
         const context = createContext(attr, { Button: 'btn' });
 
         const result = processor.transformValue(context);
-        expect(result).toBe('static-start Button static-end');
+        expect(result).toBe('static-start button static-end');
       });
     });
 
     describe('function calls (cn/clsx)', () => {
-      it('should resolve function call arguments', () => {
+      it('should resolve function call arguments (kebab-case)', () => {
         const expr = t.callExpression(t.identifier('cn'), [
           t.memberExpression(t.identifier('styles'), t.identifier('Button')),
           t.memberExpression(t.identifier('styles'), t.identifier('IconButton')),
@@ -192,7 +208,7 @@ describe('ClassAttributeProcessor', () => {
         });
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button IconButton static-class');
+        expect(result).toBe('button icon-button static-class');
       });
 
       it('should filter component classes from function calls', () => {
@@ -216,12 +232,12 @@ describe('ClassAttributeProcessor', () => {
         );
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button'); // PlayButton filtered out
+        expect(result).toBe('button'); // PlayButton filtered out
       });
     });
 
     describe('conditional expressions', () => {
-      it('should resolve conditional expression (takes consequent)', () => {
+      it('should resolve conditional expression (takes consequent, kebab-case)', () => {
         const expr = t.conditionalExpression(
           t.booleanLiteral(true),
           t.memberExpression(t.identifier('styles'), t.identifier('Button')),
@@ -237,12 +253,12 @@ describe('ClassAttributeProcessor', () => {
         });
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button');
+        expect(result).toBe('button');
       });
     });
 
     describe('logical expressions', () => {
-      it('should resolve logical AND expression (takes right side)', () => {
+      it('should resolve logical AND expression (takes right side, kebab-case)', () => {
         const expr = t.logicalExpression(
           '&&',
           t.booleanLiteral(true),
@@ -255,7 +271,7 @@ describe('ClassAttributeProcessor', () => {
         const context = createContext(attr, { Button: 'btn' });
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button');
+        expect(result).toBe('button');
       });
     });
 
@@ -296,7 +312,7 @@ describe('ClassAttributeProcessor', () => {
         const context = createContext(attr, null);
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button'); // Still resolves the key name
+        expect(result).toBe('button'); // Still resolves the key name (kebab-case)
       });
 
       it('should handle missing componentMap', () => {
@@ -308,7 +324,7 @@ describe('ClassAttributeProcessor', () => {
         const context = createContext(attr, { Button: 'btn' }, undefined);
 
         const result = processor.transformValue(context);
-        expect(result).toBe('Button'); // No filtering without componentMap
+        expect(result).toBe('button'); // No filtering without componentMap (kebab-case)
       });
     });
   });

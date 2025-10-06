@@ -25,7 +25,7 @@ describe('cssModulesToVanillaCSS', () => {
     expect(result).not.toContain('.PlayButton');
   });
 
-  it('should preserve non-component class selectors', () => {
+  it('should preserve non-component class selectors (as kebab-case)', () => {
     const css = `
 .PlayButton {
   display: flex;
@@ -43,8 +43,9 @@ describe('cssModulesToVanillaCSS', () => {
     const result = cssModulesToVanillaCSS({ css, componentMap });
 
     expect(result).toContain('media-play-button');
-    expect(result).toContain('.Button');
+    expect(result).toContain('.button'); // Converted to kebab-case
     expect(result).not.toContain('.PlayButton');
+    expect(result).not.toContain('.Button'); // PascalCase removed
   });
 
   it('should handle nested selectors correctly', () => {
@@ -66,8 +67,8 @@ describe('cssModulesToVanillaCSS', () => {
 
     const result = cssModulesToVanillaCSS({ css, componentMap });
 
-    expect(result).toContain('media-play-button .Icon');
-    expect(result).toContain('.Button media-play-icon');
+    expect(result).toContain('media-play-button .icon'); // icon converted to kebab-case
+    expect(result).toContain('.button media-play-icon'); // button converted to kebab-case
     expect(result).not.toContain('.PlayButton');
     expect(result).not.toContain('.PlayIcon');
   });
@@ -89,7 +90,7 @@ describe('cssModulesToVanillaCSS', () => {
 
     expect(result).toContain('media-play-button');
     expect(result).toContain('media-mute-button');
-    expect(result).toContain('.Container');
+    expect(result).toContain('.container'); // Container converted to kebab-case
   });
 
   it('should handle pseudo-classes and pseudo-elements', () => {
@@ -106,7 +107,7 @@ describe('cssModulesToVanillaCSS', () => {
     const result = cssModulesToVanillaCSS({ css, componentMap });
 
     expect(result).toContain('media-play-button:hover');
-    expect(result).toContain('.Icon::before');
+    expect(result).toContain('.icon::before'); // Icon converted to kebab-case
   });
 
   it('should handle attribute selectors', () => {
@@ -163,8 +164,8 @@ describe('cssModulesToVanillaCSS', () => {
 
     const result = cssModulesToVanillaCSS({ css, componentMap });
 
-    // PlayButton becomes element selector, Button stays as class
-    expect(result).toContain('media-play-button.Button');
+    // PlayButton becomes element selector, Button converted to kebab-case
+    expect(result).toContain('media-play-button.button');
   });
 
   it('should handle descendant combinators correctly', () => {
@@ -185,8 +186,8 @@ describe('cssModulesToVanillaCSS', () => {
 
     const result = cssModulesToVanillaCSS({ css, componentMap });
 
-    expect(result).toContain('.Container > media-play-button');
-    expect(result).toContain('.Container .Button > media-play-icon');
+    expect(result).toContain('.container > media-play-button'); // Container → container
+    expect(result).toContain('.container .button > media-play-icon'); // Container → container, Button → button
   });
 
   it('should preserve empty component map', () => {
@@ -200,8 +201,9 @@ describe('cssModulesToVanillaCSS', () => {
 
     const result = cssModulesToVanillaCSS({ css, componentMap });
 
-    // No transformations should occur
-    expect(result).toContain('.PlayButton');
+    // No component transformations, but still convert to kebab-case
+    expect(result).toContain('.play-button');
+    expect(result).not.toContain('.PlayButton');
   });
 
   it('should handle real-world CSS with multiple components and styling classes', () => {
@@ -255,9 +257,9 @@ describe('cssModulesToVanillaCSS', () => {
     expect(result).toContain('media-mute-button');
     expect(result).toContain('media-volume-high-icon');
 
-    // Styling classes should remain as class selectors
-    expect(result).toContain('.Button');
-    expect(result).toContain('.Overlay');
+    // Styling classes converted to kebab-case
+    expect(result).toContain('.button');
+    expect(result).toContain('.overlay');
 
     // Should not contain component class selectors
     expect(result).not.toContain('.PlayButton');

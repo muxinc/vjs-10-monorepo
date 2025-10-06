@@ -6,6 +6,8 @@
 import postcss, { type Rule } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 
+import { toKebabCase } from '../utils/naming.js';
+
 export interface CSSTransformConfig {
   /**
    * CSS Modules content to transform
@@ -105,8 +107,12 @@ function transformSelector(
           });
           node.replaceWith(tagNode);
         }
+      } else {
+        // Not a component - convert class name to kebab-case
+        // .IconButton → .icon-button
+        const kebabClassName = toKebabCase(className);
+        node.value = kebabClassName;
       }
-      // Otherwise keep as class selector
     });
   }).processSync(selector);
 

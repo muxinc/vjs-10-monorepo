@@ -130,8 +130,18 @@ function serializeAttribute(
   }
 
   // If value is null, it's a boolean attribute
+  // Exception: 'class' attribute should never be boolean, omit if no value
   if (result.value === null) {
+    if (result.name === 'class') {
+      return ''; // Omit empty class attribute
+    }
     return ` ${result.name}`;
+  }
+
+  // If value is an empty string for 'class' attribute, omit it
+  // (Other attributes may have semantic meaning with empty string values)
+  if (result.value === '' && result.name === 'class') {
+    return '';
   }
 
   // Otherwise, serialize as name="value"

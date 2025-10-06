@@ -1,6 +1,7 @@
 import * as t from '@babel/types';
 
 import type { AttributeContext, AttributeProcessor } from './types.js';
+import { toKebabCase } from '../utils/naming.js';
 
 /**
  * Processes className attributes, resolving styles object references
@@ -73,12 +74,12 @@ export class ClassAttributeProcessor implements AttributeProcessor {
       // Check if this is styles.SomeKey
       if (t.isIdentifier(expr.object) && expr.object.name === 'styles') {
         // Filter out component classes that were transformed to element selectors
-        if (componentMap && componentMap[propertyName]) {
+        if (componentMap && this.isComponentClass(propertyName, componentMap)) {
           return null; // This class became an element selector, omit from class attribute
         }
 
-        // This is a styling class, include it
-        return propertyName;
+        // This is a styling class, convert to kebab-case
+        return toKebabCase(propertyName);
       }
     }
 
@@ -152,5 +153,30 @@ export class ClassAttributeProcessor implements AttributeProcessor {
     }
 
     return null;
+  }
+
+  /**
+   * Check if a class name is a component class (should be filtered out)
+   * Handles both exact matches and fuzzy matches for common naming inconsistencies.
+   *
+   * Fuzzy matching handles cases like:
+   * - FullScreenButton (style key) matches FullscreenButton (component)
+   * - By removing case and comparing
+   */
+  private isComponentClass(className: string, componentMap: Record<string, string>): boolean {
+    // Exact match
+    if (componentMap[className]) {
+      return true;
+    }
+
+    // Fuzzy match: normalize both to lowercase for comparison
+    const normalizedClassName = className.toLowerCase();
+    for (const componentName of Object.keys(componentMap)) {
+      if (componentName.toLowerCase() === normalizedClassName) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

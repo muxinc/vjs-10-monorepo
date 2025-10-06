@@ -79,17 +79,17 @@ const styles: MediaDefaultSkinStyles = {
   VolumeHighIcon: cn('volume-high-icon'),
   VolumeLowIcon: cn('volume-low-icon'),
   VolumeOffIcon: cn('volume-off-icon'),
-  FullScreenButton: cn(
+  FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
     '[&_path]:transition-transform ease-out'
   ),
-  FullScreenEnterIcon: cn(
+  FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
     'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
     'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px'
   ),
-  FullScreenExitIcon: cn(
+  FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
     '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
     '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
