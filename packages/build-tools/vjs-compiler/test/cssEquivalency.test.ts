@@ -42,7 +42,8 @@ describe('CSS Equivalency - Color Utilities', () => {
     const actualDecls = extractDeclarationsForSelector(compiled, '.test');
 
     expect(actualDecls.get('color')).toBeDefined();
-    expect(actualDecls.get('color')).toContain('--color-white');
+    // With resolveCSSVariables: ['all'], we now get resolved values
+    expect(actualDecls.get('color')).toContain('#ffffff');
   });
 
   it('generates equivalent text-white/90 with color-mix', async () => {

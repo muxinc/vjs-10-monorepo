@@ -17,7 +17,7 @@ import { extractDeclarationsForSelector, parseCSS } from './utils/cssComparison.
 async function compileAndExtract(classes: string): Promise<string> {
   const result = await compileTailwindToCSS({
     stylesObject: { test: classes },
-    resolveCSSVariables: ['spacing'], // Resolve CSS variables to concrete values
+    // Uses default: resolveCSSVariables: ['all']
   });
   return result.css;
 }

@@ -30,12 +30,14 @@ export interface TailwindCompilationConfig {
 
   /**
    * Resolve CSS variables to concrete values
-   * @default ['spacing'] - Only resolve spacing-related variables
+   * @default ['all'] - Resolve all variables (fully resolved output)
    *
    * Options:
    * - 'spacing': Resolve --spacing variables (gap-3, p-1, size-3, etc.)
    * - 'colors': Resolve --color-* variables
-   * - 'all': Resolve all variables
+   * - 'all': Resolve all variables (recommended for self-contained CSS)
+   *
+   * Set to [] to disable resolution and keep CSS variables
    */
   resolveCSSVariables?: ('spacing' | 'colors' | 'all')[];
 }

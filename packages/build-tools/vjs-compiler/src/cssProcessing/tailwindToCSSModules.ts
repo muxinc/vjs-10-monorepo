@@ -750,10 +750,15 @@ export async function compileTailwindToCSS(
     }
   }
 
-  // Resolve CSS variables if requested
+  // Resolve CSS variables if requested (default to 'all' for fully resolved output)
   let finalCss = formattedCss;
-  if (config.resolveCSSVariables !== undefined) {
+  const shouldResolve: ('spacing' | 'colors' | 'all')[] = config.resolveCSSVariables !== undefined
+    ? config.resolveCSSVariables
+    : ['all']; // Default: resolve everything
+
+  if (shouldResolve.length > 0) {
     // Build theme from our embedded config
+    // This should match the @theme block defined in inputCss above
     const embeddedTheme = {
       '--spacing': '0.25rem',
       '--color-white': '#ffffff',
@@ -767,7 +772,7 @@ export async function compileTailwindToCSS(
     const cssWithTheme = `:root { ${Object.entries(embeddedTheme).map(([k, v]) => `${k}: ${v};`).join(' ')} }\n${formattedCss}`;
 
     finalCss = resolveCSSVariables(cssWithTheme, {
-      resolve: config.resolveCSSVariables,
+      resolve: shouldResolve,
     });
 
     // Remove the :root block we added
