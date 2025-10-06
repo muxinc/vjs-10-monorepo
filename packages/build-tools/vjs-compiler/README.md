@@ -16,9 +16,13 @@ The compiler uses a **pipeline-based architecture** where different combinations
    - CSS Strategy: Discovers and merges all imported CSS files
 
 2. **`skin-react-css-modules`**: React Skin (Tailwind) → React Skin (CSS Modules)
-   - Input: React skin component with Tailwind classes
-   - Output: React component (.tsx) + CSS Module file (.module.css)
-   - CSS Strategy: Transforms style imports to CSS Module imports (placeholder CSS generation)
+   - Input: React skin component with Tailwind classes + styles.ts export
+   - Output: React component (.tsx) + CSS Module file (.module.css) + TypeScript definitions (.d.ts)
+   - CSS Strategy:
+     - Transforms style imports to CSS Module imports
+     - Compiles Tailwind utility classes to vanilla CSS
+     - Resolves CSS variables and custom variants
+     - Generates TypeScript definitions for type-safe imports
 
 ### Transformation Capabilities
 
@@ -189,6 +193,34 @@ console.log(output);
 // export const Button = () => <button className={styles.Button}>Click</button>;
 ```
 
+##### Tailwind CSS to CSS Modules
+
+```typescript
+import { compileTailwindToCSS } from '@vjs-10/vjs-compiler';
+
+const stylesObject = {
+  Button: 'px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600',
+  Container: 'max-w-7xl mx-auto p-4'
+};
+
+const result = await compileTailwindToCSS({
+  stylesObject,
+  warnings: true
+});
+
+console.log(result.css);
+// Output: Vanilla CSS with resolved Tailwind utilities
+// .Button { padding-left: 1rem; padding-right: 1rem; ... }
+// .Container { max-width: 80rem; margin-left: auto; ... }
+
+console.log(result.dts);
+// Output: TypeScript definitions
+// declare const styles: { readonly Button: string; ... };
+
+console.log(result.warnings);
+// Output: Array of unresolved token warnings (if any)
+```
+
 ##### Complete Skin Compilation
 
 ```typescript
@@ -244,6 +276,97 @@ pipeline.register('className', new CustomClassProcessor());
 const html = compileJSXToHTML(source, { attributePipeline: pipeline });
 ```
 
+## CSS Compilation
+
+### Tailwind to CSS Modules Pipeline
+
+The `skin-react-css-modules` pipeline transforms React components using Tailwind utility classes to vanilla CSS Modules. This process involves:
+
+1. **Source Discovery**: Looks for a `styles.ts` file in the same directory as the skin component
+2. **Tailwind Compilation**: Processes Tailwind utility strings through PostCSS + Tailwind v4
+3. **CSS Generation**: Converts utility classes to vanilla CSS with proper scoping
+4. **Variable Resolution**: Resolves CSS variables (`var(--tw-*)`) to their concrete values
+5. **Optimization**: Deduplicates rules, simplifies selectors, and cleans up values
+
+#### Required File Structure
+
+```
+src/skins/default/
+├── MediaSkinDefault.tsx    # React component
+└── styles.ts               # Tailwind utility exports
+```
+
+#### styles.ts Format
+
+```typescript
+// styles.ts
+export default {
+  Button: 'px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition',
+  Container: 'max-w-7xl mx-auto p-4',
+  Title: 'text-2xl font-bold text-gray-900'
+};
+```
+
+#### Output Files
+
+The compilation generates three files:
+
+1. **Component.tsx** - React component with CSS Module imports
+   ```typescript
+   import styles from './Component.module.css';
+   export const Button = () => <button className={styles.Button}>Click</button>;
+   ```
+
+2. **Component.module.css** - Vanilla CSS with scoped class names
+   ```css
+   .Button {
+     padding-left: 1rem;
+     padding-right: 1rem;
+     padding-top: 0.5rem;
+     padding-bottom: 0.5rem;
+     background-color: rgb(59 130 246);
+     color: rgb(255 255 255);
+     border-radius: 0.25rem;
+     transition-property: all;
+   }
+   ```
+
+3. **Component.module.css.d.ts** - TypeScript definitions
+   ```typescript
+   declare const styles: {
+     readonly Button: string;
+     readonly Container: string;
+     readonly Title: string;
+   };
+   export default styles;
+   ```
+
+#### Custom Variants and Theme
+
+The compiler includes embedded Tailwind v4 theme configuration with custom variants:
+
+- **Custom Variants**:
+  - `hocus:` - Combines hover and focus-visible states
+  - `group-hocus:` - Group variant of hocus
+  - `peer-hocus:` - Peer variant of hocus
+  - `reduced-transparency:` - For `prefers-reduced-transparency` media query
+  - `contrast-more:` - For `prefers-contrast: more` media query
+
+- **Theme Variables**:
+  - `--font-sans` - Custom font stack definition
+
+**Note**: Currently, theme and custom variants are embedded in the compiler. Future versions will support auto-discovery from project CSS files.
+
+#### Unresolved Tokens
+
+Some Tailwind utilities may not be resolved automatically and will be reported as warnings:
+
+- Complex arbitrary values (e.g., `@7xl/root:text-[0.9375rem]`)
+- Custom utilities not defined in the theme
+- Certain pseudo-class/state combinations
+
+These warnings indicate tokens that may need manual CSS definitions.
+
 ## Architecture
 
 ### Pipeline System
@@ -288,7 +411,14 @@ HTML Output
    - `AttributeProcessorPipeline` - Orchestrates processors with registration
    - `DefaultAttributeProcessor` - Standard JSX → HTML transformations
 8. **Import Transforming** (`src/importTransforming/`) - Maps React imports to HTML imports
-9. **Naming Utilities** (`src/utils/naming.ts`) - Handles name conversions (PascalCase → kebab-case)
+9. **CSS Processing** (`src/cssProcessing/`) - Tailwind to CSS Modules compilation
+   - Uses PostCSS with Tailwind v4 plugin
+   - Resolves CSS variables and custom variants
+   - Generates vanilla CSS and TypeScript definitions
+   - Custom formatting and optimization
+10. **Style Processing** (`src/styleProcessing/`) - Style extraction and processing interface
+11. **Skin Generation** (`src/skinGeneration/`) - Generates complete TypeScript modules
+12. **Naming Utilities** (`src/utils/naming.ts`) - Handles name conversions (PascalCase → kebab-case)
 
 ## Testing
 
