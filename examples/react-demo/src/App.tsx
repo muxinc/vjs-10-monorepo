@@ -1,16 +1,31 @@
-import { MediaProvider, MediaSkinDefault, MediaSkinToasted, Video } from '@vjs-10/react';
+import {
+  MediaProvider,
+  MediaSkinDefault,
+  MediaSkinDefaultCSSModules,
+  MediaSkinDefaultInline,
+  MediaSkinToasted,
+  Video,
+} from '@vjs-10/react';
 
 import './globals.css';
 import { useCallback, useMemo, useState, type ChangeEventHandler } from 'react';
 
 const skins = [{
   key: 'default',
-  name: 'Frosted',
+  name: 'Frosted (Original)',
   component: MediaSkinDefault,
 }, {
   key: 'toasted',
   name: 'Toasted',
   component: MediaSkinToasted,
+}, {
+  key: 'default-css-modules',
+  name: 'Frosted (CSS Modules)',
+  component: MediaSkinDefaultCSSModules,
+}, {
+  key: 'default-inline',
+  name: 'Frosted (Inline CSS)',
+  component: MediaSkinDefaultInline,
 }] as const;
 
 type SkinKey = (typeof skins)[number]['key'];
@@ -89,6 +104,8 @@ export default function App(): JSX.Element {
   const skinClassName = useMemo(() => {
     switch (skinKey) {
       case 'default':
+      case 'default-css-modules':
+      case 'default-inline':
         return 'rounded-4xl shadow shadow-lg shadow-black/15';
       case 'toasted':
         return 'rounded-lg shadow shadow-lg shadow-black/15';

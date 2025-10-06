@@ -48,6 +48,7 @@ const inlineStyles = `.MediaContainer {
 .MediaContainer video {
   width: 100%;
   height: auto;
+  border-radius: inherit;
 }
 .Overlay {
   opacity: 0%;
@@ -230,7 +231,6 @@ const inlineStyles = `.MediaContainer {
 }
 .IconButton {
   display: grid;
-  
 }
 .IconButton svg {
   flex-shrink: 0;

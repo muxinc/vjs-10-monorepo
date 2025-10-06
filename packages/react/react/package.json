@@ -20,7 +20,10 @@
     "build:watch": "tsdown --watch --silent",
     "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "compile:skins": "npm run compile:skins:css-modules && npm run compile:skins:inline",
+    "compile:skins:css-modules": "node ../../build-tools/vjs-compiler/dist/cli.js compile src/skins/default/MediaSkinDefault.tsx --type skin --format react --css css-modules --out-dir src/skins/default/compiled/css-modules",
+    "compile:skins:inline": "node ../../build-tools/vjs-compiler/dist/cli.js compile src/skins/default/MediaSkinDefault.tsx --type skin --format react --css inline --out-dir src/skins/default/compiled/inline"
   },
   "keywords": [
     "media",

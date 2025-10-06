@@ -1,6 +1,9 @@
 import type { MediaDefaultSkinStyles } from "./types";
 
-import { cn } from "../../utils/cn";
+// Utility to merge class names
+function cn(...classes: (string | undefined)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
 
 const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
