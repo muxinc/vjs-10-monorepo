@@ -22,7 +22,7 @@ export const defaultImportMappings: ImportMappingConfig = {
     '.less',
 
     // React-specific
-    'react',
+    // Use 'react/' to match 'react/*' but not packages containing 'react' in their name
     'react-dom',
     'react/',
   ],

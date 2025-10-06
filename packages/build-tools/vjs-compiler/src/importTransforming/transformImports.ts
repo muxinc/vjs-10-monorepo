@@ -22,6 +22,11 @@ export function transformImports(imports: ImportInfo[], config: ImportMappingCon
   const iconPackages = new Set<string>();
 
   for (const imp of imports) {
+    // Skip React core library imports (but not packages like '@vjs-10/react-icons')
+    if (imp.source === 'react') {
+      continue;
+    }
+
     // Skip excluded patterns
     if (shouldExcludeFn(imp.source, excludePatterns)) {
       continue;
@@ -85,12 +90,20 @@ export function transformImports(imports: ImportInfo[], config: ImportMappingCon
  * Default implementation: Check if an import should be excluded
  */
 export function defaultShouldExclude(source: string, patterns: string[]): boolean {
-  return patterns.some(pattern => source.includes(pattern));
+  return patterns.some(pattern => {
+    // For patterns ending in '/', require exact prefix match
+    if (pattern.endsWith('/')) {
+      return source.startsWith(pattern) || source === pattern.slice(0, -1);
+    }
+    // For other patterns, check if they're contained
+    return source.includes(pattern);
+  });
 }
 
 /**
  * Default implementation: Transform a relative component import path
  * Example: '../../components/PlayButton' → '../components/media-play-button'
+ * Example: '../../components/MediaContainer' → '../media-container'
  */
 export function defaultTransformRelativeImport(source: string): string {
   // Extract the component name from the path
@@ -101,13 +114,19 @@ export function defaultTransformRelativeImport(source: string): string {
     return source;
   }
 
-  // Transform the component name to kebab-case
+  // Transform the component name to kebab-case with media- prefix
   const kebabName = toKebabCase(lastPart);
+  const mediaKebabName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;
+
+  // Special case: MediaContainer goes to root, not components/
+  if (lastPart === 'MediaContainer') {
+    return `../${mediaKebabName}`;
+  }
 
   // For component imports, assume they go to ../components/
   // This may need to be more sophisticated based on actual structure
   if (source.includes('/components/')) {
-    return `../components/${kebabName}`;
+    return `../components/${mediaKebabName}`;
   }
 
   // Default transformation
