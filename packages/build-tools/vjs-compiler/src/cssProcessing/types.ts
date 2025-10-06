@@ -27,6 +27,17 @@ export interface TailwindCompilationConfig {
    * Custom PostCSS plugins to add to the pipeline
    */
   postcssPlugins?: any[];
+
+  /**
+   * Resolve CSS variables to concrete values
+   * @default ['spacing'] - Only resolve spacing-related variables
+   *
+   * Options:
+   * - 'spacing': Resolve --spacing variables (gap-3, p-1, size-3, etc.)
+   * - 'colors': Resolve --color-* variables
+   * - 'all': Resolve all variables
+   */
+  resolveCSSVariables?: ('spacing' | 'colors' | 'all')[];
 }
 
 /**

@@ -11,6 +11,7 @@ import valueParser, { type FunctionNode, type Node as ValueNode } from 'postcss-
 
 import type { TailwindCompilationConfig, CSSModulesOutput } from './types.js';
 import { enhanceClassString } from './class-parser.js';
+import { resolveCSSVariables } from './resolveCSSVariables.js';
 
 type TailwindConfig = Record<string, unknown>;
 type TailwindPluginFactory = (options: { config: TailwindConfig }) => any;
@@ -749,8 +750,32 @@ export async function compileTailwindToCSS(
     }
   }
 
+  // Resolve CSS variables if requested
+  let finalCss = formattedCss;
+  if (config.resolveCSSVariables !== undefined) {
+    // Build theme from our embedded config
+    const embeddedTheme = {
+      '--spacing': '0.25rem',
+      '--color-white': '#ffffff',
+      '--color-black': '#000000',
+      '--color-blue-500': 'rgb(59 130 246)',
+      '--text-shadow': '0 1px 2px rgba(0, 0, 0, 0.5)',
+      '--text-shadow-2xs': '0 1px 1px rgba(0, 0, 0, 0.5)',
+    };
+
+    // Prepend theme to CSS for extraction
+    const cssWithTheme = `:root { ${Object.entries(embeddedTheme).map(([k, v]) => `${k}: ${v};`).join(' ')} }\n${formattedCss}`;
+
+    finalCss = resolveCSSVariables(cssWithTheme, {
+      resolve: config.resolveCSSVariables,
+    });
+
+    // Remove the :root block we added
+    finalCss = finalCss.replace(/:root\s*\{[^}]+\}\s*/g, '');
+  }
+
   return {
-    css: `${formattedCss}\n`,
+    css: `${finalCss}\n`,
     dts: dtsContent,
     warnings,
   };
