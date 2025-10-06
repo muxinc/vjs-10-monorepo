@@ -69,6 +69,45 @@ describe('compileTailwindToCSS', () => {
     expect(result.css).toContain('200px');
   });
 
+  it('should support arbitrary values with font weights and sizes', async () => {
+    const stylesObject = {
+      customText: 'font-[510] text-[0.8125rem]'
+    };
+
+    const result = await compileTailwindToCSS({ stylesObject });
+
+    expect(result.css).toContain('.customText');
+    expect(result.css).toContain('510');
+    expect(result.css).toContain('0.8125rem');
+  });
+
+  it('should support container declarations', async () => {
+    const stylesObject = {
+      container: '@container/root flex'
+    };
+
+    const result = await compileTailwindToCSS({ stylesObject });
+
+    expect(result.css).toContain('.container');
+    expect(result.css).toContain('container-type');
+    expect(result.css).toContain('inline-size');
+    expect(result.css).toContain('container-name');
+    expect(result.css).toContain('root');
+  });
+
+  it('should support container queries', async () => {
+    const stylesObject = {
+      text: '@container/root @7xl/root:text-[0.9375rem]'
+    };
+
+    const result = await compileTailwindToCSS({ stylesObject });
+
+    expect(result.css).toContain('.text');
+    expect(result.css).toContain('@container root');
+    expect(result.css).toContain('80rem');
+    expect(result.css).toContain('0.9375rem');
+  });
+
   it('should handle complex class combinations', async () => {
     const stylesObject = {
       complexButton: 'flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-lg'

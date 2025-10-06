@@ -214,25 +214,58 @@ Tailwind Utilities → CSS Modules → Vanilla CSS
 
 **Location**: `src/cssProcessing/tailwindToCSSModules.ts`
 
-**Process**:
-1. Build raw HTML content with all Tailwind classes
+**Enhanced Processing (3-Phase Approach)**:
+
+The Tailwind compilation now uses a sophisticated 3-phase approach to handle both simple and complex Tailwind utilities:
+
+#### Phase 1: Parse and Categorize Classes
+
+Uses custom Tailwind AST parsing (`src/tailwind-ast/`) to categorize classes:
+
+- **Simple Classes**: Standard utilities that can use `@apply` (e.g., `flex`, `px-4`, `hover:bg-blue-600`)
+- **Container Declarations**: Container definitions (e.g., `@container/root`)
+- **Container Queries**: Container-based responsive utilities (e.g., `@7xl/root:text-lg`)
+- **Arbitrary Values**: Custom value utilities (e.g., `font-[510]`, `text-[0.8125rem]`)
+
+**Implementation**: `src/cssProcessing/class-parser.ts` - `enhanceClassString()`
+
+#### Phase 2: Process Simple Classes
+
+1. Build raw HTML content with simple Tailwind classes only
 2. Process through PostCSS + Tailwind v4
 3. Collect matching rules from Tailwind output
-4. Rescope selectors from utility class to style key
+4. Build rule index for quick lookup
+
+#### Phase 3: Generate CSS
+
+For each style key:
+1. Add simple classes via rule index (rescoped from utility to key)
+2. Inject container declarations as CSS properties
+3. Inject arbitrary values as direct CSS properties
+4. Generate container query `@container` rules with breakpoints
 5. Flatten nested CSS with postcss-nested
 6. Resolve CSS variables (--tw-*)
 7. Optimize and format output
 
-**Input**:
+**Key Innovation**: Complex utilities (container queries, arbitrary values) bypass Tailwind processing and are directly injected as CSS, ensuring they always resolve correctly.
+
+**Input Examples**:
 ```typescript
 {
+  // Simple utilities
   Button: 'px-4 py-2 bg-blue-500 hover:bg-blue-600',
-  Container: 'max-w-7xl mx-auto'
+
+  // Container declarations + arbitrary values
+  MediaContainer: '@container/root font-[510] text-[0.8125rem]',
+
+  // Container queries
+  ResponsiveText: '@7xl/root:text-[0.9375rem]'
 }
 ```
 
 **Output CSS**:
 ```css
+/* Simple utilities */
 .Button {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -243,10 +276,20 @@ Tailwind Utilities → CSS Modules → Vanilla CSS
 .Button:hover {
   background-color: rgb(37 99 235);
 }
-.Container {
-  max-width: 80rem;
-  margin-left: auto;
-  margin-right: auto;
+
+/* Container declarations + arbitrary values */
+.MediaContainer {
+  container-type: inline-size;
+  container-name: root;
+  font-weight: 510;
+  font-size: 0.8125rem;
+}
+
+/* Container queries */
+@container root (min-width: 80rem) {
+  .ResponsiveText {
+    font-size: 0.9375rem;
+  }
 }
 ```
 
