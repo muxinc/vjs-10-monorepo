@@ -30,6 +30,6 @@ export interface StyleContext {
  * Function that processes styles and returns CSS string
  *
  * @param context - Context about the styles and component
- * @returns CSS string to be placed in <style> tag, or empty string
+ * @returns CSS string to be placed in <style> tag, or empty string (can be async)
  */
-export type StyleProcessor = (context: StyleContext) => string;
+export type StyleProcessor = (context: StyleContext) => string | Promise<string>;

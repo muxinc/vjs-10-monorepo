@@ -1,9 +1,11 @@
 import { registerPipeline } from './registry.js';
 import { skinToWebComponentInline } from './skinToWebComponentInline.js';
+import { skinToWebComponentInlineTailwind } from './skinToWebComponentInlineTailwind.js';
 import { skinToReactCSSModules } from './skinToReactCSSModules.js';
 
 // Register all available pipelines
 registerPipeline(skinToWebComponentInline);
+registerPipeline(skinToWebComponentInlineTailwind);
 registerPipeline(skinToReactCSSModules);
 
 // Re-export registry functions and types

@@ -58,14 +58,14 @@ export interface CompileSkinResult {
  * 3. Transform imports (React → HTML)
  * 4. Transform JSX (element names, {children} → <slot>)
  * 5. Process attributes (with AttributeProcessorPipeline)
- * 6. Process styles (placeholder for now)
+ * 6. Process styles (can be async for Tailwind compilation)
  * 7. Generate complete TypeScript module
  *
  * @param source - React/TSX source code for the skin
  * @param options - Compilation options
  * @returns Compilation result with code and component map, or null if parsing fails
  */
-export function compileSkinToHTML(source: string, options: CompileSkinOptions = {}): CompileSkinResult | null {
+export async function compileSkinToHTML(source: string, options: CompileSkinOptions = {}): Promise<CompileSkinResult | null> {
   const {
     importMappings = defaultImportMappings,
     styleProcessor = placeholderStyleProcessor,
@@ -105,8 +105,8 @@ export function compileSkinToHTML(source: string, options: CompileSkinOptions = 
   // 5. Serialize to HTML (with attribute processing)
   const html = serializeToHTML(transformedJsx, serializeOptions);
 
-  // 6. Process styles
-  const styles = styleProcessor({
+  // 6. Process styles (await in case it's async)
+  const styles = await styleProcessor({
     stylesNode: parsed.stylesNode ?? null,
     componentName: parsed.componentName,
     componentMap,

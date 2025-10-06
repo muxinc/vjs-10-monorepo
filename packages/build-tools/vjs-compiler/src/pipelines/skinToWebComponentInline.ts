@@ -27,7 +27,7 @@ export const skinToWebComponentInline: CompilationPipeline = {
   id: 'skin-web-component-inline',
   name: 'React Skin → Web Component (Inline CSS)',
 
-  compile(entryFile: string, config: CompilerConfig): CompilationOutput {
+  async compile(entryFile: string, config: CompilerConfig): Promise<CompilationOutput> {
     // 1. Discover CSS dependencies
     const deps = discoverDependencies(entryFile);
 
@@ -51,7 +51,7 @@ export const skinToWebComponentInline: CompilationPipeline = {
     const source = readFileSync(entryFile, 'utf-8');
 
     // 4. Compile to HTML web component with CSS transformation
-    const result = compileSkinToHTML(source, {
+    const result = await compileSkinToHTML(source, {
       importMappings: config.options?.importMappings ? {
         ...defaultImportMappings,
         packageMappings: config.options.importMappings,
