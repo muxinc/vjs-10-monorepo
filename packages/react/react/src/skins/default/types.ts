@@ -25,16 +25,12 @@ export interface MediaDefaultSkinStyles {
   readonly FullScreenTooltipPopup: string;
   readonly FullScreenEnterTooltip: string;
   readonly FullScreenExitTooltip: string;
+  readonly SliderRoot: string;
+  readonly SliderTrack: string;
+  readonly SliderProgress: string;
+  readonly SliderPointer: string;
+  readonly SliderThumb: string;
+  readonly PopoverPopup: string;
   readonly TimeControls: string;
   readonly TimeDisplay: string;
-  readonly TimeRangeRoot: string;
-  readonly TimeRangeTrack: string;
-  readonly TimeRangeProgress: string;
-  readonly TimeRangePointer: string;
-  readonly TimeRangeThumb: string;
-  readonly VolumePopup: string;
-  readonly VolumeRangeRoot: string;
-  readonly VolumeRangeTrack: string;
-  readonly VolumeRangeProgress: string;
-  readonly VolumeRangeThumb: string;
 }
