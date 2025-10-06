@@ -2,6 +2,11 @@
 
 A multi-target compiler for Video.js 10 components. Transforms React/JSX to various output formats using a configurable pipeline architecture.
 
+## Documentation
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Comprehensive architecture documentation covering the pipeline system, transformation flow, and key design patterns
+- **[KNOWN_ISSUES.md](./KNOWN_ISSUES.md)** - Known limitations, unresolved Tailwind tokens, and incomplete functionality
+
 ## Features
 
 ### Compilation Pipelines
@@ -278,6 +283,48 @@ const html = compileJSXToHTML(source, { attributePipeline: pipeline });
 
 ## CSS Compilation
 
+### CSS Class Name Conventions
+
+The compiler follows specific naming conventions when generating CSS and HTML output:
+
+#### PascalCase to kebab-case Conversion
+
+- **Styling classes** (non-component classes) are converted from PascalCase to kebab-case
+- **Component classes** are filtered out and become element selectors instead
+
+**Example:**
+
+```typescript
+// styles.ts
+const styles = {
+  Button: 'px-4 py-2 rounded',      // Component class
+  IconButton: 'grid place-items',   // Styling class
+};
+
+// Input JSX
+<PlayButton className={`${styles.Button} ${styles.IconButton}`}>
+```
+
+**Output CSS:**
+```css
+media-play-button { padding-left: 1rem; padding-right: 1rem; border-radius: 0.25rem; }
+.icon-button { display: grid; place-items: center; }
+```
+
+**Output HTML:**
+```html
+<media-play-button class="icon-button">
+```
+
+#### Class Name Resolution
+
+The compiler uses a **component map** to determine which classes should become element selectors vs. class attributes:
+
+1. **Component classes** (e.g., `Button`, `PlayButton`) → element selectors (e.g., `media-play-button`)
+2. **Styling classes** (e.g., `IconButton`) → kebab-case class attributes (e.g., `icon-button`)
+
+The compiler includes **fuzzy matching** for component names (case-insensitive), so `FullScreenButton` and `FullscreenButton` are treated as the same component.
+
 ### Tailwind to CSS Modules Pipeline
 
 The `skin-react-css-modules` pipeline transforms React components using Tailwind utility classes to vanilla CSS Modules. This process involves:
@@ -539,6 +586,45 @@ const myCustomPipeline: CompilationPipeline = {
 
 registerPipeline(myCustomPipeline);
 ```
+
+## Troubleshooting
+
+### Empty class Attributes
+
+The compiler automatically removes empty `class` attributes from HTML output. If all classes for an element are filtered (e.g., component classes that become element selectors), the `class` attribute will be omitted entirely.
+
+### Component Naming Consistency
+
+For best results, use consistent naming between your JSX component names and style object keys:
+
+**Good:**
+```typescript
+// Component: FullscreenButton
+// Style key: FullscreenButton
+const styles = { FullscreenButton: '...' };
+<FullscreenButton className={styles.FullscreenButton} />
+```
+
+**Also works (fuzzy matching):**
+```typescript
+// Component: FullscreenButton
+// Style key: FullScreenButton (different casing)
+const styles = { FullScreenButton: '...' };  // Still works due to case-insensitive matching
+<FullscreenButton className={styles.FullScreenButton} />
+```
+
+However, consistent naming is recommended to avoid confusion.
+
+### Unresolved Tailwind Tokens
+
+Some Tailwind utilities may not compile automatically and will appear as warnings:
+
+- Container query utilities (e.g., `@7xl/root:text-[0.9375rem]`)
+- Complex arbitrary attribute selectors (e.g., `[&[data-orientation="horizontal"]]:h-5`)
+- Custom utility classes not in the default theme
+- Custom variants (e.g., `hocus:`, `group-hover/button:`)
+
+See `KNOWN_ISSUES.md` for a comprehensive list of known limitations.
 
 ## License
 
