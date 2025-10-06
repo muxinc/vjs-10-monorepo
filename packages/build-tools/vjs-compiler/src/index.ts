@@ -28,7 +28,7 @@ export {
 } from './attributeProcessing/index.js';
 
 // Export skin compilation
-export { type CompileSkinOptions, compileSkinToHTML } from './compileSkin.js';
+export { type CompileSkinOptions, type CompileSkinResult, compileSkinToHTML } from './compileSkin.js';
 export { defaultImportMappings, type ImportMappingConfig, transformImports } from './importTransforming/index.js';
 // Export parsing utilities
 export {

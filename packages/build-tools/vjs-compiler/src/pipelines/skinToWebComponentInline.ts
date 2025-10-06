@@ -5,6 +5,7 @@ import type { CompilerConfig, CompilationOutput } from '../config/index.js';
 import type { CompilationPipeline } from './types.js';
 import { discoverDependencies } from '../dependencies/index.js';
 import { compileSkinToHTML } from '../compileSkin.js';
+import { cssModulesToVanillaCSS } from '../cssProcessing/index.js';
 import { toKebabCase } from '../utils/naming.js';
 import { defaultImportMappings } from '../importTransforming/index.js';
 
@@ -30,10 +31,10 @@ export const skinToWebComponentInline: CompilationPipeline = {
     // 1. Discover CSS dependencies
     const deps = discoverDependencies(entryFile);
 
-    // 2. Read and merge CSS files
-    let cssContent = '';
+    // 2. Read and merge CSS Modules files
+    let cssModulesContent = '';
     if (deps.css.length > 0) {
-      cssContent = deps.css
+      cssModulesContent = deps.css
         .map((cssPath) => {
           try {
             return readFileSync(cssPath, 'utf-8');
@@ -49,24 +50,33 @@ export const skinToWebComponentInline: CompilationPipeline = {
     // 3. Read source file
     const source = readFileSync(entryFile, 'utf-8');
 
-    // 4. Compile to HTML web component
-    const output = compileSkinToHTML(source, {
+    // 4. Compile to HTML web component with CSS transformation
+    const result = compileSkinToHTML(source, {
       importMappings: config.options?.importMappings ? {
         ...defaultImportMappings,
         packageMappings: config.options.importMappings,
       } : defaultImportMappings,
-      styleProcessor: () => cssContent, // Inline the merged CSS
+      styleProcessor: (context) => {
+        // 5. Transform CSS Modules to vanilla CSS using component map
+        if (!cssModulesContent) {
+          return '';
+        }
+        return cssModulesToVanillaCSS({
+          css: cssModulesContent,
+          componentMap: context.componentMap,
+        });
+      },
       serializeOptions: {
         ...(config.options?.indent !== undefined && { indent: config.options.indent }),
         ...(config.options?.indentSize !== undefined && { indentSize: config.options.indentSize }),
       },
     });
 
-    if (!output) {
+    if (!result) {
       throw new Error(`Failed to compile skin: ${entryFile}`);
     }
 
-    // 5. Generate output path
+    // 6. Generate output path
     const baseName = basename(entryFile, extname(entryFile));
     const kebabName = toKebabCase(baseName);
     const outputPath = `${kebabName}.ts`;
@@ -75,7 +85,7 @@ export const skinToWebComponentInline: CompilationPipeline = {
       files: [
         {
           path: outputPath,
-          content: output,
+          content: result.code,
           type: 'ts',
         },
       ],

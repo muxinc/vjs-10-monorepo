@@ -17,6 +17,13 @@ export interface StyleContext {
    * The component name (for scoping if needed)
    */
   componentName: string;
+
+  /**
+   * Map of component names to their web component element names
+   * Used for CSS transformation (e.g., class selectors → element selectors)
+   * Example: { PlayButton: 'media-play-button', PlayIcon: 'media-play-icon' }
+   */
+  componentMap: Record<string, string>;
 }
 
 /**

@@ -33,21 +33,39 @@ export interface CompileSkinOptions {
 }
 
 /**
+ * Result of compiling a skin to HTML
+ */
+export interface CompileSkinResult {
+  /**
+   * Generated HTML/Web Component module code
+   */
+  code: string;
+
+  /**
+   * Map of imported component names to their web component element names
+   * Used for CSS transformation: class selectors → element selectors
+   * Example: { PlayButton: 'media-play-button', PlayIcon: 'media-play-icon' }
+   */
+  componentMap: Record<string, string>;
+}
+
+/**
  * Compile a React skin component to an HTML/Web Component skin module
  *
  * This orchestrates the entire compilation pipeline:
  * 1. Parse React skin (extract JSX, imports, styles, component name)
- * 2. Transform imports (React → HTML)
- * 3. Transform JSX (element names, {children} → <slot>)
- * 4. Process attributes (with AttributeProcessorPipeline)
- * 5. Process styles (placeholder for now)
- * 6. Generate complete TypeScript module
+ * 2. Build component map from imports
+ * 3. Transform imports (React → HTML)
+ * 4. Transform JSX (element names, {children} → <slot>)
+ * 5. Process attributes (with AttributeProcessorPipeline)
+ * 6. Process styles (placeholder for now)
+ * 7. Generate complete TypeScript module
  *
  * @param source - React/TSX source code for the skin
  * @param options - Compilation options
- * @returns Complete HTML/Web Component skin module as a string, or null if parsing fails
+ * @returns Compilation result with code and component map, or null if parsing fails
  */
-export function compileSkinToHTML(source: string, options: CompileSkinOptions = {}): string | null {
+export function compileSkinToHTML(source: string, options: CompileSkinOptions = {}): CompileSkinResult | null {
   const {
     importMappings = defaultImportMappings,
     styleProcessor = placeholderStyleProcessor,
@@ -60,27 +78,51 @@ export function compileSkinToHTML(source: string, options: CompileSkinOptions = 
     return null;
   }
 
-  // 2. Transform imports
+  // 2. Build component map from imports
+  // All imported components (not from 'react' or style files) map to their web component names
+  const componentMap: Record<string, string> = {};
+  for (const imp of parsed.imports) {
+    // Skip React imports and style imports
+    if (imp.source === 'react' || imp.source.includes('/styles') || imp.source.includes('.css')) {
+      continue;
+    }
+
+    // Add all named imports as components
+    for (const specifier of imp.specifiers) {
+      const elementName = toKebabCase(specifier);
+      // Add media- prefix if not already present
+      const webComponentName = elementName.startsWith('media-') ? elementName : `media-${elementName}`;
+      componentMap[specifier] = webComponentName;
+    }
+  }
+
+  // 3. Transform imports
   const htmlImports = transformImports(parsed.imports, importMappings);
 
-  // 3. Transform JSX AST
+  // 4. Transform JSX AST
   const transformedJsx = transformJSXToHTML(parsed.jsx);
 
-  // 4. Serialize to HTML (with attribute processing)
+  // 5. Serialize to HTML (with attribute processing)
   const html = serializeToHTML(transformedJsx, serializeOptions);
 
-  // 5. Process styles
+  // 6. Process styles
   const styles = styleProcessor({
     stylesNode: parsed.stylesNode ?? null,
     componentName: parsed.componentName,
+    componentMap,
   });
 
-  // 6. Generate the complete module
-  return generateSkinModule({
+  // 7. Generate the complete module
+  const code = generateSkinModule({
     imports: htmlImports,
     html,
     styles,
     className: parsed.componentName,
     elementName: toKebabCase(parsed.componentName),
   });
+
+  return {
+    code,
+    componentMap,
+  };
 }
