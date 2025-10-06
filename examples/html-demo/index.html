@@ -2,10 +2,87 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>VJS HTML Demo</title>
+    <title>VJS HTML Demo - Compiler Smoke Test</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a202c;
+      }
+      .controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+      select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 0.375rem;
+        background: white;
+        cursor: pointer;
+        font-size: 0.875rem;
+      }
+      select:hover {
+        border-color: #a0aec0;
+      }
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+      #player-container {
+        width: 100%;
+        max-width: 56rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <header>
+      <h1>Web Component Compiler Smoke Test</h1>
+      <div class="controls">
+        <select id="source-select">
+          <option value="1">Mux 1</option>
+          <option value="2">Mux 2</option>
+          <option value="3">Mux 3</option>
+          <option value="4">Mux 4</option>
+        </select>
+        <select id="skin-select">
+          <option value="original">Original (Hand-written)</option>
+          <option value="default-inline">Default (Compiled Inline)</option>
+          <option value="toasted-inline">Toasted (Compiled Inline)</option>
+        </select>
+      </div>
+    </header>
+    <main>
+      <div id="player-container"></div>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
