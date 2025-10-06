@@ -2,6 +2,8 @@ import type { ImportMappingConfig } from './importTransforming/types.js';
 import type { StyleProcessor } from './styleProcessing/index.js';
 import type { SerializeOptions } from './types.js';
 
+import * as t from '@babel/types';
+
 import { defaultImportMappings, transformImports } from './importTransforming/index.js';
 import { parseReactSource, SKIN_CONFIG } from './parsing/index.js';
 import { serializeToHTML } from './serializer.js';
@@ -97,6 +99,9 @@ export async function compileSkinToHTML(source: string, options: CompileSkinOpti
     }
   }
 
+  // 2b. Extract compound component parts from JSX (e.g., TimeRange.Root, TimeRange.Track)
+  extractCompoundComponents(parsed.jsx, componentMap);
+
   // 3. Extract styles object from AST (before transformation)
   // This enables className expression resolution during serialization
   let stylesObject: Record<string, string> | null = null;
@@ -137,4 +142,60 @@ export async function compileSkinToHTML(source: string, options: CompileSkinOpti
     code,
     componentMap,
   };
+}
+
+/**
+ * Extract compound component parts from JSX and add them to componentMap
+ * Detects member expressions like TimeRange.Root, VolumeRange.Track, etc.
+ * and adds entries like: { TimeRangeRoot: 'media-time-range-root', TimeRangeTrack: 'media-time-range-track' }
+ */
+function extractCompoundComponents(jsx: t.Node, componentMap: Record<string, string>): void {
+  const visit = (node: t.Node | null | undefined) => {
+    if (!node) return;
+
+    if (t.isJSXElement(node)) {
+      const openingElement = node.openingElement;
+
+      // Check if this is a member expression (e.g., TimeRange.Root)
+      if (t.isJSXMemberExpression(openingElement.name)) {
+        const memberExpr = openingElement.name;
+
+        // Get the object name (e.g., "TimeRange")
+        let objectName = '';
+        if (t.isJSXIdentifier(memberExpr.object)) {
+          objectName = memberExpr.object.name;
+        }
+
+        // Get the property name (e.g., "Root")
+        const propertyName = t.isJSXIdentifier(memberExpr.property) ? memberExpr.property.name : '';
+
+        if (objectName && propertyName) {
+          // Create the compound key: TimeRangeRoot
+          const compoundKey = `${objectName}${propertyName}`;
+
+          // Create the element name: media-time-range-root
+          const objectKebab = toKebabCase(objectName);
+          const propertyKebab = toKebabCase(propertyName);
+          const elementName = objectKebab.startsWith('media-')
+            ? `${objectKebab}-${propertyKebab}`
+            : `media-${objectKebab}-${propertyKebab}`;
+
+          componentMap[compoundKey] = elementName;
+        }
+      }
+
+      // Visit children
+      if (node.children) {
+        for (const child of node.children) {
+          visit(child as t.Node);
+        }
+      }
+    } else if (t.isJSXFragment(node)) {
+      for (const child of node.children) {
+        visit(child as t.Node);
+      }
+    }
+  };
+
+  visit(jsx);
 }
