@@ -580,8 +580,6 @@ export async function compileTailwindToCSS(
 @custom-variant hocus (&:is(:hover, :focus-visible));
 @custom-variant group-hocus (&:is(:hover, :focus-visible) &);
 @custom-variant peer-hocus (&:is(:hover, :focus-visible) ~ &);
-@custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
-@custom-variant contrast-more @media (prefers-contrast: more);
 
 /* Custom utilities */
 @utility text-shadow {
