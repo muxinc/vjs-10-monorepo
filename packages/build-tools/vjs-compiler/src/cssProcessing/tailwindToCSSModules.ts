@@ -10,6 +10,7 @@ import selectorParser from 'postcss-selector-parser';
 import valueParser, { type FunctionNode, type Node as ValueNode } from 'postcss-value-parser';
 
 import type { TailwindCompilationConfig, CSSModulesOutput } from './types.js';
+import { enhanceClassString } from './class-parser.js';
 
 type TailwindConfig = Record<string, unknown>;
 type TailwindPluginFactory = (options: { config: TailwindConfig }) => any;
@@ -60,13 +61,6 @@ type RuleRecord = {
 };
 
 type RuleParent = Exclude<Rule['parent'], undefined>;
-
-function tokenize(value: string): string[] {
-  return value
-    .split(/\s+/)
-    .map((token) => token.trim())
-    .filter(Boolean);
-}
 
 function buildRawContent(entries: [string, string][]): string {
   const rows = entries.map(([key, value]) => {
@@ -440,6 +434,25 @@ function cleanupDeclarationValues(container: Container): void {
   });
 }
 
+/**
+ * Get container query breakpoint sizes
+ */
+function getContainerBreakpoints(): Record<string, string> {
+  return {
+    'xs': '20rem',   // 320px
+    'sm': '24rem',   // 384px
+    'md': '28rem',   // 448px
+    'lg': '32rem',   // 512px
+    'xl': '36rem',   // 576px
+    '2xl': '42rem',  // 672px
+    '3xl': '48rem',  // 768px
+    '4xl': '56rem',  // 896px
+    '5xl': '64rem',  // 1024px
+    '6xl': '72rem',  // 1152px
+    '7xl': '80rem',  // 1280px
+  };
+}
+
 function formatCss(root: Root): string {
   const indentUnit = '  ';
   const lines: string[] = [];
@@ -493,17 +506,29 @@ export async function compileTailwindToCSS(
   const { stylesObject, tailwindConfig, warnings: enableWarnings = true } = config;
 
   const entries = Object.entries(stylesObject);
-  const tokensByKey = new Map<string, string[]>();
-  const allTokens = new Set<string>();
+
+  // Phase 1: Parse and categorize all classes using enhanced parser
+  const enhancedByKey = new Map<string, ReturnType<typeof enhanceClassString>>();
+  const allSimpleTokens = new Set<string>();
 
   for (const [key, value] of entries) {
-    const tokens = tokenize(value);
-    tokensByKey.set(key, tokens);
-    tokens.forEach((token) => allTokens.add(token));
+    const enhanced = enhanceClassString(value);
+    enhancedByKey.set(key, enhanced);
+
+    // Collect all simple classes for Tailwind processing
+    enhanced.simpleClasses.forEach((token) => allSimpleTokens.add(token));
   }
 
-  const rawContent = buildRawContent(entries);
-  const safelist = Array.from(allTokens);
+  // Phase 2: Process simple classes through Tailwind
+  const simpleTokensByKey = new Map<string, string[]>();
+  for (const [key, enhanced] of enhancedByKey) {
+    simpleTokensByKey.set(key, enhanced.simpleClasses);
+  }
+
+  const rawContent = buildRawContent(Array.from(enhancedByKey.entries()).map(([key, enhanced]) =>
+    [key, enhanced.simpleClasses.join(' ')]
+  ));
+  const safelist = Array.from(allSimpleTokens);
   const mergedConfig: TailwindConfig = {
     ...(tailwindConfig || {}),
     corePlugins: {
@@ -513,8 +538,6 @@ export async function compileTailwindToCSS(
     safelist,
   };
 
-  // Include theme configuration and custom variants
-  // TODO: Make this configurable or auto-discover from project
   const inputCss = `@theme {
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
@@ -529,6 +552,7 @@ export async function compileTailwindToCSS(
 @tailwind base;
 @layer components {}
 @tailwind utilities;`;
+
   const tailwindPlugin = (tailwindcss as unknown as TailwindPluginFactory)({ config: mergedConfig });
   const result = await postcss([tailwindPlugin]).process(inputCss, {
     from: undefined,
@@ -542,9 +566,14 @@ export async function compileTailwindToCSS(
   const unresolvedByKey = new Map<string, string[]>();
   const outputRoot = postcss.root();
 
-  for (const [key, tokens] of tokensByKey) {
+  // Phase 3: Generate CSS for each key
+  for (const [key, enhanced] of enhancedByKey) {
+    const rule = postcss.rule({ selector: `.${key}` });
+    let hasContent = false;
+
+    // Add simple classes that resolved via Tailwind
     const seen = new Set<string>();
-    for (const token of tokens) {
+    for (const token of enhanced.simpleClasses) {
       const ruleRecords = ruleIndex.get(token);
       if (!ruleRecords || ruleRecords.length === 0) {
         if (!unresolvedByKey.has(key)) unresolvedByKey.set(key, []);
@@ -561,6 +590,87 @@ export async function compileTailwindToCSS(
         seen.add(cssText);
 
         outputRoot.append(clone);
+        hasContent = true;
+      }
+    }
+
+    // Add container declarations
+    for (const declaration of enhanced.containerDeclarations) {
+      const match = declaration.match(/^@container(?:\/(\w+))?$/);
+      if (match) {
+        const containerName = match[1];
+        rule.append(postcss.decl({
+          prop: 'container-type',
+          value: 'inline-size',
+        }));
+        if (containerName) {
+          rule.append(postcss.decl({
+            prop: 'container-name',
+            value: containerName,
+          }));
+        }
+        hasContent = true;
+      }
+    }
+
+    // Add arbitrary values as direct CSS properties
+    for (const arbitrary of enhanced.arbitraryValues) {
+      rule.append(postcss.decl({
+        prop: arbitrary.property,
+        value: arbitrary.value,
+      }));
+      hasContent = true;
+    }
+
+    if (hasContent && rule.nodes && rule.nodes.length > 0) {
+      outputRoot.append(rule);
+    }
+
+    // Add container query rules
+    const breakpoints = getContainerBreakpoints();
+    for (const query of enhanced.containerQueries) {
+      const breakpointSize = breakpoints[query.breakpoint];
+      if (breakpointSize) {
+        const containerRule = postcss.atRule({
+          name: 'container',
+          params: `${query.container} (min-width: ${breakpointSize})`,
+        });
+
+        const innerRule = postcss.rule({ selector: `.${key}` });
+
+        // Handle arbitrary value in utility
+        if (query.utility.includes('[') && query.utility.includes(']')) {
+          const match = query.utility.match(/^(\w+)-\[(.+)\]$/);
+          if (match && match.length >= 3 && match[1] && match[2]) {
+            const utilityRoot: string = match[1];
+            const value: string = match[2];
+            const propertyMap: Record<string, string> = {
+              'text': 'font-size',
+              'font': 'font-weight',
+              'w': 'width',
+              'h': 'height',
+            };
+            const property: string = propertyMap[utilityRoot] || utilityRoot;
+            innerRule.append(postcss.decl({ prop: property, value }));
+          }
+        } else {
+          // Try to resolve via Tailwind
+          const utilityRecords = ruleIndex.get(query.utility);
+          if (utilityRecords) {
+            for (const record of utilityRecords) {
+              record.rule.each((decl) => {
+                if (decl.type === 'decl') {
+                  innerRule.append(decl.clone());
+                }
+              });
+            }
+          }
+        }
+
+        if (innerRule.nodes && innerRule.nodes.length > 0) {
+          containerRule.append(innerRule);
+          outputRoot.append(containerRule);
+        }
       }
     }
   }

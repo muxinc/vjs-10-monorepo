@@ -48,3 +48,43 @@ export interface CSSModulesOutput {
    */
   warnings: string[];
 }
+
+/**
+ * Container query definition
+ */
+export interface ContainerQuery {
+  /** Breakpoint name (e.g., "7xl", "lg") */
+  breakpoint: string;
+  /** Container name (e.g., "root", "sidebar") */
+  container: string;
+  /** The utility class to apply (e.g., "text-[0.9375rem]") */
+  utility: string;
+}
+
+/**
+ * Arbitrary value definition
+ */
+export interface ArbitraryValue {
+  /** CSS property (e.g., "font-size", "font-weight") */
+  property: string;
+  /** CSS value (e.g., "0.9375rem", "510") */
+  value: string;
+  /** Original class for reference (e.g., "text-[0.9375rem]") */
+  originalClass: string;
+}
+
+/**
+ * Enhanced class usage with categorized Tailwind utilities
+ */
+export interface EnhancedClassUsage {
+  /** Original class string */
+  classString: string;
+  /** Simple Tailwind classes (can use @apply) */
+  simpleClasses: string[];
+  /** Container declarations (e.g., ["@container/root"]) */
+  containerDeclarations: string[];
+  /** Container query usages */
+  containerQueries: ContainerQuery[];
+  /** Arbitrary value usages */
+  arbitraryValues: ArbitraryValue[];
+}
