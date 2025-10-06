@@ -639,6 +639,62 @@ module.exports = {
 2. 🔵 Add source map support
 3. 🔵 Performance: Cache Tailwind compilation results
 
+## Future Goals
+
+### CSS Modules Build Integration
+
+**Status**: 🔵 Future Enhancement
+
+**Description**: Explore integrating standard CSS modules tooling into the React package build process to provide CSS extraction similar to the previous Rollup setup.
+
+**Context**:
+- The React package previously used Rollup with `rollup-plugin-postcss` to process CSS modules and extract to a separate `dist/index.css` file
+- After migrating to tsdown, the package switched to inline Tailwind classes in a TypeScript `styles.ts` file
+- The demo app now relies on Vite to process Tailwind at the application level rather than at the package level
+
+**Options to Investigate**:
+
+1. **tsup with esbuild-sass-plugin**
+   - Use `esbuild-sass-plugin` with `postcssModules()` helper
+   - Extracts CSS to separate files by default
+   - Widely used (135+ projects)
+   - Works with tsup (esbuild-based)
+
+2. **esbuild-css-modules-plugin**
+   - Lightweight, uses Lightning CSS
+   - Works with both bundled and unbundled output
+   - Good for simple CSS modules use cases
+
+3. **esbuild-style-plugin**
+   - CSS modules via PostCSS
+   - `extract: true` option for separate files
+   - Includes SSR support
+
+4. **Dual Build System**
+   - Keep tsdown for TypeScript/JavaScript compilation
+   - Use Rollup alongside for CSS processing only
+   - Maintains separation of concerns
+
+5. **Wait for Rolldown CSS Modules Support**
+   - tsdown is built on Rolldown (Rust-based bundler)
+   - Rolldown currently doesn't support CSS Modules
+   - May add support in future releases
+
+**Considerations**:
+- The vjs-compiler's Tailwind → CSS modules transformation is a unique requirement that standard tools don't provide
+- Standard CSS modules tooling could handle the extraction/bundling after compilation
+- Need to decide: compile at package build time vs compile at application build time
+
+**Related Files**:
+- Previous working setup: commit `dce4f5c` (Rollup + rollup-plugin-postcss)
+- Current setup: `packages/react/react/tsdown.config.ts`
+
+**Next Steps**:
+1. Prototype one of the options above
+2. Compare bundle size and performance
+3. Test with demo app
+4. Document the approach
+
 ## Reporting Issues
 
 If you encounter additional issues not listed here:
