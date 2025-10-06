@@ -35,6 +35,7 @@ const TAILWIND_DEFAULT_VARS: Record<string, string> = {
   '--tw-ring-shadow': '0 0 #0000',
   '--tw-shadow': '0 0 #0000',
   '--tw-shadow-colored': '0 0 #0000',
+  '--tw-shadow-color': 'rgba(0, 0, 0, 0.2)',
   '--tw-inset-shadow': '0 0 #0000',
   '--tw-gradient-from': 'transparent',
   '--tw-gradient-to': 'transparent',
@@ -560,6 +561,15 @@ export async function compileTailwindToCSS(
 
   const inputCss = `@theme {
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* Color definitions with opacity support */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-blue-500: rgb(59 130 246);
+
+  /* Text shadow utilities */
+  --text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --text-shadow-2xs: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 /* Custom variants */
@@ -568,6 +578,19 @@ export async function compileTailwindToCSS(
 @custom-variant peer-hocus (&:is(:hover, :focus-visible) ~ &);
 @custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
 @custom-variant contrast-more @media (prefers-contrast: more);
+
+/* Custom utilities */
+@utility text-shadow {
+  text-shadow: var(--text-shadow);
+}
+
+@utility text-shadow-2xs {
+  text-shadow: var(--text-shadow-2xs);
+}
+
+@utility drop-shadow-icon {
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2));
+}
 
 @tailwind base;
 @layer components {}

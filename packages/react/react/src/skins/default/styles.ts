@@ -61,7 +61,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   IconButton: cn(
     'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20'
+    '[&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-icon'
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',

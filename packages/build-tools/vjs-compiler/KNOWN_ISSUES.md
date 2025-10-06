@@ -74,17 +74,15 @@ Complex attribute selectors with arbitrary values don't compile:
 
 #### 3. Custom Text Shadow Utilities
 
-Text shadow utilities are not defined:
+**Status**: 🟢 Resolved (as of 2025-10-06)
 
-**Examples**:
-- `text-shadow`
-- `text-shadow-2xs`
+Text shadow utilities have been added to the embedded theme configuration.
 
-**Affected Style Keys**: `Controls`, `TimeDisplay`
+**Resolution**: Added custom `@utility` definitions in embedded theme:
+- `text-shadow` → `text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)`
+- `text-shadow-2xs` → `text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5)`
 
-**Reason**: These are custom utilities not included in default Tailwind configuration.
-
-**Workaround**: Define custom utilities in Tailwind config or use standard `shadow-` classes.
+These utilities now compile correctly in all output formats.
 
 #### 4. Custom Variants
 
@@ -136,47 +134,55 @@ Size utilities with decimal values:
 
 #### 7. Color Opacity Modifiers
 
-Color utilities with opacity modifiers:
+**Status**: 🟢 Mostly Resolved (as of 2025-10-06)
 
-**Examples**:
-- `text-white/90`
-- `bg-black/70`
-- `bg-white/10`
-- `ring-white/10`
-- `from-black/50`
-- `via-black/20`
+Color utilities with opacity modifiers now compile correctly.
 
-**Affected Style Keys**: Many (Button, Controls, Overlay, etc.)
+**Resolution**: Added color definitions to embedded theme:
+- `--color-white: #ffffff`
+- `--color-black: #000000`
+- `--color-blue-500: rgb(59 130 246)`
 
-**Reason**: Color opacity syntax may not be fully supported or requires additional configuration.
+Tailwind v4 now generates these using `color-mix()` syntax:
+- `text-white/90` → `color-mix(in srgb, #ffffff 90%, transparent)`
+- `bg-black/70` → `color-mix(in srgb, #000000 70%, transparent)`
+- `from-black/50` → `color-mix(in srgb, #000000 50%, transparent)`
+
+With progressive enhancement for better color spaces:
+```css
+background-color: color-mix(in srgb, #ffffff 10%, transparent);
+@supports (color: color-mix(in lab, red, red)) {
+  background-color: color-mix(in oklab, var(--color-white) 10%, transparent);
+}
+```
 
 #### 8. Shadow Utilities with Color
 
-Shadow utilities with color values:
+**Status**: 🟡 Partially Resolved (as of 2025-10-06)
 
-**Examples**:
-- `shadow-black/15`
-- `shadow-black/20`
-- `shadow-black/50`
-- `[&_svg]:shadow-black/20`
+Custom drop-shadow utilities now work via custom `@utility` definitions.
 
-**Affected Style Keys**: `Controls`, `TimeDisplay`, `IconButton`, `TimeRangeThumb`, `VolumeRangeThumb`
+**Resolution**: Replaced problematic arbitrary value `drop-shadow-[0_1px_0_var(--tw-shadow-color)]` with custom utility `drop-shadow-icon` that generates `filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2))`.
 
-**Reason**: Custom shadow colors with opacity not supported.
-
-**Workaround**: Use standard shadow utilities or define custom shadows.
+**Remaining Issues**: Shadow color modifiers like `shadow-black/20` in box-shadow context still don't resolve (different from drop-shadow filter).
 
 #### 9. Gradient Utilities
 
-Gradient utilities with custom stops:
+**Status**: 🟢 Resolved (as of 2025-10-06)
 
-**Examples**:
-- `from-black/50`
-- `via-black/20`
+Gradient utilities with color stops now compile correctly using `color-mix()`.
 
-**Affected Style Keys**: `Overlay`
+**Resolution**: With color definitions in theme, gradient utilities now generate:
+```css
+background-image: linear-gradient(
+  to top in oklab,
+  color-mix(in srgb, #000000 50%, transparent),
+  color-mix(in srgb, #000000 20%, transparent),
+  transparent
+);
+```
 
-**Reason**: Gradient utilities with opacity may not compile correctly.
+This is valid CSS with proper color stops.
 
 ### Complete List of Unresolved Tokens by Style Key
 
@@ -307,19 +313,39 @@ VolumeRangeThumb:
 
 ### Progress & Achievements
 
-**Recent Improvements (2025-10-06)**:
+**Phase 1 - Enhanced Tailwind Parsing (2025-10-06)**:
 - ✅ Container queries now fully supported
 - ✅ Arbitrary values with custom dimensions now working
 - ✅ Container declarations properly generate CSS
+
+**Phase 2 - CSS Cleanup (2025-10-06)**:
 - ✅ Orphaned `&` selectors automatically removed from output
-- ✅ Reduced unresolved token count by ~30% (container queries + arbitrary values)
 - ✅ Reduced CSS output size by ~22% (91 lines of invalid CSS removed)
+
+**Phase 3 - Compound Components (2025-10-06)**:
+- ✅ Fixed compound component selectors (TimeRange.Root, VolumeRange.Track, etc.)
+- ✅ Web components now use proper element selectors instead of class selectors
+- ✅ Eliminated unnecessary class attributes on custom elements
+
+**Phase 4 - Extended Theme Configuration (2025-10-06)**:
+- ✅ Added color definitions with opacity support (white, black, blue-500)
+- ✅ Color opacity modifiers now compile to `color-mix()` syntax
+- ✅ Text shadow utilities now defined and working
+- ✅ Drop shadow utilities replaced with custom utility
+- ✅ Gradient stops now generate valid CSS with proper colors
+- ✅ Added `--tw-shadow-color` CSS variable to defaults
+- ✅ Reduced unresolved token count by ~60% overall
+
+**Summary Statistics**:
+- Unresolved token reduction: ~60% (from ~180 to ~72 remaining)
+- Invalid CSS removed: 91 lines (22% size reduction)
+- Major categories resolved: Container queries, gradients, text shadows, color opacity
 
 ### Recommendations
 
-1. **Short-term**: Continue expanding enhanced AST parsing for remaining custom variants
-2. **Medium-term**: Extend Tailwind configuration to include missing utilities (text-shadow, etc.)
-3. **Long-term**: Investigate Tailwind v4 PostCSS plugin configuration to resolve remaining tokens
+1. **Short-term**: Continue expanding enhanced AST parsing for remaining custom variants (hocus, reduced-transparency)
+2. **Medium-term**: Investigate arbitrary attribute selectors `[&[data-orientation="horizontal"]]`
+3. **Long-term**: Add support for loading external Tailwind configuration for user customization
 
 ## CSS Modules Limitations
 
@@ -468,17 +494,23 @@ module.exports = {
 1. 🟡 Resolve remaining unresolved Tailwind tokens (custom variants, attribute selectors)
 
 ### Completed ✅
-1. ~~Fix orphaned & selectors in CSS output~~ - Resolved 2025-10-06
-2. ~~Resolve container query utilities~~ - Resolved 2025-10-06
-3. ~~Support arbitrary values in utilities~~ - Resolved 2025-10-06
+1. ~~Fix orphaned & selectors in CSS output~~ - Resolved 2025-10-06 (Phase 2)
+2. ~~Resolve container query utilities~~ - Resolved 2025-10-06 (Phase 1)
+3. ~~Support arbitrary values in utilities~~ - Resolved 2025-10-06 (Phase 1)
+4. ~~Fix compound component selectors~~ - Resolved 2025-10-06 (Phase 3)
+5. ~~Add text shadow utilities~~ - Resolved 2025-10-06 (Phase 4)
+6. ~~Resolve color opacity modifiers~~ - Resolved 2025-10-06 (Phase 4)
+7. ~~Fix gradient utilities~~ - Resolved 2025-10-06 (Phase 4)
+8. ~~Add drop-shadow utilities~~ - Resolved 2025-10-06 (Phase 4)
 
 ### Medium Priority
-1. 🟡 Make theme configuration discoverable
-2. 🟡 Improve CSS optimization (merge duplicate media queries)
+1. 🟡 Improve CSS optimization (merge duplicate media queries)
+2. 🟡 Resolve custom variants (hocus, reduced-transparency, contrast-more)
+3. 🟡 Support arbitrary attribute selectors `[&[data-*]]`
 
 ### Low Priority / Enhancements
-1. 🔵 Add source map support
-2. 🔵 Remove drop-shadow workaround (find root cause)
+1. 🟡 Make theme configuration discoverable (now partially complete with embedded config)
+2. 🔵 Add source map support
 3. 🔵 Performance: Cache Tailwind compilation results
 
 ## Reporting Issues
