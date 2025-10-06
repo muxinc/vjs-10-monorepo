@@ -513,7 +513,22 @@ export async function compileTailwindToCSS(
     safelist,
   };
 
-  const inputCss = '@tailwind base;\n@layer components {}\n@tailwind utilities;';
+  // Include theme configuration and custom variants
+  // TODO: Make this configurable or auto-discover from project
+  const inputCss = `@theme {
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Custom variants */
+@custom-variant hocus (&:is(:hover, :focus-visible));
+@custom-variant group-hocus (&:is(:hover, :focus-visible) &);
+@custom-variant peer-hocus (&:is(:hover, :focus-visible) ~ &);
+@custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
+@custom-variant contrast-more @media (prefers-contrast: more);
+
+@tailwind base;
+@layer components {}
+@tailwind utilities;`;
   const tailwindPlugin = (tailwindcss as unknown as TailwindPluginFactory)({ config: mergedConfig });
   const result = await postcss([tailwindPlugin]).process(inputCss, {
     from: undefined,
