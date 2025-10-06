@@ -562,6 +562,9 @@ export async function compileTailwindToCSS(
   const inputCss = `@theme {
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
+  /* Spacing scale - Tailwind v4's base unit (0.25rem = 4px at 16px base font) */
+  --spacing: 0.25rem;
+
   /* Color definitions with opacity support */
   --color-white: #ffffff;
   --color-black: #000000;
