@@ -157,23 +157,42 @@ function parseContainerQueryFromCandidate(candidate: Candidate, _originalClass: 
  * Parse arbitrary values from a parsed candidate
  */
 function parseArbitraryValueFromCandidate(candidate: Candidate, _originalClass: string): ArbitraryValue | null {
-  // Handle arbitrary properties like [color:red]
+  // Extract variant selector if present (e.g., "& svg" from [&_svg]:property)
+  let variantSelector: string | undefined;
+
+  // Check for arbitrary variants with selectors
+  for (const variant of candidate.variants) {
+    if (variant.kind === 'arbitrary' && 'selector' in variant) {
+      variantSelector = variant.selector as string;
+      break; // Use the first variant selector found
+    }
+  }
+
+  // Handle arbitrary properties like [color:red] or [&_svg]:[grid-area:1/1]
   if (candidate.kind === 'arbitrary') {
-    return {
+    const result: ArbitraryValue = {
       property: candidate.property,
       value: candidate.value,
       originalClass: _originalClass,
+    };
+    if (variantSelector) {
+      result.variantSelector = variantSelector;
     }
+    return result;
   }
 
   // Handle functional utilities with arbitrary values like text-[14px]
   if (candidate.kind === 'functional' && candidate.value?.kind === 'arbitrary') {
-    const property = mapUtilityToProperty(candidate.root, candidate.value.value)
-    return {
+    const property = mapUtilityToProperty(candidate.root, candidate.value.value);
+    const result: ArbitraryValue = {
       property,
       value: candidate.value.value,
       originalClass: _originalClass,
+    };
+    if (variantSelector) {
+      result.variantSelector = variantSelector;
     }
+    return result;
   }
 
   return null

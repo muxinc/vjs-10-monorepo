@@ -156,6 +156,33 @@ function rescopeSelectors(node: Node, fromClass: string, toClass: string): void 
   rule.selector = transformed;
 }
 
+/**
+ * Transform group-hover selectors from :where(.group\/name) format to descendant selectors
+ * Example: .Controls:where(.group\/root):hover → .MediaContainer:hover .Controls
+ */
+function transformGroupHoverSelectorsInAST(root: Root, groupNameToClass: Map<string, string>): void {
+  root.walkRules((rule) => {
+    let transformed = rule.selector;
+
+    // Pattern: .ChildClass:is(:where(.group\/groupName):pseudoClass *)
+    // This matches Tailwind v4's group-hover output format
+    const groupPattern = /\.([a-zA-Z][\w-]*):is\(:where\(\.group\\\/([^)]+)\):(hover|focus-within|active)\s+\*\)/g;
+
+    transformed = transformed.replace(groupPattern, (_match, childClass, groupName, pseudoClass) => {
+      const parentClass = groupNameToClass.get(groupName);
+      if (parentClass) {
+        // Transform to: .ParentClass:pseudoClass .ChildClass
+        return `.${parentClass}:${pseudoClass} .${childClass}`;
+      }
+      return _match; // Keep original if we can't map the group
+    });
+
+    if (transformed !== rule.selector) {
+      rule.selector = transformed;
+    }
+  });
+}
+
 function simplifySelectors(root: Root): void {
   root.walkRules((rule) => {
     const simplified = selectorParser((selectors) => {
@@ -397,14 +424,38 @@ function resolveTailwindVariables(root: Root, globalVariables: Map<string, strin
 function dedupeDeclarations(container: Container): void {
   container.walkRules((rule) => {
     const seen = new Set<string>();
+    const propDecls = new Map<string, Declaration[]>();
+
+    // First pass: collect all declarations by property
     rule.walkDecls((decl) => {
       const key = `${decl.prop}::${decl.value}`;
       if (seen.has(key)) {
         decl.remove();
       } else {
         seen.add(key);
+
+        // Track declarations for the same property
+        if (!propDecls.has(decl.prop)) {
+          propDecls.set(decl.prop, []);
+        }
+        propDecls.get(decl.prop)!.push(decl);
       }
     });
+
+    // Second pass: handle duplicate properties with different values
+    // For properties like border-radius, keep non-inherit values over inherit
+    for (const [_prop, decls] of propDecls) {
+      if (decls.length > 1) {
+        // Check if we have both inherit and non-inherit values
+        const nonInheritDecls = decls.filter(d => d.value !== 'inherit');
+        const inheritDecls = decls.filter(d => d.value === 'inherit');
+
+        if (nonInheritDecls.length > 0 && inheritDecls.length > 0) {
+          // Remove inherit declarations when we have explicit values
+          inheritDecls.forEach(d => d.remove());
+        }
+      }
+    }
   });
 }
 
@@ -660,10 +711,22 @@ export async function compileTailwindToCSS(
 
     // Add arbitrary values as direct CSS properties
     for (const arbitrary of enhanced.arbitraryValues) {
-      rule.append(postcss.decl({
-        prop: arbitrary.property,
-        value: arbitrary.value,
-      }));
+      if (arbitrary.variantSelector) {
+        // Has a variant selector like "& svg" - create nested rule
+        const nestedSelector = arbitrary.variantSelector.replace(/&/g, `.${key}`);
+        const nestedRule = postcss.rule({ selector: nestedSelector });
+        nestedRule.append(postcss.decl({
+          prop: arbitrary.property,
+          value: arbitrary.value,
+        }));
+        outputRoot.append(nestedRule);
+      } else {
+        // No variant - add directly to the main rule
+        rule.append(postcss.decl({
+          prop: arbitrary.property,
+          value: arbitrary.value,
+        }));
+      }
       hasContent = true;
     }
 
@@ -722,6 +785,21 @@ export async function compileTailwindToCSS(
 
   const nestedResult = await postcss([postcssNested()]).process(outputRoot, { from: undefined });
   const flattenedRoot = nestedResult.root ?? outputRoot;
+
+  // Build group name mapping from enhanced data
+  // Look for classes that define groups (e.g., "group/root", "group/button")
+  const groupNameToClass = new Map<string, string>();
+  for (const [key, enhanced] of enhancedByKey) {
+    for (const token of enhanced.simpleClasses) {
+      const groupMatch = token.match(/^group\/(.+)$/);
+      if (groupMatch && groupMatch[1]) {
+        groupNameToClass.set(groupMatch[1], key);
+      }
+    }
+  }
+
+  // Transform group-hover selectors to descendant selectors
+  transformGroupHoverSelectorsInAST(flattenedRoot, groupNameToClass);
 
   simplifySelectors(flattenedRoot);
   removeOrphanedAmpersandSelectors(flattenedRoot);

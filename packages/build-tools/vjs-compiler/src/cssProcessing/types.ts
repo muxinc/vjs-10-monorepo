@@ -84,6 +84,8 @@ export interface ArbitraryValue {
   value: string;
   /** Original class for reference (e.g., "text-[0.9375rem]") */
   originalClass: string;
+  /** Selector modifier from variant (e.g., "& svg" from [&_svg]:property) */
+  variantSelector?: string;
 }
 
 /**
