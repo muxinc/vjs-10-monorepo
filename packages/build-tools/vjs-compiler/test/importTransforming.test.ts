@@ -29,12 +29,12 @@ describe('importTransforming', () => {
   });
 
   describe('defaultTransformRelativeImport', () => {
-    it('should transform component imports to kebab-case', () => {
+    it('should transform component imports to kebab-case with media- prefix', () => {
       expect(defaultTransformRelativeImport('../../components/PlayButton'))
-        .toBe('../components/play-button');
+        .toBe('../components/media-play-button');
     });
 
-    it('should handle already kebab-cased imports', () => {
+    it('should handle already kebab-cased imports with media- prefix', () => {
       expect(defaultTransformRelativeImport('../components/media-play-button'))
         .toBe('../components/media-play-button');
     });
@@ -46,6 +46,23 @@ describe('importTransforming', () => {
 
     it('should handle empty path parts', () => {
       expect(defaultTransformRelativeImport('./')).toBe('./');
+    });
+
+    it('should special-case MediaContainer to root directory', () => {
+      expect(defaultTransformRelativeImport('../../components/MediaContainer'))
+        .toBe('../media-container');
+    });
+
+    it('should add media- prefix to components without it', () => {
+      expect(defaultTransformRelativeImport('../../components/PlayButton'))
+        .toBe('../components/media-play-button');
+      expect(defaultTransformRelativeImport('../../components/TimeRange'))
+        .toBe('../components/media-time-range');
+    });
+
+    it('should not double-add media- prefix', () => {
+      expect(defaultTransformRelativeImport('../../components/MediaPlayButton'))
+        .toBe('../components/media-play-button');
     });
   });
 
@@ -60,8 +77,8 @@ describe('importTransforming', () => {
 
       // Should exclude the CSS import
       expect(result.some(imp => imp.includes('styles.module.css'))).toBe(false);
-      // Should include the component import (transformed to kebab-case)
-      expect(result.some(imp => imp.includes('play-button'))).toBe(true);
+      // Should include the component import (transformed to kebab-case with media- prefix)
+      expect(result.some(imp => imp.includes('media-play-button'))).toBe(true);
     });
 
     it('should use default transformRelativeImport when not provided', () => {
@@ -76,8 +93,8 @@ describe('importTransforming', () => {
 
       const result = transformImports(imports, config);
 
-      // Should transform using default kebab-case logic
-      expect(result.some(imp => imp.includes('play-button'))).toBe(true);
+      // Should transform using default kebab-case logic with media- prefix
+      expect(result.some(imp => imp.includes('media-play-button'))).toBe(true);
     });
   });
 
@@ -195,6 +212,190 @@ describe('importTransforming', () => {
 
       // Should include the import (custom shouldExclude)
       expect(result.some(imp => imp.includes('MyComponent'))).toBe(true);
+    });
+  });
+
+  describe('React core library exclusion', () => {
+    it('should exclude react core library', () => {
+      const imports: ImportInfo[] = [
+        { source: 'react', specifiers: [] },
+        { source: './components/PlayButton', specifiers: [] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should exclude 'react'
+      expect(result.some(imp => imp.includes("'react'"))).toBe(false);
+      // Should include component
+      expect(result.some(imp => imp.includes('media-play-button'))).toBe(true);
+    });
+
+    it('should NOT exclude packages containing react in their name', () => {
+      const imports: ImportInfo[] = [
+        { source: 'react', specifiers: [] },
+        { source: '@vjs-10/react-icons', specifiers: [] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should exclude 'react'
+      expect(result.some(imp => imp.includes("'react'"))).toBe(false);
+      // Should transform and include '@vjs-10/react-icons' -> '@vjs-10/html-icons'
+      expect(result.some(imp => imp.includes('@vjs-10/html-icons'))).toBe(true);
+    });
+
+    it('should exclude react-dom', () => {
+      const imports: ImportInfo[] = [
+        { source: 'react', specifiers: [] },
+        { source: 'react-dom', specifiers: [] },
+        { source: '@vjs-10/react', specifiers: [] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should exclude both 'react' and 'react-dom'
+      expect(result.some(imp => imp.includes("'react'"))).toBe(false);
+      expect(result.some(imp => imp.includes("'react-dom'"))).toBe(false);
+      // Should transform '@vjs-10/react' -> '@vjs-10/html'
+      expect(result.some(imp => imp.includes('@vjs-10/html'))).toBe(true);
+    });
+
+    it('should handle react/ subpath imports', () => {
+      const imports: ImportInfo[] = [
+        { source: 'react/jsx-runtime', specifiers: [] },
+        { source: '@vjs-10/react-icons', specifiers: [] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should exclude 'react/*' paths
+      expect(result.some(imp => imp.includes('react/jsx-runtime'))).toBe(false);
+      // Should NOT exclude packages with 'react' in name
+      expect(result.some(imp => imp.includes('@vjs-10/html-icons'))).toBe(true);
+    });
+  });
+
+  describe('Icon package consolidation', () => {
+    it('should consolidate icon imports into single package import', () => {
+      const imports: ImportInfo[] = [
+        { source: '@vjs-10/react-icons', specifiers: [{ local: 'PlayIcon' }] },
+        { source: '@vjs-10/react-icons', specifiers: [{ local: 'PauseIcon' }] },
+        { source: '@vjs-10/react-icons', specifiers: [{ local: 'VolumeIcon' }] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should have exactly one icon package import
+      const iconImports = result.filter(imp => imp.includes('@vjs-10/html-icons'));
+      expect(iconImports).toHaveLength(1);
+      expect(iconImports[0]).toBe("import '@vjs-10/html-icons';");
+    });
+
+    it('should add icon import alongside component imports', () => {
+      const imports: ImportInfo[] = [
+        { source: '@vjs-10/react-icons', specifiers: [] },
+        { source: '../../components/PlayButton', specifiers: [] },
+        { source: '../../components/MediaContainer', specifiers: [] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should have MediaSkin at start
+      expect(result[0]).toContain("import { MediaSkin } from '../media-skin'");
+      // Should have component imports
+      expect(result.some(imp => imp.includes('media-play-button'))).toBe(true);
+      expect(result.some(imp => imp.includes('../media-container'))).toBe(true);
+      // Should have icon package import
+      expect(result.some(imp => imp.includes('@vjs-10/html-icons'))).toBe(true);
+    });
+
+    it('should handle multiple icon packages if configured', () => {
+      const imports: ImportInfo[] = [
+        { source: '@vjs-10/react-icons', specifiers: [] },
+        { source: '@custom/react-icons', specifiers: [] }
+      ];
+
+      const config: ImportMappingConfig = {
+        ...defaultImportMappings,
+        packageMappings: {
+          '@vjs-10/react-icons': '@vjs-10/html-icons',
+          '@custom/react-icons': '@custom/html-icons'
+        }
+      };
+
+      const result = transformImports(imports, config);
+
+      // Should have both icon packages
+      expect(result.some(imp => imp.includes('@vjs-10/html-icons'))).toBe(true);
+      expect(result.some(imp => imp.includes('@custom/html-icons'))).toBe(true);
+    });
+  });
+
+  describe('Pattern matching with trailing slashes', () => {
+    it('should match exact prefix for patterns ending with /', () => {
+      expect(defaultShouldExclude('react/jsx-runtime', ['react/'])).toBe(true);
+      expect(defaultShouldExclude('react', ['react/'])).toBe(true); // Exact match without trailing /
+      expect(defaultShouldExclude('@vjs-10/react', ['react/'])).toBe(false);
+    });
+
+    it('should match substring for patterns without trailing /', () => {
+      expect(defaultShouldExclude('./styles/index', ['/styles'])).toBe(true);
+      expect(defaultShouldExclude('./components/button', ['/styles'])).toBe(false);
+      expect(defaultShouldExclude('./styles.module.css', ['.css'])).toBe(true);
+    });
+
+    it('should handle mixed pattern types', () => {
+      const patterns = ['react/', '.css', '/styles'];
+
+      expect(defaultShouldExclude('react', patterns)).toBe(true);
+      expect(defaultShouldExclude('react/jsx-runtime', patterns)).toBe(true);
+      expect(defaultShouldExclude('@vjs-10/react', patterns)).toBe(false);
+      expect(defaultShouldExclude('./styles.module.css', patterns)).toBe(true);
+      expect(defaultShouldExclude('./styles/index', patterns)).toBe(true);
+      expect(defaultShouldExclude('./component.tsx', patterns)).toBe(false);
+    });
+  });
+
+  describe('Real-world scenario: MediaSkinDefault', () => {
+    it('should transform all imports correctly for a complete skin', () => {
+      const imports: ImportInfo[] = [
+        { source: 'react', specifiers: [] },
+        { source: '@vjs-10/react-icons', specifiers: [] },
+        { source: '../../components/PlayButton', specifiers: [] },
+        { source: '../../components/MuteButton', specifiers: [] },
+        { source: '../../components/TimeRange', specifiers: [] },
+        { source: '../../components/VolumeRange', specifiers: [] },
+        { source: '../../components/CurrentTimeDisplay', specifiers: [] },
+        { source: '../../components/DurationDisplay', specifiers: [] },
+        { source: '../../components/FullscreenButton', specifiers: [] },
+        { source: '../../components/MediaContainer', specifiers: [] },
+        { source: './styles', specifiers: [] }
+      ];
+
+      const result = transformImports(imports, defaultImportMappings);
+
+      // Should have MediaSkin import first
+      expect(result[0]).toBe("import { MediaSkin } from '../media-skin';");
+
+      // Should exclude react and styles
+      expect(result.some(imp => imp.includes("'react'"))).toBe(false);
+      expect(result.some(imp => imp.includes('styles'))).toBe(false);
+
+      // Should have all component imports with media- prefix
+      expect(result.some(imp => imp.includes("'../components/media-play-button'"))).toBe(true);
+      expect(result.some(imp => imp.includes("'../components/media-mute-button'"))).toBe(true);
+      expect(result.some(imp => imp.includes("'../components/media-time-range'"))).toBe(true);
+      expect(result.some(imp => imp.includes("'../components/media-volume-range'"))).toBe(true);
+      expect(result.some(imp => imp.includes("'../components/media-current-time-display'"))).toBe(true);
+      expect(result.some(imp => imp.includes("'../components/media-duration-display'"))).toBe(true);
+      expect(result.some(imp => imp.includes("'../components/media-fullscreen-button'"))).toBe(true);
+
+      // Should have MediaContainer at root
+      expect(result.some(imp => imp.includes("'../media-container'"))).toBe(true);
+
+      // Should have single consolidated icon import
+      const iconImports = result.filter(imp => imp.includes('@vjs-10/html-icons'));
+      expect(iconImports).toHaveLength(1);
     });
   });
 });
