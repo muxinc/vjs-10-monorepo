@@ -11,9 +11,9 @@ export interface MediaDefaultSkinStyles {
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
   readonly VolumeOffIcon: string;
-  readonly FullScreenButton: string;
-  readonly FullScreenEnterIcon: string;
-  readonly FullScreenExitIcon: string;
+  readonly FullscreenButton: string;
+  readonly FullscreenEnterIcon: string;
+  readonly FullscreenExitIcon: string;
   readonly TimeControls: string;
   readonly TimeDisplay: string;
   readonly SliderRoot: string;
