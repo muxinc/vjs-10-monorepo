@@ -1,8 +1,7 @@
-import { defineVjsPlayer } from '@vjs-10/html';
+import '@vjs-10/html'; // Imports MediaProvider and other core components
+import '@vjs-10/html/skins/media-skin-default';
 import '@vjs-10/html/skins/compiled/inline/media-skin-default';
 import '@vjs-10/html/skins/compiled/inline/media-skin-toasted';
-
-defineVjsPlayer();
 
 // Skin configuration
 const skins = [
@@ -39,7 +38,7 @@ function setParam(key: string, value: string): void {
 
 // Default values
 const DEFAULT_SKIN: SkinKey = 'default-inline';
-const DEFAULT_MEDIA_SOURCE: MediaSourceKey = '1';
+const DEFAULT_MEDIA_SOURCE: MediaSourceKey = '3'; // Use MP4 instead of HLS
 
 // State
 let currentSkin: SkinKey = getParam('skin', DEFAULT_SKIN);
