@@ -52,8 +52,8 @@ interface PopoverPopupProps {
 
 interface PopoverPortalProps {
   children: ReactNode;
-  container?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
-  id?: string;
+  root?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
+  rootId?: string;
 }
 
 const PopoverContext = createContext<PopoverContextType | null>(null);
@@ -149,8 +149,8 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
   );
 }
 
-function PopoverPortal({ children, container, id }: PopoverPortalProps): JSX.Element {
-  return <FloatingPortal root={container as HTMLElement} id={id}>{children}</FloatingPortal>;
+function PopoverPortal({ children, root, rootId }: PopoverPortalProps): JSX.Element {
+  return <FloatingPortal root={root as HTMLElement} id={rootId as string}>{children}</FloatingPortal>;
 }
 
 // Export compound component
