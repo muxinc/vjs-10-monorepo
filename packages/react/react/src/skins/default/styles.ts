@@ -4,7 +4,7 @@ import { cn } from "../../utils/cn";
 
 const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
-    'relative @container/root group/root overflow-clip',
+    'media-container relative @container/root group/root overflow-clip',
     // Base typography
     'text-sm',
     // Prevent rounded corners in fullscreen.
@@ -16,7 +16,7 @@ const styles: MediaDefaultSkinStyles = {
     '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto'
   ),
   Overlay: cn(
-    'opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none z-10 bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90',
+    'opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90',
     // Hide when playing (for now).
     //  FIXME: This is crude temporary logic, we’ll improve it later I guess with a [data-show-controls] attribute or something?
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0',
@@ -24,7 +24,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-3 bottom-3 rounded-full z-20 flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white text-shadow',
+    '@container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white text-shadow',
     'shadow-sm shadow-black/15',
     // Background
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
@@ -69,6 +69,26 @@ const styles: MediaDefaultSkinStyles = {
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
+  TooltipPopup: cn(
+    'whitespace-nowrap relative px-2 py-1 text-xs font-medium rounded-md text-white text-shadow',
+    // Background
+    'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
+    // Shadow
+    // 'shadow-lg shadow-black/25',
+    // Border
+    'border border-white/10',
+    // Reduced transparency for users with preference
+    // XXX: This requires a Tailwind custom variant (see 1 below)
+    'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
+    // High contrast mode
+    'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20'
+  ),
+  PlayTooltipPopup: cn(
+    '[&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden',
+    '[&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline'
+  ),
+  PlayTooltip: cn('play-tooltip'),
+  PauseTooltip: cn('pause-tooltip'),
   VolumeButton: cn(
     '[&_svg]:opacity-0',
     '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
@@ -96,6 +116,12 @@ const styles: MediaDefaultSkinStyles = {
     'group-hover/button:[&_.arrow-1]:translate-0',
     'group-hover/button:[&_.arrow-2]:translate-0'
   ),
+  FullScreenTooltipPopup: cn(
+    '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
+    '[&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline'
+  ),
+  FullScreenEnterTooltip: cn('fullscreen-enter-tooltip'),
+  FullScreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
   SliderRoot: cn(
@@ -119,7 +145,7 @@ const styles: MediaDefaultSkinStyles = {
     'size-2.5 active:size-3 group-active/slider:size-3 hover:cursor-ew-resize'
   ),
   PopoverPopup: cn(
-    'relative z-30 px-2 py-4 rounded-2xl',
+    'relative px-2 py-4 rounded-2xl',
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
     // Border to enhance contrast on lighter videos

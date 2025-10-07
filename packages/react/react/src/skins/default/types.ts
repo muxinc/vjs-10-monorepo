@@ -7,6 +7,10 @@ export interface MediaDefaultSkinStyles {
   readonly PlayButton: string;
   readonly PlayIcon: string;
   readonly PauseIcon: string;
+  readonly PlayTooltipPopup: string;
+  readonly PlayTooltip: string;
+  readonly PauseTooltip: string;
+  readonly TooltipPopup: string;
   readonly VolumeButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
@@ -14,12 +18,15 @@ export interface MediaDefaultSkinStyles {
   readonly FullScreenButton: string;
   readonly FullScreenEnterIcon: string;
   readonly FullScreenExitIcon: string;
-  readonly TimeControls: string;
-  readonly TimeDisplay: string;
+  readonly FullScreenTooltipPopup: string;
+  readonly FullScreenEnterTooltip: string;
+  readonly FullScreenExitTooltip: string;
   readonly SliderRoot: string;
   readonly SliderTrack: string;
   readonly SliderProgress: string;
   readonly SliderPointer: string;
   readonly SliderThumb: string;
   readonly PopoverPopup: string;
+  readonly TimeControls: string;
+  readonly TimeDisplay: string;
 }

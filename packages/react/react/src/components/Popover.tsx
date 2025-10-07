@@ -6,6 +6,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   autoUpdate,
   flip,
+  FloatingPortal,
   offset,
   shift,
   useDismiss,
@@ -47,6 +48,11 @@ interface PopoverPositionerProps {
 interface PopoverPopupProps {
   className?: string;
   children: ReactNode;
+}
+
+interface PopoverPortalProps {
+  children: ReactNode;
+  container?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
 }
 
 const PopoverContext = createContext<PopoverContextType | null>(null);
@@ -142,17 +148,23 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
   );
 }
 
+function PopoverPortal({ children, container }: PopoverPortalProps): JSX.Element {
+  return <FloatingPortal root={container as HTMLElement}>{children}</FloatingPortal>;
+}
+
 // Export compound component
 export const Popover: {
   Root: typeof PopoverRoot;
   Trigger: typeof PopoverTrigger;
   Positioner: typeof PopoverPositioner;
   Popup: typeof PopoverPopup;
+  Portal: typeof PopoverPortal;
 } = {
   Root: PopoverRoot,
   Trigger: PopoverTrigger,
   Positioner: PopoverPositioner,
   Popup: PopoverPopup,
+  Portal: PopoverPortal,
 };
 
 export default Popover;
