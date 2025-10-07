@@ -1,6 +1,7 @@
 import type { Placement } from '@floating-ui/dom';
 
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { uniqueId } from '../utils/element-utils';
 
 export class MediaPopoverRoot extends HTMLElement {
   #open = false;
@@ -42,12 +43,16 @@ export class MediaPopoverRoot extends HTMLElement {
     return this.querySelector('media-popover-trigger') as MediaPopoverTrigger | null;
   }
 
+  get #portalElement(): MediaPopoverPortal | null {
+    return this.querySelector('media-popover-portal') as MediaPopoverPortal | null;
+  }
+
   get #positionerElement(): MediaPopoverPositioner | null {
-    return this.querySelector('media-popover-positioner') as MediaPopoverPositioner | null;
+    return this.#portalElement?.querySelector('media-popover-positioner') as MediaPopoverPositioner | null;
   }
 
   get #popupElement(): MediaPopoverPopup | null {
-    return this.querySelector('media-popover-popup') as MediaPopoverPopup | null;
+    return this.#portalElement?.querySelector('media-popover-popup') as MediaPopoverPopup | null;
   }
 
   #setOpen(open: boolean): void {
@@ -138,6 +143,53 @@ export class MediaPopoverTrigger extends HTMLElement {
   }
 }
 
+export class MediaPopoverPortal extends HTMLElement {
+  #portal: HTMLElement | null = null;
+
+  connectedCallback(): void {
+    this.style.display = 'contents';
+    this.#setupPortal();
+  }
+
+  disconnectedCallback(): void {
+    this.#cleanupPortal();
+  }
+
+  querySelector(selector: string): HTMLElement | null {
+    return this.#portal?.querySelector(selector) ?? null;
+  }
+
+  handleEvent(event: Event): void {
+    this.dispatchEvent(new Event(event.type, { bubbles: true }));
+  }
+
+  #setupPortal(): void {
+    const portalId = this.getAttribute('root-id');
+    if (!portalId) return;
+
+    const portalContainer = (this.getRootNode() as ShadowRoot | Document).getElementById(portalId);
+    if (!portalContainer) return;
+
+    portalContainer.addEventListener('mouseenter', this);
+    portalContainer.addEventListener('mouseleave', this);
+
+    this.#portal = document.createElement('div');
+    this.#portal.id = uniqueId();
+    portalContainer.append(this.#portal);
+
+    this.#portal.append(...this.children);
+  }
+
+  #cleanupPortal(): void {
+    if (!this.#portal) return;
+
+    // Move children back to the portal element
+    this.append(...this.#portal.children);
+    this.#portal.remove();
+    this.#portal = null;
+  }
+}
+
 export class MediaPopoverPositioner extends HTMLElement {
   connectedCallback(): void {
     this.style.display = 'contents';
@@ -148,7 +200,6 @@ export class MediaPopoverPositioner extends HTMLElement {
         position: 'absolute',
         top: '0',
         left: '0',
-        zIndex: '1000',
       });
     }
   }
@@ -177,6 +228,10 @@ if (!globalThis.customElements.get('media-popover-trigger')) {
   globalThis.customElements.define('media-popover-trigger', MediaPopoverTrigger);
 }
 
+if (!globalThis.customElements.get('media-popover-portal')) {
+  globalThis.customElements.define('media-popover-portal', MediaPopoverPortal);
+}
+
 if (!globalThis.customElements.get('media-popover-positioner')) {
   globalThis.customElements.define('media-popover-positioner', MediaPopoverPositioner);
 }
@@ -188,11 +243,13 @@ if (!globalThis.customElements.get('media-popover-popup')) {
 export const Popover: {
   Root: typeof MediaPopoverRoot;
   Trigger: typeof MediaPopoverTrigger;
+  Portal: typeof MediaPopoverPortal;
   Positioner: typeof MediaPopoverPositioner;
   Popup: typeof MediaPopoverPopup;
 } = {
   Root: MediaPopoverRoot,
   Trigger: MediaPopoverTrigger,
+  Portal: MediaPopoverPortal,
   Positioner: MediaPopoverPositioner,
   Popup: MediaPopoverPopup,
 };

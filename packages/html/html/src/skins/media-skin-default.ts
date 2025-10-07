@@ -9,9 +9,13 @@ import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
 import '../components/media-popover';
+import '../components/media-tooltip';
 import '@vjs-10/html-icons';
+import { uniqueId } from '../utils/element-utils';
 
 export function getTemplateHTML() {
+  const portalId = uniqueId();
+  
   return /* html */ `
     ${MediaSkin.getTemplateHTML()}
     <style>
@@ -241,17 +245,61 @@ export function getTemplateHTML() {
         background-color: #007bff;
         border-radius: inherit;
       }
+
+      .portal {
+        position: absolute;
+        z-index: 10;
+      }
+
+      /* Tooltip Component Styles */
+      media-tooltip-popup {
+        background: rgb(20 20 30 / .9);
+        color: rgb(238 238 238);
+        padding: 6px 8px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: system-ui, -apple-system, sans-serif;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      .tooltip {
+        display: none;
+        white-space: nowrap;
+      }
+
+      media-tooltip-popup[data-paused] .play-tooltip,
+      media-tooltip-popup:not([data-paused]) .pause-tooltip {
+        display: block;
+      }
+
+      media-tooltip-popup[data-fullscreen] .fullscreen-exit-tooltip,
+      media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
+        display: block;
+      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
+      <div id="${portalId}" class="portal"></div>
       <div class="overlay">
         <div class="spacer"></div>
         <div class="control-bar">
           <!-- NOTE: We can decide if we further want to provide a further, "themed" media-play-button that comes with baked in default styles and icons. (CJP) -->
-          <media-play-button class="button">
-            <media-play-icon class="icon play-icon"></media-play-icon>
-            <media-pause-icon class="icon pause-icon"></media-pause-icon>
-          </media-play-button>
+          <media-tooltip-root delay="600" close-delay="0">
+            <media-tooltip-trigger>
+              <media-play-button class="button">
+                <media-play-icon class="icon play-icon"></media-play-icon>
+                <media-pause-icon class="icon pause-icon"></media-pause-icon>
+              </media-play-button>
+            </media-tooltip-trigger>
+            <media-tooltip-portal root-id="${portalId}">
+              <media-tooltip-positioner side="top" side-offset="8" collision-padding="8">
+                <media-tooltip-popup>
+                  <span class="tooltip play-tooltip">Play</span>
+                  <span class="tooltip pause-tooltip">Pause</span>
+                </media-tooltip-popup>
+              </media-tooltip-positioner>
+            </media-tooltip-portal>
+          </media-tooltip-root>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
           <media-time-range-root>
@@ -270,21 +318,35 @@ export function getTemplateHTML() {
                 <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
               </media-mute-button>
             </media-popover-trigger>
-            <media-popover-positioner side="top" side-offset="0">
-              <media-popover-popup>
-                <media-volume-range-root orientation="vertical">
-                  <media-volume-range-track>
-                    <media-volume-range-progress></media-volume-range-progress>
-                  </media-volume-range-track>
-                  <media-volume-range-thumb></media-volume-range-thumb>
-                </media-volume-range-root>
-              </media-popover-popup>
-            </media-popover-positioner>
+            <media-popover-portal root-id="${portalId}">
+              <media-popover-positioner side="top" side-offset="0">
+                <media-popover-popup>
+                  <media-volume-range-root orientation="vertical">
+                    <media-volume-range-track>
+                      <media-volume-range-progress></media-volume-range-progress>
+                    </media-volume-range-track>
+                    <media-volume-range-thumb></media-volume-range-thumb>
+                  </media-volume-range-root>
+                </media-popover-popup>
+              </media-popover-positioner>
+            </media-popover-portal>
           </media-popover-root>
-          <media-fullscreen-button class="button">
-            <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
-            <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
-          </media-fullscreen-button>
+          <media-tooltip-root delay="600" close-delay="0">
+            <media-tooltip-trigger>
+              <media-fullscreen-button class="button">
+                <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
+                <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
+              </media-fullscreen-button>
+            </media-tooltip-trigger>
+            <media-tooltip-portal root-id="${portalId}">
+              <media-tooltip-positioner side="top" side-offset="8" collision-padding="8">
+                <media-tooltip-popup>
+                  <span class="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
+                  <span class="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
+                </media-tooltip-popup>
+              </media-tooltip-positioner>
+            </media-tooltip-portal>
+          </media-tooltip-root>
         </div>
       </div>
     </media-container>

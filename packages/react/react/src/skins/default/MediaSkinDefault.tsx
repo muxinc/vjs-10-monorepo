@@ -45,7 +45,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <PauseIcon className={styles.PauseIcon}></PauseIcon>
             </PlayButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal id={portalId}>
+          <Tooltip.Portal rootId={portalId}>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
                 <span className={styles.PlayTooltip}>Play</span>
@@ -81,7 +81,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <VolumeOffIcon className={styles.VolumeOffIcon} />
             </MuteButton>
           </Popover.Trigger>
-          <Popover.Portal id={portalId}>
+          <Popover.Portal rootId={portalId}>
             <Popover.Positioner side="top" sideOffset={12}>
               <Popover.Popup className={styles.PopoverPopup}>
                 <VolumeRange.Root className={styles.SliderRoot} orientation="vertical">
@@ -102,7 +102,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <FullscreenExitIcon className={styles.FullScreenExitIcon} />
             </FullscreenButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal id={portalId}>
+          <Tooltip.Portal rootId={portalId}>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullScreenTooltipPopup}`}>
                 <span className={styles.FullScreenEnterTooltip}>Enter Fullscreen</span>

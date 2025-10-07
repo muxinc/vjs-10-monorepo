@@ -4,7 +4,7 @@ import { cn } from "../../utils/cn";
 
 const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
-    'media-container relative @container/root group/root overflow-clip',
+    'relative @container/root group/root overflow-clip',
     // Base typography
     'text-sm',
     // Prevent rounded corners in fullscreen.
