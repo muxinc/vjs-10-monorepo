@@ -30,9 +30,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
       {children}
 
       <div className={styles.Controls} data-testid="media-controls">
-        {/* <header className='py-2 px-4 text-shadow-sm text-shadow-black/10'>
-          <h1 className="text-base font-medium">View From a Blue Moon</h1>
-          <p className="text-stone-400">A story about Jon Jon Florence, a surfer from Hawaii.</p>
+        {/* <header className='py-2 px-2.5 text-shadow-sm text-shadow-black/10'>
+          <h1 className="text-base font-medium">Example Video</h1>
+          <p className="text-stone-400">This is just a description for the example video.</p>
         </header> */}
 
         <div className={styles.ControlsRow}>
