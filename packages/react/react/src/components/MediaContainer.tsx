@@ -1,8 +1,10 @@
 import type { FC, HTMLProps, PropsWithChildren, RefCallback } from 'react';
 
-import { useCallback } from 'react';
+import { forwardRef, useCallback } from 'react';
 
 import { useMediaStore } from '@vjs-10/react-media-store';
+
+import { useComposedRefs } from '../utils/useComposedRefs';
 
 /**
  * Hook to associate a React element as the fullscreen container for the media store.
@@ -50,12 +52,12 @@ export const useMediaContainerRef = (): RefCallback<HTMLElement | null> => {
  *   </MediaContainer>
  * );
  */
-export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement>>> = ({ children, ...props }) => {
+export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement>>> = forwardRef(({ children, ...props }, ref) => {
   const containerRef = useMediaContainerRef();
-
+  const composedRef = useComposedRefs(ref, containerRef);
   return (
-    <div ref={containerRef} {...props}>
+    <div ref={composedRef} {...props}>
       {children}
     </div>
   );
-};
+});

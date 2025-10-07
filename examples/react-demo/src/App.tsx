@@ -18,11 +18,11 @@ type SkinKey = (typeof skins)[number]['key'];
 const mediaSources = [{
   key: '1',
   name: 'Mux 1',
-  value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8'
+  value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8'
 }, {
   key: '2',
   name: 'Mux 2',
-  value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8'
+  value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8'
 }, {
   key: '3',
   name: 'Mux 3',

@@ -7,6 +7,7 @@ import {
   arrow,
   autoUpdate,
   flip,
+  FloatingPortal,
   offset,
   shift,
   useDismiss,
@@ -17,6 +18,12 @@ import {
   useRole,
 } from '@floating-ui/react';
 
+interface UpdatePositioningProps {
+  side: Placement;
+  sideOffset: number;
+  collisionPadding: number;
+}
+
 interface TooltipContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -25,7 +32,7 @@ interface TooltipContextType {
   getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
   getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
   context: ReturnType<typeof useFloating>['context'];
-  updatePositioning: (placement: Placement, sideOffset: number) => void;
+  updatePositioning: (props: UpdatePositioningProps) => void;
   arrowRef: React.MutableRefObject<HTMLElement | null>;
 }
 
@@ -42,6 +49,7 @@ interface TooltipTriggerProps {
 interface TooltipPositionerProps {
   side?: Placement;
   sideOffset?: number;
+  collisionPadding?: number;
   children: ReactNode;
 }
 
@@ -53,6 +61,11 @@ interface TooltipPopupProps {
 interface TooltipArrowProps {
   className?: string;
   children: ReactNode;
+}
+
+interface TooltipPortalProps {
+  children: ReactNode;
+  container?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
 }
 
 const TooltipContext = createContext<TooltipContextType | null>(null);
@@ -82,7 +95,8 @@ function useTooltipPositionerContext(): TooltipPositionerContextType {
 function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>('top');
-  const [sideOffset, setSideOffset] = useState(8);
+  const [sideOffset, setSideOffset] = useState(0);
+  const [collisionPadding, setCollisionPadding] = useState(0);
   const arrowRef = useRef<HTMLElement | null>(null);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -92,7 +106,7 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
     middleware: [
       offset(sideOffset),
       flip(),
-      shift({ padding: 8 }),
+      shift({ padding: collisionPadding }),
       arrow({
         element: arrowRef,
       }),
@@ -112,9 +126,10 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
 
-  const updatePositioning = (newPlacement: Placement, newSideOffset: number) => {
-    setPlacement(newPlacement);
-    setSideOffset(newSideOffset);
+  const updatePositioning = ({ side, sideOffset, collisionPadding }: UpdatePositioningProps) => {
+    setPlacement(side);
+    setSideOffset(sideOffset);
+    setCollisionPadding(collisionPadding);
   };
 
   const value: TooltipContextType = {
@@ -141,13 +156,13 @@ function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
   });
 }
 
-function TooltipPositioner({ side = 'top', sideOffset = 8, children }: TooltipPositionerProps): JSX.Element | null {
+function TooltipPositioner({ side = 'top', sideOffset = 0, collisionPadding = 0, children }: TooltipPositionerProps): JSX.Element | null {
   const { open, refs, floatingStyles, updatePositioning } = useTooltipContext();
 
   // Update positioning when props change
   useEffect(() => {
-    updatePositioning(side, sideOffset);
-  }, [side, sideOffset, updatePositioning]);
+    updatePositioning({ side, sideOffset, collisionPadding });
+  }, [side, sideOffset, collisionPadding, updatePositioning]);
 
   if (!open) {
     return null;
@@ -210,6 +225,10 @@ function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Elem
   );
 }
 
+function TooltipPortal({ children, container }: TooltipPortalProps): JSX.Element {
+  return <FloatingPortal root={container as HTMLElement}>{children}</FloatingPortal>;
+}
+
 // Export compound component
 export const Tooltip: {
   Root: typeof TooltipRoot;
@@ -217,12 +236,14 @@ export const Tooltip: {
   Positioner: typeof TooltipPositioner;
   Popup: typeof TooltipPopup;
   Arrow: typeof TooltipArrow;
+  Portal: typeof TooltipPortal;
 } = {
   Root: TooltipRoot,
   Trigger: TooltipTrigger,
   Positioner: TooltipPositioner,
   Popup: TooltipPopup,
   Arrow: TooltipArrow,
+  Portal: TooltipPortal,
 };
 
 export default Tooltip;
