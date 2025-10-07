@@ -1,13 +1,13 @@
-import { MediaSkin } from '../media-skin';
-import '../components/media-current-time-display';
-import '../components/media-duration-display';
-import '../components/media-fullscreen-button';
-import '../media-container';
-import '../components/media-mute-button';
-import '../components/media-popover';
-import '../components/media-play-button';
-import '../components/media-time-range';
-import '../components/media-volume-range';
+import { MediaSkin } from '../../../media-skin';
+import '../../../components/media-current-time-display';
+import '../../../components/media-duration-display';
+import '../../../components/media-fullscreen-button';
+import '../../../media-container';
+import '../../../components/media-mute-button';
+import '../../../components/media-popover';
+import '../../../components/media-play-button';
+import '../../../components/media-time-range';
+import '../../../components/media-volume-range';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {

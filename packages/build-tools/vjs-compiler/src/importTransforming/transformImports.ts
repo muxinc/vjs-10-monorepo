@@ -81,7 +81,9 @@ export function transformImports(imports: ImportInfo[], config: ImportMappingCon
   }
 
   // Add base MediaSkin import
-  transformedImports.unshift(`import { MediaSkin } from '../media-skin';`);
+  // FIXME: This path is hardcoded for compiled/inline/ output directory
+  // Need to implement proper relative path calculation based on output location
+  transformedImports.unshift(`import { MediaSkin } from '../../../media-skin';`);
 
   return transformedImports;
 }
@@ -119,14 +121,16 @@ export function defaultTransformRelativeImport(source: string): string {
   const mediaKebabName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;
 
   // Special case: MediaContainer goes to root, not components/
+  // FIXME: Path hardcoded for compiled/inline/ output directory
   if (lastPart === 'MediaContainer') {
-    return `../${mediaKebabName}`;
+    return `../../../${mediaKebabName}`;
   }
 
-  // For component imports, assume they go to ../components/
-  // This may need to be more sophisticated based on actual structure
+  // For component imports, assume they go to ../../../components/
+  // FIXME: Path hardcoded for compiled/inline/ output directory
+  // Need to implement proper relative path calculation based on output location
   if (source.includes('/components/')) {
-    return `../components/${mediaKebabName}`;
+    return `../../../components/${mediaKebabName}`;
   }
 
   // Default transformation
