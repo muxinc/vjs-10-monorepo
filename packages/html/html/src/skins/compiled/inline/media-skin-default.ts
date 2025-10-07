@@ -43,11 +43,6 @@ export function getTemplateHTML() {
       }
       media-container::before {
         content: '';
-        position: absolute;
-        inset: 1px;
-        box-shadow: 0 0 #0000, 0 0 #0000, inset 0 0 0 calc(1px + 0px) color-mix(in srgb, #ffffff 15%, transparent), 0 0 #0000;
-        z-index: 10;
-        pointer-events: none;
       }
       media-container video {
         width: 100%;
@@ -117,7 +112,6 @@ export function getTemplateHTML() {
         }
       }
       .controls:has(*[data-paused]) {
-        scale: 100% 100%;
         opacity: 100%;
         transition-delay: 0ms;
       }
@@ -140,7 +134,6 @@ export function getTemplateHTML() {
         content: '';
         position: absolute;
         inset: 0rem;
-        box-shadow: 0 0 #0000, 0 0 #0000, 0 0 0 calc(1px + 0px) color-mix(in srgb, #000000 15%, transparent), 0 0 #0000;
         pointer-events: none;
         z-index: 10;
       }
@@ -186,31 +179,15 @@ export function getTemplateHTML() {
       }
       @media (hover: hover) {
         .button:hover {
-          background-color: color-mix(in srgb, #ffffff 10%, transparent);
-        }
-        @supports (color: color-mix(in lab, red, red)) {
-          .button:hover {
-            background-color: color-mix(in oklab, #ffffff 10%, transparent);
-          }
-        }
-      }
-      @media (hover: hover) {
-        .button:hover {
           color: #ffffff;
         }
       }
       .button:focus-visible {
         text-decoration-line: none;
-        background-color: color-mix(in srgb, #ffffff 10%, transparent);
         color: #ffffff;
         outline-width: 2px;
         outline-offset: 2px;
         outline-color: rgb(59 130 246);
-      }
-      @supports (color: color-mix(in lab, red, red)) {
-        .button:focus-visible {
-          background-color: color-mix(in oklab, #ffffff 10%, transparent);
-        }
       }
       .button[aria-disabled="true"] {
         filter: grayscale(100%);
@@ -236,12 +213,7 @@ export function getTemplateHTML() {
       .icon-button {
         display: grid;
       }
-      .icon-button svg {
-        flex-shrink: 0;
-        transition-property: opacity;
-        transition-timing-function: ease;
-        transition-duration: 300ms;
-        filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2));
+      .icon-button .icon {
         grid-area: 1/1;
       }
       media-play-button media-pause-icon {
@@ -256,19 +228,10 @@ export function getTemplateHTML() {
       media-play-button[data-paused] media-play-icon {
         opacity: 100%;
       }
-      .volume-button svg {
+      media-mute-button .icon {
         opacity: 0%;
       }
-      .volume-button[data-volume-level="high"] media-volume-high-icon {
-        opacity: 100%;
-      }
-      .volume-button[data-volume-level="medium"] media-volume-low-icon {
-        opacity: 100%;
-      }
-      .volume-button[data-volume-level="low"] media-volume-low-icon {
-        opacity: 100%;
-      }
-      .volume-button[data-volume-level="off"] media-volume-off-icon {
+      media-mute-button[data-volume-level="high"] media-volume-high-icon {
         opacity: 100%;
       }
       media-fullscreen-button media-fullscreen-enter-icon {
@@ -336,16 +299,15 @@ export function getTemplateHTML() {
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
       }
-      .slider-root {
+      .range-root {
         display: flex;
         align-items: center;
         justify-content: center;
         flex: 1;
         position: relative;
       }
-      .slider-root[data-orientation="horizontal"] {
+      .range-root[data-orientation="horizontal"] {
         height: 1.25rem;
-        min-width: 5rem;
       }
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:h-5[data-orientation=\"horizontal\"] {
         height: 1.25rem;
@@ -353,7 +315,7 @@ export function getTemplateHTML() {
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:min-w-20[data-orientation=\"horizontal\"] {
         min-width: 5rem;
       }
-      .slider-root[data-orientation="vertical"] {
+      .range-root[data-orientation="vertical"] {
         width: 1.25rem;
         height: 5rem;
       }
@@ -363,7 +325,7 @@ export function getTemplateHTML() {
       .\[\&\[data-orientation\=\\\"vertical\\\"\]\]\:h-20[data-orientation=\"vertical\"] {
         height: 5rem;
       }
-      .slider-track {
+      .range-track {
         width: 100%;
         position: relative;
         -webkit-user-select: none;
@@ -373,30 +335,30 @@ export function getTemplateHTML() {
         box-shadow: 0 0 #0000, 0 0 #0000, 0 0 0 calc(1px + 0px) color-mix(in srgb, #000000 5%, transparent), 0 0 #0000;
       }
       @supports (color: color-mix(in lab, red, red)) {
-        .slider-track {
+        .range-track {
           background-color: color-mix(in oklab, #ffffff 20%, transparent);
         }
       }
-      .slider-track[data-orientation="horizontal"] {
+      .range-track[data-orientation="horizontal"] {
         height: 0.25rem;
       }
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:h-1[data-orientation=\"horizontal\"] {
         height: 0.25rem;
       }
-      .slider-track[data-orientation="vertical"] {
+      .range-track[data-orientation="vertical"] {
         width: 0.25rem;
       }
       .\[\&\[data-orientation\=\\\"vertical\\\"\]\]\:w-1[data-orientation=\"vertical\"] {
         width: 0.25rem;
       }
-      .slider-progress {
+      .range-progress {
         background-color: #ffffff;
         border-radius: inherit;
       }
-      .slider-pointer {
+      .range-pointer {
         border-radius: inherit;
       }
-      .slider-thumb {
+      .range-thumb {
         background-color: #ffffff;
         z-index: 10;
         -webkit-user-select: none;
@@ -409,29 +371,17 @@ export function getTemplateHTML() {
         height: 0.625rem;
         transition: opacity,height,width;
       }
-      .slider-thumb:focus-visible {
+      .range-thumb:focus-visible {
         outline-width: 2px;
         outline-offset: 2px;
         outline-color: rgb(59 130 246);
       }
-      @media (hover: hover) {
-        .slider-root:hover .slider-thumb {
-          opacity: 100%;
-        }
-      }
-      .slider-root:focus-within .slider-thumb {
-        opacity: 100%;
-      }
-      .slider-thumb:active {
-        width: 0.75rem;
-        height: 0.75rem;
-      }
-      .slider-root:active .slider-thumb {
+      .range-thumb:active {
         width: 0.75rem;
         height: 0.75rem;
       }
       @media (hover: hover) {
-        .slider-thumb:hover {
+        .range-thumb:hover {
           cursor: ew-resize;
         }
       }
@@ -455,7 +405,6 @@ export function getTemplateHTML() {
         content: '';
         position: absolute;
         inset: 0rem;
-        box-shadow: 0 0 #0000, 0 0 #0000, 0 0 0 calc(1px + 0px) color-mix(in srgb, #000000 15%, transparent), 0 0 #0000;
         pointer-events: none;
         z-index: 10;
       }
@@ -474,6 +423,39 @@ export function getTemplateHTML() {
           content: '';
         }
       }
+      media-play-button media-pause-icon {
+          opacity: 100%
+      }
+      media-play-button media-play-icon {
+          opacity: 0%
+      }
+      media-mute-button .icon {
+          opacity: 0%
+      }
+      media-mute-button[data-volume-level="high"] media-volume-high-icon {
+          opacity: 100%
+      }
+      media-mute-button[data-volume-level="medium"] media-volume-low-icon {
+          opacity: 100%
+      }
+      media-mute-button[data-volume-level="low"] media-volume-low-icon {
+          opacity: 100%
+      }
+      media-mute-button[data-volume-level="off"] media-volume-off-icon {
+          opacity: 100%
+      }
+      media-fullscreen-button media-fullscreen-enter-icon {
+          opacity: 100%
+      }
+      media-fullscreen-button media-fullscreen-exit-icon {
+          opacity: 0%
+      }
+      media-fullscreen-exit-icon .arrow-2 {
+          translate: x-px
+      }
+      media-fullscreen-exit-icon .arrow-2 {
+          translate: y-px
+      }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
@@ -485,18 +467,18 @@ export function getTemplateHTML() {
         </media-play-button>
         <div class="time-controls">
           <media-current-time-display class="time-display"></media-current-time-display>
-          <media-time-range-root class="slider-root">
-            <media-time-range-track class="slider-track">
-              <media-time-range-progress class="slider-progress"></media-time-range-progress>
-              <media-time-range-pointer class="slider-pointer"></media-time-range-pointer>
+          <media-time-range-root class="range-root">
+            <media-time-range-track class="range-track">
+              <media-time-range-progress class="range-progress"></media-time-range-progress>
+              <media-time-range-pointer class="range-pointer"></media-time-range-pointer>
             </media-time-range-track>
-            <media-time-range-thumb class="slider-thumb"></media-time-range-thumb>
+            <media-time-range-thumb class="range-thumb"></media-time-range-thumb>
           </media-time-range-root>
           <media-duration-display class="time-display"></media-duration-display>
         </div>
         <media-popover-root open-on-hover delay close-delay>
           <media-popover-trigger>
-            <media-mute-button class="button icon-button volume-button">
+            <media-mute-button class="button icon-button">
               <media-volume-high-icon></media-volume-high-icon>
               <media-volume-low-icon></media-volume-low-icon>
               <media-volume-off-icon></media-volume-off-icon>
@@ -504,11 +486,11 @@ export function getTemplateHTML() {
           </media-popover-trigger>
           <media-popover-positioner side="top" side-offset>
             <media-popover-popup>
-              <media-volume-range-root class="slider-root" orientation="vertical">
-                <media-volume-range-track class="slider-track">
-                  <media-volume-range-progress class="slider-progress"></media-volume-range-progress>
+              <media-volume-range-root class="range-root" orientation="vertical">
+                <media-volume-range-track class="range-track">
+                  <media-volume-range-progress class="range-progress"></media-volume-range-progress>
                 </media-volume-range-track>
-                <media-volume-range-thumb class="slider-thumb"></media-volume-range-thumb>
+                <media-volume-range-thumb class="range-thumb"></media-volume-range-thumb>
               </media-volume-range-root>
             </media-popover-popup>
           </media-popover-positioner>

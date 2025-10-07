@@ -36,12 +36,12 @@ export default function MediaSkinToasted({ children, className = '' }: SkinProps
         </header> */}
 
         <div className={styles.ControlsRow}>
-          <TimeRange.Root className={styles.SliderRoot}>
-            <TimeRange.Track className={styles.SliderTrack}>
-              <TimeRange.Progress className={styles.SliderProgress} />
-              <TimeRange.Pointer className={styles.SliderPointer} />
+          <TimeRange.Root className={styles.RangeRoot}>
+            <TimeRange.Track className={styles.RangeTrack}>
+              <TimeRange.Progress className={styles.RangeProgress} />
+              <TimeRange.Pointer className={styles.RangePointer} />
             </TimeRange.Track>
-            <TimeRange.Thumb className={`${styles.SliderThumb} ${styles.TimeSliderThumb}`} />
+            <TimeRange.Thumb className={`${styles.RangeThumb} ${styles.TimeRangeThumb}`} />
           </TimeRange.Root>
         </div>
 
@@ -66,25 +66,25 @@ export default function MediaSkinToasted({ children, className = '' }: SkinProps
 
           <div className='flex items-center gap-0.5'>
             <div className={styles.VolumeControls}>
-              <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.VolumeButton}`}>
+              <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
                 <VolumeHighIcon className={styles.VolumeHighIcon} />
                 <VolumeLowIcon className={styles.VolumeLowIcon} />
                 <VolumeOffIcon className={styles.VolumeOffIcon} />
               </MuteButton>
 
               <div className={styles.VolumeSlider}>
-                <VolumeRange.Root className={styles.SliderRoot}>
-                  <VolumeRange.Track className={styles.SliderTrack}>
-                    <VolumeRange.Progress className={styles.SliderProgress} />
+                <VolumeRange.Root className={styles.RangeRoot}>
+                  <VolumeRange.Track className={styles.RangeTrack}>
+                    <VolumeRange.Progress className={styles.RangeProgress} />
                   </VolumeRange.Track>
-                  <VolumeRange.Thumb className={styles.SliderThumb} />
+                  <VolumeRange.Thumb className={styles.RangeThumb} />
                 </VolumeRange.Root>
               </div>
             </div>
 
-            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
-              <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
-              <FullscreenExitIcon className={styles.FullScreenExitIcon} />
+            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
+              <FullscreenEnterIcon className={styles.FullscreenEnterIcon} />
+              <FullscreenExitIcon className={styles.FullscreenExitIcon} />
             </FullscreenButton>
           </div>
         </div>

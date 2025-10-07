@@ -6,6 +6,8 @@ import type { CompilationPipeline } from './types.js';
 import { compileSkinToHTML } from '../compileSkin.js';
 import { compileTailwindToCSS, cssModulesToVanillaCSS } from '../cssProcessing/index.js';
 import { extractStylesObject } from '../styleProcessing/index.js';
+import { detectUnparseableClasses } from '../cssProcessing/detectUnparseableClasses.js';
+import { generateSupplementaryCSS } from '../cssProcessing/generateSupplementaryCSS.js';
 import { parseReactSource, SKIN_CONFIG } from '../parsing/index.js';
 import { toKebabCase } from '../utils/naming.js';
 import { defaultImportMappings } from '../importTransforming/index.js';
@@ -154,7 +156,19 @@ export const skinToWebComponentInlineTailwind: CompilationPipeline = {
             componentMap: context.componentMap,
           });
 
-          return vanillaCSS;
+          // 6. Detect and generate CSS for unparseable Tailwind classes
+          const unparseableClasses = detectUnparseableClasses(stylesObject);
+          const supplementaryCSS = generateSupplementaryCSS(
+            unparseableClasses,
+            context.componentMap
+          );
+
+          // 7. Combine vanilla CSS with supplementary CSS
+          const combinedCSS = supplementaryCSS
+            ? `${vanillaCSS}\n${supplementaryCSS}`
+            : vanillaCSS;
+
+          return combinedCSS;
         } catch (error) {
           console.error('Error during CSS compilation:', error);
           throw error;

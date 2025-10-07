@@ -4,10 +4,11 @@ export interface MediaDefaultSkinStyles {
   readonly Controls: string;
   readonly Button: string;
   readonly IconButton: string;
+  readonly Icon: string;
   readonly PlayButton: string;
   readonly PlayIcon: string;
   readonly PauseIcon: string;
-  readonly VolumeButton: string;
+  readonly MuteButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
   readonly VolumeOffIcon: string;
@@ -16,10 +17,10 @@ export interface MediaDefaultSkinStyles {
   readonly FullscreenExitIcon: string;
   readonly TimeControls: string;
   readonly TimeDisplay: string;
-  readonly SliderRoot: string;
-  readonly SliderTrack: string;
-  readonly SliderProgress: string;
-  readonly SliderPointer: string;
-  readonly SliderThumb: string;
+  readonly RangeRoot: string;
+  readonly RangeTrack: string;
+  readonly RangeProgress: string;
+  readonly RangePointer: string;
+  readonly RangeThumb: string;
   readonly PopoverPopup: string;
 }

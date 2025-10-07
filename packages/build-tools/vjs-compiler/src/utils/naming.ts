@@ -12,6 +12,20 @@ export function toKebabCase(str: string): string {
     .toLowerCase();
 }
 
+/**
+ * Converts a kebab-case string to PascalCase
+ * Examples:
+ *   volume-button → VolumeButton
+ *   full-screen-button → FullScreenButton
+ *   play-icon → PlayIcon
+ */
+export function toPascalCase(str: string): string {
+  return str
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
 // HTML built-in elements (lowercase) that should not be prefixed
 const HTML_ELEMENTS = new Set([
   'div',

@@ -87,11 +87,9 @@ function transformSelector(
       }
 
       const className = node.value;
+      const elementName = componentMap[className];
 
-      // Check if this class name is a component
-      if (componentMap[className]) {
-        const elementName = componentMap[className];
-
+      if (elementName) {
         if (useDataAttributes) {
           // Transform to data attribute: .PlayButton → [data-media-play-button]
           const attributeNode = selectorParser.attribute({

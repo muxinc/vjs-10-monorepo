@@ -155,11 +155,7 @@ export function getTemplateHTML() {
       .icon-button {
         display: grid;
       }
-      .icon-button svg {
-        flex-shrink: 0;
-        transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-        transition-timing-function: ease;
-        transition-duration: 300ms;
+      .icon-button .icon {
         grid-area: 1/1;
         drop-shadow: 0 1px 0 var();
       }
@@ -215,112 +211,82 @@ export function getTemplateHTML() {
         opacity: 100%;
         transition-delay: 0ms;
       }
-      .volume-button svg {
-        display: none;
-      }
-      .volume-button[data-volume-level="high"] media-volume-high-icon {
-        display: inline;
-      }
-      .\[\&\[data-volume-level\=\\\"high\\\"\]_\.volume-high-icon\]\:inline[data-volume-level=\"high\"] media-volume-high-icon {
-        display: inline;
-      }
-      .volume-button[data-volume-level="medium"] media-volume-low-icon {
-        display: inline;
-      }
-      .\[\&\[data-volume-level\=\\\"medium\\\"\]_\.volume-low-icon\]\:inline[data-volume-level=\"medium\"] media-volume-low-icon {
-        display: inline;
-      }
-      .volume-button[data-volume-level="low"] media-volume-low-icon {
-        display: inline;
-      }
-      .\[\&\[data-volume-level\=\\\"low\\\"\]_\.volume-low-icon\]\:inline[data-volume-level=\"low\"] media-volume-low-icon {
-        display: inline;
-      }
-      .volume-button[data-volume-level="off"] media-volume-off-icon {
-        display: inline;
-      }
-      .\[\&\[data-volume-level\=\\\"off\\\"\]_\.volume-off-icon\]\:inline[data-volume-level=\"off\"] media-volume-off-icon {
-        display: inline;
-      }
-      .full-screen-button media-fullscreen-enter-icon {
-        opacity: 100%;
-      }
-      .full-screen-button[data-fullscreen] media-fullscreen-enter-icon {
+      media-mute-button .icon {
         opacity: 0%;
       }
-      .full-screen-button media-fullscreen-exit-icon {
-        opacity: 0%;
-      }
-      .full-screen-button[data-fullscreen] media-fullscreen-exit-icon {
+      media-mute-button[data-volume-level="high"] media-volume-high-icon {
         opacity: 100%;
       }
-      .full-screen-button path {
+      media-fullscreen-button media-fullscreen-enter-icon {
+        opacity: 100%;
+      }
+      media-fullscreen-button[data-fullscreen] media-fullscreen-enter-icon {
+        opacity: 0%;
+      }
+      media-fullscreen-button media-fullscreen-exit-icon {
+        opacity: 0%;
+      }
+      media-fullscreen-button[data-fullscreen] media-fullscreen-exit-icon {
+        opacity: 100%;
+      }
+      media-fullscreen-button path {
         transition-property: transform, translate, scale, rotate;
         transition-timing-function: ease;
         transition-duration: 150ms;
       }
       @media (hover: hover) {
-        .button:hover .full-screen-enter-icon .arrow-1 {
+        .button:hover media-fullscreen-enter-icon .arrow-1 {
           translate: -1px 0px;
         }
       }
       @media (hover: hover) {
-        .button:hover .full-screen-enter-icon .arrow-1 {
+        .button:hover media-fullscreen-enter-icon .arrow-1 {
           translate: 0px -1px;
         }
       }
       @media (hover: hover) {
-        .button:hover .full-screen-enter-icon .arrow-2 {
+        .button:hover media-fullscreen-enter-icon .arrow-2 {
           translate: 1px 0px;
         }
       }
       @media (hover: hover) {
-        .button:hover .full-screen-enter-icon .arrow-2 {
+        .button:hover media-fullscreen-enter-icon .arrow-2 {
           translate: 0px 1px;
         }
       }
-      .full-screen-exit-icon .arrow-1 {
+      media-fullscreen-exit-icon .arrow-1 {
         translate: -1px -1px;
       }
-      .full-screen-exit-icon .arrow-2 {
+      media-fullscreen-exit-icon .arrow-2 {
         translate: 1px 1px;
       }
       @media (hover: hover) {
-        .button:hover .full-screen-exit-icon .arrow-1 {
+        .button:hover media-fullscreen-exit-icon .arrow-1 {
           translate: 0rem 0rem;
         }
       }
       @media (hover: hover) {
-        .button:hover .full-screen-exit-icon .arrow-2 {
+        .button:hover media-fullscreen-exit-icon .arrow-2 {
           translate: 0rem 0rem;
         }
       }
-      .time-slider-thumb {
+      media-time-range-thumb {
         opacity: 0%;
-      }
-      @media (hover: hover) {
-        .slider-root:hover .time-slider-thumb {
-          opacity: 100%;
-        }
-      }
-      .slider-root:focus-within .time-slider-thumb {
-        opacity: 100%;
       }
       .time-display {
         font-variant-numeric: tabular-nums;
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
       }
-      .slider-root {
+      .range-root {
         display: flex;
         align-items: center;
         justify-content: center;
         flex: 1;
         position: relative;
       }
-      .slider-root[data-orientation="horizontal"] {
+      .range-root[data-orientation="horizontal"] {
         height: 1.25rem;
-        min-width: 5rem;
       }
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:h-5[data-orientation=\"horizontal\"] {
         height: 1.25rem;
@@ -328,7 +294,7 @@ export function getTemplateHTML() {
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:min-w-20[data-orientation=\"horizontal\"] {
         min-width: 5rem;
       }
-      .slider-root[data-orientation="vertical"] {
+      .range-root[data-orientation="vertical"] {
         width: 1.25rem;
         height: 5rem;
       }
@@ -338,7 +304,7 @@ export function getTemplateHTML() {
       .\[\&\[data-orientation\=\\\"vertical\\\"\]\]\:h-20[data-orientation=\"vertical\"] {
         height: 5rem;
       }
-      .slider-track {
+      .range-track {
         position: relative;
         -webkit-user-select: none;
         user-select: none;
@@ -348,33 +314,32 @@ export function getTemplateHTML() {
         backdrop-filter: brightness(90%) saturate(150%);
       }
       @supports (color: color-mix(in lab, red, red)) {
-        .slider-track {
+        .range-track {
           background-color: color-mix(in oklab, #ffffff 25%, transparent);
         }
-      }
-      .slider-track[data-orientation="horizontal"] {
-        width: 100%;
-        height: 0.25rem;
       }
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:w-full[data-orientation=\"horizontal\"] {
         width: 100%;
       }
+      .range-track[data-orientation="horizontal"] {
+        height: 0.25rem;
+      }
       .\[\&\[data-orientation\=\\\"horizontal\\\"\]\]\:h-1[data-orientation=\"horizontal\"] {
         height: 0.25rem;
       }
-      .slider-track[data-orientation="vertical"] {
+      .range-track[data-orientation="vertical"] {
         width: 0.25rem;
       }
       .\[\&\[data-orientation\=\\\"vertical\\\"\]\]\:w-1[data-orientation=\"vertical\"] {
         width: 0.25rem;
       }
-      .slider-progress {
+      .range-progress {
         border-radius: inherit;
       }
-      .slider-pointer {
+      .range-pointer {
         border-radius: inherit;
       }
-      .slider-thumb {
+      .range-thumb {
         background-color: #ffffff;
         z-index: 10;
         -webkit-user-select: none;
@@ -386,34 +351,63 @@ export function getTemplateHTML() {
         height: 0.75rem;
         transition: opacity,height,width;
       }
-      .slider-thumb:focus-visible {
+      .range-thumb:focus-visible {
         outline-width: 2px;
         outline-offset: 2px;
       }
-      .slider-thumb:active {
-        width: 0.875rem;
-        height: 0.875rem;
-      }
-      .slider-root:active .slider-thumb {
+      .range-thumb:active {
         width: 0.875rem;
         height: 0.875rem;
       }
       @media (hover: hover) {
-        .slider-thumb:hover {
+        .range-thumb:hover {
           cursor: ew-resize;
         }
+      }
+      media-play-button media-pause-icon {
+          opacity: 100%
+      }
+      media-play-button media-play-icon {
+          opacity: 0%
+      }
+      media-mute-button .icon {
+          opacity: 0%
+      }
+      media-mute-button[data-volume-level="high"] media-volume-high-icon {
+          opacity: 100%
+      }
+      media-mute-button[data-volume-level="medium"] media-volume-low-icon {
+          opacity: 100%
+      }
+      media-mute-button[data-volume-level="low"] media-volume-low-icon {
+          opacity: 100%
+      }
+      media-mute-button[data-volume-level="off"] media-volume-off-icon {
+          opacity: 100%
+      }
+      media-fullscreen-button media-fullscreen-enter-icon {
+          opacity: 100%
+      }
+      media-fullscreen-button media-fullscreen-exit-icon {
+          opacity: 0%
+      }
+      media-fullscreen-exit-icon .arrow-2 {
+          translate: x-px
+      }
+      media-fullscreen-exit-icon .arrow-2 {
+          translate: y-px
       }
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
       <div class="controls" data-testid="media-controls">
         <div class="controls-row">
-          <media-time-range-root class="slider-root">
-            <media-time-range-track class="slider-track">
-              <media-time-range-progress class="slider-progress"></media-time-range-progress>
-              <media-time-range-pointer class="slider-pointer"></media-time-range-pointer>
+          <media-time-range-root class="range-root">
+            <media-time-range-track class="range-track">
+              <media-time-range-progress class="range-progress"></media-time-range-progress>
+              <media-time-range-pointer class="range-pointer"></media-time-range-pointer>
             </media-time-range-track>
-            <media-time-range-thumb class="slider-thumb time-slider-thumb"></media-time-range-thumb>
+            <media-time-range-thumb class="range-thumb"></media-time-range-thumb>
           </media-time-range-root>
         </div>
         <div class="controls-row">
@@ -430,17 +424,17 @@ export function getTemplateHTML() {
           </div>
           <div class="flex items-center gap-0.5">
             <div class="volume-controls">
-              <media-mute-button class="button icon-button volume-button">
+              <media-mute-button class="button icon-button">
                 <media-volume-high-icon></media-volume-high-icon>
                 <media-volume-low-icon></media-volume-low-icon>
                 <media-volume-off-icon></media-volume-off-icon>
               </media-mute-button>
               <div class="volume-slider">
-                <media-volume-range-root class="slider-root">
-                  <media-volume-range-track class="slider-track">
-                    <media-volume-range-progress class="slider-progress"></media-volume-range-progress>
+                <media-volume-range-root class="range-root">
+                  <media-volume-range-track class="range-track">
+                    <media-volume-range-progress class="range-progress"></media-volume-range-progress>
                   </media-volume-range-track>
-                  <media-volume-range-thumb class="slider-thumb"></media-volume-range-thumb>
+                  <media-volume-range-thumb class="range-thumb"></media-volume-range-thumb>
                 </media-volume-range-root>
               </div>
             </div>

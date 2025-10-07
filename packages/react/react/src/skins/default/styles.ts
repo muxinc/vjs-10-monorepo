@@ -63,25 +63,26 @@ const styles: MediaDefaultSkinStyles = {
     'active:scale-95'
   ),
   IconButton: cn(
-    'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-icon'
+    'grid',
+    '[&_.icon]:[grid-area:1/1] [&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-icon'
   ),
+  Icon: cn('icon'),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
     '[&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100'
   ),
-  PlayIcon: cn('play-icon'),
-  PauseIcon: cn('pause-icon'),
-  VolumeButton: cn(
-    '[&_svg]:opacity-0',
+  PlayIcon: cn('play-icon', 'icon'),
+  PauseIcon: cn('pause-icon', 'icon'),
+  MuteButton: cn(
+    '[&_.icon]:opacity-0',
     '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
     '[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
     '[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',
     '[&[data-volume-level="off"]_.volume-off-icon]:opacity-100'
   ),
-  VolumeHighIcon: cn('volume-high-icon'),
-  VolumeLowIcon: cn('volume-low-icon'),
-  VolumeOffIcon: cn('volume-off-icon'),
+  VolumeHighIcon: cn('volume-high-icon', 'icon'),
+  VolumeLowIcon: cn('volume-low-icon', 'icon'),
+  VolumeOffIcon: cn('volume-off-icon', 'icon'),
   FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
@@ -89,11 +90,13 @@ const styles: MediaDefaultSkinStyles = {
   ),
   FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
+    'icon',
     'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
     'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px'
   ),
   FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
+    'icon',
     '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
     '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
     'group-hover/button:[&_.arrow-1]:translate-0',
@@ -101,25 +104,25 @@ const styles: MediaDefaultSkinStyles = {
   ),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
-  SliderRoot: cn(
-    'flex items-center justify-center flex-1 group/slider relative',
+  RangeRoot: cn(
+    'flex items-center justify-center flex-1 group/range relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
     '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
   ),
-  SliderTrack: cn(
+  RangeTrack: cn(
     'w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5',
     '[&[data-orientation="horizontal"]]:h-1',
     '[&[data-orientation="vertical"]]:w-1'
   ),
-  SliderProgress: cn('bg-white rounded-[inherit]'),
+  RangeProgress: cn('bg-white rounded-[inherit]'),
   // TODO: Work out what we want to do here.
-  SliderPointer: cn('rounded-[inherit]'),
-  SliderThumb: cn(
+  RangePointer: cn('rounded-[inherit]'),
+  RangeThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',
     'opacity-0 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
-    'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
-    'size-2.5 active:size-3 group-active/slider:size-3 hover:cursor-ew-resize'
+    'group-hover/range:opacity-100 group-focus-within/range:opacity-100',
+    'size-2.5 active:size-3 group-active/range:size-3 hover:cursor-ew-resize'
   ),
   PopoverPopup: cn(
     'relative z-30 px-2 py-4 rounded-2xl',

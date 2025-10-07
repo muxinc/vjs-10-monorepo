@@ -48,70 +48,78 @@ const styles: MediaToastedSkinStyles = {
     'active:scale-95',
   ),
   IconButton: cn(
-    'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20',
+    'grid',
+    '[&_.icon]:[grid-area:1/1] [&_.icon]:shrink-0 [&_.icon]:transition [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
   ),
+  Icon: cn('icon'),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
     '[&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100',
   ),
-  PlayIcon: cn('play-icon'),
-  PauseIcon: cn('pause-icon'),
+  PlayIcon: cn('play-icon', 'icon'),
+  PauseIcon: cn('pause-icon', 'icon'),
   VolumeControls: cn('flex items-center flex-row-reverse group/volume'),
   VolumeSlider: cn(
     'w-0 px-3 overflow-hidden pointer-events-none transition-[opacity,width] opacity-0 ease-out delay-500',
     'group-hover/volume:w-28 group-hover/volume:pointer-events-auto group-hover/volume:opacity-100 group-hover/volume:delay-0',
     'group-focus-within/volume:w-28 group-focus-within/volume:pointer-events-auto group-focus-within/volume:opacity-100 group-focus-within/volume:delay-0',
   ),
-  VolumeButton: cn(
-    '[&_svg]:hidden',
-    '[&[data-volume-level="high"]_.volume-high-icon]:inline',
-    '[&[data-volume-level="medium"]_.volume-low-icon]:inline',
-    '[&[data-volume-level="low"]_.volume-low-icon]:inline',
-    '[&[data-volume-level="off"]_.volume-off-icon]:inline',
+  MuteButton: cn(
+    // Hide all icons by default
+    '[&_.icon]:opacity-0',
+    // Show volume-high-icon when data-volume-level="high"
+    '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
+    // Show volume-low-icon when data-volume-level="medium" or "low"
+    '[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
+    '[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',
+    // Show volume-off-icon when data-volume-level="off"
+    '[&[data-volume-level="off"]_.volume-off-icon]:opacity-100'
   ),
-  VolumeHighIcon: cn('volume-high-icon'),
-  VolumeLowIcon: cn('volume-low-icon'),
-  VolumeOffIcon: cn('volume-off-icon'),
-  FullScreenButton: cn(
+  // Volume icons
+  VolumeHighIcon: cn('volume-high-icon', 'icon'),
+  VolumeLowIcon: cn('volume-low-icon', 'icon'),
+  VolumeOffIcon: cn('volume-off-icon', 'icon'),
+  FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
     '[&_path]:transition-transform ease-out',
   ),
-  FullScreenEnterIcon: cn(
+  FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
+    'icon',
     'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
     'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
-  FullScreenExitIcon: cn(
+  FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
+    'icon',
     '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
     '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
     'group-hover/button:[&_.arrow-1]:translate-0',
     'group-hover/button:[&_.arrow-2]:translate-0',
   ),
-  TimeSliderThumb: cn(
+  TimeRangeThumb: cn(
     'opacity-0',
-    'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
+    'group-hover/range:opacity-100 group-focus-within/range:opacity-100',
   ),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
-  SliderRoot: cn(
-    'flex items-center justify-center flex-1 group/slider relative',
+  RangeRoot: cn(
+    'flex items-center justify-center flex-1 group/range relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
     '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
   ),
-  SliderTrack: cn(
+  RangeTrack: cn(
     'relative select-none rounded-full bg-white/25 backdrop-blur-sm backdrop-brightness-90 backdrop-saturate-150 shadow-sm shadow-black/10',
     '[&[data-orientation="horizontal"]]:w-full [&[data-orientation="horizontal"]]:h-1',
     '[&[data-orientation="vertical"]]:w-1',
   ),
-  SliderProgress: cn('bg-amber-500 rounded-[inherit]'),
+  RangeProgress: cn('bg-amber-500 rounded-[inherit]'),
   // TODO: Work out what we want to do here.
-  SliderPointer: cn('rounded-[inherit]'),
-  SliderThumb: cn(
+  RangePointer: cn('rounded-[inherit]'),
+  RangeThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500',
-    'size-3 active:size-3.5 group-active/slider:size-3.5 hover:cursor-ew-resize',
+    'size-3 active:size-3.5 group-active/range:size-3.5 hover:cursor-ew-resize',
   ),
 };
 
