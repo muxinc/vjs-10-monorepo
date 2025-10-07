@@ -155,7 +155,9 @@ export async function compileSkinToHTML(source: string, options: CompileSkinOpti
 /**
  * Extract compound component parts from JSX and add them to componentMap
  * Detects member expressions like TimeRange.Root, VolumeRange.Track, etc.
- * and adds entries like: { TimeRangeRoot: 'media-time-range-root', TimeRangeTrack: 'media-time-range-track' }
+ * and adds entries like:
+ * - { TimeRangeRoot: 'media-time-range-root', 'time-range-root': 'media-time-range-root' }
+ * Both PascalCase and kebab-case keys are added for CSS transformation compatibility.
  */
 function extractCompoundComponents(jsx: t.Node, componentMap: Record<string, string>): void {
   const visit = (node: t.Node | null | undefined) => {
@@ -188,7 +190,9 @@ function extractCompoundComponents(jsx: t.Node, componentMap: Record<string, str
             ? `${objectKebab}-${propertyKebab}`
             : `media-${objectKebab}-${propertyKebab}`;
 
-          componentMap[compoundKey] = elementName;
+          // Add both PascalCase and kebab-case keys (for React and Tailwind CSS)
+          componentMap[compoundKey] = elementName; // TimeRangeRoot → media-time-range-root
+          componentMap[toKebabCase(compoundKey)] = elementName; // time-range-root → media-time-range-root
         }
       }
 

@@ -266,4 +266,180 @@ describe('cssModulesToVanillaCSS', () => {
     expect(result).not.toContain('.MuteButton');
     expect(result).not.toContain('.Container');
   });
+
+  // Tests for kebab-case inputs (from Tailwind CSS compilation)
+  // This validates the fix for icon visibility issue where componentMap needs kebab-case keys
+  describe('kebab-case class name support (Tailwind CSS)', () => {
+    it('should transform kebab-case component classes to element selectors', () => {
+      const css = `
+.play-button {
+  display: flex;
+}
+
+.play-icon {
+  width: 24px;
+}
+`;
+
+      // ComponentMap must include kebab-case keys for Tailwind CSS output
+      const componentMap = {
+        'play-button': 'media-play-button',
+        'play-icon': 'media-play-icon',
+      };
+
+      const result = cssModulesToVanillaCSS({ css, componentMap });
+
+      expect(result).toContain('media-play-button');
+      expect(result).toContain('media-play-icon');
+      expect(result).not.toContain('.play-button');
+      expect(result).not.toContain('.play-icon');
+    });
+
+    it('should handle kebab-case classes with data-attribute selectors', () => {
+      const css = `
+.play-button .pause-icon {
+  opacity: 100%;
+}
+
+.play-button[data-paused] .pause-icon {
+  opacity: 0%;
+}
+
+.play-button .play-icon {
+  opacity: 0%;
+}
+
+.play-button[data-paused] .play-icon {
+  opacity: 100%;
+}
+`;
+
+      const componentMap = {
+        'play-button': 'media-play-button',
+        'play-icon': 'media-play-icon',
+        'pause-icon': 'media-pause-icon',
+      };
+
+      const result = cssModulesToVanillaCSS({ css, componentMap });
+
+      // Should transform to element selectors
+      expect(result).toContain('media-play-button media-pause-icon');
+      expect(result).toContain('media-play-button[data-paused] media-pause-icon');
+      expect(result).toContain('media-play-button media-play-icon');
+      expect(result).toContain('media-play-button[data-paused] media-play-icon');
+
+      // Should not contain class selectors
+      expect(result).not.toContain('.play-button');
+      expect(result).not.toContain('.play-icon');
+      expect(result).not.toContain('.pause-icon');
+    });
+
+    it('should handle kebab-case volume button with data-volume-level selectors', () => {
+      const css = `
+.volume-button svg {
+  display: none;
+}
+
+.volume-button[data-volume-level="high"] .volume-high-icon {
+  display: inline;
+}
+
+.volume-button[data-volume-level="medium"] .volume-low-icon {
+  display: inline;
+}
+
+.volume-button[data-volume-level="low"] .volume-low-icon {
+  display: inline;
+}
+
+.volume-button[data-volume-level="off"] .volume-off-icon {
+  display: inline;
+}
+`;
+
+      const componentMap = {
+        'volume-button': 'media-mute-button',
+        'volume-high-icon': 'media-volume-high-icon',
+        'volume-low-icon': 'media-volume-low-icon',
+        'volume-off-icon': 'media-volume-off-icon',
+      };
+
+      const result = cssModulesToVanillaCSS({ css, componentMap });
+
+      // Should transform to element selectors with data attributes
+      expect(result).toContain('media-mute-button[data-volume-level="high"] media-volume-high-icon');
+      expect(result).toContain('media-mute-button[data-volume-level="medium"] media-volume-low-icon');
+      expect(result).toContain('media-mute-button[data-volume-level="low"] media-volume-low-icon');
+      expect(result).toContain('media-mute-button[data-volume-level="off"] media-volume-off-icon');
+
+      // Should not contain class selectors
+      expect(result).not.toContain('.volume-button');
+      expect(result).not.toContain('.volume-high-icon');
+      expect(result).not.toContain('.volume-low-icon');
+      expect(result).not.toContain('.volume-off-icon');
+    });
+
+    it('should handle mixed PascalCase and kebab-case in same componentMap', () => {
+      const css = `
+.PlayButton .play-icon {
+  display: flex;
+}
+
+.play-button .PlayIcon {
+  display: block;
+}
+`;
+
+      // ComponentMap with both forms (as created by compileSkin.ts fix)
+      const componentMap = {
+        PlayButton: 'media-play-button',
+        'play-button': 'media-play-button',
+        PlayIcon: 'media-play-icon',
+        'play-icon': 'media-play-icon',
+      };
+
+      const result = cssModulesToVanillaCSS({ css, componentMap });
+
+      // Both should transform correctly
+      expect(result).toContain('media-play-button media-play-icon');
+      expect(result).not.toContain('.PlayButton');
+      expect(result).not.toContain('.play-button');
+      expect(result).not.toContain('.PlayIcon');
+      expect(result).not.toContain('.play-icon');
+    });
+
+    it('should handle fullscreen button with kebab-case', () => {
+      const css = `
+.full-screen-button .fullscreen-enter-icon {
+  opacity: 100%;
+}
+
+.full-screen-button[data-fullscreen] .fullscreen-enter-icon {
+  opacity: 0%;
+}
+
+.full-screen-button .fullscreen-exit-icon {
+  opacity: 0%;
+}
+
+.full-screen-button[data-fullscreen] .fullscreen-exit-icon {
+  opacity: 100%;
+}
+`;
+
+      const componentMap = {
+        'full-screen-button': 'media-fullscreen-button',
+        'fullscreen-enter-icon': 'media-fullscreen-enter-icon',
+        'fullscreen-exit-icon': 'media-fullscreen-exit-icon',
+      };
+
+      const result = cssModulesToVanillaCSS({ css, componentMap });
+
+      // Should transform to element selectors
+      expect(result).toContain('media-fullscreen-button media-fullscreen-enter-icon');
+      expect(result).toContain('media-fullscreen-button[data-fullscreen] media-fullscreen-enter-icon');
+      expect(result).toContain('media-fullscreen-button media-fullscreen-exit-icon');
+      expect(result).toContain('media-fullscreen-button[data-fullscreen] media-fullscreen-exit-icon');
+    });
+  });
 });

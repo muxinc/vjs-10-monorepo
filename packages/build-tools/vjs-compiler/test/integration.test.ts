@@ -244,3 +244,154 @@ describe('compileSkinToHTML - Skin Module Output Validation', () => {
     expect(validation.prettier.valid).toBe(true);
   });
 });
+
+describe('compileSkinToHTML - ComponentMap Generation', () => {
+  it('creates componentMap with both PascalCase and kebab-case keys', async () => {
+    const source = `
+import { PlayButton, PlayIcon, PauseIcon } from '../components';
+import styles from './styles';
+
+export default function MediaSkinSimple() {
+  return (
+    <div className={styles.Container}>
+      <PlayButton className={styles.PlayButton}>
+        <PlayIcon />
+        <PauseIcon />
+      </PlayButton>
+    </div>
+  );
+}
+`;
+
+    const result = await compileSkinToHTML(source);
+
+    expect(result).not.toBeNull();
+    expect(result?.componentMap).toBeDefined();
+
+    // Should have PascalCase keys (for React CSS Modules)
+    expect(result?.componentMap.PlayButton).toBe('media-play-button');
+    expect(result?.componentMap.PlayIcon).toBe('media-play-icon');
+    expect(result?.componentMap.PauseIcon).toBe('media-pause-icon');
+
+    // Should have kebab-case keys (for Tailwind CSS)
+    expect(result?.componentMap['play-button']).toBe('media-play-button');
+    expect(result?.componentMap['play-icon']).toBe('media-play-icon');
+    expect(result?.componentMap['pause-icon']).toBe('media-pause-icon');
+  });
+
+  it('handles volume button and icons with both case formats', async () => {
+    const source = `
+import { MuteButton, VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '../components';
+import styles from './styles';
+
+export default function MediaSkinVolume() {
+  return (
+    <MuteButton className={styles.VolumeButton}>
+      <VolumeHighIcon />
+      <VolumeLowIcon />
+      <VolumeOffIcon />
+    </MuteButton>
+  );
+}
+`;
+
+    const result = await compileSkinToHTML(source);
+
+    expect(result).not.toBeNull();
+
+    // PascalCase keys
+    expect(result?.componentMap.MuteButton).toBe('media-mute-button');
+    expect(result?.componentMap.VolumeHighIcon).toBe('media-volume-high-icon');
+    expect(result?.componentMap.VolumeLowIcon).toBe('media-volume-low-icon');
+    expect(result?.componentMap.VolumeOffIcon).toBe('media-volume-off-icon');
+
+    // kebab-case keys
+    expect(result?.componentMap['mute-button']).toBe('media-mute-button');
+    expect(result?.componentMap['volume-high-icon']).toBe('media-volume-high-icon');
+    expect(result?.componentMap['volume-low-icon']).toBe('media-volume-low-icon');
+    expect(result?.componentMap['volume-off-icon']).toBe('media-volume-off-icon');
+  });
+
+  it('handles fullscreen button with both case formats', async () => {
+    const source = `
+import { FullscreenButton, FullscreenEnterIcon, FullscreenExitIcon } from '../components';
+import styles from './styles';
+
+export default function MediaSkinFullscreen() {
+  return (
+    <FullscreenButton className={styles.FullScreenButton}>
+      <FullscreenEnterIcon />
+      <FullscreenExitIcon />
+    </FullscreenButton>
+  );
+}
+`;
+
+    const result = await compileSkinToHTML(source);
+
+    expect(result).not.toBeNull();
+
+    // PascalCase keys
+    expect(result?.componentMap.FullscreenButton).toBe('media-fullscreen-button');
+    expect(result?.componentMap.FullscreenEnterIcon).toBe('media-fullscreen-enter-icon');
+    expect(result?.componentMap.FullscreenExitIcon).toBe('media-fullscreen-exit-icon');
+
+    // kebab-case keys
+    expect(result?.componentMap['fullscreen-button']).toBe('media-fullscreen-button');
+    expect(result?.componentMap['fullscreen-enter-icon']).toBe('media-fullscreen-enter-icon');
+    expect(result?.componentMap['fullscreen-exit-icon']).toBe('media-fullscreen-exit-icon');
+  });
+
+  it('handles compound components with both case formats', async () => {
+    const source = `
+import { TimeRange, VolumeRange } from '../components';
+import styles from './styles';
+
+export default function MediaSkinRanges() {
+  return (
+    <div>
+      <TimeRange.Root>
+        <TimeRange.Track>
+          <TimeRange.Progress />
+        </TimeRange.Track>
+        <TimeRange.Thumb />
+      </TimeRange.Root>
+      <VolumeRange.Root>
+        <VolumeRange.Track>
+          <VolumeRange.Progress />
+        </VolumeRange.Track>
+        <VolumeRange.Thumb />
+      </VolumeRange.Root>
+    </div>
+  );
+}
+`;
+
+    const result = await compileSkinToHTML(source);
+
+    expect(result).not.toBeNull();
+
+    // Compound components should be in componentMap as combined names
+    // PascalCase forms
+    expect(result?.componentMap.TimeRangeRoot).toBe('media-time-range-root');
+    expect(result?.componentMap.TimeRangeTrack).toBe('media-time-range-track');
+    expect(result?.componentMap.TimeRangeProgress).toBe('media-time-range-progress');
+    expect(result?.componentMap.TimeRangeThumb).toBe('media-time-range-thumb');
+
+    expect(result?.componentMap.VolumeRangeRoot).toBe('media-volume-range-root');
+    expect(result?.componentMap.VolumeRangeTrack).toBe('media-volume-range-track');
+    expect(result?.componentMap.VolumeRangeProgress).toBe('media-volume-range-progress');
+    expect(result?.componentMap.VolumeRangeThumb).toBe('media-volume-range-thumb');
+
+    // kebab-case forms
+    expect(result?.componentMap['time-range-root']).toBe('media-time-range-root');
+    expect(result?.componentMap['time-range-track']).toBe('media-time-range-track');
+    expect(result?.componentMap['time-range-progress']).toBe('media-time-range-progress');
+    expect(result?.componentMap['time-range-thumb']).toBe('media-time-range-thumb');
+
+    expect(result?.componentMap['volume-range-root']).toBe('media-volume-range-root');
+    expect(result?.componentMap['volume-range-track']).toBe('media-volume-range-track');
+    expect(result?.componentMap['volume-range-progress']).toBe('media-volume-range-progress');
+    expect(result?.componentMap['volume-range-thumb']).toBe('media-volume-range-thumb');
+  });
+});
