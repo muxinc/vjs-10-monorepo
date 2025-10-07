@@ -244,43 +244,43 @@ export function getTemplateHTML() {
         filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2));
         grid-area: 1/1;
       }
-      media-play-button .pause-icon {
+      media-play-button media-pause-icon {
         opacity: 100%;
       }
-      media-play-button[data-paused] .pause-icon {
+      media-play-button[data-paused] media-pause-icon {
         opacity: 0%;
       }
-      media-play-button .play-icon {
+      media-play-button media-play-icon {
         opacity: 0%;
       }
-      media-play-button[data-paused] .play-icon {
+      media-play-button[data-paused] media-play-icon {
         opacity: 100%;
       }
       .volume-button svg {
         opacity: 0%;
       }
-      .volume-button[data-volume-level="high"] .volume-high-icon {
+      .volume-button[data-volume-level="high"] media-volume-high-icon {
         opacity: 100%;
       }
-      .volume-button[data-volume-level="medium"] .volume-low-icon {
+      .volume-button[data-volume-level="medium"] media-volume-low-icon {
         opacity: 100%;
       }
-      .volume-button[data-volume-level="low"] .volume-low-icon {
+      .volume-button[data-volume-level="low"] media-volume-low-icon {
         opacity: 100%;
       }
-      .volume-button[data-volume-level="off"] .volume-off-icon {
+      .volume-button[data-volume-level="off"] media-volume-off-icon {
         opacity: 100%;
       }
-      media-fullscreen-button .fullscreen-enter-icon {
+      media-fullscreen-button media-fullscreen-enter-icon {
         opacity: 100%;
       }
-      media-fullscreen-button[data-fullscreen] .fullscreen-enter-icon {
+      media-fullscreen-button[data-fullscreen] media-fullscreen-enter-icon {
         opacity: 0%;
       }
-      media-fullscreen-button .fullscreen-exit-icon {
+      media-fullscreen-button media-fullscreen-exit-icon {
         opacity: 0%;
       }
-      media-fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
+      media-fullscreen-button[data-fullscreen] media-fullscreen-exit-icon {
         opacity: 100%;
       }
       media-fullscreen-button path {

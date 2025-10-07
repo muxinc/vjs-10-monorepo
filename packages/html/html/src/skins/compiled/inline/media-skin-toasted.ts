@@ -163,16 +163,16 @@ export function getTemplateHTML() {
         grid-area: 1/1;
         drop-shadow: 0 1px 0 var();
       }
-      media-play-button .pause-icon {
+      media-play-button media-pause-icon {
         opacity: 100%;
       }
-      media-play-button[data-paused] .pause-icon {
+      media-play-button[data-paused] media-pause-icon {
         opacity: 0%;
       }
-      media-play-button .play-icon {
+      media-play-button media-play-icon {
         opacity: 0%;
       }
-      media-play-button[data-paused] .play-icon {
+      media-play-button[data-paused] media-play-icon {
         opacity: 100%;
       }
       .volume-controls {
@@ -218,40 +218,40 @@ export function getTemplateHTML() {
       .volume-button svg {
         display: none;
       }
-      .volume-button[data-volume-level="high"] .volume-high-icon {
+      .volume-button[data-volume-level="high"] media-volume-high-icon {
         display: inline;
       }
-      .\[\&\[data-volume-level\=\\\"high\\\"\]_\.volume-high-icon\]\:inline[data-volume-level=\"high\"] .volume-high-icon {
+      .\[\&\[data-volume-level\=\\\"high\\\"\]_\.volume-high-icon\]\:inline[data-volume-level=\"high\"] media-volume-high-icon {
         display: inline;
       }
-      .volume-button[data-volume-level="medium"] .volume-low-icon {
+      .volume-button[data-volume-level="medium"] media-volume-low-icon {
         display: inline;
       }
-      .\[\&\[data-volume-level\=\\\"medium\\\"\]_\.volume-low-icon\]\:inline[data-volume-level=\"medium\"] .volume-low-icon {
+      .\[\&\[data-volume-level\=\\\"medium\\\"\]_\.volume-low-icon\]\:inline[data-volume-level=\"medium\"] media-volume-low-icon {
         display: inline;
       }
-      .volume-button[data-volume-level="low"] .volume-low-icon {
+      .volume-button[data-volume-level="low"] media-volume-low-icon {
         display: inline;
       }
-      .\[\&\[data-volume-level\=\\\"low\\\"\]_\.volume-low-icon\]\:inline[data-volume-level=\"low\"] .volume-low-icon {
+      .\[\&\[data-volume-level\=\\\"low\\\"\]_\.volume-low-icon\]\:inline[data-volume-level=\"low\"] media-volume-low-icon {
         display: inline;
       }
-      .volume-button[data-volume-level="off"] .volume-off-icon {
+      .volume-button[data-volume-level="off"] media-volume-off-icon {
         display: inline;
       }
-      .\[\&\[data-volume-level\=\\\"off\\\"\]_\.volume-off-icon\]\:inline[data-volume-level=\"off\"] .volume-off-icon {
+      .\[\&\[data-volume-level\=\\\"off\\\"\]_\.volume-off-icon\]\:inline[data-volume-level=\"off\"] media-volume-off-icon {
         display: inline;
       }
-      .full-screen-button .fullscreen-enter-icon {
+      .full-screen-button media-fullscreen-enter-icon {
         opacity: 100%;
       }
-      .full-screen-button[data-fullscreen] .fullscreen-enter-icon {
+      .full-screen-button[data-fullscreen] media-fullscreen-enter-icon {
         opacity: 0%;
       }
-      .full-screen-button .fullscreen-exit-icon {
+      .full-screen-button media-fullscreen-exit-icon {
         opacity: 0%;
       }
-      .full-screen-button[data-fullscreen] .fullscreen-exit-icon {
+      .full-screen-button[data-fullscreen] media-fullscreen-exit-icon {
         opacity: 100%;
       }
       .full-screen-button path {

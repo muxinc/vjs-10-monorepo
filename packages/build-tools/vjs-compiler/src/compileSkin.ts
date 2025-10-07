@@ -95,7 +95,11 @@ export async function compileSkinToHTML(source: string, options: CompileSkinOpti
       const elementName = toKebabCase(specifier);
       // Add media- prefix if not already present
       const webComponentName = elementName.startsWith('media-') ? elementName : `media-${elementName}`;
-      componentMap[specifier] = webComponentName;
+
+      // Add both PascalCase (for React) and kebab-case (for Tailwind CSS) keys
+      // This allows CSS transformation to work whether classes are PascalCase or kebab-case
+      componentMap[specifier] = webComponentName; // PascalCase: PlayIcon → media-play-icon
+      componentMap[elementName] = webComponentName; // kebab-case: play-icon → media-play-icon
     }
   }
 
