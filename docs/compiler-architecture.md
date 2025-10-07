@@ -1500,13 +1500,263 @@ class="button icon"
 
 ## Configuration Philosophy
 
+### Hierarchical Configuration System
+
+The compiler uses a **hierarchical configuration system** where high-level decisions determine which transformation pipelines and rules get activated. This creates a "waterfall" of configuration where each level informs the next.
+
+#### Configuration Hierarchy
+
+```
+┌─────────────────────────────────────┐
+│  Level 1: Module Type               │  What kind of module?
+│  - skin | component | utility       │  (Determines available transformations)
+└──────────────┬──────────────────────┘
+               ↓
+┌─────────────────────────────────────┐
+│  Level 2: Input Context              │  What's the source format?
+│  - Framework: react | vue | ...     │  (Determines parsing strategy)
+│  - CSS Type: tailwind-v4 | css | .. │  (Determines style extraction)
+└──────────────┬──────────────────────┘
+               ↓
+┌─────────────────────────────────────┐
+│  Level 3: Output Context             │  What's the target format?
+│  - Framework: web-component | react  │  (Determines code generation)
+│  - CSS Strategy: inline | modules    │  (Determines CSS output)
+└──────────────┬──────────────────────┘
+               ↓
+┌─────────────────────────────────────┐
+│  Level 4: Transformation Rules      │  How to transform?
+│  - Import transformation rules       │  (Determined by above levels)
+│  - CSS transformation rules          │  (Specific to context)
+│  - Component transformation rules    │  (Framework-specific)
+└─────────────────────────────────────┘
+```
+
+#### Current Hard-Coded Configuration
+
+**For Initial Implementation:**
+
+```typescript
+const CURRENT_CONFIG = {
+  // Level 1: Module Type
+  moduleType: 'skin',
+
+  // Level 2: Input Context
+  input: {
+    framework: 'react',
+    cssType: 'tailwind-v4',
+  },
+
+  // Level 3: Output Context
+  output: {
+    framework: 'web-component',
+    cssStrategy: 'inline-vanilla',
+  },
+};
+```
+
+This configuration **determines**:
+- Which imports to look for (React components, Tailwind styles)
+- How to parse the module (React/JSX, TypeScript)
+- What usage patterns to analyze (JSX elements, className attributes)
+- Which transformation rules to apply (React → Web Component, Tailwind → Vanilla CSS)
+- What output structure to generate (template function, inline styles)
+
+#### Future: Inferrable Configuration
+
+**Eventually, these can be discovered from source analysis:**
+
+```typescript
+// Analyze source code to infer configuration
+function inferConfiguration(sourceCode: string): CompilerConfig {
+  const ast = parse(sourceCode);
+
+  // Infer module type
+  const moduleType = inferModuleType(ast);
+  // - Has default export that's a function → likely skin or component
+  // - Function returns JSX with MediaContainer → skin
+  // - Function returns JSX with primitives only → component
+
+  // Infer input framework
+  const inputFramework = inferFramework(ast);
+  // - Imports from 'react' → react
+  // - Uses JSX syntax → react (or similar)
+  // - Imports from 'vue' → vue
+
+  // Infer CSS type
+  const cssType = inferCSSType(ast);
+  // - Imports file with Tailwind utilities → tailwind-v4
+  // - Imports *.module.css → css-modules
+  // - Uses styled-components → css-in-js
+
+  return { moduleType, input: { framework: inputFramework, cssType }, ... };
+}
+```
+
+**Benefits of Inference**:
+- No manual configuration required for common cases
+- Compiler adapts to source structure
+- Can validate that source matches expected patterns
+
+**Limitations**:
+- Ambiguous cases may need explicit configuration
+- Complex hybrid approaches may not be auto-detectable
+
 ### What Should Be Configurable?
 
-1. **Target Framework**: react | web-component | (future: vue, etc.)
-2. **CSS Strategy**: inline | css-modules | tailwind-cdn
-3. **Output Location**: Path to output file (or hypothetical location)
-4. **Package Context**: Source and target package information
-5. **Custom Rules**: Override default categorization/projection behavior
+#### Required Configuration
+
+1. **Output Target**:
+   - Framework: `react | web-component | vue | svelte`
+   - CSS Strategy: `inline | css-modules | tailwind-cdn`
+   - Output Location: Path to output file (or hypothetical location)
+
+#### Optional Configuration (Can Be Inferred)
+
+2. **Input Context**:
+   - Module Type: `skin | component | utility` (infer from structure)
+   - Input Framework: `react | vue | ...` (infer from imports/syntax)
+   - Input CSS Type: `tailwind-v4 | css | ...` (infer from style imports)
+
+3. **Package Context**:
+   - Source package information (discover from filesystem)
+   - Target package information (derive from output location)
+
+4. **Custom Rules**:
+   - Override default categorization/projection behavior
+   - Custom transformation plugins
+
+#### Multiple Output Targets
+
+**Important**: The compiler should support generating multiple outputs from a single source:
+
+```typescript
+const config = {
+  input: {
+    // Source is auto-detected or specified
+    file: 'src/skins/default/MediaSkinDefault.tsx',
+  },
+  outputs: [
+    {
+      framework: 'web-component',
+      cssStrategy: 'inline',
+      path: 'dist/skins/compiled/inline/media-skin-default.ts',
+    },
+    {
+      framework: 'web-component',
+      cssStrategy: 'css-modules',
+      path: 'dist/skins/compiled/css-modules/media-skin-default.ts',
+    },
+    {
+      framework: 'react',
+      cssStrategy: 'inline',
+      path: 'dist/skins/compiled/react-inline/MediaSkinDefault.tsx',
+    },
+  ],
+};
+```
+
+**Use Case**: Generate all supported permutations for testing or distribution.
+
+### Module Type Determines Transformation Concerns
+
+Different module types have different transformation requirements and concerns:
+
+#### Skins (Current Focus)
+
+**Characteristics**:
+- Composition layer (uses primitives, doesn't define them)
+- No direct media store hooks (state managed by primitives)
+- Standard props interface: `{ children, className }`
+- Always wraps content in `MediaContainer`
+- Style-heavy (lots of Tailwind/CSS transformation)
+
+**Transformation Concerns**:
+- Import transformation (component imports)
+- Style transformation (Tailwind → target CSS)
+- JSX → target markup
+- Slot handling for `children`
+- Class name transformation based on selector categorization
+
+**Simpler Because**:
+- No custom logic to preserve
+- No hooks to transform
+- No complex state management
+- Predictable structure
+
+#### Components (Future)
+
+**Characteristics**:
+- Primitive definitions (not just composition)
+- May use media store hooks directly
+- Custom props beyond `{ children, className }`
+- May have lifecycle logic
+- Internal state management
+
+**Transformation Concerns**:
+- Hook transformation (`useMediaStore` → target equivalent)
+- Event handler transformation
+- State management transformation
+- Ref handling
+- Props interface transformation
+- Lifecycle methods
+
+**More Complex Because**:
+- Custom logic must be preserved or transformed
+- Framework-specific APIs (hooks, lifecycle)
+- May not have direct equivalents in target framework
+- Requires understanding of control flow
+
+#### Utilities (Future)
+
+**Characteristics**:
+- Pure functions or helpers
+- No JSX/component structure
+- May have framework-specific dependencies
+
+**Transformation Concerns**:
+- Function signature preservation
+- Dependency transformation
+- May not need transformation at all (if framework-agnostic)
+
+---
+
+### Module Type Detection Heuristics
+
+```typescript
+function inferModuleType(ast: Program): 'skin' | 'component' | 'utility' {
+  const defaultExport = findDefaultExport(ast);
+
+  if (!defaultExport || !isFunctionComponent(defaultExport)) {
+    return 'utility'; // No JSX component export
+  }
+
+  const jsxReturn = findJSXReturn(defaultExport);
+
+  if (!jsxReturn) {
+    return 'utility'; // Function but no JSX
+  }
+
+  // Check if wraps in MediaContainer (skin pattern)
+  const hasMediaContainer = findJSXElement(jsxReturn, 'MediaContainer');
+  if (hasMediaContainer) {
+    return 'skin';
+  }
+
+  // Check if uses media store hooks (component pattern)
+  const usesMediaHooks = findHookUsage(defaultExport, 'useMediaStore', 'useMediaSelector');
+  if (usesMediaHooks) {
+    return 'component';
+  }
+
+  // Check props signature
+  const props = getFunctionParams(defaultExport)[0];
+  const hasStandardSkinProps = hasProperties(props, ['children', 'className']) &&
+                                propertyCount(props) === 2;
+
+  return hasStandardSkinProps ? 'skin' : 'component';
+}
+```
 
 ### What Should Be Inferred?
 
@@ -1854,3 +2104,4 @@ if (!customElements.get('media-skin-simple')) {
 ## Version History
 
 - **2025-10-07**: Initial architecture document
+- **2025-10-07**: Add hierarchical configuration system and module type detection
