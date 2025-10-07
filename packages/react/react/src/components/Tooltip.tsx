@@ -66,6 +66,7 @@ interface TooltipArrowProps {
 interface TooltipPortalProps {
   children: ReactNode;
   container?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
+  id?: string;
 }
 
 const TooltipContext = createContext<TooltipContextType | null>(null);
@@ -225,8 +226,8 @@ function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Elem
   );
 }
 
-function TooltipPortal({ children, container }: TooltipPortalProps): JSX.Element {
-  return <FloatingPortal root={container as HTMLElement}>{children}</FloatingPortal>;
+function TooltipPortal({ children, container, id }: TooltipPortalProps): JSX.Element {
+  return <FloatingPortal root={container as HTMLElement} id={id as string}>{children}</FloatingPortal>;
 }
 
 // Export compound component

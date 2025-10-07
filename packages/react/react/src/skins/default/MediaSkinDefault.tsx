@@ -1,7 +1,7 @@
 import styles from './styles';
 
 import type { PropsWithChildren } from 'react';
-import { useRef } from 'react';
+import { useId } from 'react';
 
 import {
   FullscreenEnterIcon,
@@ -29,11 +29,9 @@ type SkinProps = PropsWithChildren<{
 }>;
 
 export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const portalRef = useRef<HTMLDivElement>(null);
-
+  const portalId = useId();
   return (
-    <MediaContainer ref={containerRef} className={`${styles.MediaContainer} ${className}`}>
+    <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
 
       {/* Background gradient to help with controls contrast. */}
@@ -47,7 +45,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <PauseIcon className={styles.PauseIcon}></PauseIcon>
             </PlayButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal container={portalRef.current}>
+          <Tooltip.Portal id={portalId}>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
                 <span className={styles.PlayTooltip}>Play</span>
@@ -83,7 +81,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <VolumeOffIcon className={styles.VolumeOffIcon} />
             </MuteButton>
           </Popover.Trigger>
-          <Popover.Portal container={portalRef.current}>
+          <Popover.Portal id={portalId}>
             <Popover.Positioner side="top" sideOffset={12}>
               <Popover.Popup className={styles.PopoverPopup}>
                 <VolumeRange.Root className={styles.SliderRoot} orientation="vertical">
@@ -104,7 +102,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <FullscreenExitIcon className={styles.FullScreenExitIcon} />
             </FullscreenButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal container={portalRef.current}>
+          <Tooltip.Portal id={portalId}>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullScreenTooltipPopup}`}>
                 <span className={styles.FullScreenEnterTooltip}>Enter Fullscreen</span>
@@ -115,7 +113,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         </Tooltip.Root>
       </div>
 
-      <div ref={portalRef} className="absolute z-10" />
+      <div id={portalId} className="absolute z-10" />
     </MediaContainer>
   );
 }
