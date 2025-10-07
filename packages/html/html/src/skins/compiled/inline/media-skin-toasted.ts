@@ -455,8 +455,10 @@ export function getTemplateHTML() {
   `;
 }
 
-export class MediaSkinDefault extends MediaSkin {
+export class MediaSkinToasted extends MediaSkin {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('media-skin-default', MediaSkinDefault);
+if (!customElements.get('media-skin-toasted-compiled')) {
+  customElements.define('media-skin-toasted-compiled', MediaSkinToasted);
+}

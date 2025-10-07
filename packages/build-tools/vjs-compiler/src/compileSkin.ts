@@ -130,12 +130,16 @@ export async function compileSkinToHTML(source: string, options: CompileSkinOpti
   });
 
   // 8. Generate the complete module
+  // Append '-compiled' suffix to element name to avoid conflicts with hand-written skins
+  const baseElementName = toKebabCase(parsed.componentName);
+  const elementName = `${baseElementName}-compiled`;
+
   const code = generateSkinModule({
     imports: htmlImports,
     html,
     styles,
     className: parsed.componentName,
-    elementName: toKebabCase(parsed.componentName),
+    elementName,
   });
 
   return {

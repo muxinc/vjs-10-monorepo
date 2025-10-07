@@ -46,7 +46,9 @@ export class ${className} extends MediaSkin {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('${elementName}', ${className});
+if (!customElements.get('${elementName}')) {
+  customElements.define('${elementName}', ${className});
+}
 `;
 }
 
