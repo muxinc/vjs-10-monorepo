@@ -97,6 +97,9 @@ export default function App(): JSX.Element {
     }
   }, [skinKey]);
 
+  const playbackId = mediaSource.match(/stream\.mux\.com\/([^./]+)/)?.[1];
+  const poster = playbackId ? `https://image.mux.com/${playbackId}/thumbnail.webp` : undefined;
+
   return (
     <>
       <header className="fixed top-0 inset-x-0 bg-white dark:bg-stone-800 shadow shadow-black/10 after:h-px after:absolute after:inset-x-0 after:top-full after:bg-black/5">
@@ -138,7 +141,7 @@ export default function App(): JSX.Element {
           <MediaProvider key={key}>
             <Skin className={skinClassName}>
               {/* @ts-ignore -- types are incorrect */}
-              <Video src={mediaSource} />
+              <Video src={mediaSource} poster={poster} />
             </Skin>
           </MediaProvider>
         </div>
