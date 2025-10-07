@@ -501,6 +501,12 @@ function cleanupDeclarationValues(container: Container): void {
       return;
     }
 
+    // Fix Tailwind v4's default transition-duration of 0s to 150ms (Tailwind v3 default)
+    if (decl.prop === 'transition-duration' && decl.value === '0s') {
+      decl.value = '150ms';
+      return;
+    }
+
     if (decl.prop === 'content' && decl.value === '') {
       decl.value = "''";
     }
@@ -625,6 +631,9 @@ export async function compileTailwindToCSS(
   /* Text shadow utilities */
   --text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   --text-shadow-2xs: 0 1px 1px rgba(0, 0, 0, 0.5);
+
+  /* Transition durations */
+  --transition-duration: 150ms;
 }
 
 /* Custom variants */
