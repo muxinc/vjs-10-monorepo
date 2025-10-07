@@ -159,12 +159,19 @@ export class MediaPopoverPortal extends HTMLElement {
     return this.#portal?.querySelector(selector) ?? null;
   }
 
+  handleEvent(event: Event): void {
+    this.dispatchEvent(new Event(event.type, { bubbles: true }));
+  }
+
   #setupPortal(): void {
     const portalId = this.getAttribute('root-id');
     if (!portalId) return;
 
     const portalContainer = (this.getRootNode() as ShadowRoot | Document).getElementById(portalId);
     if (!portalContainer) return;
+
+    portalContainer.addEventListener('mouseenter', this);
+    portalContainer.addEventListener('mouseleave', this);
 
     this.#portal = document.createElement('div');
     this.#portal.id = uniqueId();

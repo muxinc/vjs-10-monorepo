@@ -12,10 +12,16 @@ export class MediaTooltipRoot extends HTMLElement {
 
   constructor() {
     super();
-    this.addEventListener('mouseenter', this.#handleMouseEnter.bind(this));
-    this.addEventListener('mouseleave', this.#handleMouseLeave.bind(this));
-    this.addEventListener('focusin', this.#handleFocusIn.bind(this));
-    this.addEventListener('focusout', this.#handleFocusOut.bind(this));
+    this.addEventListener('mouseenter', this);
+    this.addEventListener('mouseleave', this);
+  }
+
+  handleEvent(event: Event): void {
+    if (event.type === 'mouseenter') {
+      this.#handleMouseEnter();
+    } else if (event.type === 'mouseleave') {
+      this.#handleMouseLeave();
+    }
   }
 
   connectedCallback(): void {
@@ -153,18 +159,6 @@ export class MediaTooltipRoot extends HTMLElement {
   }
 
   #handleMouseLeave(): void {
-    this.#clearHoverTimeout();
-    this.#hoverTimeout = globalThis.setTimeout(() => {
-      this.#setOpen(false);
-    }, this.closeDelay);
-  }
-
-  #handleFocusIn(): void {
-    this.#clearHoverTimeout();
-    this.#setOpen(true);
-  }
-
-  #handleFocusOut(): void {
     this.#clearHoverTimeout();
     this.#hoverTimeout = globalThis.setTimeout(() => {
       this.#setOpen(false);
