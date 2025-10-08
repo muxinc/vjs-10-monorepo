@@ -165,12 +165,17 @@ Parse to AST (Babel)
     │   ├─→ Transform import style (named → side-effect for web components)
     │   └─→ Omit style imports (CSS will be inlined)
     │
-    ├─→ Transform CSS
-    │   ├─→ Parse Tailwind utilities from style definitions
-    │   ├─→ Generate selectors based on categorization
-    │   │   ├─→ Element selectors for Component Selector Identifiers
-    │   │   └─→ Class selectors for Type/Generic selectors
-    │   └─→ Compile to target CSS format (inline, modules, etc.)
+    ├─→ Transform CSS (via CSS Modules intermediary)
+    │   ├─→ Extract style keys and Tailwind utilities from style definitions
+    │   ├─→ Generate intermediary CSS Modules file with utilities
+    │   ├─→ Process through PostCSS + Tailwind compiler (expand utilities)
+    │   ├─→ Transform compiled CSS:
+    │   │   ├─→ Replace CSS Module scoped selectors with semantic selectors
+    │   │   │   ├─→ Element selectors for Component Selector Identifiers
+    │   │   │   └─→ Class selectors for Type/Generic selectors
+    │   │   ├─→ Preserve expanded CSS properties
+    │   │   └─→ Apply additional transformations (terse syntax, modern CSS)
+    │   └─→ Generate final CSS in target format (inline, external, etc.)
     │
     └─→ Transform Component Tree
         ├─→ Transform JSX elements to target framework
@@ -1235,13 +1240,182 @@ When transforming package names:
   - Data attribute selectors: `[&[data-paused]]:opacity-0`
   - Custom variants (via comments): `reduced-transparency:bg-black/70`
 
-### Output: Vanilla CSS
+### Output: Vanilla CSS (Legible, Semantic)
 
 **Goals**:
 1. **Human-readable**: Clear, understandable CSS
 2. **Terse**: Minimize redundancy while maintaining clarity
 3. **Correct**: Semantically equivalent to Tailwind output
 4. **Progressive**: Use modern CSS features with appropriate fallbacks
+
+### Transformation Strategy: CSS Modules as Intermediary
+
+**For the current target** (`inline-vanilla` with legible output), the transformation uses **CSS Modules as an intermediary format**:
+
+```
+Tailwind Utilities (TypeScript)
+    ↓
+CSS Modules (PostCSS processing)
+    ↓
+Vanilla CSS (semantic selectors, expanded properties)
+```
+
+**Why CSS Modules?**
+
+1. **PostCSS Integration**: CSS Modules allows using custom PostCSS plugins to process Tailwind utilities
+2. **Semantic Mapping**: Maps style keys to scoped class names that we can then transform to semantic selectors
+3. **Existing Tooling**: Leverages mature CSS Modules + PostCSS + Tailwind toolchain
+4. **Human-Readable Output**: Enables expansion of utilities into explicit CSS properties
+
+**Process**:
+1. Extract style keys and Tailwind utility strings from `styles.ts`
+2. Generate CSS Modules file with those utilities
+3. Process through PostCSS + Tailwind compiler to expand utilities
+4. Transform generated CSS by:
+   - Replacing CSS Module scoped class names with semantic selectors (based on usage analysis)
+   - Preserving expanded CSS properties
+   - Applying any additional transformations (modern CSS features, terse property names, etc.)
+
+**Example Flow**:
+
+```typescript
+// Input: styles.ts
+const styles = {
+  PlayButton: cn(
+    'p-2 rounded-full',
+    '[&[data-paused]_.play-icon]:opacity-100'
+  ),
+};
+```
+
+```css
+/* Intermediary: Generated CSS Modules input */
+.PlayButton {
+  @apply p-2 rounded-full;
+  @apply [&[data-paused]_.play-icon]:opacity-100;
+}
+```
+
+```css
+/* After PostCSS + Tailwind processing */
+.PlayButton_abc123 {
+  padding: 0.5rem;
+  border-radius: 9999px;
+}
+
+.PlayButton_abc123[data-paused] .play-icon {
+  opacity: 1;
+}
+```
+
+```css
+/* Final: Transform to semantic selector */
+media-play-button {
+  padding: 0.5rem;
+  border-radius: calc(infinity * 1px);
+}
+
+media-play-button[data-paused] .play-icon {
+  opacity: 100%;
+}
+```
+
+**Benefits**:
+- Leverages Tailwind's own compiler for accurate utility expansion
+- Produces human-readable output with explicit properties
+- Allows further transformation/optimization of generated CSS
+- Clear separation between compilation phases
+
+**Tradeoffs**:
+- Additional transformation step adds complexity
+- Requires managing intermediary CSS Modules files
+- Dependent on PostCSS + Tailwind toolchain
+
+---
+
+### Alternative Strategy: Direct Tailwind Compilation (Future)
+
+> **Configuration Context**: This is a **future alternative** for `output.cssStrategy: inline-tailwind-utilities`. Not currently implemented, but architecture should support it.
+
+For scenarios where legible CSS is not a priority, an alternative approach would skip CSS Modules and use Tailwind's standard compiler directly:
+
+```
+Tailwind Utilities (TypeScript)
+    ↓
+Tailwind Compiler (standard output)
+    ↓
+Vanilla CSS (utility classes preserved in markup)
+```
+
+**Key Differences**:
+
+1. **Markup Changes**: Style key references would be preserved as `class` attributes with utility strings:
+   ```tsx
+   // Input
+   <PlayButton className={styles.PlayButton}>
+
+   // Output (CSS Modules approach)
+   <media-play-button></media-play-button>
+
+   // Output (Direct Tailwind approach)
+   <media-play-button class="p-2 rounded-full [&[data-paused]_.play-icon]:opacity-100">
+   ```
+
+2. **CSS Output**: Large, comprehensive utility-based stylesheet (similar to standard Tailwind output)
+   ```css
+   .p-2 { padding: 0.5rem; }
+   .rounded-full { border-radius: 9999px; }
+   .\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused] .play-icon { opacity: 1; }
+   /* ...hundreds more utilities... */
+   ```
+
+3. **Module Definition Impact**: Compiler would need to:
+   - Preserve style imports rather than eliminating them
+   - Transform `className={styles.Key}` → `class="${inlineUtilityString}"`
+   - Evaluate compile-time expressions to resolve utility strings
+   - Bundle all used utilities into a single stylesheet
+
+**Benefits**:
+- Simpler transformation (no CSS Modules intermediary)
+- Uses Tailwind compiler as-is
+- May produce smaller total bundle if many utilities are reused
+
+**Tradeoffs**:
+- Much larger CSS output (every utility included)
+- Less human-readable CSS
+- Class names in markup become verbose and cryptic
+- Requires different module transformation logic
+
+**When This Would Be Useful**:
+- Rapid prototyping (don't care about CSS readability)
+- Development builds (faster compilation)
+- Cases where Tailwind JIT CDN could be used instead of inlining
+
+**Architectural Considerations**:
+
+This alternative approach affects multiple transformation phases:
+
+1. **Import Transformation**: Style imports would NOT be eliminated (or would be transformed to inline strings)
+2. **JSX Transformation**: `className` attribute values need compile-time evaluation and inlining
+3. **CSS Generation**: Use standard Tailwind compiler, collect all utilities, inline as single `<style>` block
+4. **Module Structure**: Different output structure (utilities in markup vs semantic CSS)
+
+The hierarchical configuration system should support this via:
+```typescript
+const ALTERNATIVE_CONFIG = {
+  moduleType: 'skin',
+  input: {
+    framework: 'react',
+    cssType: 'tailwind-v4',
+  },
+  output: {
+    framework: 'web-component',
+    cssStrategy: 'inline-tailwind-utilities', // ← Different strategy
+  },
+};
+```
+
+This would activate different transformation rules throughout the pipeline.
 
 ### Transformation Rules
 
@@ -1576,7 +1750,7 @@ const CURRENT_CONFIG = {
   // Level 3: Output Context
   output: {
     framework: 'web-component',
-    cssStrategy: 'inline-vanilla',
+    cssStrategy: 'inline-vanilla', // Legible CSS via CSS Modules intermediary
   },
 };
 ```
@@ -1585,8 +1759,12 @@ This configuration **determines**:
 - Which imports to look for (React components, Tailwind styles)
 - How to parse the module (React/JSX, TypeScript)
 - What usage patterns to analyze (JSX elements, className attributes)
-- Which transformation rules to apply (React → Web Component, Tailwind → Vanilla CSS)
-- What output structure to generate (template function, inline styles)
+- Which transformation rules to apply (React → Web Component, Tailwind → Vanilla CSS via CSS Modules)
+- What output structure to generate (template function, inline styles with semantic selectors)
+
+**CSS Strategy Details**:
+- `inline-vanilla`: Use CSS Modules as intermediary to produce legible, semantic CSS with expanded properties
+- `inline-tailwind-utilities` (future): Use Tailwind compiler directly, preserve utility classes in markup
 
 #### Future: Inferrable Configuration
 
@@ -1634,8 +1812,20 @@ function inferConfiguration(sourceCode: string): CompilerConfig {
 
 1. **Output Target**:
    - Framework: `react | web-component | vue | svelte`
-   - CSS Strategy: `inline | css-modules | tailwind-cdn`
+   - CSS Strategy: `inline-vanilla | inline-tailwind-utilities | css-modules | tailwind-cdn`
    - Output Location: Path to output file (or hypothetical location)
+
+**CSS Strategy Options**:
+- `inline-vanilla`: Legible CSS via CSS Modules intermediary (current focus)
+  - Uses PostCSS + Tailwind to expand utilities
+  - Produces semantic selectors with explicit properties
+  - Requires CSS Modules transformation phase
+- `inline-tailwind-utilities`: Preserve utility classes (future)
+  - Uses Tailwind compiler directly
+  - Utilities remain in markup as class attributes
+  - Larger CSS output but simpler transformation
+- `css-modules`: External CSS Modules file
+- `tailwind-cdn`: Reference Tailwind CDN (utilities in markup)
 
 #### Optional Configuration (Can Be Inferred)
 
