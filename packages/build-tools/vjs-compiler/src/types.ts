@@ -113,3 +113,89 @@ export interface CompileResult {
   // Styles object (for reference)
   stylesObject: StylesObject;
 }
+
+/**
+ * Usage Analysis Types
+ */
+
+/**
+ * How an import is used in the module
+ */
+export type ImportUsageType =
+  | 'jsx-element'        // Used as JSX element name: <PlayButton>
+  | 'className-access'   // Used in className: className={styles.Button}
+  | 'compound-member'    // Used as namespace member: <TimeRange.Root>
+  | 'unknown';           // Used in other contexts
+
+/**
+ * Usage information for a single import
+ */
+export interface ImportUsage {
+  /** Import identifier name */
+  name: string;
+  /** How this import is used */
+  usageType: ImportUsageType;
+  /** JSX element nodes where used (if jsx-element) */
+  jsxElements?: t.JSXElement[];
+  /** Member accesses (if compound-member): ['Root', 'Track'] */
+  members?: string[];
+}
+
+/**
+ * Style key usage information
+ */
+export interface StyleKeyUsage {
+  /** Style key name (e.g., 'Container', 'Button') */
+  key: string;
+  /** Component names this style is applied to */
+  usedOn: string[];
+  /** Selector category (determined by categorization layer) */
+  category?: SelectorCategory;
+}
+
+/**
+ * Unified usage graph for a module
+ */
+export interface UsageGraph {
+  /** Import usage information */
+  imports: ImportUsage[];
+  /** Style key usage information */
+  styleKeys: StyleKeyUsage[];
+}
+
+/**
+ * Categorization Types
+ */
+
+/**
+ * CSS selector category based on style key relationship to components
+ */
+export type SelectorCategory =
+  | 'component-selector-id'     // Exact match: styles.PlayButton on <PlayButton>
+  | 'component-type-selector'   // Suffix pattern: styles.Button on multiple buttons
+  | 'nested-component-selector' // Compound: styles.RangeRoot on <TimeRange.Root>
+  | 'generic-selector';          // No match: styles.Controls on <div>
+
+/**
+ * Import category based on usage and package context
+ */
+export type ImportCategory =
+  | 'vjs-component-same-package' // VJS component in same package
+  | 'vjs-component-external'     // VJS component from external package
+  | 'vjs-icon-package'           // VJS icon package
+  | 'vjs-core-package'           // Platform-agnostic core package
+  | 'framework-import'           // React, react-dom, etc.
+  | 'style-import'               // Style definitions
+  | 'external-package';          // Non-VJS external package
+
+/**
+ * Categorized import information
+ */
+export interface CategorizedImport {
+  /** Original import */
+  import: ImportDeclaration;
+  /** Determined category */
+  category: ImportCategory;
+  /** Usage information */
+  usage: ImportUsage;
+}
