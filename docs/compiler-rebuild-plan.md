@@ -58,6 +58,68 @@ Visual validation, performance, production deployment.
 
 ---
 
+## Architectural Compliance Checkpoints
+
+### Pre-Commit Checklist
+
+Before each commit, verify compliance with core architectural principles from [compiler-architecture.md](./compiler-architecture.md):
+
+#### ✅ **1. Separation of Concerns**
+- [ ] Core transformation functions are pure (accept strings/config, return strings/data)
+- [ ] No filesystem access in core transformation logic
+- [ ] All file I/O isolated to boundary layer (CLI, build scripts)
+- [ ] Functions testable without filesystem access
+
+#### ✅ **2. Push Assumptions to Boundaries**
+- [ ] No hardcoded VJS-specific logic deep in transformation (e.g., `if (pkg.startsWith('@vjs-10/'))`)
+- [ ] Context and conventions passed as data through config
+- [ ] Naming conventions configurable or passed as functions
+- [ ] Discovery happens at boundaries, results passed as data
+
+#### ✅ **3. Functional Over Declarative**
+- [ ] Use predicate functions to answer questions (`isVJSComponent`, `isStyleImport`)
+- [ ] Use projection functions for transformations (`projectImportToTarget`)
+- [ ] Avoid large declarative data structures (use functions instead)
+- [ ] Composable, injectable behavior
+
+#### ✅ **4. Identify, Then Transform** (Most Critical)
+- [ ] **Phase 1: Identification** - Extract structure (imports, JSX elements, className usage)
+- [ ] **Phase 2: Categorization** - Classify based on usage + context (component vs style, VJS vs external)
+- [ ] **Phase 3: Projection** - Transform based on category
+- [ ] Clear separation between these phases
+- [ ] Usage analysis drives categorization (not just naming conventions)
+
+#### ✅ **5. VJS-Specific But Extensible**
+- [ ] VJS conventions explicit and documented
+- [ ] Conventions overridable through config
+- [ ] Extension points clearly defined
+
+### Post-Commit Review
+
+After significant work (end of phase/milestone):
+
+1. **Review separation of concerns**: Are transformations still pure?
+2. **Check assumption creep**: Have VJS assumptions leaked into core logic?
+3. **Assess categorization quality**: Is usage analysis driving decisions?
+4. **Evaluate extensibility**: Could we support a new framework/CSS strategy without rewriting core?
+
+### Current Implementation Status
+
+**Completed (Phases 0-3)**:
+- ✅ Separation of Concerns: Core functions are pure
+- ⚠️ Push Assumptions: Some hardcoded conventions (e.g., `media-` prefix)
+- ❌ Functional/Predicative: No predicates or projections yet
+- ❌ Identify, Then Transform: Missing usage analysis and categorization layers
+- ⚠️ Extensibility: Conventions not easily overridable
+
+**Next Refactoring Priority**:
+1. Add usage analysis layer (scan JSX for component usage, className for style usage)
+2. Add categorization layer (categorize imports/styles based on usage)
+3. Separate projection (transform based on categories, not during identification)
+4. Extract conventions to config/functions
+
+---
+
 ## Phase 0: Foundation - Parse Only, No Transformation
 
 ### Goal
