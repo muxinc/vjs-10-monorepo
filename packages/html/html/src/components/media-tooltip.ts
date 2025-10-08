@@ -19,8 +19,7 @@ export class MediaTooltipRoot extends HTMLElement {
   handleEvent(event: Event): void {
     if (event.type === 'mouseenter') {
       this.#handleMouseEnter();
-    }
-    else if (event.type === 'mouseleave') {
+    } else if (event.type === 'mouseleave') {
       this.#handleMouseLeave();
     }
   }
@@ -70,8 +69,7 @@ export class MediaTooltipRoot extends HTMLElement {
 
     if (open) {
       this.#setupFloating();
-    }
-    else {
+    } else {
       this.#cleanup?.();
       this.#cleanup = null;
     }
@@ -203,8 +201,7 @@ export class MediaTooltipTrigger extends HTMLElement {
             const attributeValue = triggerElement.getAttribute(attributeName);
             if (attributeValue !== null) {
               popupElement.setAttribute(attributeName, attributeValue);
-            }
-            else {
+            } else {
               popupElement.removeAttribute(attributeName);
             }
           }

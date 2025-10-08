@@ -57,12 +57,12 @@ export function useVolumeRangeRootProps(props: VolumeRange.Props, state: VolumeR
   const { children, className, id, style, orientation = 'horizontal' } = props;
 
   return {
-    'ref': useCallback((el: HTMLDivElement) => {
+    ref: useCallback((el: HTMLDivElement) => {
       if (!el) return;
       state.core?.attach(el);
     }, []),
     id,
-    'role': 'slider',
+    role: 'slider',
     'aria-label': 'Volume',
     'aria-valuemin': 0,
     'aria-valuemax': 100,
@@ -73,7 +73,7 @@ export function useVolumeRangeRootProps(props: VolumeRange.Props, state: VolumeR
     'data-muted': state.muted,
     'data-volume-level': state.volumeLevel,
     className,
-    'style': {
+    style: {
       ...style,
       '--slider-fill': `${_fillWidth.toFixed(3)}%`,
       '--slider-pointer': `${_pointerWidth.toFixed(3)}%`,
@@ -102,12 +102,12 @@ const VolumeRangeRoot: ConnectedComponent<VolumeRange.Props, typeof renderVolume
 
 export function useVolumeRangeTrackProps(props: React.ComponentProps<'div'>, context: VolumeRange.State): VolumeRangeRenderProps {
   return {
-    'ref': useCallback((el: HTMLDivElement) => {
+    ref: useCallback((el: HTMLDivElement) => {
       context.core?.setState({ _trackElement: el });
     }, []),
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: '100%',
     },
@@ -133,7 +133,7 @@ export function useVolumeRangeThumbProps(props: React.ComponentProps<'div'>, con
   return {
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'insetInlineStart' : 'insetBlockEnd']: 'var(--slider-fill)',
       [context.orientation === 'horizontal' ? 'top' : 'left']: '50%',
@@ -162,7 +162,7 @@ export function useVolumeRangeProgressProps(props: React.ComponentProps<'div'>, 
   return {
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: 'var(--slider-fill, 0%)',
       [context.orientation === 'horizontal' ? 'height' : 'width']: '100%',

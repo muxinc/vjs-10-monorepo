@@ -53,12 +53,12 @@ export function useTimeRangeRootProps(props: TimeRange.Props, state: TimeRange.S
   const { children, className, id, style, orientation = 'horizontal' } = props;
 
   return {
-    'ref': useCallback((el: HTMLDivElement) => {
+    ref: useCallback((el: HTMLDivElement) => {
       if (!el) return;
       state.core?.attach(el);
     }, []),
     id,
-    'role': 'slider',
+    role: 'slider',
     'aria-label': 'Seek',
     'aria-valuemin': 0,
     'aria-valuemax': 100,
@@ -69,10 +69,10 @@ export function useTimeRangeRootProps(props: TimeRange.Props, state: TimeRange.S
     'data-current-time': state.currentTime,
     'data-duration': state.duration,
     className,
-    'style': {
+    style: {
       ...style,
       '--slider-fill': `${_fillWidth.toFixed(3)}%`,
-      '--slider-pointer': `${_pointerWidth.toFixed(3)}%`,
+      '--slider-pointer': `${(_pointerWidth * 100).toFixed(3)}%`,
     } as React.CSSProperties,
     children,
   };
@@ -98,12 +98,12 @@ const TimeRangeRoot: ConnectedComponent<TimeRange.Props, typeof renderTimeRangeR
 
 export function useTimeRangeTrackProps(props: React.ComponentProps<'div'>, context: TimeRange.State): TimeRangeRenderProps {
   return {
-    'ref': useCallback((el: HTMLDivElement) => {
+    ref: useCallback((el: HTMLDivElement) => {
       context.core?.setState({ _trackElement: el });
     }, []),
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: '100%',
     },
@@ -130,7 +130,7 @@ export function useTimeRangeThumbProps(props: React.ComponentProps<'div'>, conte
   return {
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'insetInlineStart' : 'insetBlockEnd']: 'var(--slider-fill)',
       [context.orientation === 'horizontal' ? 'top' : 'left']: '50%',
@@ -160,7 +160,7 @@ export function useTimeRangePointerProps(props: React.ComponentProps<'div'>, con
   return {
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: 'var(--slider-pointer, 0%)',
       [context.orientation === 'horizontal' ? 'height' : 'width']: '100%',
@@ -188,7 +188,7 @@ export function useTimeRangeProgressProps(props: React.ComponentProps<'div'>, co
   return {
     'data-orientation': context.orientation,
     ...props,
-    'style': {
+    style: {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: 'var(--slider-fill, 0%)',
       [context.orientation === 'horizontal' ? 'height' : 'width']: '100%',

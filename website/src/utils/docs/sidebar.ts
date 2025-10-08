@@ -92,8 +92,7 @@ export function findFirstGuide(
       // Recursively search section contents
       const guide = findFirstGuide(framework, style, item.contents);
       if (guide) return guide;
-    }
-    else {
+    } else {
       // It's a Guide, return its slug
       return item.slug;
     }
@@ -118,8 +117,7 @@ export function getAllGuideSlugs(sidebarToExtract: Sidebar = sidebar): string[] 
     if (isSection(item)) {
       // Recursively get slugs from section contents
       slugs.push(...getAllGuideSlugs(item.contents));
-    }
-    else {
+    } else {
       // It's a Guide, add its slug
       slugs.push(item.slug);
     }
@@ -144,8 +142,7 @@ export function findGuideBySlug(
       // Recursively search section contents
       const guide = findGuideBySlug(slug, item.contents);
       if (guide) return guide;
-    }
-    else if (item.slug === slug) {
+    } else if (item.slug === slug) {
       // Found the guide
       return item;
     }

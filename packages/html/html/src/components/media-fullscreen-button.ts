@@ -21,8 +21,7 @@ export class FullscreenButtonBase extends MediaChromeButton {
     if (state && type === 'click') {
       if (state.fullscreen) {
         state.requestExitFullscreen();
-      }
-      else {
+      } else {
         state.requestEnterFullscreen();
       }
     }
@@ -61,7 +60,7 @@ export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (sta
     'data-fullscreen': state.fullscreen,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    'role': 'button',
+    role: 'button',
     'aria-label': state.fullscreen ? 'exit fullscreen' : 'enter fullscreen',
     /** tooltip */
     'data-tooltip': state.fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen',

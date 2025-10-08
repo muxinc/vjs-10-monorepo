@@ -73,41 +73,33 @@ export const fullscreenable = {
           // Enter fullscreen
           if (container.requestFullscreen) {
             container.requestFullscreen();
-          }
-          else if (container.webkitRequestFullscreen) {
+          } else if (container.webkitRequestFullscreen) {
             // Safari support
             container.webkitRequestFullscreen();
-          }
-          else if (container.mozRequestFullScreen) {
+          } else if (container.mozRequestFullScreen) {
             // Firefox support
             container.mozRequestFullScreen();
-          }
-          else if (container.msRequestFullscreen) {
+          } else if (container.msRequestFullscreen) {
             // IE/Edge support
             container.msRequestFullscreen();
           }
-        }
-        else {
+        } else {
           // Exit fullscreen
           const doc = globalThis.document as any;
           if (doc.exitFullscreen) {
             doc.exitFullscreen();
-          }
-          else if (doc.webkitExitFullscreen) {
+          } else if (doc.webkitExitFullscreen) {
             // Safari support
             doc.webkitExitFullscreen();
-          }
-          else if (doc.mozCancelFullScreen) {
+          } else if (doc.mozCancelFullScreen) {
             // Firefox support
             doc.mozCancelFullScreen();
-          }
-          else if (doc.msExitFullscreen) {
+          } else if (doc.msExitFullscreen) {
             // IE/Edge support
             doc.msExitFullscreen();
           }
         }
-      }
-      catch (error) {
+      } catch (error) {
         // Gracefully handle fullscreen API errors (e.g., user interaction required)
         console.warn('Fullscreen operation failed:', error);
       }

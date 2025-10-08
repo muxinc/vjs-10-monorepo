@@ -24,8 +24,7 @@ export class MuteButtonBase extends MediaChromeButton {
       if (type === 'click') {
         if (state.volumeLevel === 'off') {
           state.requestUnmute();
-        }
-        else {
+        } else {
           state.requestMute();
         }
       }
@@ -73,7 +72,7 @@ export const useMuteButtonProps: PropsHook<{
     'data-volume-level': state.volumeLevel,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    'role': 'button',
+    role: 'button',
     'aria-label': state.muted ? 'unmute' : 'mute',
     /** tooltip */
     'data-tooltip': state.muted ? 'Unmute' : 'Mute',

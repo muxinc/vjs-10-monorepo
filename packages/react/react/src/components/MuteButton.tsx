@@ -38,7 +38,7 @@ export function useMuteButtonProps(props: PropsWithChildren, state: ReturnType<t
     'data-volume-level': state.volumeLevel,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    'role': 'button',
+    role: 'button',
     'aria-label': state.muted ? 'unmute' : 'mute',
     /** tooltip */
     'data-tooltip': state.muted ? 'Unmute' : 'Mute',
@@ -66,8 +66,7 @@ export function renderMuteButton(props: MuteButtonProps, state: MuteButtonState)
         if (props.disabled) return;
         if (state.volumeLevel === 'off') {
           state.requestUnmute();
-        }
-        else {
+        } else {
           state.requestMute();
         }
       }}

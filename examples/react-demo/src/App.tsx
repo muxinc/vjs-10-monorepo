@@ -52,8 +52,8 @@ const DEFAULT_SKIN: SkinKey = 'toasted';
 const DEFAULT_MEDIA_SOURCE: MediaSourceKey = '1';
 
 export default function App(): JSX.Element {
-  const [skinKey, setSkinKey] = useState<SkinKey>(getParam('skin', DEFAULT_SKIN));
-  const [mediaSourceKey, setMediaSourceKey] = useState<MediaSourceKey>(getParam('source', DEFAULT_MEDIA_SOURCE));
+  const [skinKey, setSkinKey] = useState<SkinKey>(() => getParam('skin', DEFAULT_SKIN));
+  const [mediaSourceKey, setMediaSourceKey] = useState<MediaSourceKey>(() => getParam('source', DEFAULT_MEDIA_SOURCE));
 
   const mediaSource = useMemo(() => {
     let match = mediaSources.find(m => m.key === mediaSourceKey);
@@ -138,10 +138,10 @@ export default function App(): JSX.Element {
       </header>
 
       <main className="min-h-screen flex justify-center items-center bg-radial bg-size-[16px_16px] from-stone-300 dark:from-stone-700 via-10% via-transparent to-transparent">
-        <div className="w-full max-w-4xl mx-auto p-6">
+        <div className="w-full max-w-5xl mx-auto p-6">
           <MediaProvider key={key}>
             <Skin className={skinClassName}>
-              {/* @ts-ignore -- types are incorrect */}
+              {/* @ts-expect-error -- types are incorrect */}
               <Video src={mediaSource} poster={poster} />
             </Skin>
           </MediaProvider>

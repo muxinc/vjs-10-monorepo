@@ -52,8 +52,7 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
       value: null,
     };
     instRef.current = inst as SnapshotRef<Selection>;
-  }
-  else {
+  } else {
     inst = instRef.current;
   }
 

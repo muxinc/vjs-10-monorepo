@@ -11,7 +11,7 @@ export interface MediaDefaultSkinStyles {
   readonly PlayTooltip: string;
   readonly PauseTooltip: string;
   readonly TooltipPopup: string;
-  readonly VolumeButton: string;
+  readonly MuteButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
   readonly VolumeOffIcon: string;

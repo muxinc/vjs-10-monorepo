@@ -150,7 +150,7 @@ function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
   const { refs, open } = context;
 
   return React.cloneElement(React.Children.only(children) as JSX.Element, {
-    'ref': refs.setReference,
+    ref: refs.setReference,
     ...getReferenceProps(),
     'data-popup-open': open ? '' : undefined,
   });
