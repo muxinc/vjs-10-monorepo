@@ -16,6 +16,7 @@ import {
   useHover,
   useInteractions,
   useRole,
+  useTransitionStatus,
 } from '@floating-ui/react';
 
 interface UpdatePositioningProps {
@@ -25,15 +26,12 @@ interface UpdatePositioningProps {
 }
 
 interface TooltipContextType {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  refs: ReturnType<typeof useFloating>['refs'];
-  floatingStyles: ReturnType<typeof useFloating>['floatingStyles'];
+  arrowRef: React.MutableRefObject<HTMLElement | null>;
+  context: ReturnType<typeof useFloating>['context'];
+  transitionStatus: ReturnType<typeof useTransitionStatus>['status'];
   getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
   getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
-  context: ReturnType<typeof useFloating>['context'];
   updatePositioning: (props: UpdatePositioningProps) => void;
-  arrowRef: React.MutableRefObject<HTMLElement | null>;
 }
 
 interface TooltipRootProps {
@@ -100,7 +98,7 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
   const [collisionPadding, setCollisionPadding] = useState(0);
   const arrowRef = useRef<HTMLElement | null>(null);
 
-  const { refs, floatingStyles, context } = useFloating({
+  const { context } = useFloating({
     open,
     onOpenChange: setOpen,
     placement,
@@ -114,6 +112,8 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
     ],
     whileElementsMounted: autoUpdate,
   });
+
+  const { status: transitionStatus } = useTransitionStatus(context);
 
   const hover = useHover(context, {
     delay: {
@@ -134,40 +134,36 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
   };
 
   const value: TooltipContextType = {
-    open,
-    setOpen,
-    refs,
-    floatingStyles,
     getReferenceProps,
     getFloatingProps,
     context,
     updatePositioning,
     arrowRef,
+    transitionStatus,
   };
 
   return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
 }
 
 function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
-  const { refs, getReferenceProps } = useTooltipContext();
+  const { context, getReferenceProps } = useTooltipContext();
+  const { refs, open } = context;
 
   return React.cloneElement(React.Children.only(children) as JSX.Element, {
     ref: refs.setReference,
     ...getReferenceProps(),
+    'data-popup-open': open ? '' : undefined,
   });
 }
 
 function TooltipPositioner({ side = 'top', sideOffset = 0, collisionPadding = 0, children }: TooltipPositionerProps): JSX.Element | null {
-  const { open, refs, floatingStyles, updatePositioning } = useTooltipContext();
+  const { context, updatePositioning } = useTooltipContext();
+  const { refs, floatingStyles } = context;
 
   // Update positioning when props change
   useEffect(() => {
     updatePositioning({ side, sideOffset, collisionPadding });
   }, [side, sideOffset, collisionPadding, updatePositioning]);
-
-  if (!open) {
-    return null;
-  }
 
   const positionerContextValue: TooltipPositionerContextType = {
     side,
@@ -182,9 +178,9 @@ function TooltipPositioner({ side = 'top', sideOffset = 0, collisionPadding = 0,
   );
 }
 
-function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Element {
-  const { getFloatingProps } = useTooltipContext();
-  const { refs } = useTooltipContext();
+function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Element | null {
+  const { context, getFloatingProps, transitionStatus } = useTooltipContext();
+  const { refs, placement } = context;
   const triggerElement = refs.reference.current as HTMLElement | null;
 
   // Copy data attributes from trigger element
@@ -197,7 +193,16 @@ function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Elem
     : {};
 
   return (
-    <div className={className} {...getFloatingProps()} {...dataAttributes}>
+    <div 
+      className={className} 
+      {...getFloatingProps()} 
+      {...dataAttributes}
+      data-side={placement}
+      data-starting-style={transitionStatus === 'initial' ? '' : undefined}
+      data-open={transitionStatus === 'initial' || transitionStatus === 'open' ? '' : undefined}
+      data-ending-style={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+      data-closed={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}      
+    >
       {children}
     </div>
   );
