@@ -97,14 +97,14 @@ function rescopeCSSToStyleKeys(
 ): string {
   // Phase 3: Build utility class to declarations map
   const utilityMap = new Map<string, postcss.Declaration[]>();
-  let hostRule: postcss.Rule | null = null;
+  let hostRule: string | null = null;
 
   root.walkRules((rule) => {
     const selector = rule.selector.trim();
 
     // Preserve :host rule (contains CSS variable definitions)
     if (selector === ':host') {
-      hostRule = rule.clone();
+      hostRule = rule.toString();
       return;
     }
 
@@ -136,7 +136,7 @@ function rescopeCSSToStyleKeys(
 
   // Prepend :host rule with CSS variable definitions (if present)
   if (hostRule) {
-    rescopedRules.push(hostRule.toString());
+    rescopedRules.push(hostRule);
   }
 
   for (const [key, classString] of Object.entries(styles)) {

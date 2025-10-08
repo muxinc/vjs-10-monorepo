@@ -7,9 +7,9 @@
 
 ## Summary
 
-We have successfully implemented **Phases 0-3** of the compiler rebuild with complete "Identify, Then Transform" architecture. The compiler can parse, analyze, categorize, and transform React skins with proper CSS selector generation and element/class attribute handling.
+We have successfully implemented **Phases 0-4** of the compiler rebuild with complete "Identify, Then Transform" architecture plus full Tailwind theme support. The compiler can parse, analyze, categorize, and transform React skins with proper CSS selector generation, element/class attribute handling, and comprehensive Tailwind utility support.
 
-**All 84 tests passing** including E2E tests with CSS computed styles validation.
+**All 89 tests passing** including E2E tests with CSS computed styles validation.
 
 ---
 
@@ -97,6 +97,14 @@ We have successfully implemented **Phases 0-3** of the compiler rebuild with com
 - ✅ **Shadow DOM validation** - Shadow roots created and populated
 - ✅ **CSS computed styles validation** - Styles correctly applied via element selectors
 
+### Phase 5: Tailwind Theme Configuration (NEW)
+- ✅ **Full spacing scale** - Support for p-*, px-*, py-*, gap-* utilities (0px to 64px)
+- ✅ **Border-radius values** - Support for rounded, rounded-lg, rounded-full, etc.
+- ✅ **Flex utilities** - Support for flex-1, flex-auto
+- ✅ **Overflow utilities** - Support for overflow-hidden, overflow-auto
+- ✅ **CSS variable approach** - Uses Tailwind v4's @theme + :host for Shadow DOM
+- ✅ **Runtime customization** - CSS variables allow theme overrides at runtime
+
 ---
 
 ## Architecture Compliance ✅
@@ -172,9 +180,15 @@ media-container { position: relative }
 - ✅ Categorization (categorizeImport, categorizeStyleKey)
 - ✅ Projection (projectImport, projectStyleSelector)
 
-### Integration Tests (12 passing)
+### Integration Tests (17 passing)
 - ✅ Phase 1: JSX + Import transformation
 - ✅ Phase 2: CSS transformation with proper selectors
+- ✅ Phase 4: Tailwind theme configuration (5 new tests)
+  - Spacing utilities (p-*, px-*, gap-*)
+  - Border-radius utilities (rounded*)
+  - Flex utilities (flex-1)
+  - Overflow utilities
+  - Combined utility types
 - ✅ HTML structure validation (class attributes only where needed)
 
 ### E2E Tests (2 passing)
@@ -182,7 +196,7 @@ media-container { position: relative }
 - ✅ Component registration and shadow DOM
 - ✅ **CSS computed styles validation** (position: relative applied correctly)
 
-**Total: 84 tests passing across 13 test files**
+**Total: 89 tests passing across 14 test files**
 
 ---
 
@@ -266,32 +280,47 @@ if (!customElements.get('media-skin-minimal')) {
 
 ## Known Limitations
 
-### Some Tailwind Utilities Not Generating
-**Issue:** `p-2`, `rounded`, `gap-2`, `px-4`, `py-2`, `flex-1`, `overflow` return empty CSS
-**Status:** Documented in tests
-**Likely Cause:** Missing Tailwind theme configuration (spacing, border-radius values)
-**Priority:** MEDIUM - Need to add theme config for full utility support
+### ~~Some Tailwind Utilities Not Generating~~ ✅ FIXED
+**Status:** ✅ **RESOLVED** - Full theme configuration added in Phase 5
+- All spacing utilities now work (p-*, px-*, gap-*)
+- All border-radius utilities now work (rounded*)
+- Flex and overflow utilities working
+- Uses CSS variables for runtime customization
 
 ### VJS-Specific Logic Not Yet Configurable
 **Issue:** Package name patterns, naming conventions hardcoded
 **Status:** Works for VJS packages but not extensible
 **Priority:** MEDIUM - Extract to config for broader applicability
 
+### Compound Components Not Yet Supported
+**Issue:** `<TimeRange.Root>`, `<TimeRange.Track>` JSX member expressions not handled
+**Status:** Categorization layer has placeholder for compound components
+**Blocker:** Need to implement member expression handling in JSX transformation
+**Priority:** HIGH - Required for production skins (MediaSkinDefault, MediaSkinToasted)
+
 ---
 
 ## Next Steps (Prioritized)
 
-### 1. Add Tailwind Theme Configuration 🟡 MEDIUM PRIORITY
-**Goal:** Support full range of Tailwind utilities
+### ~~1. Add Tailwind Theme Configuration~~ ✅ COMPLETED
+**Status:** ✅ **DONE** - Phase 5 complete
+- [x] Add theme configuration to Tailwind v4 processing
+- [x] Test spacing utilities (p-2, px-4, gap-2, etc.)
+- [x] Test border-radius utilities (rounded)
+- [x] Test flex utilities (flex-1)
+- [x] Test overflow utilities
+- All utilities generating correct CSS with CSS variables
+
+### 1. Compound Components Support 🔴 HIGH PRIORITY (NEW #1)
+**Goal:** Support JSX member expressions like `<TimeRange.Root>`
 
 **Tasks:**
-- [ ] Add theme configuration to Tailwind v4 processing
-- [ ] Test spacing utilities (p-2, px-4, gap-2, etc.)
-- [ ] Test border-radius utilities (rounded)
-- [ ] Test flex utilities (flex-1)
-- [ ] Test overflow utilities
+- [ ] Update JSX element name transformation to handle member expressions
+- [ ] Add tests for compound component transformation
+- [ ] Verify nested component selector categorization works
+- [ ] Update E2E tests with compound components
 
-**Test:** All Tailwind utilities generate correct CSS
+**Test:** Can compile skins with compound components
 
 ### 2. Extract Conventions to Config 🟡 MEDIUM PRIORITY
 **Goal:** Make VJS-specific logic configurable
