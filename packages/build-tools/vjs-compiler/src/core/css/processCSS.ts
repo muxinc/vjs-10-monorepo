@@ -6,6 +6,10 @@ import postcss from 'postcss';
 import tailwindcss from '@tailwindcss/postcss';
 import postcssNested from 'postcss-nested';
 
+// Type for Tailwind plugin factory (v4)
+type TailwindPluginFactory = (options: { config: TailwindConfig }) => postcss.Plugin;
+type TailwindConfig = Record<string, unknown>;
+
 /**
  * PostCSS processor instance (cached)
  */
@@ -83,19 +87,28 @@ ${elements.join('\n')}
  * @returns Raw CSS from Tailwind processing
  */
 export async function processTailwindClasses(styles: Record<string, string>): Promise<string> {
-  // TODO: Phase 3+ - Implement proper Tailwind v4 processing
-  // Current issue: Need to configure Tailwind v4 content scanning correctly
-  // The plugin needs to scan the HTML to generate utility CSS
+  // Build HTML with all classes for scanning
+  const html = buildHTMLForTailwind(styles);
 
-  // For now, return empty string to trigger fallback in transformStyles
-  // Phase 3+ will build HTML and process through Tailwind
-  void styles; // Suppress unused parameter warning
-  return '';
+  // Build Tailwind config with content
+  const tailwindConfig: TailwindConfig = {
+    content: [{ raw: html, extension: 'html' }],
+    corePlugins: {
+      preflight: false, // Don't include reset styles
+    },
+  };
 
-  // Phase 3+ implementation will look like:
-  // 1. Build HTML with buildHTMLForTailwind(styles)
-  // 2. Configure Tailwind v4 with content scanning
-  // 3. Process @import "tailwindcss" with HTML content
-  // 4. Extract generated utility CSS
-  // 5. Return CSS string for rescoping
+  // Create Tailwind plugin with config
+  const tailwindPlugin = (tailwindcss as unknown as TailwindPluginFactory)({ config: tailwindConfig });
+
+  // Build input CSS with Tailwind directives (v4 syntax)
+  const inputCSS = `@tailwind utilities;`;
+
+  // Process through PostCSS
+  const result = await postcss([tailwindPlugin, postcssNested()]).process(inputCSS, {
+    from: undefined,
+    map: false,
+  });
+
+  return result.css;
 }

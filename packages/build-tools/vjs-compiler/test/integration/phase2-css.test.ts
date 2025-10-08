@@ -65,9 +65,12 @@ describe('Phase 2: CSS Transformation', () => {
     expect(result.code).toContain('.Controls');
     expect(result.code).toContain('.Button');
 
-    // Phase 3 (WIP): CSS rescoping implemented but Tailwind not generating utilities yet
-    // For now, just validate structure is in place
-    // TODO: Fix Tailwind v4 configuration to generate utility CSS
+    // Phase 3: Validate actual CSS properties are being generated
+    expect(result.code).toMatch(/position:\s*relative/); // from 'relative'
+    expect(result.code).toMatch(/display:\s*flex/); // from 'flex'
+
+    // TODO: Some utilities not generating (p-2, rounded, gap-2)
+    // This may require additional Tailwind v4 configuration or theme setup
 
   });
 
@@ -170,6 +173,10 @@ describe('Phase 2: CSS Transformation', () => {
     expect(result.code).toContain('.Header');
     expect(result.code).toContain('.Content');
 
-    // Phase 3 (WIP): TODO - Fix Tailwind v4 utility generation
+    // Phase 3: Validate basic CSS properties are being generated
+    expect(result.code).toMatch(/position:\s*relative/); // from 'relative'
+    expect(result.code).toMatch(/display:\s*flex/); // from 'flex'
+
+    // TODO: Spacing utilities (px-4, py-2) and flex-1, overflow not generating yet
   });
 });
