@@ -119,7 +119,19 @@ The VJS Framework Compiler transforms **VJS skins** written in one framework/sty
 
 ## Transformation Pipeline Overview
 
-### High-Level Flow
+> **Context**: This section describes the transformation pipeline. The **specific phases and their behavior are determined by the [Hierarchical Configuration](#hierarchical-configuration-system)** (module type, input/output contexts). The pipeline shown here applies to the current focus: **skin modules with React + Tailwind input**.
+
+### Pipeline Composition
+
+The transformation pipeline is **not fixed**—it adapts based on configuration:
+
+- **Module Type** determines which phases are needed (skins need style transformation, utilities may not)
+- **Input Framework** determines parsing strategy (React/JSX vs Vue SFC vs other)
+- **Input CSS Type** determines style extraction (Tailwind utilities vs CSS modules vs inline styles)
+- **Output Framework** determines code generation (web components vs React vs other)
+- **Output CSS Strategy** determines CSS output format (inline vs modules vs CDN)
+
+### High-Level Flow (For Skins: React → Web Component)
 
 ```
 Input Source Code (string)
@@ -700,7 +712,9 @@ This usage-driven analysis makes the compiler more intelligent and reduces relia
 
 ## Input Specification
 
-### Source Language
+> **Configuration Context**: This section describes input assumptions for the **current configuration**: `moduleType: skin`, `framework: react`, `cssType: tailwind-v4`. Different module types or input frameworks would have different specifications.
+
+### Source Language (For Skins)
 
 **Framework**: React + TSX
 - Standard React functional components
@@ -713,7 +727,7 @@ This usage-driven analysis makes the compiler more intelligent and reduces relia
 - Co-located in `styles.ts` file
 - Composed via utility function (e.g., `cn()`)
 
-### Example Input Structure
+### Example Input Structure (Skin)
 
 ```tsx
 // MediaSkinDefault.tsx
@@ -776,7 +790,9 @@ const styles = {
 
 ## Output Specification
 
-### Target: Web Components + Inline CSS
+> **Configuration Context**: This section describes output format for the **current configuration**: `moduleType: skin`, `framework: web-component`, `cssStrategy: inline-vanilla`. Different output frameworks or CSS strategies would have different specifications.
+
+### Target: Web Components + Inline CSS (For Skins)
 
 **Framework**: Web Components (Custom Elements)
 - Custom element classes extending HTMLElement
@@ -874,6 +890,8 @@ if (!customElements.get('media-skin-default')) {
 ---
 
 ## Import Transformation
+
+> **Configuration Context**: This section describes import transformation for the **current configuration**: `moduleType: skin`, `input.framework: react` → `output.framework: web-component`. Component transformations or different framework combinations would have different import rules.
 
 ### Phases of Import Handling
 
@@ -1062,6 +1080,8 @@ import * as Icons from '@vjs-10/react-icons';
 
 ## Component Detection & Resolution
 
+> **Configuration Context**: This section describes component detection and transformation for the **current configuration**: `moduleType: skin`, `input.framework: react` → `output.framework: web-component`. These conventions apply to skin transformations that reference VJS components.
+
 > **Note**: This section describes component resolution conventions. See [Module Relationships & Usage Analysis](#module-relationships--usage-analysis) for the **usage-driven detection** approach that should be used in practice.
 
 ### Key Questions
@@ -1200,7 +1220,9 @@ When transforming package names:
 
 ## CSS Transformation
 
-### Input: Tailwind CSS v4 (TypeScript)
+> **Configuration Context**: This section describes CSS transformation for the **current configuration**: `moduleType: skin`, `input.cssType: tailwind-v4` → `output.cssStrategy: inline-vanilla`. Component transformations may preserve CSS Modules, and other output strategies (CDN, external stylesheets) would have different transformation rules.
+
+### Input: Tailwind CSS v4 (TypeScript, For Skins)
 
 **Characteristics**:
 - Utility classes as strings
@@ -1426,6 +1448,10 @@ export function getTemplateHTML() {
   `;
 }
 ```
+
+### Framework Transformation: React → Web Components (For Skins)
+
+> **Configuration Context**: This section describes JSX transformation for the **current configuration**: `moduleType: skin`, `input.framework: react` → `output.framework: web-component`. Component transformations have additional complexity (hooks, state management), and other framework combinations would have different transformation rules.
 
 #### Element Transformation
 
