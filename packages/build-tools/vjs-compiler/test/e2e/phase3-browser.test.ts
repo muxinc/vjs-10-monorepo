@@ -110,6 +110,15 @@ describe('Phase 3: Browser E2E Tests', () => {
     }, result.tagName);
 
     expect(hasStyles).toBe(true);
+
+    // TODO: Add CSS computed styles validation
+    // Currently blocked by missing usage analysis and categorization layers.
+    // Issue: CSS has `.Container` but HTML has `class="container"` (lowercase)
+    // Need to implement proper selector categorization:
+    // - Component Selector Identifier (exact match) → element selector
+    // - Component Type Selector (suffix pattern) → class selector
+    // - Generic Selector (no match) → class selector
+    // See: docs/compiler-architecture.md "Module Relationships & Usage Analysis"
   }, 30000); // 30 second timeout for browser tests
 
   it('validates CSS contains expected properties', async () => {
