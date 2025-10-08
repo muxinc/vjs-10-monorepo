@@ -6,8 +6,10 @@ import type { CompileSkinConfig } from '../types.js';
 import { parseSource } from '../core/parser/parseSource.js';
 import { extractJSX, extractComponentName } from '../core/parser/extractJSX.js';
 import { extractImports } from '../core/parser/extractImports.js';
+import { extractStyles } from '../core/parser/extractStyles.js';
 import { transformImports } from '../core/transformer/transformImports.js';
 import { transformJSX } from '../core/transformer/transformJSX.js';
+import { transformStyles } from '../core/css/transformStyles.js';
 import { generateTemplate } from '../core/generator/generateTemplate.js';
 import { generateModule } from '../core/generator/generateModule.js';
 
@@ -23,27 +25,28 @@ export interface CompileSkinResult {
 /**
  * Compile a skin component from React to web component
  *
- * Phase 1: Basic JSX + Import transformation (no CSS yet)
+ * Phase 2: JSX + Import + CSS transformation
  *
  * Pipeline:
- * 1. Parse skin source to AST
- * 2. Extract JSX, imports, component name
+ * 1. Parse skin source and styles source to AST
+ * 2. Extract JSX, imports, component name, styles
  * 3. Transform imports (React → web component)
  * 4. Transform JSX (element names, className → class, {children} → <slot>)
- * 5. Generate HTML template string
- * 6. Generate complete web component module
+ * 5. Transform styles (Tailwind → CSS via PostCSS)
+ * 6. Generate HTML template string
+ * 7. Generate complete web component module with inline CSS
  *
  * @param config - Compilation configuration
  * @returns Compilation result with generated code
  */
-export function compileSkin(config: CompileSkinConfig): CompileSkinResult {
-  const { skinSource, paths } = config;
+export async function compileSkin(config: CompileSkinConfig): Promise<CompileSkinResult> {
+  const { skinSource, stylesSource, paths } = config;
 
   // Phase 1: Parse
-  const ast = parseSource(skinSource);
-  const jsx = extractJSX(ast);
-  const imports = extractImports(ast);
-  const componentName = extractComponentName(ast);
+  const skinAST = parseSource(skinSource);
+  const jsx = extractJSX(skinAST);
+  const imports = extractImports(skinAST);
+  const componentName = extractComponentName(skinAST);
 
   // Validate extraction
   if (!jsx) {
@@ -57,14 +60,25 @@ export function compileSkin(config: CompileSkinConfig): CompileSkinResult {
   const transformedImports = transformImports(imports, paths);
   const transformedJSX = transformJSX(jsx);
 
+  // Phase 2: Process CSS (if styles provided)
+  let css: string | undefined;
+  if (stylesSource) {
+    const stylesAST = parseSource(stylesSource);
+    const styles = extractStyles(stylesAST);
+
+    if (styles) {
+      const cssResult = await transformStyles(styles);
+      css = cssResult.css;
+    }
+  }
+
   // Phase 3: Generate
   const templateHTML = generateTemplate(transformedJSX);
   const code = generateModule({
     componentName,
     imports: transformedImports,
     templateHTML,
-    // No CSS in Phase 1
-    css: undefined,
+    css,
   });
 
   // Generate tag name for validation

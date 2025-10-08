@@ -14,7 +14,7 @@ const __dirname = dirname(__filename);
 const fixturesDir = join(__dirname, '../fixtures');
 
 describe('Phase 1: Basic JSX + Import Transformation', () => {
-  it('compiles minimal skin component', () => {
+  it('compiles minimal skin component', async () => {
     // Read fixture files
     const skinSource = readFileSync(join(fixturesDir, 'minimal-skin.tsx'), 'utf-8');
 
@@ -48,7 +48,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
     };
 
     // Compile
-    const result = compileSkin(config);
+    const result = await compileSkin(config);
 
     // Validate result structure
     expect(result.code).toBeTruthy();
@@ -80,7 +80,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
     expect(result.code).toContain('/* Empty for now - Phase 2 will add CSS */');
   });
 
-  it('handles nested JSX elements', () => {
+  it('handles nested JSX elements', async () => {
     const skinSource = `
       import { MediaContainer, PlayButton, VolumeButton } from '@vjs-10/react';
 
@@ -120,7 +120,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
       output: { format: 'web-component', css: 'inline', typescript: true },
     };
 
-    const result = compileSkin(config);
+    const result = await compileSkin(config);
 
     // Validate nested structure preserved
     expect(result.code).toContain('<media-container');
@@ -135,7 +135,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
     expect(result.code).toContain('media-volume-button');
   });
 
-  it('transforms className to class', () => {
+  it('transforms className to class', async () => {
     const skinSource = `
       import { MediaContainer } from '@vjs-10/react';
 
@@ -171,7 +171,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
       output: { format: 'web-component', css: 'inline', typescript: true },
     };
 
-    const result = compileSkin(config);
+    const result = await compileSkin(config);
 
     // Validate className → class transformation
     expect(result.code).not.toContain('className');
@@ -180,7 +180,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
     expect(result.code).toContain('class="play-button"');
   });
 
-  it('replaces {children} with <slot>', () => {
+  it('replaces {children} with <slot>', async () => {
     const skinSource = `
       import { MediaContainer } from '@vjs-10/react';
 
@@ -215,7 +215,7 @@ describe('Phase 1: Basic JSX + Import Transformation', () => {
       output: { format: 'web-component', css: 'inline', typescript: true },
     };
 
-    const result = compileSkin(config);
+    const result = await compileSkin(config);
 
     // Validate {children} → <slot> transformation
     expect(result.code).toContain('<slot name="media" slot="media"></slot>');
