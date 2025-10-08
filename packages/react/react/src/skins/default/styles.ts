@@ -70,18 +70,17 @@ const styles: MediaDefaultSkinStyles = {
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
   TooltipPopup: cn(
-    'whitespace-nowrap relative px-2 py-1 text-xs font-medium rounded-md text-white text-shadow',
+    'whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md text-white text-xs @7xl/root:text-sm px-2 py-1',
     // Background
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
-    // Shadow
-    // 'shadow-lg shadow-black/25',
-    // Border
-    'border border-white/10',
-    // Reduced transparency for users with preference
-    // XXX: This requires a Tailwind custom variant (see 1 below)
-    'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
-    // High contrast mode
-    'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20'
+    // Animation
+    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
+    // Ring
+    'ring-1 ring-white/10 ring-inset',
+    // Text shadow
+    'text-shadow shadow-black/10',
+    // Border to enhance contrast on lighter videos
+    'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none',
   ),
   PlayTooltipPopup: cn(
     '[&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden',
