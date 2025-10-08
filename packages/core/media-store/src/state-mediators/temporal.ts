@@ -1,6 +1,6 @@
-const isValidNumber = (value: any): value is number => {
+function isValidNumber(value: any): value is number {
   return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
-};
+}
 
 export const temporal = {
   currentTime: {
@@ -20,9 +20,9 @@ export const temporal = {
 
         const eventHandler = () => handler();
         const events = ['timeupdate', 'loadedmetadata'];
-        events.forEach((event) => media.addEventListener(event, eventHandler));
+        events.forEach(event => media.addEventListener(event, eventHandler));
 
-        return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
+        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
       },
     ] as const,
     actions: {
@@ -49,9 +49,9 @@ export const temporal = {
 
         const eventHandler = () => handler();
         const events = ['loadedmetadata', 'durationchange', 'emptied'];
-        events.forEach((event) => media.addEventListener(event, eventHandler));
+        events.forEach(event => media.addEventListener(event, eventHandler));
 
-        return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
+        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
       },
     ] as const,
   },
@@ -77,10 +77,10 @@ export const temporal = {
 
         const eventHandler = () => handler();
         const events = ['loadedmetadata', 'emptied', 'progress', 'seekablechange'];
-        events.forEach((event) => media.addEventListener(event, eventHandler));
+        events.forEach(event => media.addEventListener(event, eventHandler));
 
-        return () => events.forEach((event) => media.removeEventListener(event, eventHandler));
+        return () => events.forEach(event => media.removeEventListener(event, eventHandler));
       },
     ] as const,
-  },  
+  },
 };

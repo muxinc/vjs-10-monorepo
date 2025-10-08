@@ -3,15 +3,24 @@
   "type": "module",
   "version": "0.1.0",
   "description": "HTML media element components and utilities",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "media",
+    "html",
+    "dom",
+    "web-components",
+    "video",
+    "audio"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,15 +31,6 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "media",
-    "html",
-    "dom",
-    "web-components",
-    "video",
-    "audio"
-  ],
-  "license": "Apache-2.0",
   "dependencies": {
     "@open-wc/context-protocol": "^0.0.9",
     "@vjs-10/media-store": "workspace:*"

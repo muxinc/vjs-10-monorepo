@@ -3,7 +3,7 @@ import { namedNodeMapToObject } from '../utils/element-utils.js';
 export function getTemplateHTML(
   this: typeof MediaChromeButton,
   _attrs: Record<string, string>,
-  _props: Record<string, any> = {}
+  _props: Record<string, any> = {},
 ): string {
   return /* html */ `
     <style>

@@ -32,11 +32,11 @@ export class MediaPopoverRoot extends HTMLElement {
   }
 
   get delay(): number {
-    return parseInt(this.getAttribute('delay') ?? '0', 10);
+    return Number.parseInt(this.getAttribute('delay') ?? '0', 10);
   }
 
   get closeDelay(): number {
-    return parseInt(this.getAttribute('close-delay') ?? '0', 10);
+    return Number.parseInt(this.getAttribute('close-delay') ?? '0', 10);
   }
 
   get #triggerElement(): MediaPopoverTrigger | null {
@@ -63,7 +63,8 @@ export class MediaPopoverRoot extends HTMLElement {
 
     if (open) {
       this.#setupFloating();
-    } else {
+    }
+    else {
       this.#cleanup?.();
       this.#cleanup = null;
     }
@@ -209,7 +210,7 @@ export class MediaPopoverPositioner extends HTMLElement {
   }
 
   get sideOffset(): number {
-    return parseInt(this.getAttribute('side-offset') ?? '0', 10);
+    return Number.parseInt(this.getAttribute('side-offset') ?? '0', 10);
   }
 }
 

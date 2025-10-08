@@ -1,9 +1,9 @@
 {
   // At some point, we'll watch to flick this on and uncomment lines 5 & 6 below.
-  "eslint.enable": false,
+  "eslint.enable": true,
   // Disable the default formatter, use eslint instead
-  // "prettier.enable": false,
-  // "editor.formatOnSave": false,
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
 
   // Auto fix
   "editor.codeActionsOnSave": {

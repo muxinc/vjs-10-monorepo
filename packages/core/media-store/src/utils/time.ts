@@ -28,11 +28,11 @@ const UnitLabels = [
   },
 ] as const;
 
-const toTimeUnitPhrase = (timeUnitValue: number, unitIndex: number): string => {
+function toTimeUnitPhrase(timeUnitValue: number, unitIndex: number): string {
   const unitLabel = timeUnitValue === 1 ? UnitLabels[unitIndex]?.singular : UnitLabels[unitIndex]?.plural;
 
   return `${timeUnitValue} ${unitLabel}`;
-};
+}
 
 /**
  * Converts numeric seconds into a human-readable phrase for accessibility
@@ -56,7 +56,7 @@ export function formatAsTimePhrase(seconds: number): string {
     // Convert non-0 values to a string of the value plus its unit
     .map((timeUnitValue, index) => timeUnitValue && toTimeUnitPhrase(timeUnitValue, index))
     // Ignore/exclude any 0 values
-    .filter((x) => x)
+    .filter(x => x)
     // join into a single comma-separated string phrase
     .join(', ');
 
@@ -110,14 +110,14 @@ export function formatTime(seconds: number, guide?: number): string {
 
   // Check if we need to show hours
   const showHours = (h as number) > 0 || gh > 0;
-  const hoursString = showHours ? h + ':' : '';
+  const hoursString = showHours ? `${h}:` : '';
 
   // If hours are showing, we may need to add a leading zero.
   // Always show at least one digit of minutes.
-  const minutesString = ((showHours || gm >= 10) && (m as number) < 10 ? '0' + m : m) + ':';
+  const minutesString = `${(showHours || gm >= 10) && (m as number) < 10 ? `0${m}` : m}:`;
 
   // Check if leading zero is needed for seconds
-  const secondsString = (s as number) < 10 ? '0' + s : s;
+  const secondsString = (s as number) < 10 ? `0${s}` : s;
 
   return (negative ? '-' : '') + hoursString + minutesString + secondsString;
 }

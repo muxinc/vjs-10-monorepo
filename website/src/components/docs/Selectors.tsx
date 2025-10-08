@@ -37,7 +37,8 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
       if (firstGuide) {
         navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      } else {
+      }
+      else {
         navigate('/docs/');
       }
       return;
@@ -49,7 +50,8 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
       if (firstGuide) {
         navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      } else {
+      }
+      else {
         navigate('/docs/');
       }
       return;
@@ -63,14 +65,15 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
       if (firstGuide) {
         navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      } else {
+      }
+      else {
         navigate('/docs/');
       }
       return;
     }
 
     // Pick best style: current if still valid, otherwise first valid
-    const newStyle = validStyles.some((s) => s === currentStyle) ? currentStyle : validStyles[0];
+    const newStyle = validStyles.includes(currentStyle) ? currentStyle : validStyles[0];
 
     // Navigate to same guide with adjusted framework/style
     navigate(`/docs/framework/${newFramework}/style/${newStyle}/${currentGuideSlug}/`);
@@ -90,7 +93,8 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(currentFramework, newStyle);
       if (firstGuide) {
         navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${firstGuide}/`);
-      } else {
+      }
+      else {
         navigate('/docs/');
       }
       return;
@@ -99,12 +103,13 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
     // Check if guide is valid for current framework and new style
     const validStyles = getValidStylesForGuide(currentGuide, currentFramework);
 
-    if (!validStyles.some((s) => s === newStyle)) {
+    if (!validStyles.includes(newStyle)) {
       // Guide not available for new style, go to first guide
       const firstGuide = findFirstGuide(currentFramework, newStyle);
       if (firstGuide) {
         navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${firstGuide}/`);
-      } else {
+      }
+      else {
         navigate('/docs/');
       }
       return;
@@ -121,7 +126,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       <div>
         <label htmlFor="framework-select">Framework:</label>
         <select id="framework-select" value={currentFramework} onChange={handleFrameworkChange}>
-          {SUPPORTED_FRAMEWORKS.map((fw) => (
+          {SUPPORTED_FRAMEWORKS.map(fw => (
             <option key={fw} value={fw}>
               {fw}
             </option>
@@ -131,7 +136,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       <div>
         <label htmlFor="style-select">Style:</label>
         <select id="style-select" value={currentStyle} onChange={handleStyleChange}>
-          {availableStyles.map((st) => (
+          {availableStyles.map(st => (
             <option key={st} value={st}>
               {st}
             </option>

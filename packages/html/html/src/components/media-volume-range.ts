@@ -8,17 +8,17 @@ import { toConnectedHTMLComponent } from '../utils/component-factory';
 /**
  * VolumeRange Root component - Main container with pointer event handling
  */
-type VolumeRangeRootState = {
+interface VolumeRangeRootState {
   volume: number;
   muted: boolean;
   volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
   core: CoreVolumeRange | null;
-};
+}
 
 export class VolumeRangeRootBase extends HTMLElement {
   static readonly observedAttributes: readonly string[] = ['orientation'];
-  
+
   _state: VolumeRangeRootState | undefined;
   _core: CoreVolumeRange | null = null;
 
@@ -44,7 +44,7 @@ export class VolumeRangeRootBase extends HTMLElement {
     }
   }
 
-  _update(_props: any, state: any): void {    
+  _update(_props: any, state: any): void {
     this._state = state;
 
     if (state && !this._core) {
@@ -97,12 +97,13 @@ export class VolumeRangeTrackBase extends HTMLElement {
   _update(props: any, _state: any): void {
     const orientation = props['data-orientation'] || 'horizontal';
     this.setAttribute('data-orientation', orientation);
-    
+
     // Set appropriate dimensions based on orientation
     if (orientation === 'horizontal') {
       this.style.width = '100%';
       this.style.removeProperty('height');
-    } else {
+    }
+    else {
       this.style.height = '100%';
       this.style.removeProperty('width');
     }
@@ -123,14 +124,15 @@ export class VolumeRangeProgressBase extends HTMLElement {
   _update(props: any, _state: any): void {
     const orientation = props['data-orientation'] || 'horizontal';
     this.setAttribute('data-orientation', orientation);
-    
+
     // Set appropriate dimensions based on orientation
     if (orientation === 'horizontal') {
       this.style.width = 'var(--slider-fill, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
       this.style.removeProperty('bottom');
-    } else {
+    }
+    else {
       this.style.height = 'var(--slider-fill, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
@@ -151,13 +153,14 @@ export class VolumeRangeThumbBase extends HTMLElement {
   _update(props: any, _state: any): void {
     const orientation = props['data-orientation'] || 'horizontal';
     this.setAttribute('data-orientation', orientation);
-    
+
     // Set appropriate positioning based on orientation
     if (orientation === 'horizontal') {
       this.style.left = 'var(--slider-fill, 0%)';
       this.style.top = '50%';
       this.style.transform = 'translate(-50%, -50%)';
-    } else {
+    }
+    else {
       this.style.bottom = 'var(--slider-fill, 0%)';
       this.style.left = '50%';
       this.style.transform = 'translate(-50%, 50%)';
@@ -199,13 +202,13 @@ export const useVolumeRangeRootProps: PropsHook<{
 
   const baseProps: Record<string, any> = {
     /** data attributes/props */
-    ['data-muted']: state.muted.toString(),
-    ['data-volume-level']: state.volumeLevel,
-    ['data-orientation']: (element as any).orientation || 'horizontal',
+    'data-muted': state.muted.toString(),
+    'data-volume-level': state.volumeLevel,
+    'data-orientation': (element as any).orientation || 'horizontal',
     /** aria attributes/props */
-    ['aria-label']: 'Volume',
-    ['aria-valuetext']: volumeText,
-    ['aria-orientation']: (element as any).orientation || 'horizontal',
+    'aria-label': 'Volume',
+    'aria-valuetext': volumeText,
+    'aria-orientation': (element as any).orientation || 'horizontal',
   };
 
   return baseProps;
@@ -218,7 +221,7 @@ export const useVolumeRangeTrackProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-volume-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -229,7 +232,7 @@ export const useVolumeRangeProgressProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-volume-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -240,7 +243,7 @@ export const useVolumeRangeThumbProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-volume-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -262,7 +265,7 @@ export const VolumeRangeTrack: ConnectedComponentConstructor<any> = toConnectedH
   VolumeRangeTrackBase,
   { keys: [], transform: () => ({}) },
   useVolumeRangeTrackProps,
-  'VolumeRangeTrack'
+  'VolumeRangeTrack',
 );
 
 /**
@@ -272,7 +275,7 @@ export const VolumeRangeProgress: ConnectedComponentConstructor<any> = toConnect
   VolumeRangeProgressBase,
   { keys: [], transform: () => ({}) },
   useVolumeRangeProgressProps,
-  'VolumeRangeProgress'
+  'VolumeRangeProgress',
 );
 
 /**
@@ -282,7 +285,7 @@ export const VolumeRangeThumb: ConnectedComponentConstructor<any> = toConnectedH
   VolumeRangeThumbBase,
   { keys: [], transform: () => ({}) },
   useVolumeRangeThumbProps,
-  'VolumeRangeThumb'
+  'VolumeRangeThumb',
 );
 
 /**
@@ -295,7 +298,7 @@ export const VolumeRange = Object.assign(
     Track: VolumeRangeTrack,
     Progress: VolumeRangeProgress,
     Thumb: VolumeRangeThumb,
-  }
+  },
 ) as {
   Root: typeof VolumeRangeRoot;
   Track: typeof VolumeRangeTrack;

@@ -19,7 +19,8 @@ export class VolumeRange extends Range {
     let _fillWidth = 0;
     if (state._dragging) {
       _fillWidth = state._pointerRatio * 100;
-    } else {
+    }
+    else {
       _fillWidth = state.muted ? 0 : (state.volume || 0) * 100;
     }
 
@@ -74,6 +75,6 @@ export class VolumeRange extends Range {
   }
 }
 
-const formatVolume = (volume: number): string => {
+function formatVolume(volume: number): string {
   return `${Math.round(volume * 100)}%`;
-};
+}

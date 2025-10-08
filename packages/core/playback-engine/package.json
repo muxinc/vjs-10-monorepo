@@ -3,15 +3,24 @@
   "type": "module",
   "version": "0.1.0",
   "description": "Common media playback engine utilities and contracts supporting various streaming protocols",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "media",
+    "playback",
+    "engine",
+    "hls",
+    "dash",
+    "streaming"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,15 +31,6 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "media",
-    "playback",
-    "engine",
-    "hls",
-    "dash",
-    "streaming"
-  ],
-  "license": "Apache-2.0",
   "dependencies": {
     "hls.js": "^1.6.7"
   },

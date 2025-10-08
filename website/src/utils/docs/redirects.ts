@@ -1,7 +1,4 @@
-import {
-	type SupportedFramework,
-	type SupportedStyle,
-} from '@/types/docs';
+import type { SupportedFramework, SupportedStyle } from '@/types/docs';
 import { findFirstGuide } from '@/utils/docs/sidebar';
 
 /**
@@ -15,16 +12,16 @@ import { findFirstGuide } from '@/utils/docs/sidebar';
  * @throws Error if no guide is available for the given framework/style
  */
 export function getDocsRedirectUrl<F extends SupportedFramework>(
-	framework: F,
-	style: SupportedStyle<F>,
+  framework: F,
+  style: SupportedStyle<F>,
 ): string {
-	const firstGuide = findFirstGuide(framework, style);
+  const firstGuide = findFirstGuide(framework, style);
 
-	if (!firstGuide) {
-		throw new Error(
-			`No guide available for framework "${framework}" and style "${style}"`,
-		);
-	}
+  if (!firstGuide) {
+    throw new Error(
+      `No guide available for framework "${framework}" and style "${style}"`,
+    );
+  }
 
-	return `/docs/framework/${framework}/style/${style}/${firstGuide}/`;
+  return `/docs/framework/${framework}/style/${style}/${firstGuide}/`;
 }

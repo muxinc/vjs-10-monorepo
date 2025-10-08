@@ -1,5 +1,5 @@
 // Utility function to check if a root node contains a child node across shadow DOM boundaries
-const containsComposedNode = (rootNode: Node, childNode: Node): boolean => {
+function containsComposedNode(rootNode: Node, childNode: Node): boolean {
   if (!rootNode || !childNode) return false;
   if (rootNode?.contains(childNode)) return true;
   const childRootNode = childNode.getRootNode();
@@ -7,7 +7,7 @@ const containsComposedNode = (rootNode: Node, childNode: Node): boolean => {
     return containsComposedNode(rootNode, childRootNode.host as Node);
   }
   return false;
-};
+}
 
 /** @TODO This is implemented for web/browser only! We will need an alternative state mediator model for e.g. React Native. (CJP) */
 export const fullscreenable = {
@@ -17,11 +17,11 @@ export const fullscreenable = {
       if (!container || !globalThis?.document) return false;
 
       const doc = globalThis.document;
-      const currentFullscreenElement =
-        doc.fullscreenElement ||
-        (doc as any).webkitFullscreenElement ||
-        (doc as any).mozFullScreenElement ||
-        (doc as any).msFullscreenElement;
+      const currentFullscreenElement
+        = doc.fullscreenElement
+          || (doc as any).webkitFullscreenElement
+          || (doc as any).mozFullScreenElement
+          || (doc as any).msFullscreenElement;
 
       if (!currentFullscreenElement) return false;
 
@@ -42,8 +42,8 @@ export const fullscreenable = {
         let currentRoot = currentFullscreenElement.shadowRoot;
 
         // Check if ShadowRoot supports fullscreenElement (Safari < 16.4 workaround)
-        const fullscreenElementKey =
-          'fullscreenElement' in doc
+        const fullscreenElementKey
+          = 'fullscreenElement' in doc
             ? 'fullscreenElement'
             : 'webkitFullscreenElement' in doc
               ? 'webkitFullscreenElement'
@@ -73,33 +73,41 @@ export const fullscreenable = {
           // Enter fullscreen
           if (container.requestFullscreen) {
             container.requestFullscreen();
-          } else if (container.webkitRequestFullscreen) {
+          }
+          else if (container.webkitRequestFullscreen) {
             // Safari support
             container.webkitRequestFullscreen();
-          } else if (container.mozRequestFullScreen) {
+          }
+          else if (container.mozRequestFullScreen) {
             // Firefox support
             container.mozRequestFullScreen();
-          } else if (container.msRequestFullscreen) {
+          }
+          else if (container.msRequestFullscreen) {
             // IE/Edge support
             container.msRequestFullscreen();
           }
-        } else {
+        }
+        else {
           // Exit fullscreen
           const doc = globalThis.document as any;
           if (doc.exitFullscreen) {
             doc.exitFullscreen();
-          } else if (doc.webkitExitFullscreen) {
+          }
+          else if (doc.webkitExitFullscreen) {
             // Safari support
             doc.webkitExitFullscreen();
-          } else if (doc.mozCancelFullScreen) {
+          }
+          else if (doc.mozCancelFullScreen) {
             // Firefox support
             doc.mozCancelFullScreen();
-          } else if (doc.msExitFullscreen) {
+          }
+          else if (doc.msExitFullscreen) {
             // IE/Edge support
             doc.msExitFullscreen();
           }
         }
-      } catch (error) {
+      }
+      catch (error) {
         // Gracefully handle fullscreen API errors (e.g., user interaction required)
         console.warn('Fullscreen operation failed:', error);
       }

@@ -46,7 +46,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         </div>
 
         <div className={styles.ControlsRow}>
-          <div className='flex items-center gap-3'>
+          <div className="flex items-center gap-3">
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
               <PlayIcon className={styles.PlayIcon}></PlayIcon>
               <PauseIcon className={styles.PauseIcon}></PauseIcon>
@@ -58,13 +58,12 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
                 // showRemaining
                 className={styles.TimeDisplay}
               />
-              <span className='opacity-50'>/</span>
+              <span className="opacity-50">/</span>
               <DurationDisplay className={`${styles.TimeDisplay} opacity-50`} />
             </div>
           </div>
 
-
-          <div className='flex items-center gap-0.5'>
+          <div className="flex items-center gap-0.5">
             <div className={styles.VolumeControls}>
               <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.VolumeButton}`}>
                 <VolumeHighIcon className={styles.VolumeHighIcon} />

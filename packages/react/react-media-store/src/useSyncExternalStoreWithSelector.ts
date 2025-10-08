@@ -22,15 +22,15 @@ function isPolyfill(x: any, y: any) {
   );
 }
 
-type SnapshotRef<Selection> =
+type SnapshotRef<Selection>
+  = | {
+    hasValue: true;
+    value: Selection;
+  }
   | {
-      hasValue: true;
-      value: Selection;
-    }
-  | {
-      hasValue: false;
-      value: null;
-    }
+    hasValue: false;
+    value: null;
+  }
   | null;
 
 const is: (x: any, y: any) => boolean = typeof Object.is === 'function' ? Object.is : isPolyfill;
@@ -41,7 +41,7 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
   getSnapshot: () => Snapshot,
   getServerSnapshot: undefined | null | (() => Snapshot),
   selector: (snapshot: Snapshot) => Selection,
-  isEqual?: (a: Selection, b: Selection) => boolean
+  isEqual?: (a: Selection, b: Selection) => boolean,
 ): Selection {
   // Use this to track the rendered snapshot.
   const instRef = useRef<SnapshotRef<Selection>>(null);
@@ -52,7 +52,8 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
       value: null,
     };
     instRef.current = inst as SnapshotRef<Selection>;
-  } else {
+  }
+  else {
     inst = instRef.current;
   }
 
@@ -113,8 +114,8 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
     // Assigning this to a constant so that Flow knows it can't change.
     const maybeGetServerSnapshot = getServerSnapshot === undefined ? null : getServerSnapshot;
     const getSnapshotWithSelector = () => memoizedSelector(getSnapshot());
-    const getServerSnapshotWithSelector =
-      maybeGetServerSnapshot === null ? undefined : () => memoizedSelector(maybeGetServerSnapshot());
+    const getServerSnapshotWithSelector
+      = maybeGetServerSnapshot === null ? undefined : () => memoizedSelector(maybeGetServerSnapshot());
     return [getSnapshotWithSelector, getServerSnapshotWithSelector];
   }, [getSnapshot, getServerSnapshot, selector, isEqual]);
 

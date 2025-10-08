@@ -4,16 +4,16 @@ import { ConsumerMixin } from '@open-wc/context-protocol';
  * Generic types for HTML component hooks pattern
  * Mirrors the React hooks architecture for consistency
  */
-export type StateHook<T = any> = {
+export interface StateHook<T = any> {
   keys: string[];
   transform: (rawState: any, mediaStore: any) => T;
-};
+}
 
 export type PropsHook<T = any, P = any> = (state: T, element: HTMLElement) => P;
 
-export type ConnectedComponentConstructor<State> = {
+export interface ConnectedComponentConstructor<State> {
   new (state: State): HTMLElement;
-};
+}
 
 /**
  * Generic factory function to create connected HTML components using hooks pattern.
@@ -26,12 +26,7 @@ export type ConnectedComponentConstructor<State> = {
  * @param displayName - Display name for debugging
  * @returns Connected custom element class with media store integration
  */
-export const toConnectedHTMLComponent = <State = any>(
-  BaseClass: CustomElementConstructor,
-  stateHook: StateHook<State>,
-  propsHook: PropsHook<State>,
-  displayName?: string
-): ConnectedComponentConstructor<State> => {
+export function toConnectedHTMLComponent<State = any>(BaseClass: CustomElementConstructor, stateHook: StateHook<State>, propsHook: PropsHook<State>, displayName?: string): ConnectedComponentConstructor<State> {
   const ConnectedComponent = class extends ConsumerMixin(BaseClass) {
     static get observedAttributes(): string[] {
       return [
@@ -81,4 +76,4 @@ export const toConnectedHTMLComponent = <State = any>(
   }
 
   return ConnectedComponent;
-};
+}

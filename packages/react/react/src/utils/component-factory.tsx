@@ -23,17 +23,12 @@ const Context = createContext<any>(null);
  * @param displayName - Display name for React DevTools
  * @returns Connected component with customizable render prop
  */
-export const toConnectedComponent = <
+export function toConnectedComponent<
   TProps extends Record<string, any>,
   TState,
   TResultProps extends Record<string, any>,
   TRenderFn extends RenderFn<TResultProps, TState>,
->(
-  useStateHook: StateHookFn<TProps, TState>,
-  usePropsHook: PropsHookFn<TProps, TState, TResultProps>,
-  defaultRender: TRenderFn,
-  displayName: string
-): ConnectedComponent<TProps, TRenderFn> => {
+>(useStateHook: StateHookFn<TProps, TState>, usePropsHook: PropsHookFn<TProps, TState, TResultProps>, defaultRender: TRenderFn, displayName: string): ConnectedComponent<TProps, TRenderFn> {
   const ConnectedComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const connectedState = useStateHook(props as TProps);
@@ -41,13 +36,13 @@ export const toConnectedComponent = <
       // Add ref to connectedProps if it exists
       const propsWithRef = ref ? { ...connectedProps, ref } : connectedProps;
       return <Context.Provider value={connectedState}>{render(propsWithRef, connectedState)}</Context.Provider>;
-    }
+    },
   );
 
   ConnectedComponent.displayName = displayName;
 
   return ConnectedComponent;
-};
+}
 
 /**
  * Type helper to infer the component type from the factory
@@ -65,15 +60,11 @@ export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn ext
  * @param displayName - Display name for React DevTools
  * @returns Context-based component with customizable render prop
  */
-export const toContextComponent = <
+export function toContextComponent<
   TProps extends Record<string, any>,
   TResultProps extends Record<string, any>,
   TRenderFn extends (props: TResultProps, context: any) => ReactElement,
->(
-  usePropsHook: (props: TProps, context: any) => TResultProps,
-  defaultRender: TRenderFn,
-  displayName: string
-): ContextComponent<TProps, TRenderFn> => {
+>(usePropsHook: (props: TProps, context: any) => TResultProps, defaultRender: TRenderFn, displayName: string): ContextComponent<TProps, TRenderFn> {
   const ContextComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const context = useContext(Context);
@@ -81,13 +72,13 @@ export const toContextComponent = <
       // Add ref to contextProps if it exists
       const propsWithRef = ref ? { ...contextProps, ref } : contextProps;
       return render(propsWithRef, context);
-    }
+    },
   );
 
   ContextComponent.displayName = displayName;
 
   return ContextComponent;
-};
+}
 
 /**
  * Type helper to infer the context component type from the factory
@@ -97,21 +88,17 @@ export type ContextComponent<
   TRenderFn extends (props: any, context: any) => ReactElement,
 > = FC<TProps & { render?: TRenderFn }>;
 
-
 /**
  * Hook that manages a CoreClass instance and triggers re-renders when state changes.
  * Uses useSyncExternalStore for optimal performance with external state subscriptions.
  */
-export const useCore = <
+export function useCore<
   T extends {
     subscribe: (callback: (state: any) => void) => () => void;
     getState: () => any;
     setState: (state: any) => void;
   },
->(
-  CoreClass: new () => T,
-  state: any,
-): T => {
+>(CoreClass: new () => T, state: any): T {
   const coreRef = useRef<T | null>(null);
   const snapshotRef = useRef<any>(null);
 
@@ -137,8 +124,8 @@ export const useCore = <
     useCallback(() => {
       return snapshotRef.current;
     }, []),
-    () => null // server snapshot
+    () => null, // server snapshot
   );
 
   return coreRef.current;
-};
+}

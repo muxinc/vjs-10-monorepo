@@ -5,12 +5,12 @@ import { timeRangeStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-type TimeRangeRootState = {
+interface TimeRangeRootState {
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
   core: CoreTimeRange | null;
-};
+}
 
 export class TimeRangeRootBase extends HTMLElement {
   static readonly observedAttributes: readonly string[] = ['orientation'];
@@ -91,7 +91,8 @@ export class TimeRangeTrackBase extends HTMLElement {
     if (orientation === 'horizontal') {
       this.style.width = '100%';
       this.style.removeProperty('height');
-    } else {
+    }
+    else {
       this.style.height = '100%';
       this.style.removeProperty('width');
     }
@@ -116,7 +117,8 @@ export class TimeRangeProgressBase extends HTMLElement {
       this.style.height = '100%';
       this.style.top = '0';
       this.style.removeProperty('bottom');
-    } else {
+    }
+    else {
       this.style.height = 'var(--slider-fill, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
@@ -143,7 +145,8 @@ export class TimeRangePointerBase extends HTMLElement {
       this.style.height = '100%';
       this.style.top = '0';
       this.style.removeProperty('bottom');
-    } else {
+    }
+    else {
       this.style.height = 'var(--slider-pointer, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
@@ -167,7 +170,8 @@ export class TimeRangeThumbBase extends HTMLElement {
       this.style.left = 'var(--slider-fill, 0%)';
       this.style.top = '50%';
       this.style.transform = 'translate(-50%, -50%)';
-    } else {
+    }
+    else {
       this.style.bottom = 'var(--slider-fill, 0%)';
       this.style.left = '50%';
       this.style.transform = 'translate(-50%, 50%)';
@@ -206,13 +210,13 @@ export const useTimeRangeRootProps: PropsHook<{
 
   const baseProps: Record<string, any> = {
     /** data attributes/props */
-    ['data-current-time']: state.currentTime.toString(),
-    ['data-duration']: state.duration.toString(),
-    ['data-orientation']: (element as any).orientation || 'horizontal',
+    'data-current-time': state.currentTime.toString(),
+    'data-duration': state.duration.toString(),
+    'data-orientation': (element as any).orientation || 'horizontal',
     /** aria attributes/props */
-    ['aria-label']: 'Seek',
-    ['aria-valuetext']: `${currentTimeText} of ${durationText}`,
-    ['aria-orientation']: (element as any).orientation || 'horizontal',
+    'aria-label': 'Seek',
+    'aria-valuetext': `${currentTimeText} of ${durationText}`,
+    'aria-orientation': (element as any).orientation || 'horizontal',
   };
 
   return baseProps;
@@ -222,7 +226,7 @@ export const useTimeRangeTrackProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -230,7 +234,7 @@ export const useTimeRangeProgressProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -238,7 +242,7 @@ export const useTimeRangePointerProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -246,7 +250,7 @@ export const useTimeRangeThumbProps: PropsHook<{}> = (_state, element) => {
   // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-range-root') as any;
   return {
-    ['data-orientation']: rootElement?.orientation || 'horizontal',
+    'data-orientation': rootElement?.orientation || 'horizontal',
   };
 };
 
@@ -261,28 +265,28 @@ export const TimeRangeTrack: ConnectedComponentConstructor<any> = toConnectedHTM
   TimeRangeTrackBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeTrackProps,
-  'TimeRangeTrack'
+  'TimeRangeTrack',
 );
 
 export const TimeRangeProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangeProgressBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeProgressProps,
-  'TimeRangeProgress'
+  'TimeRangeProgress',
 );
 
 export const TimeRangePointer: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangePointerBase,
   { keys: [], transform: () => ({}) },
   useTimeRangePointerProps,
-  'TimeRangePointer'
+  'TimeRangePointer',
 );
 
 export const TimeRangeThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
   TimeRangeThumbBase,
   { keys: [], transform: () => ({}) },
   useTimeRangeThumbProps,
-  'TimeRangeThumb'
+  'TimeRangeThumb',
 );
 
 export const TimeRange = Object.assign(
@@ -293,7 +297,7 @@ export const TimeRange = Object.assign(
     Progress: TimeRangeProgress,
     Pointer: TimeRangePointer,
     Thumb: TimeRangeThumb,
-  }
+  },
 ) as {
   Root: typeof TimeRangeRoot;
   Track: typeof TimeRangeTrack;

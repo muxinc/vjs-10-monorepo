@@ -1,2 +1,2 @@
-export type { IBaseMediaStateOwner, IPlayableMediaStateOwner, IAudibleMediaStateOwner } from './playable';
-export { Events, PlayableMediaStateOwner, createMediaStateOwner } from './playable';
+export type { IAudibleMediaStateOwner, IBaseMediaStateOwner, IPlayableMediaStateOwner } from './playable';
+export { createMediaStateOwner, Events, PlayableMediaStateOwner } from './playable';

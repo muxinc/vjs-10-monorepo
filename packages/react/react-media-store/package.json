@@ -3,15 +3,24 @@
   "type": "module",
   "version": "0.1.0",
   "description": "React media store integration",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "media",
+    "store",
+    "state",
+    "react",
+    "hooks",
+    "context"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,20 +31,11 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "media",
-    "store",
-    "state",
-    "react",
-    "hooks",
-    "context"
-  ],
-  "license": "Apache-2.0",
-  "dependencies": {
-    "@vjs-10/media-store": "workspace:*"
-  },
   "peerDependencies": {
     "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "@vjs-10/media-store": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

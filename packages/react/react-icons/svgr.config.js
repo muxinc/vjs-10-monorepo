@@ -12,9 +12,9 @@ export default {
   replaceAttrValues: {
     '#000': '{color}',
     '#fff': '{color}',
-    black: '{color}',
-    white: '{color}',
-    currentColor: '{color}',
+    'black': '{color}',
+    'white': '{color}',
+    'currentColor': '{color}',
   },
   template: (variables, { tpl }) => {
     return tpl`
@@ -67,6 +67,6 @@ ${variables.exports};
  */
 `;
 
-    return header + exportEntries.join('\n') + '\n';
+    return `${header + exportEntries.join('\n')}\n`;
   },
 };

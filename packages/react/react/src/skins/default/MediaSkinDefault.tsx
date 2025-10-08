@@ -1,7 +1,4 @@
-import styles from './styles';
-
 import type { PropsWithChildren } from 'react';
-import { useId } from 'react';
 
 import {
   FullscreenEnterIcon,
@@ -12,8 +9,10 @@ import {
   VolumeLowIcon,
   VolumeOffIcon,
 } from '@vjs-10/react-icons';
+import { useId } from 'react';
 
 import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
+
 import { DurationDisplay } from '../../components/DurationDisplay';
 import { FullscreenButton } from '../../components/FullscreenButton';
 import { MediaContainer } from '../../components/MediaContainer';
@@ -23,6 +22,7 @@ import { Popover } from '../../components/Popover';
 import { TimeRange } from '../../components/TimeRange';
 import { Tooltip } from '../../components/Tooltip';
 import { VolumeRange } from '../../components/VolumeRange';
+import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
   className?: string;

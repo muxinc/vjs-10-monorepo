@@ -3,15 +3,23 @@
   "type": "module",
   "version": "0.1.0",
   "description": "Media related contracts and utilities.",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "media",
+    "HTMLMediaElement",
+    "video",
+    "audio",
+    "contracts"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,14 +30,6 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "media",
-    "HTMLMediaElement",
-    "video",
-    "audio",
-    "contracts"
-  ],
-  "license": "Apache-2.0",
   "dependencies": {
     "@vjs-10/playback-engine": "workspace:*"
   },

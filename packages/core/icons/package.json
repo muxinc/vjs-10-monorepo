@@ -3,15 +3,23 @@
   "type": "module",
   "version": "0.1.0",
   "description": "SVG icon library for Video.js",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "icons",
+    "svg",
+    "media",
+    "player",
+    "ui"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,14 +30,6 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "icons",
-    "svg",
-    "media",
-    "player",
-    "ui"
-  ],
-  "license": "Apache-2.0",
   "devDependencies": {
     "tsdown": "^0.15.4",
     "typescript": "^5.9.2"

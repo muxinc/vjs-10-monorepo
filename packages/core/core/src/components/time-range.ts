@@ -23,10 +23,12 @@ export class TimeRange extends Range {
     let _fillWidth = 0;
     if (state._dragging) {
       _fillWidth = state._pointerRatio * 100;
-    } else if (state.duration > 0) {
+    }
+    else if (state.duration > 0) {
       if (this.#seekingTime !== null && this.#oldCurrentTime === state.currentTime) {
         _fillWidth = (this.#seekingTime / state.duration) * 100;
-      } else {
+      }
+      else {
         _fillWidth = (state.currentTime / state.duration) * 100;
         this.#seekingTime = null;
       }
@@ -90,8 +92,8 @@ export class TimeRange extends Range {
   }
 }
 
-const formatTime = (time: number): string => {
+function formatTime(time: number): string {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
+}

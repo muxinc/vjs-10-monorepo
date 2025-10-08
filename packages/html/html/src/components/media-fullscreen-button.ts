@@ -1,5 +1,5 @@
-import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 import type { FullscreenButtonState } from '@vjs-10/media-store';
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
 import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
 
@@ -9,10 +9,10 @@ import { MediaChromeButton } from './media-chrome-button';
 export class FullscreenButtonBase extends MediaChromeButton {
   _state:
     | {
-        fullscreen: boolean;
-        requestEnterFullscreen: () => void;
-        requestExitFullscreen: () => void;
-      }
+      fullscreen: boolean;
+      requestEnterFullscreen: () => void;
+      requestExitFullscreen: () => void;
+    }
     | undefined;
 
   handleEvent(event: Event): void {
@@ -21,7 +21,8 @@ export class FullscreenButtonBase extends MediaChromeButton {
     if (state && type === 'click') {
       if (state.fullscreen) {
         state.requestExitFullscreen();
-      } else {
+      }
+      else {
         state.requestEnterFullscreen();
       }
     }
@@ -36,7 +37,7 @@ export class FullscreenButtonBase extends MediaChromeButton {
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
     // Make generic
     this.toggleAttribute('data-fullscreen', props['data-fullscreen']);
-    this.setAttribute('role', props['role']);
+    this.setAttribute('role', props.role);
     this.setAttribute('aria-label', props['aria-label']);
     this.setAttribute('data-tooltip', props['data-tooltip']);
   }
@@ -57,13 +58,13 @@ export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
 export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
-    ['data-fullscreen']: state.fullscreen,
+    'data-fullscreen': state.fullscreen,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    role: 'button',
-    ['aria-label']: state.fullscreen ? 'exit fullscreen' : 'enter fullscreen',
+    'role': 'button',
+    'aria-label': state.fullscreen ? 'exit fullscreen' : 'enter fullscreen',
     /** tooltip */
-    ['data-tooltip']: state.fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen',
+    'data-tooltip': state.fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen',
     /** @TODO Figure out how we want to handle attr overrides (e.g. aria-label) (CJP) */
     /** external props spread last to allow for overriding */
     // ...props,
@@ -76,7 +77,7 @@ export const FullscreenButton: ConnectedComponentConstructor<FullscreenButtonSta
   FullscreenButtonBase,
   useFullscreenButtonState,
   useFullscreenButtonProps,
-  'FullscreenButton'
+  'FullscreenButton',
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

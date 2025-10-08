@@ -25,13 +25,13 @@ export const volumeRangeStateDefinition: VolumeRangeStateDefinition = {
     muted: rawState.muted ?? false,
     volumeLevel: rawState.volumeLevel ?? 'high',
   }),
-  createRequestMethods: (dispatch) => ({
+  createRequestMethods: dispatch => ({
     /**
      * @TODO Unmuting is owned by the "request-map" in media-chrome.
      * The closest equivalent to that is the "actions" in the current architecture.
      * Should unmuting live here (even if "here" gets promoted to the state model) or "actions" or state setter?
      * Currently this is solved in the state setter (as is the corresponding unmute behavior). See state-mediators/audible for details. (CJP)
-     **/
+     */
     requestVolumeChange: (volume: number) => {
       // if (volume > 0) {
       //   dispatch({ type: 'unmuterequest' });
