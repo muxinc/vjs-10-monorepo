@@ -9,11 +9,17 @@
     "vjs-compiler": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.v1.json",
+    "build:v1": "tsc --project tsconfig.v1.json",
+    "build:v2": "tsc",
     "clean": "rm -rf dist",
-    "dev": "tsc --watch",
+    "dev": "tsc --project tsconfig.v1.json --watch",
+    "dev:v1": "tsc --project tsconfig.v1.json --watch",
+    "dev:v2": "tsc --watch",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:v1": "vitest run --config vitest.config.v1.ts",
+    "test:v2": "vitest run"
   },
   "dependencies": {
     "@babel/generator": "^7.26.3",
