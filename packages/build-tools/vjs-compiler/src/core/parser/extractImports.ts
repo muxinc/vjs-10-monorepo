@@ -28,7 +28,6 @@ export function extractImports(ast: t.File): ImportDeclaration[] {
         // import { A, B } from '...'
         if (t.isImportSpecifier(specifier)) {
           const imported = specifier.imported;
-          const localName = specifier.local.name;
 
           // Handle: import { A } from '...' vs import { A as B } from '...'
           const importedName = t.isIdentifier(imported) ? imported.name : imported.value;
@@ -49,7 +48,7 @@ export function extractImports(ast: t.File): ImportDeclaration[] {
       imports.push({
         source,
         specifiers,
-        defaultImport,
+        defaultImport: defaultImport ?? undefined,
         isTypeOnly,
       });
     },

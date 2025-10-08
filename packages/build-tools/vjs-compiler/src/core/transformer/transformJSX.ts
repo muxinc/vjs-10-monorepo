@@ -58,8 +58,9 @@ function transformJSXElementName(element: t.JSXOpeningElement | t.JSXClosingElem
 
   // Handle simple identifiers (PlayButton, div, etc.)
   if (t.isJSXIdentifier(name)) {
+    const firstChar = name.name[0];
     // Check if it's a component (starts with uppercase)
-    if (name.name[0] === name.name[0].toUpperCase()) {
+    if (firstChar && firstChar === firstChar.toUpperCase()) {
       // Transform to web component name
       const kebabName = toKebabCase(name.name);
       const webComponentName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;

@@ -105,7 +105,8 @@ function extractStyleValue(node: t.Node): string | null {
   // Template literal: `p-2 rounded` (no interpolation)
   if (t.isTemplateLiteral(node)) {
     if (node.expressions.length === 0 && node.quasis.length === 1) {
-      return node.quasis[0].value.cooked || node.quasis[0].value.raw;
+      const quasi = node.quasis[0];
+      return quasi?.value.cooked ?? quasi?.value.raw ?? null;
     }
     // For now, skip template literals with interpolation
     return null;

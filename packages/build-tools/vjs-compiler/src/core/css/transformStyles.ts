@@ -5,7 +5,6 @@
  */
 
 import type { StylesObject } from '../../types.js';
-import { processCSS, buildHTMLForTailwind } from './processCSS.js';
 
 /**
  * CSS transformation result
@@ -55,23 +54,4 @@ export async function transformStyles(styles: StylesObject): Promise<TransformSt
     css,
     classNames,
   };
-}
-
-/**
- * Build HTML wrapper for Tailwind processing from array of elements
- *
- * @param elements - Array of HTML elements
- * @returns HTML string
- */
-function buildHTMLForTailwind(elements: string[]): string {
-  return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-${elements.join('\n')}
-</body>
-</html>`;
 }

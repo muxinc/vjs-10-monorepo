@@ -13,7 +13,7 @@ export interface GenerateModuleOptions {
   componentName: string;
   imports: TransformedImport[];
   templateHTML: string;
-  css?: string;
+  css?: string | undefined;
 }
 
 /**

@@ -84,7 +84,7 @@ export interface ParseResult {
 export interface ImportDeclaration {
   source: string; // Import path (e.g. '@vjs-10/react', './styles')
   specifiers: string[]; // Named imports (e.g. ['MediaContainer', 'PlayButton'])
-  defaultImport?: string; // Default import name (e.g. 'styles')
+  defaultImport?: string | undefined; // Default import name (e.g. 'styles')
   isTypeOnly: boolean; // Whether this is a type-only import
 }
 
