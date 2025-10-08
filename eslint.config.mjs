@@ -17,7 +17,9 @@ export default antfu({
     indent: 2,
     quotes: 'single',
   },
-  ignores: ['node_modules', 'dist'],
+  // Many are ignored by default.
+  // https://github.com/antfu/eslint-config/blob/main/src/globs.ts#L56
+  ignores: ['**/.astro/'],
   plugins: {
     'jsx-a11y': jsxA11y,
   },
