@@ -27,9 +27,9 @@ Any static assets, like images, can be placed in the `public/` directory.
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
+| Command                | Action                                           |
+| :--------------------- | :----------------------------------------------- |
+| `pnpm install`         | Installs dependencies                            |
 | `pnpm dev`             | Starts local dev server at `localhost:4321`      |
 | `pnpm build`           | Build your production site to `./dist/`          |
 | `pnpm preview`         | Preview your build locally, before deploying     |
@@ -106,9 +106,9 @@ Example: `/docs/framework/react/style/tailwind/concepts/state-management/`
 
 ##### Framework/Style Matrix
 
-| Framework | Available Styles |
-|-----------|-----------------|
-| HTML      | css, tailwind   |
+| Framework | Available Styles                 |
+| --------- | -------------------------------- |
+| HTML      | css, tailwind                    |
 | React     | css, tailwind, styled-components |
 
 ##### Content Filtering

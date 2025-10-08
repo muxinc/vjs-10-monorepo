@@ -1,11 +1,11 @@
 export {
-  MediaProvider,
   MediaContext,
-  useMediaStore,
+  MediaProvider,
+  shallowEqual,
   useMediaDispatch,
   useMediaRef,
   useMediaSelector,
-  shallowEqual,
+  useMediaStore,
 } from './MediaProvider';
 
 export type MediaStore = any;

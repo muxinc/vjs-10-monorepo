@@ -3,15 +3,23 @@
   "type": "module",
   "version": "0.1.0",
   "description": "React library for building media players",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "media",
+    "player",
+    "react",
+    "components",
+    "hooks"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,14 +30,9 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "media",
-    "player",
-    "react",
-    "components",
-    "hooks"
-  ],
-  "license": "Apache-2.0",
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
     "@vjs-10/core": "workspace:*",
@@ -38,9 +41,6 @@
     "@vjs-10/react-icons": "workspace:*",
     "@vjs-10/react-media-elements": "workspace:*",
     "@vjs-10/react-media-store": "workspace:*"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

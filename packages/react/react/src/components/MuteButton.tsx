@@ -1,21 +1,19 @@
-import type { ConnectedComponent } from '../utils/component-factory';
 import type { PropsWithChildren } from 'react';
-
-import { useMemo } from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
 
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
+
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+import { useMemo } from 'react';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const useMuteButtonState = (
-  _props: any
-): {
+export function useMuteButtonState(_props: any): {
   volumeLevel: string;
   muted: boolean;
   requestMute: () => void;
   requestUnmute: () => void;
-} => {
+} {
   const mediaStore = useMediaStore();
 
   /** @TODO Fix type issues with hooks (CJP) */
@@ -29,24 +27,21 @@ export const useMuteButtonState = (
     requestMute: methods.requestMute,
     requestUnmute: methods.requestUnmute,
   } as const;
-};
+}
 
 export type useMuteButtonState = typeof useMuteButtonState;
 export type MuteButtonState = ReturnType<useMuteButtonState>;
 
-export const useMuteButtonProps = (
-  props: PropsWithChildren,
-  state: ReturnType<typeof useMuteButtonState>
-): PropsWithChildren<Record<string, unknown>> => {
+export function useMuteButtonProps(props: PropsWithChildren, state: ReturnType<typeof useMuteButtonState>): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** data attributes/props - non-boolean */
-    ['data-volume-level']: state.volumeLevel,
+    'data-volume-level': state.volumeLevel,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    role: 'button',
-    ['aria-label']: state.muted ? 'unmute' : 'mute',
+    'role': 'button',
+    'aria-label': state.muted ? 'unmute' : 'mute',
     /** tooltip */
-    ['data-tooltip']: state.muted ? 'Unmute' : 'Mute',
+    'data-tooltip': state.muted ? 'Unmute' : 'Mute',
     /** external props spread last to allow for overriding */
     ...props,
   };
@@ -57,12 +52,12 @@ export const useMuteButtonProps = (
   }
 
   return baseProps;
-};
+}
 
 export type useMuteButtonProps = typeof useMuteButtonProps;
 type MuteButtonProps = ReturnType<useMuteButtonProps>;
 
-export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState): JSX.Element => {
+export function renderMuteButton(props: MuteButtonProps, state: MuteButtonState): JSX.Element {
   return (
     <button
       {...props}
@@ -71,7 +66,8 @@ export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState)
         if (props.disabled) return;
         if (state.volumeLevel === 'off') {
           state.requestUnmute();
-        } else {
+        }
+        else {
           state.requestMute();
         }
       }}
@@ -79,7 +75,7 @@ export const renderMuteButton = (props: MuteButtonProps, state: MuteButtonState)
       {props.children}
     </button>
   );
-};
+}
 
 export type renderMuteButton = typeof renderMuteButton;
 
@@ -87,7 +83,7 @@ export const MuteButton: ConnectedComponent<MuteButtonProps, typeof renderMuteBu
   useMuteButtonState,
   useMuteButtonProps,
   renderMuteButton,
-  'MuteButton'
+  'MuteButton',
 );
 
 export default MuteButton;

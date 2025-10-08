@@ -1,20 +1,18 @@
-import type { ConnectedComponent } from '../utils/component-factory';
 import type { PropsWithChildren } from 'react';
-
-import { useMemo } from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
 
 import { playButtonStateDefinition } from '@vjs-10/media-store';
+
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+import { useMemo } from 'react';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
-export const usePlayButtonState = (
-  _props: any
-): {
+export function usePlayButtonState(_props: any): {
   paused: boolean;
   requestPlay: () => void;
   requestPause: () => void;
-} => {
+} {
   const mediaStore = useMediaStore();
 
   /** @TODO Fix type issues with hooks (CJP) */
@@ -27,22 +25,19 @@ export const usePlayButtonState = (
     requestPlay: methods.requestPlay,
     requestPause: methods.requestPause,
   };
-};
+}
 
 export type usePlayButtonState = typeof usePlayButtonState;
 export type PlayButtonState = ReturnType<usePlayButtonState>;
 
-export const usePlayButtonProps = (
-  props: Record<string, unknown>,
-  state: ReturnType<typeof usePlayButtonState>
-): PropsWithChildren<Record<string, unknown>> => {
+export function usePlayButtonProps(props: Record<string, unknown>, state: ReturnType<typeof usePlayButtonState>): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    role: 'button',
-    ['aria-label']: state.paused ? 'play' : 'pause',
+    'role': 'button',
+    'aria-label': state.paused ? 'play' : 'pause',
     /** tooltip */
-    ['data-tooltip']: state.paused ? 'Play' : 'Pause',
+    'data-tooltip': state.paused ? 'Play' : 'Pause',
     /** external props spread last to allow for overriding */
     ...props,
   };
@@ -53,12 +48,12 @@ export const usePlayButtonProps = (
   }
 
   return baseProps;
-};
+}
 
 export type usePlayButtonProps = typeof usePlayButtonProps;
 type PlayButtonProps = ReturnType<usePlayButtonProps>;
 
-export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState): JSX.Element => {
+export function renderPlayButton(props: PlayButtonProps, state: PlayButtonState): JSX.Element {
   return (
     <button
       {...props}
@@ -67,7 +62,8 @@ export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState)
         if (props.disabled) return;
         if (state.paused) {
           state.requestPlay();
-        } else {
+        }
+        else {
           state.requestPause();
         }
       }}
@@ -75,7 +71,7 @@ export const renderPlayButton = (props: PlayButtonProps, state: PlayButtonState)
       {props.children}
     </button>
   );
-};
+}
 
 export type renderPlayButton = typeof renderPlayButton;
 
@@ -83,7 +79,7 @@ export const PlayButton: ConnectedComponent<PlayButtonProps, typeof renderPlayBu
   usePlayButtonState,
   usePlayButtonProps,
   renderPlayButton,
-  'PlayButton'
+  'PlayButton',
 );
 
 export default PlayButton;

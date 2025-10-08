@@ -14,7 +14,7 @@
     "npm": ">=10.9.3"
   },
   "scripts": {
-    "//prepare": "simple-git-hooks",
+    "prepare": "simple-git-hooks",
     "build:libs": "turbo run build --filter=./packages/**",
     "build:website": "turbo run build --filter=website",
     "build": "turbo run build",
@@ -27,6 +27,7 @@
     "format:check": "prettier . --check --log-level warn --cache",
     "format": "prettier . --write --log-level warn --cache",
     "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix --cache",
     "test": "turbo run test",
     "typecheck": "pnpm run generate:icons && tsc --build --noEmit"
   },
@@ -50,10 +51,10 @@
     "turbo": "^2.5.8",
     "typescript": "^5.9.2"
   },
-  "//simple-git-hooks": {
+  "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
   },
-  "//lint-staged": {
+  "lint-staged": {
     "*": "eslint --fix"
   }
 }

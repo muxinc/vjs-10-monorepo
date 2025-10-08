@@ -1,2 +1,2 @@
-export * from './default'
-export * from './toasted'
+export * from './default';
+export * from './toasted';

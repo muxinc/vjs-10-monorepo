@@ -1,7 +1,7 @@
 import type { Placement } from '@floating-ui/dom';
 import type { MediaContainer } from '@/media-container';
 
-import { autoUpdate, computePosition, flip, offset, shift, arrow } from '@floating-ui/dom';
+import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { uniqueId } from '../utils/element-utils';
 
 export class MediaTooltipRoot extends HTMLElement {
@@ -19,7 +19,8 @@ export class MediaTooltipRoot extends HTMLElement {
   handleEvent(event: Event): void {
     if (event.type === 'mouseenter') {
       this.#handleMouseEnter();
-    } else if (event.type === 'mouseleave') {
+    }
+    else if (event.type === 'mouseleave') {
       this.#handleMouseLeave();
     }
   }
@@ -38,11 +39,11 @@ export class MediaTooltipRoot extends HTMLElement {
   }
 
   get delay(): number {
-    return parseInt(this.getAttribute('delay') ?? '600', 10);
+    return Number.parseInt(this.getAttribute('delay') ?? '600', 10);
   }
 
   get closeDelay(): number {
-    return parseInt(this.getAttribute('close-delay') ?? '0', 10);
+    return Number.parseInt(this.getAttribute('close-delay') ?? '0', 10);
   }
 
   get #triggerElement(): MediaTooltipTrigger | null {
@@ -69,7 +70,8 @@ export class MediaTooltipRoot extends HTMLElement {
 
     if (open) {
       this.#setupFloating();
-    } else {
+    }
+    else {
       this.#cleanup?.();
       this.#cleanup = null;
     }
@@ -111,7 +113,7 @@ export class MediaTooltipRoot extends HTMLElement {
         flip(),
         shift({
           boundary: mediaContainer,
-          padding: collisionPadding 
+          padding: collisionPadding,
         }),
       ];
 
@@ -192,7 +194,7 @@ export class MediaTooltipTrigger extends HTMLElement {
                 return;
               }
             }
-            
+
             const attributeName = mutation.attributeName;
             if (!attributeName) {
               return;
@@ -201,7 +203,8 @@ export class MediaTooltipTrigger extends HTMLElement {
             const attributeValue = triggerElement.getAttribute(attributeName);
             if (attributeValue !== null) {
               popupElement.setAttribute(attributeName, attributeValue);
-            } else {
+            }
+            else {
               popupElement.removeAttribute(attributeName);
             }
           }
@@ -274,11 +277,11 @@ export class MediaTooltipPositioner extends HTMLElement {
   }
 
   get sideOffset(): number {
-    return parseInt(this.getAttribute('side-offset') ?? '0', 10);
+    return Number.parseInt(this.getAttribute('side-offset') ?? '0', 10);
   }
 
   get collisionPadding(): number {
-    return parseInt(this.getAttribute('collision-padding') ?? '0', 10);
+    return Number.parseInt(this.getAttribute('collision-padding') ?? '0', 10);
   }
 }
 

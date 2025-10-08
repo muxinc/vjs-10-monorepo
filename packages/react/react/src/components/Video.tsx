@@ -10,14 +10,14 @@ import type {
   VideoHTMLAttributes,
 } from 'react';
 
+import { createMediaStateOwner } from '@vjs-10/media';
+
+import { useMediaRef } from '@vjs-10/react-media-store';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-import { createMediaStateOwner } from '@vjs-10/media';
-import { useMediaRef } from '@vjs-10/react-media-store';
-
-export type MuxVideoProps = {
+export interface MuxVideoProps {
   'playback-id'?: string;
-};
+}
 
 type MediaStateOwner = NonNullable<Parameters<ReturnType<typeof useMediaRef>>[0]>;
 
@@ -33,7 +33,7 @@ type ComponentType = ElementType<
 // 1. an audio/video element directly
 // 2. a custom element a la media-elements
 type CreateMediaStateOwner = typeof createMediaStateOwner;
-const useMediaStateOwner = (ref: Ref<any>, createMediaStateOwner: CreateMediaStateOwner /*, props? */) => {
+function useMediaStateOwner(ref: Ref<any>, createMediaStateOwner: CreateMediaStateOwner) {
   const mediaStateOwnerRef = useRef(createMediaStateOwner(/* props? */));
   useImperativeHandle(ref, () => mediaStateOwnerRef.current, []);
   /** @TODO Parameterize this (CJP) */
@@ -48,7 +48,7 @@ const useMediaStateOwner = (ref: Ref<any>, createMediaStateOwner: CreateMediaSta
       }
     },
   };
-};
+}
 
 const DefaultVideoComponent: ElementType<
   Omit<DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> & { ref: Ref<any> }
@@ -74,7 +74,7 @@ const DefaultVideoComponent: ElementType<
  * MUI users: a `component` prop that allows you to use something other than the <video/> element under the hood.
  * @returns A media react component (e.g. <video/>), wired up as the media element.
  */
-const ConnectedVideo = ({
+function ConnectedVideo({
   component,
   children,
   ...props
@@ -82,7 +82,7 @@ const ConnectedVideo = ({
   component: ComponentType;
   className?: string | undefined;
   style?: CSSProperties | undefined;
-}>) => {
+}>) {
   const Component = component;
   const mediaRefCallback = useMediaRef();
   // NOTE: While this may feel like magic to folks, in the "default" use case, you can think of it as:
@@ -92,7 +92,7 @@ const ConnectedVideo = ({
       {children}
     </Component>
   );
-};
+}
 
 export type VideoProps = PropsWithChildren<{
   component?: ComponentType;
@@ -101,13 +101,13 @@ export type VideoProps = PropsWithChildren<{
 }>;
 
 // Main Video component with default component
-export const Video = ({ component = DefaultVideoComponent, children, ...props }: VideoProps): JSX.Element => {
+export function Video({ component = DefaultVideoComponent, children, ...props }: VideoProps): JSX.Element {
   return (
     <ConnectedVideo {...props} component={component}>
       {children}
     </ConnectedVideo>
   );
-};
+}
 
 // MediaElementVideo export (same as Video but for backwards compatibility)
 export const MediaElementVideo: FC<VideoProps> = Video;

@@ -4,5 +4,5 @@ packages:
   - 'packages/react/*'
   - 'packages/react-native/*'
   - 'examples/*'
-  - 'website'
+  - website
 minimumReleaseAge: 1440

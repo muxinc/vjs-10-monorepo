@@ -1,10 +1,10 @@
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { useCallback, useMemo } from 'react';
-
 import { VolumeRange as CoreVolumeRange } from '@vjs-10/core';
+
 import { volumeRangeStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
+import { useCallback, useMemo } from 'react';
 
 import { toConnectedComponent, toContextComponent, useCore } from '../utils/component-factory';
 
@@ -33,13 +33,13 @@ interface VolumeRangeRenderProps extends React.ComponentProps<'div'> {
 // ROOT COMPONENT
 // ============================================================================
 
-export const useVolumeRangeRootState = (props: VolumeRange.Props): VolumeRange.State => {
+export function useVolumeRangeRootState(props: VolumeRange.Props): VolumeRange.State {
   const { orientation = 'horizontal' } = props;
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(volumeRangeStateDefinition.stateTransform, shallowEqual);
   const mediaMethods = useMemo(
     () => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
-    [mediaStore]
+    [mediaStore],
   );
   const core = useCore(CoreVolumeRange, { ...mediaState, ...mediaMethods });
 
@@ -49,20 +49,20 @@ export const useVolumeRangeRootState = (props: VolumeRange.Props): VolumeRange.S
     orientation,
     core,
   };
-};
+}
 
-export const useVolumeRangeRootProps = (props: VolumeRange.Props, state: VolumeRange.State): VolumeRangeRenderProps => {
+export function useVolumeRangeRootProps(props: VolumeRange.Props, state: VolumeRange.State): VolumeRangeRenderProps {
   const { _fillWidth, _pointerWidth, _volumeText } = state.core.getState();
 
   const { children, className, id, style, orientation = 'horizontal' } = props;
 
   return {
-    ref: useCallback((el: HTMLDivElement) => {
+    'ref': useCallback((el: HTMLDivElement) => {
       if (!el) return;
       state.core?.attach(el);
     }, []),
     id,
-    role: 'slider',
+    'role': 'slider',
     'aria-label': 'Volume',
     'aria-valuemin': 0,
     'aria-valuemax': 100,
@@ -73,55 +73,52 @@ export const useVolumeRangeRootProps = (props: VolumeRange.Props, state: VolumeR
     'data-muted': state.muted,
     'data-volume-level': state.volumeLevel,
     className,
-    style: {
+    'style': {
       ...style,
       '--slider-fill': `${_fillWidth.toFixed(3)}%`,
       '--slider-pointer': `${_pointerWidth.toFixed(3)}%`,
     } as React.CSSProperties,
     children,
   };
-};
+}
 
 type useVolumeRangeRootState = typeof useVolumeRangeRootState;
 type useVolumeRangeRootProps = typeof useVolumeRangeRootProps;
 
-export const renderVolumeRangeRoot = (props: VolumeRangeRenderProps): JSX.Element => {
+export function renderVolumeRangeRoot(props: VolumeRangeRenderProps): JSX.Element {
   return <div {...props} />;
-};
+}
 
 const VolumeRangeRoot: ConnectedComponent<VolumeRange.Props, typeof renderVolumeRangeRoot> = toConnectedComponent(
   useVolumeRangeRootState,
   useVolumeRangeRootProps,
   renderVolumeRangeRoot,
-  'VolumeRange.Root'
+  'VolumeRange.Root',
 );
 
 // ============================================================================
 // TRACK COMPONENT
 // ============================================================================
 
-export const useVolumeRangeTrackProps = (
-  props: React.ComponentProps<'div'>,
-  context: VolumeRange.State
-): VolumeRangeRenderProps => {
+export function useVolumeRangeTrackProps(props: React.ComponentProps<'div'>, context: VolumeRange.State): VolumeRangeRenderProps {
   return {
-    ref: useCallback((el: HTMLDivElement) => {
+    'ref': useCallback((el: HTMLDivElement) => {
       context.core?.setState({ _trackElement: el });
     }, []),
     'data-orientation': context.orientation,
     ...props,
-    style: {
+    'style': {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: '100%',
     },
   };
-};
+}
 
 type useVolumeRangeTrackProps = typeof useVolumeRangeTrackProps;
 
-export const renderVolumeRangeTrack = (props: VolumeRangeRenderProps): JSX.Element => {
+export function renderVolumeRangeTrack(props: VolumeRangeRenderProps): JSX.Element {
   return <div {...props} />;
-};
+}
 
 const VolumeRangeTrack: ConnectedComponent<
   React.ComponentProps<'div'>,
@@ -132,14 +129,11 @@ const VolumeRangeTrack: ConnectedComponent<
 // THUMB COMPONENT
 // ============================================================================
 
-export const useVolumeRangeThumbProps = (
-  props: React.ComponentProps<'div'>,
-  context: VolumeRange.State
-): VolumeRangeRenderProps => {
+export function useVolumeRangeThumbProps(props: React.ComponentProps<'div'>, context: VolumeRange.State): VolumeRangeRenderProps {
   return {
     'data-orientation': context.orientation,
     ...props,
-    style: {
+    'style': {
       ...props.style,
       [context.orientation === 'horizontal' ? 'insetInlineStart' : 'insetBlockEnd']: 'var(--slider-fill)',
       [context.orientation === 'horizontal' ? 'top' : 'left']: '50%',
@@ -147,13 +141,13 @@ export const useVolumeRangeThumbProps = (
       position: 'absolute' as const,
     },
   };
-};
+}
 
 type useVolumeRangeThumbProps = typeof useVolumeRangeThumbProps;
 
-export const renderVolumeRangeThumb = (props: VolumeRangeRenderProps): JSX.Element => {
+export function renderVolumeRangeThumb(props: VolumeRangeRenderProps): JSX.Element {
   return <div {...props} />;
-};
+}
 
 const VolumeRangeThumb: ConnectedComponent<
   React.ComponentProps<'div'>,
@@ -164,14 +158,11 @@ const VolumeRangeThumb: ConnectedComponent<
 // PROGRESS COMPONENT
 // ============================================================================
 
-export const useVolumeRangeProgressProps = (
-  props: React.ComponentProps<'div'>,
-  context: VolumeRange.State
-): VolumeRangeRenderProps => {
+export function useVolumeRangeProgressProps(props: React.ComponentProps<'div'>, context: VolumeRange.State): VolumeRangeRenderProps {
   return {
     'data-orientation': context.orientation,
     ...props,
-    style: {
+    'style': {
       ...props.style,
       [context.orientation === 'horizontal' ? 'width' : 'height']: 'var(--slider-fill, 0%)',
       [context.orientation === 'horizontal' ? 'height' : 'width']: '100%',
@@ -179,13 +170,13 @@ export const useVolumeRangeProgressProps = (
       position: 'absolute' as const,
     },
   };
-};
+}
 
 type useVolumeRangeProgressProps = typeof useVolumeRangeProgressProps;
 
-export const renderVolumeRangeProgress = (props: VolumeRangeRenderProps): JSX.Element => {
+export function renderVolumeRangeProgress(props: VolumeRangeRenderProps): JSX.Element {
   return <div {...props} />;
-};
+}
 
 const VolumeRangeProgress: ConnectedComponent<
   React.ComponentProps<'div'>,
@@ -203,7 +194,7 @@ export const VolumeRange = Object.assign(
     Track: VolumeRangeTrack,
     Thumb: VolumeRangeThumb,
     Progress: VolumeRangeProgress,
-  }
+  },
 ) as {
   Root: typeof VolumeRangeRoot;
   Track: typeof VolumeRangeTrack;

@@ -1,5 +1,6 @@
 import { MediaSkin } from '../media-skin';
 
+import { uniqueId } from '../utils/element-utils';
 import '../media-container';
 import '../components/media-play-button';
 import '../components/media-mute-button';
@@ -11,11 +12,10 @@ import '../components/media-current-time-display';
 import '../components/media-popover';
 import '../components/media-tooltip';
 import '@vjs-10/html-icons';
-import { uniqueId } from '../utils/element-utils';
 
 export function getTemplateHTML() {
   const portalId = uniqueId();
-  
+
   return /* html */ `
     ${MediaSkin.getTemplateHTML()}
     <style>

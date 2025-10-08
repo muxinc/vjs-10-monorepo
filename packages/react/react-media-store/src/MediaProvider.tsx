@@ -4,9 +4,9 @@
 import type { MediaStore } from '@vjs-10/media-store';
 import type { Context, ReactNode } from 'react';
 
-import { createContext, useContext, useMemo } from 'react';
-
 import { createMediaStore } from '@vjs-10/media-store';
+
+import { createContext, useContext, useMemo } from 'react';
 
 import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector.js';
 
@@ -23,7 +23,7 @@ const identity = (x?: any) => x;
  */
 export const MediaContext: Context<any | null> = createContext<any | null>(null);
 
-export const MediaProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export function MediaProvider({ children }: { children: ReactNode }): JSX.Element {
   const value = useMemo(() => createMediaStore(), []);
 
   // useEffect(() => {
@@ -40,21 +40,21 @@ export const MediaProvider = ({ children }: { children: ReactNode }): JSX.Elemen
   // }, []);
 
   return <MediaContext.Provider value={value}>{children}</MediaContext.Provider>;
-};
+}
 
-export const useMediaStore = (): MediaStore => {
+export function useMediaStore(): MediaStore {
   return useContext(MediaContext);
-};
+}
 
-export const useMediaDispatch = (): ((value: any) => unknown) => {
+export function useMediaDispatch(): ((value: any) => unknown) {
   const store = useContext(MediaContext);
   const dispatch = store?.dispatch ?? identity;
   return (value: any) => {
     return dispatch(value);
   };
-};
+}
 
-export const useMediaRef = () => {
+export function useMediaRef() {
   const dispatch = useMediaDispatch();
 
   return (element: any): void => {
@@ -65,7 +65,7 @@ export const useMediaRef = () => {
     */
     dispatch({ type: 'mediastateownerchangerequest', detail: element });
   };
-};
+}
 
 export const refEquality = (a: any, b: any): boolean => a === b;
 
@@ -76,7 +76,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
  * so we may treat them specifically as unequal if they are not a) both arrays
  * or b) don't contain the same (shallowly compared) elements.
  */
-export const shallowEqual = (objA: any, objB: any): boolean => {
+export function shallowEqual(objA: any, objB: any): boolean {
   // Using Object.is as a first pass, as it covers a lot of the "simple" cases that are
   // more complex than strict equality and is a built-in. For discussion, see, e.g.:
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#description
@@ -108,28 +108,25 @@ export const shallowEqual = (objA: any, objB: any): boolean => {
   for (let i = 0; i < keysA.length; i++) {
     // NOTE: Since we've already guaranteed the keys list lengths are the same, we can safely cast to string here (CJP)
     if (
-      !hasOwnProperty.call(objB, keysA[i] as string) ||
-      !Object.is(objA[keysA[i] as string], objB[keysA[i] as string])
+      !hasOwnProperty.call(objB, keysA[i] as string)
+      || !Object.is(objA[keysA[i] as string], objB[keysA[i] as string])
     ) {
       return false;
     }
   }
 
   return true;
-};
+}
 
-export const useMediaSelector = <S = any,>(
-  selector: (state: any) => S,
-  equalityFn: (a: S, b: S) => boolean = refEquality
-): S => {
+export function useMediaSelector<S = any,>(selector: (state: any) => S, equalityFn: (a: S, b: S) => boolean = refEquality): S {
   const store = useContext(MediaContext);
   const selectedState = useSyncExternalStoreWithSelector(
     store?.subscribe ?? identity,
     store?.getState ?? identity,
     store?.getState ?? identity,
     selector,
-    equalityFn
+    equalityFn,
   ) as S;
 
   return selectedState;
-};
+}

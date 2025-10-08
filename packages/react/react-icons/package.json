@@ -3,15 +3,23 @@
   "type": "module",
   "version": "0.1.0",
   "description": "React icon library for Video.js",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "icons",
+    "react",
+    "media",
+    "player",
+    "components"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -24,19 +32,11 @@
     "generate:icons": "svgr --config-file svgr.config.js --out-dir src/generated-icons ../../core/icons/assets && pnpm format:icons",
     "test": "echo \"No tests yet\""
   },
-  "keywords": [
-    "icons",
-    "react",
-    "media",
-    "player",
-    "components"
-  ],
-  "license": "Apache-2.0",
-  "dependencies": {
-    "@vjs-10/icons": "workspace:*"
-  },
   "peerDependencies": {
     "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "@vjs-10/icons": "workspace:*"
   },
   "devDependencies": {
     "@svgr/babel-plugin-add-jsx-attribute": "^8.0.0",

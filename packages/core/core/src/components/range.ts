@@ -92,7 +92,7 @@ export class Range {
       evt.clientX,
       evt.clientY,
       { x: rect.left, y: rect.bottom },
-      { x: rect.right, y: rect.top }
+      { x: rect.right, y: rect.top },
     );
   }
 
@@ -122,7 +122,7 @@ export class Range {
   }
 }
 
-export type Point = { x: number; y: number };
+export interface Point { x: number; y: number }
 
 /**
  * Get progress ratio of a point on a line segment.
@@ -144,5 +144,5 @@ export function getPointProgressOnLine(x: number, y: number, p1: Point, p2: Poin
 }
 
 export function distance(p1: Point, p2: Point): number {
-  return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+  return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
 }

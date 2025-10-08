@@ -13,13 +13,13 @@ interface MediaElementLike {
   playbackRate: number;
   readyState: number;
   networkState: number;
-  play(): Promise<void>;
-  pause(): void;
-  load(): void;
+  play: () => Promise<void>;
+  pause: () => void;
+  load: () => void;
 }
 
 // @ts-ignore - Placeholder function for future implementation
-const createMediaElementAdapter = (element: HTMLMediaElement): MediaElementLike => {
+function createMediaElementAdapter(element: HTMLMediaElement): MediaElementLike {
   return {
     get currentTime() {
       return element.currentTime;
@@ -64,7 +64,7 @@ const createMediaElementAdapter = (element: HTMLMediaElement): MediaElementLike 
     pause: () => element.pause(),
     load: () => element.load(),
   };
-};
+}
 
 // @ts-ignore - Placeholder class for future implementation
 class NativePlaybackEngine {
@@ -127,7 +127,7 @@ export const VideoElement: ForwardRefExoticComponent<MediaElementProps> = forwar
       className,
       style,
     },
-    ref
+    ref,
   ) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const engineRef = useRef(new NativePlaybackEngine());
@@ -228,7 +228,7 @@ export const VideoElement: ForwardRefExoticComponent<MediaElementProps> = forwar
         pause: () => adapterRef.current?.pause(),
         load: () => adapterRef.current?.load(),
       }),
-      []
+      [],
     );
 
     return (
@@ -245,7 +245,7 @@ export const VideoElement: ForwardRefExoticComponent<MediaElementProps> = forwar
         style={style}
       />
     );
-  }
+  },
 );
 
 VideoElement.displayName = 'VideoElement';
@@ -272,7 +272,7 @@ export const AudioElement: ForwardRefExoticComponent<MediaElementProps> = forwar
       className,
       style,
     },
-    ref
+    ref,
   ) => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const engineRef = useRef(new NativePlaybackEngine());
@@ -373,7 +373,7 @@ export const AudioElement: ForwardRefExoticComponent<MediaElementProps> = forwar
         pause: () => adapterRef.current?.pause(),
         load: () => adapterRef.current?.load(),
       }),
-      []
+      [],
     );
 
     return (
@@ -389,7 +389,7 @@ export const AudioElement: ForwardRefExoticComponent<MediaElementProps> = forwar
         style={style}
       />
     );
-  }
+  },
 );
 
 AudioElement.displayName = 'AudioElement';

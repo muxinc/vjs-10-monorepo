@@ -1,15 +1,15 @@
 import { getKey, map, subscribeKeys } from 'nanostores';
 
-export type StateOwners = {
+export interface StateOwners {
   media?: any;
   container?: any;
-};
+}
 
-export type EventOrAction<D = undefined> = {
+export interface EventOrAction<D = undefined> {
   type: string;
   detail?: D;
   target?: EventTarget;
-};
+}
 
 export type FacadeGetter<T, D = T> = (stateOwners: StateOwners, event?: EventOrAction<D>) => T;
 
@@ -20,10 +20,10 @@ export type StateOwnerUpdateHandler<T> = (
   stateOwners: StateOwners
 ) => (() => void) | void;
 
-export type ReadonlyFacadeProp<T, D = T> = {
+export interface ReadonlyFacadeProp<T, D = T> {
   get: FacadeGetter<T, D>;
   stateOwnersUpdateHandlers?: StateOwnerUpdateHandler<T>[];
-};
+}
 
 export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
   set: FacadeSetter<S>;
@@ -33,7 +33,7 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
   };
 };
 
-export type StateMediator = {
+export interface StateMediator {
   paused: FacadeProp<HTMLMediaElement['paused']>;
   muted: FacadeProp<HTMLMediaElement['muted']>;
   volume: FacadeProp<HTMLMediaElement['volume']>;
@@ -42,14 +42,14 @@ export type StateMediator = {
   duration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
   seekable: ReadonlyFacadeProp<[number, number] | undefined>;
   fullscreen: FacadeProp<boolean>;
-};
+}
 
 export interface MediaStore {
-  dispatch(action: { type: string; detail?: unknown }): void;
-  getState(): any;
-  getKeys(keys: string[]): Record<string, any>;
-  subscribeKeys(keys: string[], callback: (state: any) => void): void;
-  subscribe(callback: (state: any) => void): void;
+  dispatch: (action: { type: string; detail?: unknown }) => void;
+  getState: () => any;
+  getKeys: (keys: string[]) => Record<string, any>;
+  subscribeKeys: (keys: string[], callback: (state: any) => void) => void;
+  subscribe: (callback: (state: any) => void) => void;
 }
 
 export function createMediaStore({
@@ -68,7 +68,7 @@ export function createMediaStore({
   function updateStateOwners(nextStateOwners: any) {
     // Check if any state owner has changed
     const hasChanges = Object.entries(nextStateOwners).some(
-      ([key, value]) => stateOwners[key as keyof StateOwners] !== value
+      ([key, value]) => stateOwners[key as keyof StateOwners] !== value,
     );
 
     if (!hasChanges) {
@@ -77,7 +77,7 @@ export function createMediaStore({
 
     // Clean up existing handlers
     Object.entries(stateUpdateHandlerCleanups).forEach(([stateName, cleanups]) => {
-      cleanups.forEach((cleanup) => cleanup?.());
+      cleanups.forEach(cleanup => cleanup?.());
       stateUpdateHandlerCleanups[stateName] = [];
     });
 
@@ -114,11 +114,13 @@ export function createMediaStore({
 
       if (type === 'mediastateownerchangerequest') {
         updateStateOwners({ media: detail });
-      } else if (type === 'containerstateownerchangerequest') {
+      }
+      else if (type === 'containerstateownerchangerequest') {
         updateStateOwners({ container: detail });
-      } else {
+      }
+      else {
         for (const stateObject of Object.values(stateMediator).filter(
-          (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry
+          (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry,
         )) {
           const { set, actions } = stateObject;
           if (actions[type]) {
@@ -140,7 +142,7 @@ export function createMediaStore({
           acc[k] = getKey(store, k);
           return acc;
         },
-        {} as { [k: string]: any }
+        {} as { [k: string]: any },
       );
     },
 
@@ -156,7 +158,7 @@ export function createMediaStore({
 }
 
 function getInitialState(stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>, stateOwners: any) {
-  let initialState: any = {};
+  const initialState: any = {};
   for (const [stateName, { get }] of Object.entries(stateMediator)) {
     initialState[stateName] = get(stateOwners);
   }

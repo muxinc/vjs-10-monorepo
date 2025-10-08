@@ -1,9 +1,9 @@
 {
   "name": "react-demo",
-  "version": "1.0.0",
-  "description": "React example for Video.js 10",
-  "private": true,
   "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React example for Video.js 10",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

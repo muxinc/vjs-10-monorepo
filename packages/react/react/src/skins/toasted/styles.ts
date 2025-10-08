@@ -1,5 +1,5 @@
-import type { MediaToastedSkinStyles } from "./types";
-import { cn } from "../../utils/cn";
+import type { MediaToastedSkinStyles } from './types';
+import { cn } from '../../utils/cn';
 
 const styles: MediaToastedSkinStyles = {
   MediaContainer: cn(

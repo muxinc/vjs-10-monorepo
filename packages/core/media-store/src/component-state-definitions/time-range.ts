@@ -23,7 +23,7 @@ export const timeRangeStateDefinition: TimeRangeStateDefinition = {
     currentTime: rawState.currentTime ?? 0,
     duration: rawState.duration ?? 0,
   }),
-  createRequestMethods: (dispatch) => ({
+  createRequestMethods: dispatch => ({
     requestSeek: (time: number) => {
       dispatch({ type: 'seekrequest', detail: time });
     },

@@ -1,7 +1,8 @@
-import { MediaProvider, MediaSkinDefault, MediaSkinToasted, Video } from '@vjs-10/react';
+import type { ChangeEventHandler } from 'react';
 
+import { MediaProvider, MediaSkinDefault, MediaSkinToasted, Video } from '@vjs-10/react';
+import { useCallback, useMemo, useState } from 'react';
 import './globals.css';
-import { useCallback, useMemo, useState, type ChangeEventHandler } from 'react';
 
 const skins = [{
   key: 'default',
@@ -18,19 +19,19 @@ type SkinKey = (typeof skins)[number]['key'];
 const mediaSources = [{
   key: '1',
   name: 'Mux 1',
-  value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8'
+  value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8',
 }, {
   key: '2',
   name: 'Mux 2',
-  value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8'
+  value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8',
 }, {
   key: '3',
   name: 'Mux 3',
-  value: 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4'
+  value: 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4',
 }, {
   key: '4',
   name: 'Mux 4',
-  value: 'https://stream.mux.com/lyrKpPcGfqyzeI00jZAfW6MvP6GNPrkML.m3u8'
+  value: 'https://stream.mux.com/lyrKpPcGfqyzeI00jZAfW6MvP6GNPrkML.m3u8',
 }] as const;
 
 type MediaSourceKey = (typeof mediaSources)[number]['key'];
@@ -103,21 +104,21 @@ export default function App(): JSX.Element {
   return (
     <>
       <header className="fixed top-0 inset-x-0 bg-white dark:bg-stone-800 shadow shadow-black/10 after:h-px after:absolute after:inset-x-0 after:top-full after:bg-black/5">
-        <div className='grid grid-cols-5 h-2' aria-hidden="true">
-          <div className='bg-yellow-500'></div>
-          <div className='bg-orange-500'></div>
-          <div className='bg-red-500'></div>
-          <div className='bg-purple-500'></div>
-          <div className='bg-blue-500'></div>
+        <div className="grid grid-cols-5 h-2" aria-hidden="true">
+          <div className="bg-yellow-500"></div>
+          <div className="bg-orange-500"></div>
+          <div className="bg-red-500"></div>
+          <div className="bg-purple-500"></div>
+          <div className="bg-blue-500"></div>
         </div>
 
         <div className="py-3 px-6 flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="font-medium text-lg tracking-tight leading-tight dark:text-white">Playground</h1>
-            <small className='block text-stone-400 text-sm'>Test out the various skins for Video.js.</small>
+            <small className="block text-stone-400 text-sm">Test out the various skins for Video.js.</small>
           </div>
 
-          <nav className='flex items-center gap-3'>
+          <nav className="flex items-center gap-3">
             <select value={mediaSourceKey} onChange={onChangeMediaSource}>
               {mediaSources.map(({ key, name }) => (
                 <option key={key} value={key}>
@@ -137,7 +138,7 @@ export default function App(): JSX.Element {
       </header>
 
       <main className="min-h-screen flex justify-center items-center bg-radial bg-size-[16px_16px] from-stone-300 dark:from-stone-700 via-10% via-transparent to-transparent">
-        <div className='w-full max-w-4xl mx-auto p-6'>
+        <div className="w-full max-w-4xl mx-auto p-6">
           <MediaProvider key={key}>
             <Skin className={skinClassName}>
               {/* @ts-ignore -- types are incorrect */}
@@ -149,4 +150,3 @@ export default function App(): JSX.Element {
     </>
   );
 }
-

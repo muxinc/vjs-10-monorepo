@@ -1,14 +1,12 @@
-import {
-	type SupportedFramework,
-	type SupportedStyle,
-	type AnySupportedStyle,
-	getAvailableStyles,
-	type Guide,
-	type Section,
-	type Sidebar,
-	isSection,
-} from '@/types/docs';
+import type { AnySupportedStyle, Guide, Section, Sidebar, SupportedFramework, SupportedStyle } from '@/types/docs';
 import { sidebar } from '@/config/docs/sidebar';
+import {
+
+  getAvailableStyles,
+
+  isSection,
+
+} from '@/types/docs';
 
 /**
  * Check if an item (Guide or Section) should be shown based on framework and style.
@@ -21,14 +19,14 @@ import { sidebar } from '@/config/docs/sidebar';
  * @returns true if the item should be visible
  */
 function isItemVisible(
-	item: Guide | Section,
-	framework: SupportedFramework,
-	style: AnySupportedStyle,
+  item: Guide | Section,
+  framework: SupportedFramework,
+  style: AnySupportedStyle,
 ): boolean {
-	const frameworkMatch =
-		!item.frameworks || item.frameworks.includes(framework);
-	const styleMatch = !item.styles || item.styles.includes(style);
-	return frameworkMatch && styleMatch;
+  const frameworkMatch
+    = !item.frameworks || item.frameworks.includes(framework);
+  const styleMatch = !item.styles || item.styles.includes(style);
+  return frameworkMatch && styleMatch;
 }
 
 /**
@@ -43,31 +41,31 @@ function isItemVisible(
  * @returns A new filtered sidebar with only visible content
  */
 export function filterSidebar(
-	framework: SupportedFramework,
-	style: AnySupportedStyle,
-	sidebarToFilter: Sidebar = sidebar,
+  framework: SupportedFramework,
+  style: AnySupportedStyle,
+  sidebarToFilter: Sidebar = sidebar,
 ): Sidebar {
-	return sidebarToFilter
-		.filter((item) => isItemVisible(item, framework, style))
-		.map((item) => {
-			if (isSection(item)) {
-				const filteredContents = filterSidebar(framework, style, item.contents);
-				return {
-					...item,
-					contents: filteredContents,
-				};
-			}
-			// It's a Guide, return as-is
-			return item;
-		})
-		.filter((item) => {
-			// Remove sections with no contents after filtering
-			if (isSection(item)) {
-				return item.contents.length > 0;
-			}
-			// Keep all guides
-			return true;
-		});
+  return sidebarToFilter
+    .filter(item => isItemVisible(item, framework, style))
+    .map((item) => {
+      if (isSection(item)) {
+        const filteredContents = filterSidebar(framework, style, item.contents);
+        return {
+          ...item,
+          contents: filteredContents,
+        };
+      }
+      // It's a Guide, return as-is
+      return item;
+    })
+    .filter((item) => {
+      // Remove sections with no contents after filtering
+      if (isSection(item)) {
+        return item.contents.length > 0;
+      }
+      // Keep all guides
+      return true;
+    });
 }
 
 /**
@@ -81,26 +79,27 @@ export function filterSidebar(
  * @returns The slug of the first visible guide, or null if none found
  */
 export function findFirstGuide(
-	framework: SupportedFramework,
-	style: AnySupportedStyle,
-	sidebarToSearch: Sidebar = sidebar,
+  framework: SupportedFramework,
+  style: AnySupportedStyle,
+  sidebarToSearch: Sidebar = sidebar,
 ): string | null {
-	for (const item of sidebarToSearch) {
-		if (!isItemVisible(item, framework, style)) {
-			continue;
-		}
+  for (const item of sidebarToSearch) {
+    if (!isItemVisible(item, framework, style)) {
+      continue;
+    }
 
-		if (isSection(item)) {
-			// Recursively search section contents
-			const guide = findFirstGuide(framework, style, item.contents);
-			if (guide) return guide;
-		} else {
-			// It's a Guide, return its slug
-			return item.slug;
-		}
-	}
+    if (isSection(item)) {
+      // Recursively search section contents
+      const guide = findFirstGuide(framework, style, item.contents);
+      if (guide) return guide;
+    }
+    else {
+      // It's a Guide, return its slug
+      return item.slug;
+    }
+  }
 
-	return null;
+  return null;
 }
 
 /**
@@ -113,19 +112,20 @@ export function findFirstGuide(
  * @returns An array of all guide slugs found in the sidebar
  */
 export function getAllGuideSlugs(sidebarToExtract: Sidebar = sidebar): string[] {
-	const slugs: string[] = [];
+  const slugs: string[] = [];
 
-	for (const item of sidebarToExtract) {
-		if (isSection(item)) {
-			// Recursively get slugs from section contents
-			slugs.push(...getAllGuideSlugs(item.contents));
-		} else {
-			// It's a Guide, add its slug
-			slugs.push(item.slug);
-		}
-	}
+  for (const item of sidebarToExtract) {
+    if (isSection(item)) {
+      // Recursively get slugs from section contents
+      slugs.push(...getAllGuideSlugs(item.contents));
+    }
+    else {
+      // It's a Guide, add its slug
+      slugs.push(item.slug);
+    }
+  }
 
-	return slugs;
+  return slugs;
 }
 
 /**
@@ -136,20 +136,21 @@ export function getAllGuideSlugs(sidebarToExtract: Sidebar = sidebar): string[] 
  * @returns The guide object if found, null otherwise
  */
 export function findGuideBySlug(
-	slug: string,
-	sidebarToSearch: Sidebar = sidebar,
+  slug: string,
+  sidebarToSearch: Sidebar = sidebar,
 ): Guide | null {
-	for (const item of sidebarToSearch) {
-		if (isSection(item)) {
-			// Recursively search section contents
-			const guide = findGuideBySlug(slug, item.contents);
-			if (guide) return guide;
-		} else if (item.slug === slug) {
-			// Found the guide
-			return item;
-		}
-	}
-	return null;
+  for (const item of sidebarToSearch) {
+    if (isSection(item)) {
+      // Recursively search section contents
+      const guide = findGuideBySlug(slug, item.contents);
+      if (guide) return guide;
+    }
+    else if (item.slug === slug) {
+      // Found the guide
+      return item;
+    }
+  }
+  return null;
 }
 
 /**
@@ -162,16 +163,16 @@ export function findGuideBySlug(
  * @returns Array of valid styles for this guide in this framework
  */
 export function getValidStylesForGuide<F extends SupportedFramework>(
-	guide: Guide,
-	framework: F,
+  guide: Guide,
+  framework: F,
 ): readonly SupportedStyle<F>[] {
-	const frameworkStyles = getAvailableStyles(framework);
+  const frameworkStyles = getAvailableStyles(framework);
 
-	// If guide has no style restrictions, all framework styles are valid
-	if (!guide.styles) {
-		return frameworkStyles;
-	}
+  // If guide has no style restrictions, all framework styles are valid
+  if (!guide.styles) {
+    return frameworkStyles;
+  }
 
-	// Return intersection of framework styles and guide styles
-	return frameworkStyles.filter((s) => guide.styles!.includes(s));
+  // Return intersection of framework styles and guide styles
+  return frameworkStyles.filter(s => guide.styles!.includes(s));
 }

@@ -3,15 +3,24 @@
   "type": "module",
   "version": "0.1.0",
   "description": "Core components and utilities for Video.js",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "keywords": [
+    "core",
+    "components",
+    "media",
+    "player",
+    "ui",
+    "time-range"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,15 +31,6 @@
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "core",
-    "components",
-    "media",
-    "player",
-    "ui",
-    "time-range"
-  ],
-  "license": "Apache-2.0",
   "dependencies": {
     "nanostores": "^1.0.1"
   },

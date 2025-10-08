@@ -1,16 +1,17 @@
-import { glob, type ParseDataOptions } from 'astro/loaders';
+import type { ParseDataOptions } from 'astro/loaders';
+import { glob } from 'astro/loaders';
 
 /**
  * Parser function that runs before Astro's schema validation.
  * Receives the entry and the original filename (before generateId transforms it).
  */
 type Parser = <TData extends Record<string, unknown>>(
-	options: ParseDataOptions<TData>,
-	originalEntry: string,
+  options: ParseDataOptions<TData>,
+  originalEntry: string,
 ) => Promise<ParseDataOptions<TData>>;
 
 type GlobWithParserOptions = Parameters<typeof glob>[0] & {
-	parser: Parser;
+  parser: Parser;
 };
 
 /**
@@ -36,46 +37,46 @@ type GlobWithParserOptions = Parameters<typeof glob>[0] & {
  * ```
  */
 export function globWithParser({
-	parser,
-	generateId,
-	...globOptions
+  parser,
+  generateId,
+  ...globOptions
 }: GlobWithParserOptions) {
-	/**
-	 * Store mapping of transformed IDs to original entry filenames.
-	 * Created per-invocation to avoid memory leaks across builds.
-	 * This is needed because generateId transforms the entry name (e.g., removes date prefix),
-	 * but we need access to the original filename in the parser (e.g., to extract date from filename).
-	 */
-	const entryMap = new Map<string, string>();
+  /**
+   * Store mapping of transformed IDs to original entry filenames.
+   * Created per-invocation to avoid memory leaks across builds.
+   * This is needed because generateId transforms the entry name (e.g., removes date prefix),
+   * but we need access to the original filename in the parser (e.g., to extract date from filename).
+   */
+  const entryMap = new Map<string, string>();
 
-	// Wrap generateId to capture the original entry name before transformation
-	// This allows us to maintain a mapping from the transformed ID back to the original filename
-	const wrappedGenerateId = generateId
-		? (ctx: Parameters<NonNullable<typeof generateId>>[0]) => {
-				const newId = generateId(ctx);
-				// Store mapping: transformed ID -> original filename
-				entryMap.set(newId, ctx.entry);
-				return newId;
-			}
-		: undefined;
+  // Wrap generateId to capture the original entry name before transformation
+  // This allows us to maintain a mapping from the transformed ID back to the original filename
+  const wrappedGenerateId = generateId
+    ? (ctx: Parameters<NonNullable<typeof generateId>>[0]) => {
+        const newId = generateId(ctx);
+        // Store mapping: transformed ID -> original filename
+        entryMap.set(newId, ctx.entry);
+        return newId;
+      }
+    : undefined;
 
-	// Create the base glob loader with our wrapped generateId
-	const loader = glob({ ...globOptions, generateId: wrappedGenerateId });
-	const originalLoad = loader.load;
+  // Create the base glob loader with our wrapped generateId
+  const loader = glob({ ...globOptions, generateId: wrappedGenerateId });
+  const originalLoad = loader.load;
 
-	// Intercept the load function to inject our custom parser
-	// This allows us to provide both the transformed entry and original filename to the parser
-	loader.load = async ({ parseData, ...rest }) => {
-		return originalLoad({
-			parseData: async (entry) => {
-				// Retrieve the original filename from our map, falling back to entry.id if not found
-				const originalEntry = entryMap.get(entry.id) || entry.id;
-				// Call user's parser with both the transformed entry and original filename
-				return parseData(await parser(entry, originalEntry));
-			},
-			...rest,
-		});
-	};
+  // Intercept the load function to inject our custom parser
+  // This allows us to provide both the transformed entry and original filename to the parser
+  loader.load = async ({ parseData, ...rest }) => {
+    return originalLoad({
+      parseData: async (entry) => {
+        // Retrieve the original filename from our map, falling back to entry.id if not found
+        const originalEntry = entryMap.get(entry.id) || entry.id;
+        // Call user's parser with both the transformed entry and original filename
+        return parseData(await parser(entry, originalEntry));
+      },
+      ...rest,
+    });
+  };
 
-	return loader;
+  return loader;
 }

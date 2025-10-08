@@ -27,10 +27,10 @@ export interface MediaElementRef {
   readyState: number;
   networkState: number;
 
-  play(): Promise<void>;
-  pause(): void;
-  load(): void;
-  seek(time: number): void;
+  play: () => Promise<void>;
+  pause: () => void;
+  load: () => void;
+  seek: (time: number) => void;
 }
 
 export const VideoElement: React.ForwardRefExoticComponent<MediaElementProps> = forwardRef<

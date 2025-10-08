@@ -12,8 +12,9 @@ const stateMediator = { ...playable, ...audible, ...temporal, ...fullscreenable 
 
 type Params = Partial<Parameters<typeof factory>[0]>;
 
-export const createMediaStore = (params: Params = {}): MediaStore =>
-  factory({
+export function createMediaStore(params: Params = {}): MediaStore {
+  return factory({
     stateMediator: stateMediator as any,
     ...params,
   });
+}
