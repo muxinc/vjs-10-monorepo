@@ -31,8 +31,7 @@ async function getGitLastModifiedDate(filePath: string): Promise<Date | null> {
     if (!log.latest) return null;
 
     return new Date(log.latest.date);
-  }
-  catch {
+  } catch {
     return null;
   }
 }

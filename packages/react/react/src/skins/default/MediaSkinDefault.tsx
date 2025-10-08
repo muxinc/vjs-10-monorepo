@@ -75,7 +75,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
 
         <Popover.Root openOnHover delay={200} closeDelay={100}>
           <Popover.Trigger>
-            <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.VolumeButton}`}>
+            <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
               <VolumeHighIcon className={styles.VolumeHighIcon} />
               <VolumeLowIcon className={styles.VolumeLowIcon} />
               <VolumeOffIcon className={styles.VolumeOffIcon} />

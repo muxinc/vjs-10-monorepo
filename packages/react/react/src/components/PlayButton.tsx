@@ -34,7 +34,7 @@ export function usePlayButtonProps(props: Record<string, unknown>, state: Return
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    'role': 'button',
+    role: 'button',
     'aria-label': state.paused ? 'play' : 'pause',
     /** tooltip */
     'data-tooltip': state.paused ? 'Play' : 'Pause',
@@ -62,8 +62,7 @@ export function renderPlayButton(props: PlayButtonProps, state: PlayButtonState)
         if (props.disabled) return;
         if (state.paused) {
           state.requestPlay();
-        }
-        else {
+        } else {
           state.requestPause();
         }
       }}

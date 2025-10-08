@@ -63,8 +63,7 @@ export class MediaPopoverRoot extends HTMLElement {
 
     if (open) {
       this.#setupFloating();
-    }
-    else {
+    } else {
       this.#cleanup?.();
       this.#cleanup = null;
     }

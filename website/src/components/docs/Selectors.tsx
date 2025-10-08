@@ -37,8 +37,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
       if (firstGuide) {
         navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      }
-      else {
+      } else {
         navigate('/docs/');
       }
       return;
@@ -50,8 +49,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
       if (firstGuide) {
         navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      }
-      else {
+      } else {
         navigate('/docs/');
       }
       return;
@@ -65,8 +63,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
       if (firstGuide) {
         navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      }
-      else {
+      } else {
         navigate('/docs/');
       }
       return;
@@ -93,8 +90,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(currentFramework, newStyle);
       if (firstGuide) {
         navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${firstGuide}/`);
-      }
-      else {
+      } else {
         navigate('/docs/');
       }
       return;
@@ -108,8 +104,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       const firstGuide = findFirstGuide(currentFramework, newStyle);
       if (firstGuide) {
         navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${firstGuide}/`);
-      }
-      else {
+      } else {
         navigate('/docs/');
       }
       return;

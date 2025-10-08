@@ -1,5 +1,4 @@
 import antfu from '@antfu/eslint-config';
-
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default antfu({
@@ -23,9 +22,14 @@ export default antfu({
   plugins: {
     'jsx-a11y': jsxA11y,
   },
-}, {
   rules: {
+    // Allow single line bracing.
     'antfu/if-newline': 'off',
+    'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
+    // Only quote props when necessary.
+    'style/quote-props': ['error', 'as-needed'],
+    // JSX A11Y plugin rules
+    ...jsxA11y.configs.recommended.rules,
   },
 }, {
   files: ['**/*.md'],

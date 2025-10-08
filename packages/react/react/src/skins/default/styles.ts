@@ -88,7 +88,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   PlayTooltip: cn('play-tooltip'),
   PauseTooltip: cn('pause-tooltip'),
-  VolumeButton: cn(
+  MuteButton: cn(
     '[&_svg]:opacity-0',
     '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
     '[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',

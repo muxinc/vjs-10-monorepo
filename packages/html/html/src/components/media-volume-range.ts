@@ -102,8 +102,7 @@ export class VolumeRangeTrackBase extends HTMLElement {
     if (orientation === 'horizontal') {
       this.style.width = '100%';
       this.style.removeProperty('height');
-    }
-    else {
+    } else {
       this.style.height = '100%';
       this.style.removeProperty('width');
     }
@@ -131,8 +130,7 @@ export class VolumeRangeProgressBase extends HTMLElement {
       this.style.height = '100%';
       this.style.top = '0';
       this.style.removeProperty('bottom');
-    }
-    else {
+    } else {
       this.style.height = 'var(--slider-fill, 0%)';
       this.style.width = '100%';
       this.style.bottom = '0';
@@ -159,8 +157,7 @@ export class VolumeRangeThumbBase extends HTMLElement {
       this.style.left = 'var(--slider-fill, 0%)';
       this.style.top = '50%';
       this.style.transform = 'translate(-50%, -50%)';
-    }
-    else {
+    } else {
       this.style.bottom = 'var(--slider-fill, 0%)';
       this.style.left = '50%';
       this.style.transform = 'translate(-50%, 50%)';

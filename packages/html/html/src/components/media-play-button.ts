@@ -19,8 +19,7 @@ export class PlayButtonBase extends MediaChromeButton {
     if (state && type === 'click') {
       if (state.paused) {
         state.requestPlay();
-      }
-      else {
+      } else {
         state.requestPause();
       }
     }
@@ -55,7 +54,7 @@ export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (state, _eleme
     'data-paused': state.paused,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
-    'role': 'button',
+    role: 'button',
     'aria-label': state.paused ? 'play' : 'pause',
     /** tooltip */
     'data-tooltip': state.paused ? 'Play' : 'Pause',

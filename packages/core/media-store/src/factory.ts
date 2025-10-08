@@ -114,11 +114,9 @@ export function createMediaStore({
 
       if (type === 'mediastateownerchangerequest') {
         updateStateOwners({ media: detail });
-      }
-      else if (type === 'containerstateownerchangerequest') {
+      } else if (type === 'containerstateownerchangerequest') {
         updateStateOwners({ container: detail });
-      }
-      else {
+      } else {
         for (const stateObject of Object.values(stateMediator).filter(
           (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry,
         )) {
