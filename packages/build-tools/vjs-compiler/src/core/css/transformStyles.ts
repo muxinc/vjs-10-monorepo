@@ -97,10 +97,18 @@ function rescopeCSSToStyleKeys(
 ): string {
   // Phase 3: Build utility class to declarations map
   const utilityMap = new Map<string, postcss.Declaration[]>();
+  let hostRule: postcss.Rule | null = null;
 
   root.walkRules((rule) => {
-    // Extract utility class name (e.g., '.flex' → 'flex')
     const selector = rule.selector.trim();
+
+    // Preserve :host rule (contains CSS variable definitions)
+    if (selector === ':host') {
+      hostRule = rule.clone();
+      return;
+    }
+
+    // Extract utility class name (e.g., '.flex' → 'flex')
     if (selector.startsWith('.')) {
       const utilityClass = selector.slice(1);
       const declarations: postcss.Declaration[] = [];
@@ -125,6 +133,11 @@ function rescopeCSSToStyleKeys(
 
   // Generate rescoped CSS for each style key
   const rescopedRules: string[] = [];
+
+  // Prepend :host rule with CSS variable definitions (if present)
+  if (hostRule) {
+    rescopedRules.push(hostRule.toString());
+  }
 
   for (const [key, classString] of Object.entries(styles)) {
     const utilities = classString.split(/\s+/).filter(Boolean);
