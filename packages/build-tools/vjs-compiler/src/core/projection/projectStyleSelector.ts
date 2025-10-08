@@ -90,9 +90,10 @@ function projectComponentSelectorIdentifier(
   }
 
   // Convert component name to custom element name
-  // PlayButton → play-button
+  // PlayButton → play-button → media-play-button
   // MediaContainer → media-container
-  const elementName = toKebabCase(componentName);
+  const kebabName = toKebabCase(componentName);
+  const elementName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;
 
   return {
     cssSelector: elementName,
@@ -119,8 +120,10 @@ function projectNestedComponentSelector(key: string, usedOn: string[]): Selector
   }
 
   // Convert compound component to custom element name
-  // TimeRange.Root → time-range-root (use the full compound name)
-  const elementName = toKebabCase(componentName.replace('.', ''));
+  // TimeRange.Root → TimeRangeRoot → time-range-root → media-time-range-root
+  const flattenedName = componentName.replace(/\./g, ''); // Remove dots
+  const kebabName = toKebabCase(flattenedName);
+  const elementName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;
 
   return {
     cssSelector: elementName,

@@ -55,6 +55,7 @@ export function transformJSX(
  * Transform JSX element name
  *
  * - Component names → web component names (PlayButton → media-play-button)
+ * - Compound components → web component names (TimeRange.Root → media-time-range-root)
  * - Built-in elements → preserve (div, span, etc.)
  *
  * @param element - JSX opening or closing element
@@ -74,7 +75,46 @@ function transformJSXElementName(element: t.JSXOpeningElement | t.JSXClosingElem
     }
     // Built-in elements (div, span) - no transformation needed
   }
-  // TODO: Handle member expressions (TimeRange.Root) in Phase 12
+  // Handle member expressions (TimeRange.Root → media-time-range-root)
+  else if (t.isJSXMemberExpression(name)) {
+    const fullName = flattenMemberExpression(name);
+    const kebabName = toKebabCase(fullName);
+    const webComponentName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;
+
+    // Replace member expression with identifier
+    element.name = t.jsxIdentifier(webComponentName);
+  }
+}
+
+/**
+ * Flatten JSX member expression to a single string
+ *
+ * Examples:
+ * - TimeRange.Root → TimeRangeRoot
+ * - TimeRange.Root.Track → TimeRangeRootTrack
+ *
+ * @param node - JSX member expression
+ * @returns Flattened string
+ */
+function flattenMemberExpression(node: t.JSXMemberExpression): string {
+  const parts: string[] = [];
+  let current: t.JSXMemberExpression | t.JSXIdentifier = node;
+
+  // Traverse from right to left collecting parts
+  while (t.isJSXMemberExpression(current)) {
+    if (t.isJSXIdentifier(current.property)) {
+      parts.unshift(current.property.name);
+    }
+    current = current.object as t.JSXMemberExpression | t.JSXIdentifier;
+  }
+
+  // Add leftmost identifier (namespace)
+  if (t.isJSXIdentifier(current)) {
+    parts.unshift(current.name);
+  }
+
+  // Join all parts: TimeRange + Root → TimeRangeRoot
+  return parts.join('');
 }
 
 /**

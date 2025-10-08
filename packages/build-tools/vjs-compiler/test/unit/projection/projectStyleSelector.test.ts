@@ -16,7 +16,7 @@ describe('projectStyleSelector', () => {
 
     const projection = projectStyleSelector(styleKey);
 
-    expect(projection.cssSelector).toBe('play-button');
+    expect(projection.cssSelector).toBe('media-play-button');
     expect(projection.needsClassAttribute).toBe(false);
     expect(projection.className).toBeUndefined();
   });
@@ -58,7 +58,7 @@ describe('projectStyleSelector', () => {
 
     const projection = projectStyleSelector(styleKey);
 
-    expect(projection.cssSelector).toBe('time-range-root');
+    expect(projection.cssSelector).toBe('media-time-range-root');
     expect(projection.needsClassAttribute).toBe(false);
     expect(projection.className).toBeUndefined();
   });
@@ -86,7 +86,7 @@ describe('projectStyleSelector', () => {
 
     const projection = projectStyleSelector(styleKey);
 
-    expect(projection.cssSelector).toBe('volume-icon');
+    expect(projection.cssSelector).toBe('media-volume-icon');
   });
 
   it('handles compound component names', () => {
@@ -98,6 +98,6 @@ describe('projectStyleSelector', () => {
 
     const projection = projectStyleSelector(styleKey);
 
-    expect(projection.cssSelector).toBe('time-range-track');
+    expect(projection.cssSelector).toBe('media-time-range-track');
   });
 });
