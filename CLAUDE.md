@@ -12,6 +12,8 @@ This is a Video.js 10 monorepo organized by platform/runtime with a clear depend
 - **HTML packages** (`packages/html/*`) - DOM/Browser-specific implementations
 - **React packages** (`packages/react/*`) - React-specific implementations
 - **React Native packages** (`packages/react-native/*`) - React Native implementations
+- **Examples** (`examples/*`) - Demo applications for different platforms
+- **Website** (`website/`) - Astro-based website, including documentation and blog
 
 ### Dependency Hierarchy
 
@@ -35,33 +37,56 @@ This prevents circular dependencies and ensures maximum reusability.
 
 ```bash
 # Install all dependencies
-npm install
+pnpm install
 
 # Build all packages
-npm run build
+pnpm build
+
+# Build only library packages (excludes examples)
+pnpm build:libs
 
 # Run tests across all packages
-npm run test
+pnpm test
 
 # Type checking across all packages
-npm run typecheck
+pnpm typecheck
 
 # Lint all packages
-npm run lint
+pnpm lint
 
 # Clean all packages
-npm run clean
+pnpm clean
+```
+
+### Development Servers
+
+```bash
+# Run HTML demo
+pnpm dev:html
+
+# Run React demo
+pnpm dev:react
+
+# Run website
+pnpm dev:website
+
+# Run all dev servers in parallel
+pnpm dev
 ```
 
 ### Working with Specific Packages
 
 ```bash
 # Build specific package
-npm run build --workspace=@vjs-10/media-store
+pnpm --filter @vjs-10/media-store build
+
+# Run website independently
+cd website
+pnpm dev
 
 # Work in specific package directory
 cd packages/core/media-store
-npm run build
+pnpm build
 ```
 
 ## TypeScript Configuration
@@ -99,14 +124,30 @@ npm run clean    # Remove dist directory
 
 ## Workspace Management
 
-This uses npm workspaces with the following workspace patterns:
+This uses pnpm workspaces with the following workspace patterns:
 
-- `packages/core/*`
-- `packages/html/*`
-- `packages/react/*`
-- `packages/react-native/*`
+- `packages/core/*` - Core library packages
+- `packages/html/*` - HTML/DOM packages
+- `packages/react/*` - React packages
+- `packages/react-native/*` - React Native packages
+- `examples/*` - Demo applications
+- `website` - Website (Astro)
 
 Internal dependencies use `workspace:*` protocol for linking between packages.
+
+### Website
+
+The `website/` directory contains an Astro-based website with its own dependencies and build process. It's integrated into the monorepo workspace but can be developed independently:
+
+```bash
+# From root - runs via Turbo
+pnpm dev:website
+
+# From website directory - runs directly
+cd website && pnpm dev
+```
+
+The website uses Astro with MDX support for content authoring.
 
 ## Git Workflow
 

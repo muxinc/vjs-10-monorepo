@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { getCollection } from 'astro:content';
+
+import { Selectors } from '@/components/docs/Selectors';
+import SidebarItem from '@/components/docs/SidebarItem.astro';
+import { type AnySupportedStyle, type SupportedFramework } from '@/types/docs';
+import { filterSidebar } from '@/utils/docs/sidebar';
+
+import Base from './Base.astro';
+
+type Props = {
+  doc: CollectionEntry<'docs'>;
+  framework: SupportedFramework;
+  style: AnySupportedStyle;
+};
+
+const { doc, framework, style } = Astro.props;
+const filteredSidebar = filterSidebar(framework, style);
+
+// Fetch all docs to get their titles
+const allDocs = await getCollection('docs');
+const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
+---
+
+<Base title={doc.data.title} description={doc.data.description}>
+  <div class="grid grid-cols-[theme(spacing.64)_1fr] gap-4 max-w-7xl mx-auto p-4 docs-container">
+    <aside>
+      <Selectors client:load currentFramework={framework} currentStyle={style} />
+      <nav>
+        {
+          filteredSidebar.map((item) => (
+            <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />
+          ))
+        }
+      </nav>
+    </aside>
+    <main>
+      <article class="max-w-4xl">
+        <h1 class="text-3xl font-bold mb-4">{doc.data.title}</h1>
+        <p class="text-gray-600 mb-8">{doc.data.description}</p>
+        <div class="prose">
+          <slot />
+        </div>
+      </article>
+    </main>
+  </div>
+</Base>

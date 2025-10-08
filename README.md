@@ -26,7 +26,8 @@ vjs-10-monorepo/
 │       ├── react-native-icons/  # React Native icon components
 │       ├── react-native-media-elements/ # React Native media components
 │       └── react-native/   # Complete React Native UI library
-└── apps/                   # Example applications (coming soon)
+├── examples/               # Demo applications
+└── website/                # Astro-based website (docs & blog)
 ```
 
 ## Packages
@@ -99,14 +100,22 @@ pnpm install
 # Build all packages
 pnpm build
 
+# Build only library packages (excludes examples)
+pnpm build:libs
+
 # Run type checking
 pnpm typecheck
 
 # Run linting
 pnpm lint
 
-# Run dev build
+# Run all dev servers in parallel
 pnpm dev
+
+# Run specific dev servers
+pnpm dev:html    # HTML demo
+pnpm dev:react   # React demo
+pnpm dev:website # Website (docs & blog)
 ```
 
 ## Package Dependencies

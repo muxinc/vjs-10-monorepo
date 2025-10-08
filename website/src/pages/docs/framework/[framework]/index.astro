@@ -1,0 +1,16 @@
+---
+import {
+	SUPPORTED_FRAMEWORKS,
+	type SupportedFramework,
+	getDefaultStyle,
+} from '@/types/docs';
+import { getDocsRedirectUrl } from '@/utils/docs/redirects';
+
+export function getStaticPaths() {
+	return SUPPORTED_FRAMEWORKS.map((framework) => ({ params: { framework } }));
+}
+
+const { framework } = Astro.params as { framework: SupportedFramework };
+
+return Astro.redirect(getDocsRedirectUrl(framework, getDefaultStyle(framework)));
+---

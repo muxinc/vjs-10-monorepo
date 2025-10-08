@@ -1,0 +1,31 @@
+[
+	{
+		"id": "john-doe",
+		"name": "John Doe",
+		"shortName": "John",
+		"bio": "Software engineer and video technology enthusiast. Loves building web applications.",
+		"avatar": "https://placecats.com/neo/150/150",
+		"socialLinks": {
+			"x": "https://x.com/johndoe",
+			"github": "https://github.com/johndoe"
+		}
+	},
+	{
+		"id": "jane-smith",
+		"name": "Jane Smith",
+		"shortName": "Jane",
+		"bio": "Frontend developer passionate about accessibility and user experience.",
+		"avatar": "https://placecats.com/millie/150/150",
+		"socialLinks": {
+			"github": "https://github.com/janesmith",
+			"linkedin": "https://linkedin.com/in/janesmith",
+			"website": "https://janesmith.dev"
+		}
+	},
+	{
+		"id": "alex-johnson",
+		"name": "Alex Johnson",
+		"shortName": "Alex",
+		"bio": "Full-stack developer with a focus on media streaming technologies."
+	}
+]
