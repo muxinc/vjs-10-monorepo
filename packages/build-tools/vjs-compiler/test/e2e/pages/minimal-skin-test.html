@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Page</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <minimal-skin>
+      <video slot="media" src="test.mp4" style="width: 640px; height: 360px; background: #000;"></video>
+    </minimal-skin>
+  </div>
+
+  <script type="module">
+    // Base MediaSkin class (stub for testing)
+    class MediaSkin extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        const html = this.constructor.getTemplateHTML();
+        this.shadowRoot.innerHTML = html;
+      }
+    }
+
+    // Make MediaSkin available globally for the compiled code
+    window.MediaSkin = MediaSkin;
+
+    // Compiled skin code
+    import '../../../components/media-container';
+import '../../../components/media-play-button';
+
+export class MinimalSkin extends window.MediaSkin {
+  static getTemplateHTML = getTemplateHTML;
+}
+
+export function getTemplateHTML() {
+  return /* html */ `
+    <style>
+      .Container {
+        position: relative
+      }
+      
+      .Controls {
+        display: flex
+      }
+      
+      .Button {
+        /* Tailwind classes: p-2 rounded */
+        /* No CSS generated */
+      }
+    </style>
+
+    <media-container class="container">
+          <slot name="media" slot="media"></slot>
+          <div class="controls">
+            <media-play-button class="button">
+          </div>
+        </media-container>
+  `;
+}
+
+// Self-register the component
+if (!customElements.get('minimal-skin')) {
+  customElements.define('minimal-skin', MinimalSkin);
+}
+
+  </script>
+</body>
+</html>
