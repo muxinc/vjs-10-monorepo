@@ -8,6 +8,7 @@
 import type {
   UsageGraph,
   ImportDeclaration,
+  ImportUsage,
   CategorizedImport,
   StyleKeyUsage,
   PathContext,
@@ -59,7 +60,7 @@ export function categorizeUsageGraph(
   const categorizedImports: CategorizedImport[] = [];
   for (const importDecl of imports) {
     // Find usage for this import (check default import and specifiers)
-    let usage = null;
+    let usage: ImportUsage | undefined;
 
     if (importDecl.defaultImport) {
       usage = usageGraph.imports.find((u) => u.name === importDecl.defaultImport);

@@ -60,10 +60,15 @@ describe('Phase 2: CSS Transformation', () => {
     expect(result.code).toContain('<style>');
     expect(result.code).not.toContain('/* Empty for now - Phase 2 will add CSS */');
 
-    // Validate CSS classes are generated
-    expect(result.code).toContain('.Container');
-    expect(result.code).toContain('.Controls');
-    expect(result.code).toContain('.Button');
+    // Validate CSS selectors are generated with proper categories
+    expect(result.code).toContain('media-container {'); // Component Selector ID → element selector
+    expect(result.code).toContain('.controls {'); // Generic Selector → class selector
+    // Button is on PlayButton - should be Component Selector ID but we don't have categorization data for it yet
+
+    // Validate HTML structure - Component Selector IDs should NOT have class attributes
+    expect(result.code).toMatch(/<media-container>/); // No class attribute
+    expect(result.code).toMatch(/<div class="controls">/); // Generic selector needs class
+    expect(result.code).toMatch(/<media-play-button>/); // Component Selector ID - no class
 
     // Phase 3: Validate actual CSS properties are being generated
     expect(result.code).toMatch(/position:\s*relative/); // from 'relative'
@@ -168,10 +173,15 @@ describe('Phase 2: CSS Transformation', () => {
 
     const result = await compileSkin(config);
 
-    // Validate all style classes are present
-    expect(result.code).toContain('.Container');
-    expect(result.code).toContain('.Header');
-    expect(result.code).toContain('.Content');
+    // Validate all style selectors are present with proper categories
+    expect(result.code).toContain('media-container {'); // Component Selector ID → element selector
+    expect(result.code).toContain('.header {'); // Generic Selector → class selector
+    expect(result.code).toContain('.content {'); // Generic Selector → class selector
+
+    // Validate HTML structure
+    expect(result.code).toMatch(/<media-container>/); // Component Selector ID - no class
+    expect(result.code).toMatch(/<div class="header">/); // Generic selector needs class
+    expect(result.code).toMatch(/<div class="content">/); // Generic selector needs class
 
     // Phase 3: Validate basic CSS properties are being generated
     expect(result.code).toMatch(/position:\s*relative/); // from 'relative'

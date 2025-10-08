@@ -1,11 +1,12 @@
 /**
  * Transform styles object to CSS
  *
- * Phase 2: Simple Tailwind utilities → CSS Modules
+ * Phase 3: Tailwind utilities → CSS with proper selectors (using categorization)
  */
 
-import type { StylesObject } from '../../types.js';
+import type { StylesObject, StyleKeyUsage } from '../../types.js';
 import { processTailwindClasses } from './processCSS.js';
+import { projectStyleSelector } from '../projection/projectStyleSelector.js';
 import postcss from 'postcss';
 
 /**
@@ -27,15 +28,20 @@ export interface TransformStylesResult {
 /**
  * Transform styles object to CSS
  *
- * Phase 3: Full Tailwind CSS processing
+ * Phase 3: Full Tailwind CSS processing with categorization
  * - Process Tailwind classes through Tailwind v4
  * - Parse generated CSS rules
- * - Rescope utility classes to style keys
+ * - Rescope utility classes to style keys with proper selectors
+ * - Use categorization to determine element vs class selectors
  *
  * @param styles - Styles object from styles.ts
+ * @param categorizedStyleKeys - Categorized style keys from usage analysis
  * @returns Transformation result with CSS and class name mapping
  */
-export async function transformStyles(styles: StylesObject): Promise<TransformStylesResult> {
+export async function transformStyles(
+  styles: StylesObject,
+  categorizedStyleKeys?: StyleKeyUsage[]
+): Promise<TransformStylesResult> {
   const classNames: Record<string, string> = {};
 
   // Identity mapping for Phase 3
@@ -62,8 +68,8 @@ export async function transformStyles(styles: StylesObject): Promise<TransformSt
   // Parse the Tailwind CSS output
   const root = postcss.parse(tailwindCSS);
 
-  // Phase 3: Rescope utility classes to style keys
-  const rescopedCSS = rescopeCSSToStyleKeys(root, styles);
+  // Phase 3: Rescope utility classes to style keys with proper selectors
+  const rescopedCSS = rescopeCSSToStyleKeys(root, styles, categorizedStyleKeys);
 
   return {
     css: rescopedCSS,
@@ -75,13 +81,20 @@ export async function transformStyles(styles: StylesObject): Promise<TransformSt
  * Rescope utility classes from Tailwind output to style keys
  *
  * Takes raw Tailwind CSS (e.g., `.flex { display: flex }`)
- * and rescopes it to style keys (e.g., `.Controls { display: flex }`)
+ * and rescopes it to style keys with proper selectors based on categorization
+ * - Component Selector ID: element selector (e.g., `media-container { ... }`)
+ * - Type/Generic Selector: class selector (e.g., `.button { ... }`)
  *
  * @param root - PostCSS AST of Tailwind output
  * @param styles - Original styles object
+ * @param categorizedStyleKeys - Categorized style keys with selector information
  * @returns Rescoped CSS string
  */
-function rescopeCSSToStyleKeys(root: postcss.Root, styles: Record<string, string>): string {
+function rescopeCSSToStyleKeys(
+  root: postcss.Root,
+  styles: Record<string, string>,
+  categorizedStyleKeys?: StyleKeyUsage[]
+): string {
   // Phase 3: Build utility class to declarations map
   const utilityMap = new Map<string, postcss.Declaration[]>();
 
@@ -102,6 +115,14 @@ function rescopeCSSToStyleKeys(root: postcss.Root, styles: Record<string, string
     }
   });
 
+  // Build map of style keys to their categorization
+  const styleKeyMap = new Map<string, StyleKeyUsage>();
+  if (categorizedStyleKeys) {
+    for (const styleKey of categorizedStyleKeys) {
+      styleKeyMap.set(styleKey.key, styleKey);
+    }
+  }
+
   // Generate rescoped CSS for each style key
   const rescopedRules: string[] = [];
 
@@ -118,8 +139,16 @@ function rescopeCSSToStyleKeys(root: postcss.Root, styles: Record<string, string
     }
 
     if (declarations.length > 0) {
+      // Determine selector based on categorization
+      let selector = `.${key}`; // Default to class selector
+      const styleKey = styleKeyMap.get(key);
+      if (styleKey) {
+        const projection = projectStyleSelector(styleKey);
+        selector = projection.cssSelector;
+      }
+
       // Build CSS rule
-      const rule = postcss.rule({ selector: `.${key}` });
+      const rule = postcss.rule({ selector });
       for (const decl of declarations) {
         rule.append(decl);
       }

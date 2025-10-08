@@ -111,14 +111,25 @@ describe('Phase 3: Browser E2E Tests', () => {
 
     expect(hasStyles).toBe(true);
 
-    // TODO: Add CSS computed styles validation
-    // Currently blocked by missing usage analysis and categorization layers.
-    // Issue: CSS has `.Container` but HTML has `class="container"` (lowercase)
-    // Need to implement proper selector categorization:
-    // - Component Selector Identifier (exact match) → element selector
-    // - Component Type Selector (suffix pattern) → class selector
-    // - Generic Selector (no match) → class selector
-    // See: docs/compiler-architecture.md "Module Relationships & Usage Analysis"
+    // Validate CSS computed styles are correctly applied
+    // Now that categorization is implemented, verify element selectors work
+    const computedStyles = await context.webComponentPage.evaluate((tagName) => {
+      const el = document.querySelector(tagName) as HTMLElement;
+      if (!el || !el.shadowRoot) return null;
+
+      // Find the media-container element inside shadow DOM
+      const container = el.shadowRoot.querySelector('media-container') as HTMLElement;
+      if (!container) return null;
+
+      const styles = window.getComputedStyle(container);
+      return {
+        position: styles.position,
+        display: styles.display,
+      };
+    }, result.tagName);
+
+    expect(computedStyles).toBeTruthy();
+    expect(computedStyles?.position).toBe('relative'); // from styles.Container → media-container { position: relative }
   }, 30000); // 30 second timeout for browser tests
 
   it('validates CSS contains expected properties', async () => {

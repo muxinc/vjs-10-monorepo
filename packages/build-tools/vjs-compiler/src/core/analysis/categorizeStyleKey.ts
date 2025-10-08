@@ -48,36 +48,47 @@ export function categorizeStyleKey(
 
 /**
  * Predicate: Is this a Component Selector Identifier?
- * Style key exactly matches a component name (case-sensitive)
+ * Style key is used on exactly one component (single-component styling)
+ *
+ * Design principle: If a style key is used on only ONE VJS component,
+ * it should use an element selector (no class needed), regardless
+ * of whether the names match exactly. This is a unique identifier
+ * for that component in this context.
+ *
+ * Examples:
+ * - styles.PlayButton on <PlayButton> ✓ (exact match)
+ * - styles.Container on <MediaContainer> ✓ (single component usage)
+ * - styles.Button on <PlayButton> AND <PauseButton> ✗ (multiple usage)
+ * - styles.Controls on <div> ✗ (not a component)
  */
 function isComponentSelectorIdentifier(
-  key: string,
+  _key: string,
   usedOn: string[],
   componentNames: string[]
 ): boolean {
-  // Must be used on exactly one component
+  // Must be used on exactly one element
   if (usedOn.length !== 1) {
     return false;
   }
 
-  const componentName = usedOn[0];
-  if (!componentName) {
+  const usedOnElement = usedOn[0];
+  if (!usedOnElement) {
     return false;
   }
 
-  // Check for exact match (including compound components)
-  // PlayButton === PlayButton ✓
-  // TimeRange.Root !== RangeRoot (need to check suffix)
-  if (key === componentName) {
-    return true;
+  // Check if it's used on a compound component (belongs to nested category)
+  if (usedOnElement.includes('.')) {
+    return false; // Let nested component selector handle this
   }
 
-  // Check if it's a simple component name match
-  if (componentNames.includes(key)) {
-    return true;
+  // Check if the element it's used on is actually a component
+  // (not a div, span, etc.)
+  if (!componentNames.includes(usedOnElement)) {
+    return false; // Not used on a component → generic selector
   }
 
-  return false;
+  // Used on exactly one component = Component Selector ID
+  return true;
 }
 
 /**
@@ -114,7 +125,7 @@ function isNestedComponentSelector(key: string, usedOn: string[]): boolean {
 function isComponentTypeSelector(
   key: string,
   usedOn: string[],
-  componentNames: string[]
+  _componentNames: string[]
 ): boolean {
   // Must be used on at least one component
   if (usedOn.length === 0) {

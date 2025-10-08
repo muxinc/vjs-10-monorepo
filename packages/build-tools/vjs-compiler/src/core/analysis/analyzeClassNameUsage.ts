@@ -5,7 +5,7 @@
  * This is Phase 1: Identification - scan AST to find usage patterns
  */
 
-import traverse from '@babel/traverse';
+import traverse, { type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import type { ImportUsage, StyleKeyUsage } from '../../types.js';
 
@@ -88,7 +88,7 @@ export function analyzeClassNameUsage(
 /**
  * Get the component name that a JSX attribute belongs to
  */
-function getComponentName(path: t.NodePath<t.JSXAttribute>): string | null {
+function getComponentName(path: NodePath<t.JSXAttribute>): string | null {
   const openingElement = path.parentPath?.node;
   if (!t.isJSXOpeningElement(openingElement)) {
     return null;
