@@ -1,0 +1,15 @@
+---
+import type { AnySupportedStyle } from '@/types/docs';
+
+interface Props {
+	styles?: AnySupportedStyle[];
+}
+
+const { styles } = Astro.props;
+const { style } = Astro.params;
+
+// Only render if current style matches, or if no styles specified (all styles)
+const shouldRender = !styles || styles.includes(style as AnySupportedStyle);
+---
+
+{shouldRender && <slot />}

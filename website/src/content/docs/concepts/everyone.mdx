@@ -1,0 +1,53 @@
+---
+title: 'Concepts for Everyone'
+description: 'Core concepts that apply to all frameworks and styling approaches'
+---
+
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import StyleCase from '@/components/docs/StyleCase.astro';
+
+# Concepts for Everyone
+
+This guide is available to all users regardless of their framework or styling choice.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is placeholder content to demonstrate the docs structure.
+
+## Framework-Specific Content
+
+<FrameworkCase frameworks={["react"]}>
+
+### React-Specific Section
+
+This content only appears when viewing the React version of the docs.
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+### HTML-Specific Section
+
+This content only appears when viewing the HTML version of the docs.
+
+</FrameworkCase>
+
+## Style-Specific Content
+
+<StyleCase styles={["css"]}>
+
+### CSS Styling
+
+This content only appears when viewing the CSS styling approach.
+
+</StyleCase>
+
+<StyleCase styles={["tailwind"]}>
+
+### Tailwind Styling
+
+This content only appears when viewing the Tailwind styling approach.
+
+</StyleCase>
+
+## Content for All
+
+This appears for all frameworks (no frameworks prop specified).

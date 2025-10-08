@@ -1,0 +1,40 @@
+---
+import {
+	type SupportedFramework,
+	type AnySupportedStyle,
+	type Guide,
+	type Section,
+	isSection,
+} from '@/types/docs';
+
+type Props = {
+	item: Guide | Section;
+	framework: SupportedFramework;
+	style: AnySupportedStyle;
+	docTitles: Map<string, string>;
+};
+
+const { item, framework, style, docTitles } = Astro.props;
+---
+
+{
+  isSection(item) ? (
+    <details open>
+      <summary>{item.sidebarLabel}</summary>
+      {item.contents.map((contentItem) => (
+        <Astro.self
+          item={contentItem}
+          framework={framework}
+          style={style}
+          docTitles={docTitles}
+        />
+      ))}
+    </details>
+  ) : (
+    <div class="sidebar-guide">
+      <a href={`/docs/framework/${framework}/style/${style}/${item.slug}/`}>
+        {item.sidebarLabel || docTitles.get(item.slug) || item.slug}
+      </a>
+    </div>
+  )
+}
