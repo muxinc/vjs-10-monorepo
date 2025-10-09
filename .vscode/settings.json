@@ -49,5 +49,6 @@
     "pcss",
     "postcss",
     "svg"
-  ]
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint"
 }
