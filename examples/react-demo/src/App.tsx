@@ -1,8 +1,8 @@
 import type { ChangeEventHandler } from 'react';
 
-import { useCallback, useMemo, useState } from 'react';
-
 import { MediaProvider, MediaSkinDefault, MediaSkinToasted, Video } from '@vjs-10/react';
+
+import { useCallback, useMemo, useState } from 'react';
 
 import './globals.css';
 
@@ -66,18 +66,18 @@ export default function App(): JSX.Element {
   const [mediaSourceKey, setMediaSourceKey] = useState<MediaSourceKey>(() => getParam('source', DEFAULT_MEDIA_SOURCE));
 
   const mediaSource = useMemo(() => {
-    let match = mediaSources.find((m) => m.key === mediaSourceKey);
+    let match = mediaSources.find(m => m.key === mediaSourceKey);
     if (!match) {
-      match = mediaSources.find((m) => m.key === DEFAULT_MEDIA_SOURCE)!;
+      match = mediaSources.find(m => m.key === DEFAULT_MEDIA_SOURCE)!;
       setMediaSourceKey(match.key);
     }
     return match.value;
   }, [mediaSourceKey]);
 
   const Skin = useMemo(() => {
-    let match = skins.find((s) => s.key === skinKey);
+    let match = skins.find(s => s.key === skinKey);
     if (!match) {
-      match = skins.find((s) => s.key === DEFAULT_SKIN)!;
+      match = skins.find(s => s.key === DEFAULT_SKIN)!;
       setSkinKey(match.key);
     }
     return match.component;

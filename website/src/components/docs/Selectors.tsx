@@ -121,7 +121,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       <div>
         <label htmlFor="framework-select">Framework:</label>
         <select id="framework-select" value={currentFramework} onChange={handleFrameworkChange}>
-          {SUPPORTED_FRAMEWORKS.map((fw) => (
+          {SUPPORTED_FRAMEWORKS.map(fw => (
             <option key={fw} value={fw}>
               {fw}
             </option>
@@ -131,7 +131,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
       <div>
         <label htmlFor="style-select">Style:</label>
         <select id="style-select" value={currentStyle} onChange={handleStyleChange}>
-          {availableStyles.map((st) => (
+          {availableStyles.map(st => (
             <option key={st} value={st}>
               {st}
             </option>

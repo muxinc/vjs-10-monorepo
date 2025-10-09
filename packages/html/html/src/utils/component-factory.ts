@@ -30,7 +30,7 @@ export function toConnectedHTMLComponent<State = any>(
   BaseClass: CustomElementConstructor,
   stateHook: StateHook<State>,
   propsHook: PropsHook<State>,
-  displayName?: string
+  displayName?: string,
 ): ConnectedComponentConstructor<State> {
   const ConnectedComponent = class extends ConsumerMixin(BaseClass) {
     static get observedAttributes(): string[] {

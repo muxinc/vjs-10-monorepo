@@ -12,7 +12,7 @@ const styles: MediaToastedSkinStyles = {
     // Prevent rounded corners in fullscreen.
     '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
     // Ensure the nested video inherits the radius.
-    '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto'
+    '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto',
   ),
   Overlay: cn(
     'absolute inset-0 rounded-[inherit] bg-black/30',
@@ -20,7 +20,7 @@ const styles: MediaToastedSkinStyles = {
     'opacity-0 delay-500 duration-300',
     //  FIXME: Temporary hide/show logic
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0 has-[+.controls_[data-paused]]:duration-75',
-    'group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75'
+    'group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
@@ -31,7 +31,7 @@ const styles: MediaToastedSkinStyles = {
     //  FIXME: Temporary hide/show logic
     'translate-y-full opacity-0 delay-500 duration-300',
     'has-[[data-paused]]:translate-y-0 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0 has-[[data-paused]]:duration-75',
-    'group-hover/root:translate-y-0 group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75'
+    'group-hover/root:translate-y-0 group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
   ),
   Button: cn(
     'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-md',
@@ -48,16 +48,16 @@ const styles: MediaToastedSkinStyles = {
     // Expanded state
     'aria-expanded:text-white/70',
     // Pressed state
-    'active:scale-95'
+    'active:scale-95',
   ),
   ButtonGroup: cn('flex items-center gap-1.5'),
   IconButton: cn(
     'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20'
+    '[&_svg]:shrink-0 [&_svg]:transition [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
-    '[&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100'
+    '[&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100',
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
@@ -66,7 +66,7 @@ const styles: MediaToastedSkinStyles = {
     '[&[data-volume-level="high"]_.volume-high-icon]:inline',
     '[&[data-volume-level="medium"]_.volume-low-icon]:inline',
     '[&[data-volume-level="low"]_.volume-low-icon]:inline',
-    '[&[data-volume-level="off"]_.volume-off-icon]:inline'
+    '[&[data-volume-level="off"]_.volume-off-icon]:inline',
   ),
   VolumeHighIcon: cn('volume-high-icon'),
   VolumeLowIcon: cn('volume-low-icon'),
@@ -74,19 +74,19 @@ const styles: MediaToastedSkinStyles = {
   FullScreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
-    '[&_path]:transition-transform ease-out'
+    '[&_path]:transition-transform ease-out',
   ),
   FullScreenEnterIcon: cn(
     'fullscreen-enter-icon',
     'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
-    'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px'
+    'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
   FullScreenExitIcon: cn(
     'fullscreen-exit-icon',
     '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
     '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
     'group-hover/button:[&_.arrow-1]:translate-0',
-    'group-hover/button:[&_.arrow-2]:translate-0'
+    'group-hover/button:[&_.arrow-2]:translate-0',
   ),
   TimeSliderRoot: cn('mx-2'),
   TimeSliderThumb: cn('opacity-0'),
@@ -94,19 +94,19 @@ const styles: MediaToastedSkinStyles = {
   SliderRoot: cn(
     'flex items-center justify-center flex-1 group/slider relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
-    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20'
+    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
   ),
   SliderTrack: cn(
     'relative select-none rounded-full bg-white/10',
     '[&[data-orientation="horizontal"]]:w-full [&[data-orientation="horizontal"]]:h-1',
-    '[&[data-orientation="vertical"]]:w-1'
+    '[&[data-orientation="vertical"]]:w-1',
   ),
   SliderProgress: cn('bg-white rounded-[inherit]'),
   SliderPointer: cn('hidden'),
   SliderThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500',
-    'size-3 active:size-3.5 group-active/slider:size-3.5 hover:cursor-ew-resize'
+    'size-3 active:size-3.5 group-active/slider:size-3.5 hover:cursor-ew-resize',
   ),
 };
 

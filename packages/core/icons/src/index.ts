@@ -82,6 +82,6 @@ export function getAllIcons(): IconDefinition[] {
 }
 
 export function createSVGString(icon: IconDefinition): string {
-  const pathElements = icon.paths.map((path) => `<path d="${path}"/>`).join('');
+  const pathElements = icon.paths.map(path => `<path d="${path}"/>`).join('');
   return `<svg viewBox="${icon.viewBox}" xmlns="http://www.w3.org/2000/svg">${pathElements}</svg>`;
 }

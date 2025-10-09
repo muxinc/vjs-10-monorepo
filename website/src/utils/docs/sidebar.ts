@@ -33,10 +33,10 @@ function isItemVisible(item: Guide | Section, framework: SupportedFramework, sty
 export function filterSidebar(
   framework: SupportedFramework,
   style: AnySupportedStyle,
-  sidebarToFilter: Sidebar = sidebar
+  sidebarToFilter: Sidebar = sidebar,
 ): Sidebar {
   return sidebarToFilter
-    .filter((item) => isItemVisible(item, framework, style))
+    .filter(item => isItemVisible(item, framework, style))
     .map((item) => {
       if (isSection(item)) {
         const filteredContents = filterSidebar(framework, style, item.contents);
@@ -71,7 +71,7 @@ export function filterSidebar(
 export function findFirstGuide(
   framework: SupportedFramework,
   style: AnySupportedStyle,
-  sidebarToSearch: Sidebar = sidebar
+  sidebarToSearch: Sidebar = sidebar,
 ): string | null {
   for (const item of sidebarToSearch) {
     if (!isItemVisible(item, framework, style)) {
@@ -148,7 +148,7 @@ export function findGuideBySlug(slug: string, sidebarToSearch: Sidebar = sidebar
  */
 export function getValidStylesForGuide<F extends SupportedFramework>(
   guide: Guide,
-  framework: F
+  framework: F,
 ): readonly SupportedStyle<F>[] {
   const frameworkStyles = getAvailableStyles(framework);
 
@@ -158,5 +158,5 @@ export function getValidStylesForGuide<F extends SupportedFramework>(
   }
 
   // Return intersection of framework styles and guide styles
-  return frameworkStyles.filter((s) => guide.styles!.includes(s));
+  return frameworkStyles.filter(s => guide.styles!.includes(s));
 }

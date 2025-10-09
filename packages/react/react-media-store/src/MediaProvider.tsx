@@ -4,9 +4,9 @@
 import type { MediaStore } from '@vjs-10/media-store';
 import type { Context, ReactNode } from 'react';
 
-import { createContext, useContext, useMemo } from 'react';
-
 import { createMediaStore } from '@vjs-10/media-store';
+
+import { createContext, useContext, useMemo } from 'react';
 
 import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector.js';
 
@@ -108,8 +108,8 @@ export function shallowEqual(objA: any, objB: any): boolean {
   for (let i = 0; i < keysA.length; i++) {
     // NOTE: Since we've already guaranteed the keys list lengths are the same, we can safely cast to string here (CJP)
     if (
-      !hasOwnProperty.call(objB, keysA[i] as string) ||
-      !Object.is(objA[keysA[i] as string], objB[keysA[i] as string])
+      !hasOwnProperty.call(objB, keysA[i] as string)
+      || !Object.is(objA[keysA[i] as string], objB[keysA[i] as string])
     ) {
       return false;
     }
@@ -120,7 +120,7 @@ export function shallowEqual(objA: any, objB: any): boolean {
 
 export function useMediaSelector<S = any>(
   selector: (state: any) => S,
-  equalityFn: (a: S, b: S) => boolean = refEquality
+  equalityFn: (a: S, b: S) => boolean = refEquality,
 ): S {
   const store = useContext(MediaContext);
   const selectedState = useSyncExternalStoreWithSelector(
@@ -128,7 +128,7 @@ export function useMediaSelector<S = any>(
     store?.getState ?? identity,
     store?.getState ?? identity,
     selector,
-    equalityFn
+    equalityFn,
   ) as S;
 
   return selectedState;

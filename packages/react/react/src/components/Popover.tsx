@@ -1,8 +1,6 @@
 import type { Placement } from '@floating-ui/react';
 import type { ReactNode } from 'react';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-
 import {
   autoUpdate,
   flip,
@@ -16,6 +14,8 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
+
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface PopoverContextType {
   open: boolean;

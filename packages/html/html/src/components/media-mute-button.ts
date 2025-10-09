@@ -1,5 +1,5 @@
-import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 import type { MuteButtonState } from '@vjs-10/media-store';
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
 
@@ -9,11 +9,11 @@ import { MediaChromeButton } from './media-chrome-button';
 export class MuteButtonBase extends MediaChromeButton {
   _state:
     | {
-        muted: boolean;
-        volumeLevel: string;
-        requestMute: () => void;
-        requestUnmute: () => void;
-      }
+      muted: boolean;
+      volumeLevel: string;
+      requestMute: () => void;
+      requestUnmute: () => void;
+    }
     | undefined;
 
   handleEvent(event: Event): void {
@@ -88,7 +88,7 @@ export const MuteButton: ConnectedComponentConstructor<MuteButtonState> = toConn
   MuteButtonBase,
   useMuteButtonState,
   useMuteButtonProps,
-  'MuteButton'
+  'MuteButton',
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

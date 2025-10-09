@@ -68,7 +68,7 @@ export function createMediaStore({
   function updateStateOwners(nextStateOwners: any) {
     // Check if any state owner has changed
     const hasChanges = Object.entries(nextStateOwners).some(
-      ([key, value]) => stateOwners[key as keyof StateOwners] !== value
+      ([key, value]) => stateOwners[key as keyof StateOwners] !== value,
     );
 
     if (!hasChanges) {
@@ -77,7 +77,7 @@ export function createMediaStore({
 
     // Clean up existing handlers
     Object.entries(stateUpdateHandlerCleanups).forEach(([stateName, cleanups]) => {
-      cleanups.forEach((cleanup) => cleanup?.());
+      cleanups.forEach(cleanup => cleanup?.());
       stateUpdateHandlerCleanups[stateName] = [];
     });
 
@@ -118,7 +118,7 @@ export function createMediaStore({
         updateStateOwners({ container: detail });
       } else {
         for (const stateObject of Object.values(stateMediator).filter(
-          (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry
+          (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry,
         )) {
           const { set, actions } = stateObject;
           if (actions[type]) {
@@ -140,7 +140,7 @@ export function createMediaStore({
           acc[k] = getKey(store, k);
           return acc;
         },
-        {} as { [k: string]: any }
+        {} as { [k: string]: any },
       );
     },
 

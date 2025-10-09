@@ -56,7 +56,7 @@ export function formatAsTimePhrase(seconds: number): string {
     // Convert non-0 values to a string of the value plus its unit
     .map((timeUnitValue, index) => timeUnitValue && toTimeUnitPhrase(timeUnitValue, index))
     // Ignore/exclude any 0 values
-    .filter((x) => x)
+    .filter(x => x)
     // join into a single comma-separated string phrase
     .join(', ');
 

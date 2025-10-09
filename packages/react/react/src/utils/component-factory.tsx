@@ -32,7 +32,7 @@ export function toConnectedComponent<
   useStateHook: StateHookFn<TProps, TState>,
   usePropsHook: PropsHookFn<TProps, TState, TResultProps>,
   defaultRender: TRenderFn,
-  displayName: string
+  displayName: string,
 ): ConnectedComponent<TProps, TRenderFn> {
   const ConnectedComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
@@ -41,7 +41,7 @@ export function toConnectedComponent<
       // Add ref to connectedProps if it exists
       const propsWithRef = ref ? { ...connectedProps, ref } : connectedProps;
       return <Context.Provider value={connectedState}>{render(propsWithRef, connectedState)}</Context.Provider>;
-    }
+    },
   );
 
   ConnectedComponent.displayName = displayName;
@@ -72,7 +72,7 @@ export function toContextComponent<
 >(
   usePropsHook: (props: TProps, context: any) => TResultProps,
   defaultRender: TRenderFn,
-  displayName: string
+  displayName: string,
 ): ContextComponent<TProps, TRenderFn> {
   const ContextComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
@@ -81,7 +81,7 @@ export function toContextComponent<
       // Add ref to contextProps if it exists
       const propsWithRef = ref ? { ...contextProps, ref } : contextProps;
       return render(propsWithRef, context);
-    }
+    },
   );
 
   ContextComponent.displayName = displayName;
@@ -133,7 +133,7 @@ export function useCore<
     useCallback(() => {
       return snapshotRef.current;
     }, []),
-    () => null // server snapshot
+    () => null, // server snapshot
   );
 
   return coreRef.current;

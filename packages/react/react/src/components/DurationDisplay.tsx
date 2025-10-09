@@ -1,5 +1,5 @@
-import type { ConnectedComponent } from '../utils/component-factory';
 import type { PropsWithChildren } from 'react';
+import type { ConnectedComponent } from '../utils/component-factory';
 
 import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector } from '@vjs-10/react-media-store';
@@ -39,7 +39,7 @@ export function renderDurationDisplay(props: DurationDisplayProps, state: Durati
 
 export type renderDurationDisplay = typeof renderDurationDisplay;
 
-export const DurationDisplay: ConnectedComponent<DurationDisplayProps, typeof renderDurationDisplay> =
-  toConnectedComponent(useDurationDisplayState, useDurationDisplayProps, renderDurationDisplay, 'DurationDisplay');
+export const DurationDisplay: ConnectedComponent<DurationDisplayProps, typeof renderDurationDisplay>
+  = toConnectedComponent(useDurationDisplayState, useDurationDisplayProps, renderDurationDisplay, 'DurationDisplay');
 
 export default DurationDisplay;

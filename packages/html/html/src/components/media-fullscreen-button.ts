@@ -1,5 +1,5 @@
-import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 import type { FullscreenButtonState } from '@vjs-10/media-store';
+import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
 import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
 
@@ -9,10 +9,10 @@ import { MediaChromeButton } from './media-chrome-button';
 export class FullscreenButtonBase extends MediaChromeButton {
   _state:
     | {
-        fullscreen: boolean;
-        requestEnterFullscreen: () => void;
-        requestExitFullscreen: () => void;
-      }
+      fullscreen: boolean;
+      requestEnterFullscreen: () => void;
+      requestExitFullscreen: () => void;
+    }
     | undefined;
 
   handleEvent(event: Event): void {
@@ -76,7 +76,7 @@ export const FullscreenButton: ConnectedComponentConstructor<FullscreenButtonSta
   FullscreenButtonBase,
   useFullscreenButtonState,
   useFullscreenButtonProps,
-  'FullscreenButton'
+  'FullscreenButton',
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

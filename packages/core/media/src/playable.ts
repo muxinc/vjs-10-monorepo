@@ -20,18 +20,18 @@ export interface IBaseMediaStateOwner extends EventTarget, Pick<HTMLMediaElement
 
 export interface IPlayableMediaStateOwner
   extends EventTarget,
-    IBaseMediaStateOwner,
-    Pick<HTMLMediaElement, 'play' | 'pause' | 'paused'> {}
+  IBaseMediaStateOwner,
+  Pick<HTMLMediaElement, 'play' | 'pause' | 'paused'> {}
 
 export interface IAudibleMediaStateOwner
   extends EventTarget,
-    IBaseMediaStateOwner,
-    Pick<HTMLMediaElement, 'muted' | 'volume'> {}
+  IBaseMediaStateOwner,
+  Pick<HTMLMediaElement, 'muted' | 'volume'> {}
 
 export interface ITemporalMediaStateOwner
   extends EventTarget,
-    IBaseMediaStateOwner,
-    Pick<HTMLMediaElement, 'duration' | 'currentTime'> {}
+  IBaseMediaStateOwner,
+  Pick<HTMLMediaElement, 'duration' | 'currentTime'> {}
 
 export class PlayableMediaStateOwner extends EventTarget implements IPlayableMediaStateOwner, IAudibleMediaStateOwner {
   protected _playbackEngine: IBasePlaybackEngine;

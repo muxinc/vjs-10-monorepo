@@ -1,8 +1,6 @@
 import type { Placement } from '@floating-ui/react';
 import type { ReactNode } from 'react';
 
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-
 import {
   arrow,
   autoUpdate,
@@ -18,6 +16,8 @@ import {
   useRole,
   useTransitionStatus,
 } from '@floating-ui/react';
+
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 interface UpdatePositioningProps {
   side: Placement;
@@ -192,8 +192,8 @@ function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Elem
   const dataAttributes = triggerElement
     ? Object.fromEntries(
         Array.from(triggerElement.attributes)
-          .filter((attr) => attr.name.startsWith('data-'))
-          .map((attr) => [attr.name, attr.value])
+          .filter(attr => attr.name.startsWith('data-'))
+          .map(attr => [attr.name, attr.value]),
       )
     : {};
 

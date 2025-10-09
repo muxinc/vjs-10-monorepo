@@ -10,10 +10,10 @@ import type {
   VideoHTMLAttributes,
 } from 'react';
 
-import { forwardRef, useImperativeHandle, useRef } from 'react';
-
 import { createMediaStateOwner } from '@vjs-10/media';
+
 import { useMediaRef } from '@vjs-10/react-media-store';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 export interface MuxVideoProps {
   'playback-id'?: string;
