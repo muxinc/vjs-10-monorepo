@@ -319,9 +319,9 @@ function mapTailwindValueToCSS(utility: string, value: string): string {
 **New File:** `packages/build-tools/vjs-compiler/src/cssProcessing/generateSupplementaryCSS.ts`
 
 ```typescript
-import postcss from 'postcss';
-
 import type { UnparseableClass } from './detectUnparseableClasses.js';
+
+import postcss from 'postcss';
 
 import { toKebabCase, toPascalCase } from '../utils/naming.js';
 

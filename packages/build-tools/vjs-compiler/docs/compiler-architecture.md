@@ -369,9 +369,9 @@ This doesn't use member access in `className`, so `config` is not a style import
 **Pattern**: Style key exactly matches a component name (case-sensitive)
 
 ```tsx
-import styles from './styles';
-
 import { PlayButton } from '../../components/PlayButton';
+
+import styles from './styles';
 
 <PlayButton className={styles.PlayButton} />;
 ```
@@ -432,9 +432,9 @@ import styles from './styles';
 **Pattern**: Style key matches a compound component's full path
 
 ```tsx
-import styles from './styles';
-
 import { TimeRange } from '../../components/TimeRange';
+
+import styles from './styles';
 
 <TimeRange.Root className={styles.RangeRoot}>
   <TimeRange.Track className={styles.RangeTrack} />
@@ -503,11 +503,11 @@ Once we've categorized imports via usage analysis, we can determine how to trans
 // Package: @vjs-10/react (known from upstream)
 // Target: packages/html/html/src/skins/compiled/inline/media-skin-default.ts
 
-import styles from './styles';
-
 import { PlayIcon } from '@vjs-10/react-icons';
 
 import { PlayButton } from '../../components/PlayButton';
+
+import styles from './styles';
 
 export default function MediaSkinDefault({ children, className }) {
   return (
@@ -768,12 +768,12 @@ This usage-driven analysis makes the compiler more intelligent and reduces relia
 ### Example Input Structure (Skin)
 
 ```tsx
-// MediaSkinDefault.tsx
-import styles from './styles';
-
 import { PlayIcon } from '@vjs-10/react-icons';
 
 import { PlayButton } from '../../components/PlayButton';
+
+// MediaSkinDefault.tsx
+import styles from './styles';
 
 export default function MediaSkinDefault({ children, className }) {
   return (
@@ -2313,13 +2313,13 @@ export function CustomPlayer({ src }) {
 **MediaSkinSimple.tsx**:
 
 ```tsx
-import styles from './styles';
-
 import type { PropsWithChildren } from 'react';
 
 import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 
 import { PlayButton } from '../../components/PlayButton';
+
+import styles from './styles';
 
 export default function MediaSkinSimple({ children }: PropsWithChildren) {
   return (
