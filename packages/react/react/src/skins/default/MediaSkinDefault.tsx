@@ -10,8 +10,6 @@ import {
   VolumeOffIcon,
 } from '@vjs-10/react-icons';
 
-import { useId } from 'react';
-
 import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
 
 import { DurationDisplay } from '../../components/DurationDisplay';
@@ -30,7 +28,6 @@ type SkinProps = PropsWithChildren<{
 }>;
 
 export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
-  const portalId = useId();
   return (
     <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
@@ -46,7 +43,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <PauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
             </PlayButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal rootId={portalId}>
+          <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
                 <span className={styles.PlayTooltip}>Play</span>
@@ -82,7 +79,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <VolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
             </MuteButton>
           </Popover.Trigger>
-          <Popover.Portal rootId={portalId}>
+          <Popover.Portal>
             <Popover.Positioner side="top" sideOffset={12}>
               <Popover.Popup className={styles.PopoverPopup}>
                 <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
@@ -103,7 +100,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               <FullscreenExitIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
             </FullscreenButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal rootId={portalId}>
+          <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
                 <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
