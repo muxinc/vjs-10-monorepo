@@ -1,34 +1,72 @@
 ---
+import NavBar from '@/components/NavBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts';
 import Base from '@/layouts/Base.astro';
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  <main class="py-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-4xl font-bold mb-4">Video.js 10</h1>
-      <p class="text-lg text-gray-600 mb-8">
-        A modern, platform-agnostic video player framework built for the web. Video.js 10 provides a unified API across
-        HTML, React, and React Native.
-      </p>
-
-      <h2 class="text-2xl font-bold mb-4">Quick Links</h2>
-      <ul class="space-y-2 mb-8">
-        <li><a href="/docs/" class="hover:underline">Documentation</a> - Get started with Video.js 10</li>
-        <li><a href="/blog/" class="hover:underline">Blog</a> - Latest news and updates</li>
-        <li>
-          <a href="https://github.com/videojs/video.js" class="hover:underline">GitHub</a> - Source code and contributions
-        </li>
-      </ul>
-
-      <h2 class="text-2xl font-bold mb-4">Features</h2>
-      <ul class="space-y-2">
-        <li>Multi-platform support: HTML, React, and React Native</li>
-        <li>Modular architecture with pluggable engines</li>
-        <li>Framework-agnostic state management</li>
-        <li>Comprehensive component library</li>
-        <li>TypeScript-first with strict type safety</li>
-      </ul>
+  <header class="relative bg-dark-100 text-light-80 flex flex-col">
+    <NavBar dark />
+    <div class="w-full max-w-7xl mx-auto px-6 md:px-10 mt-20 md:mt-30">
+      <div
+        class="gap-5 lg:gap-12 grid lg:grid-cols-(--lg-grid-cols) items-center mb-10"
+        style={{ '--lg-grid-cols': 'auto auto' }}
+      >
+        <h1 class="text-h4 md:text-h1 text-balance lg:text-pretty">The Open Source Player for the Web</h1>
+        <p class="md:text-md text-balance max-w-100">
+          For over 15 years, Video.js has been the world’s web video player. Now rebuilt in v10 for modern development
+          and performance.
+        </p>
+      </div>
+      <div class="relative z-10 w-full aspect-video rounded-3xl bg-dark-80 -mb-11 md:-mb-21 lg:-mb-32 shadow-2xl"></div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-28 md:h-67 grid grid-rows-4">
+      <div class="bg-brand-yellow"></div>
+      <div class="bg-brand-orange"></div>
+      <div class="bg-brand-red"></div>
+      <div class="bg-brand-purple"></div>
+    </div>
+  </header>
+  <!-- padding corresponds to negative margin on player -->
+  <main class="pt-11 md:pt-21 lg:pt-32 px-6 md:px-10 w-full max-w-7xl mx-auto">
+    <div class="flex flex-col items-center py-7 gap-7">
+      <div>
+        <button class="text-sm py-3 px-2.5 text-dark-40 intent:text-dark-80 cursor-pointer">Simple Video</button>
+        <button class="text-sm py-3 px-2.5 text-dark-40 intent:text-dark-80 cursor-pointer">Simple Audio</button>
+        <button class="text-sm py-3 px-2.5 text-dark-40 intent:text-dark-80 cursor-pointer">Background Video</button>
+      </div>
+      <div class="overflow-x-scroll">
+        <button class="text-sm py-3 px-2.5 text-dark-40 inline-flex gap-1 items-center">
+          Swipe/Stories
+          <span class="uppercase text-[0.625rem] px-2 py-1 rounded-full border tracking-tight font-medium leading-none">
+            Coming
+          </span>
+        </button>
+        <button class="text-sm py-3 px-2.5 text-dark-40 inline-flex gap-1 items-center">
+          News
+          <span class="uppercase text-[0.625rem] px-2 py-1 rounded-full border tracking-tight font-medium leading-none">
+            Coming
+          </span>
+        </button>
+        <button class="text-sm py-3 px-2.5 text-dark-40 inline-flex gap-1 items-center">
+          Shoppable
+          <span class="uppercase text-[0.625rem] px-2 py-1 rounded-full border tracking-tight font-medium leading-none">
+            Coming
+          </span>
+        </button>
+        <button class="text-sm py-3 px-2.5 text-dark-40 inline-flex gap-1 items-center">
+          Live + Chat
+          <span class="uppercase text-[0.625rem] px-2 py-1 rounded-full border tracking-tight font-medium leading-none">
+            Coming
+          </span>
+        </button>
+        <button class="text-sm py-3 px-2.5 text-dark-40 inline-flex gap-1 items-center">
+          Movie/TV
+          <span class="uppercase text-[0.625rem] px-2 py-1 rounded-full border tracking-tight font-medium leading-none">
+            Coming
+          </span>
+        </button>
+      </div>
     </div>
   </main>
 </Base>

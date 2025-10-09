@@ -27,61 +27,45 @@ const sortedPosts = authorPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data
 ---
 
 <Base title={`${author.data.name} - ${SITE_TITLE}`} description={author.data.bio || `Posts by ${author.data.name}`}>
-  <main class="py-8">
-    <div class="max-w-4xl mx-auto">
-      <article class="mb-12">
-        <div class="flex items-start gap-6 mb-6">
-          {
-            author.data.avatar && (
-              <img src={author.data.avatar} alt={author.data.name} width="150" height="150" class="rounded" />
-            )
-          }
+  <main>
+    <div>
+      <article>
+        <div>
+          {author.data.avatar && <img src={author.data.avatar} alt={author.data.name} width="150" height="150" />}
           <div>
-            <h1 class="text-3xl font-bold mb-2">{author.data.name}</h1>
-            {author.data.bio && <p class="text-gray-600 mb-4">{author.data.bio}</p>}
+            <h1>{author.data.name}</h1>
+            {author.data.bio && <p>{author.data.bio}</p>}
             {
               author.data.socialLinks && (
-                <ul class="flex gap-4 flex-wrap">
+                <ul>
                   {author.data.socialLinks.x && (
                     <li>
-                      <a href={author.data.socialLinks.x} class="hover:underline">
-                        X
-                      </a>
+                      <a href={author.data.socialLinks.x}>X</a>
                     </li>
                   )}
                   {author.data.socialLinks.bluesky && (
                     <li>
-                      <a href={author.data.socialLinks.bluesky} class="hover:underline">
-                        Bluesky
-                      </a>
+                      <a href={author.data.socialLinks.bluesky}>Bluesky</a>
                     </li>
                   )}
                   {author.data.socialLinks.mastodon && (
                     <li>
-                      <a href={author.data.socialLinks.mastodon} class="hover:underline">
-                        Mastodon
-                      </a>
+                      <a href={author.data.socialLinks.mastodon}>Mastodon</a>
                     </li>
                   )}
                   {author.data.socialLinks.github && (
                     <li>
-                      <a href={author.data.socialLinks.github} class="hover:underline">
-                        GitHub
-                      </a>
+                      <a href={author.data.socialLinks.github}>GitHub</a>
                     </li>
                   )}
                   {author.data.socialLinks.linkedin && (
                     <li>
-                      <a href={author.data.socialLinks.linkedin} class="hover:underline">
-                        LinkedIn
-                      </a>
+                      <a href={author.data.socialLinks.linkedin}>LinkedIn</a>
                     </li>
                   )}
                   {author.data.socialLinks.website && (
                     <li>
-                      <a href={author.data.socialLinks.website} class="hover:underline">
-                        Website
-                      </a>
+                      <a href={author.data.socialLinks.website}>Website</a>
                     </li>
                   )}
                 </ul>
@@ -92,15 +76,15 @@ const sortedPosts = authorPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data
       </article>
 
       <section>
-        <h2 class="text-2xl font-bold mb-6">Posts by {author.data.shortName}</h2>
-        <ul class="space-y-6">
+        <h2>Posts by {author.data.shortName}</h2>
+        <ul>
           {
             sortedPosts.map((post) => (
-              <li class="border-b pb-6 last:border-b-0">
-                <a href={`/blog/${post.id}`} class="block hover:opacity-80">
-                  <h3 class="text-xl font-semibold mb-2">{post.data.title}</h3>
-                  <p class="text-gray-600 mb-2">{post.data.description}</p>
-                  <p class="text-sm text-gray-500">
+              <li>
+                <a href={`/blog/${post.id}`}>
+                  <h3>{post.data.title}</h3>
+                  <p>{post.data.description}</p>
+                  <p>
                     <FormattedDate date={post.data.pubDate} />
                   </p>
                 </a>

@@ -21,7 +21,7 @@ const { item, framework, style, docTitles } = Astro.props;
       ))}
     </details>
   ) : (
-    <div class="sidebar-guide">
+    <div>
       <a href={`/docs/framework/${framework}/style/${style}/${item.slug}/`}>
         {item.sidebarLabel || docTitles.get(item.slug) || item.slug}
       </a>

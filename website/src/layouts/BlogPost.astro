@@ -14,14 +14,14 @@ const { title, description, pubDate, updatedDate, heroImage, authors } = Astro.p
 ---
 
 <Base title={title} description={description} image={heroImage}>
-  <main class="py-8">
-    <article class="max-w-4xl mx-auto">
-      <div class="hero-image mb-8">
+  <main>
+    <article>
+      <div class="hero-image">
         {heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
       </div>
       <div class="prose">
-        <div class="title mb-8">
-          <div class="date mb-4">
+        <div class="title">
+          <div class="date">
             <FormattedDate date={pubDate} />
             {
               updatedDate && (
@@ -31,8 +31,8 @@ const { title, description, pubDate, updatedDate, heroImage, authors } = Astro.p
               )
             }
           </div>
-          <h1 class="mb-4">{title}</h1>
-          <div class="authors mb-4">
+          <h1>{title}</h1>
+          <div class="authors">
             By {
               authors.map((author, index) => (
                 <>

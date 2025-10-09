@@ -1,1 +1,82 @@
 @import 'tailwindcss';
+
+@custom-variant intent (&:hover, &:focus-within);
+
+/* theme inline tells tailwind to reference the value of these properties */
+@theme inline {
+  --font-*: initial;
+  /* --font-instrument-sans and --font-ibm-plex-mono are defined in Base.astro */
+  --font-sans: var(--font-instrument-sans);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+/* Everything else can be configured here */
+@theme {
+  --color-*: initial;
+
+  --color-white: white;
+  --color-black: black;
+
+  --color-dark-100: #393836;
+  --color-dark-80: #5a5850;
+  --color-dark-40: #7d796a;
+
+  --color-light-100: #fbf5d8;
+  --color-light-80: #ebe4c1;
+  --color-light-60: #d8d2b2;
+  --color-light-40: #c7c2a4;
+
+  --color-brand-yellow: #fcb116;
+  --color-brand-orange: #f26222;
+  --color-brand-red: #ea3837;
+  --color-brand-purple: #a83b71;
+
+  --color-code-green: #3f895a;
+  --color-code-blue: #436590;
+  --color-code-red: #a74342;
+  --color-code-orange: #c67614;
+
+  /* Typography */
+  --tracking-*: initial;
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+  --tracking-widest: 0.08em;
+
+  --text-*: initial;
+  --text-h1: 4rem;
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.04em;
+  --text-h1--font-weight: 600;
+  --text-h2: 3rem;
+  --text-h2--line-height: calc(56 / 48);
+  --text-h2--letter-spacing: -0.04em;
+  --text-h2--font-weight: 600;
+  --text-h3: 2.5rem;
+  --text-h3--line-height: 1;
+  --text-h3--letter-spacing: -0.04em;
+  --text-h3--font-weight: 600;
+  --text-h4: 2rem;
+  --text-h4--line-height: calc(40 / 32);
+  --text-h4--letter-spacing: -0.02em;
+  --text-h4--font-weight: 600;
+  --text-h5: 1.5rem;
+  --text-h5--line-height: calc(32 / 24);
+  --text-h5--letter-spacing: -0.02em;
+  --text-h5--font-weight: 500;
+
+  --text-md: 1.25rem;
+  --text-md--line-height: calc(28 / 20);
+  --text-md--letter-spacing: -0.02em;
+  --text-base: 1rem;
+  --text-base--line-height: calc(24 / 16);
+  --text-base--letter-spacing: -0.02em;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(20 / 14);
+  --text-sm--letter-spacing: -0.02em;
+
+  --text-base-code: 1rem;
+  --text-base-code--line-height: calc(28 / 16);
+  --text-base-code--letter-spacing: -0.02em;
+}

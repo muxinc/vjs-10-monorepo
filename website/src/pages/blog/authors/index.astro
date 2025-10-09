@@ -8,20 +8,18 @@ const authors = await getCollection('authors');
 ---
 
 <Base title={`Authors - ${SITE_TITLE}`} description="All blog authors">
-  <main class="py-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-8">Authors</h1>
-      <ul class="space-y-6">
+  <main>
+    <div>
+      <h1>Authors</h1>
+      <ul>
         {
           authors.map((author) => (
-            <li class="border-b pb-6 last:border-b-0">
-              <a href={`/blog/authors/${author.id}`} class="flex items-start gap-4 hover:opacity-80">
-                {author.data.avatar && (
-                  <img src={author.data.avatar} alt={author.data.name} width="50" height="50" class="rounded" />
-                )}
+            <li>
+              <a href={`/blog/authors/${author.id}`}>
+                {author.data.avatar && <img src={author.data.avatar} alt={author.data.name} width="50" height="50" />}
                 <div>
-                  <h2 class="text-xl font-semibold mb-1">{author.data.name}</h2>
-                  {author.data.bio && <p class="text-gray-600">{author.data.bio}</p>}
+                  <h2>{author.data.name}</h2>
+                  {author.data.bio && <p>{author.data.bio}</p>}
                 </div>
               </a>
             </li>

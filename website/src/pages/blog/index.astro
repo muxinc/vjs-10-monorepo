@@ -18,28 +18,24 @@ const postsWithAuthors = await Promise.all(
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  <main class="py-8">
-    <section class="max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-8">Blog</h1>
-      <ul class="space-y-8">
+  <main>
+    <section>
+      <h1>Blog</h1>
+      <ul>
         {
           postsWithAuthors.map((post) => (
-            <li class="border-b pb-8 last:border-b-0">
+            <li>
               <a href={`/blog/${post.id}`}>
-                {post.data.heroImage && (
-                  <Image width={720} height={360} src={post.data.heroImage} alt="" class="mb-4" />
-                )}
-                <h4 class="title text-2xl font-semibold mb-2">{post.data.title}</h4>
-                <p class="date text-gray-600 mb-2">
+                {post.data.heroImage && <Image width={720} height={360} src={post.data.heroImage} alt="" />}
+                <h4 class="title">{post.data.title}</h4>
+                <p class="date">
                   <FormattedDate date={post.data.pubDate} />
                 </p>
-                <p class="authors text-sm">
+                <p class="authors">
                   By{' '}
                   {post.authors.map((author: any, index: number) => (
                     <>
-                      <a href={`/blog/authors/${author.id}`} class="hover:underline">
-                        {author.data.name}
-                      </a>
+                      <a href={`/blog/authors/${author.id}`}>{author.data.name}</a>
                       {index < post.authors.length - 1 && ', '}
                     </>
                   ))}

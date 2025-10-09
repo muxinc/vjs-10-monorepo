@@ -42,7 +42,7 @@ export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
   const availableStyles = getAvailableStyles(currentFramework);
 
   return (
-    <div className="mb-4">
+    <div>
       <div>
         <label htmlFor="framework-select">Framework:</label>
         <select
