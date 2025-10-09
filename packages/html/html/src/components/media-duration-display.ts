@@ -1,5 +1,5 @@
-import type { DurationDisplayState } from '@vjs-10/media-store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { DurationDisplayState } from '@vjs-10/media-store';
 
 import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 
@@ -9,7 +9,7 @@ import { namedNodeMapToObject } from '../utils/element-utils.js';
 export function getTemplateHTML(
   this: typeof DurationDisplayBase,
   _attrs: Record<string, string>,
-  _props: Record<string, any> = {},
+  _props: Record<string, any> = {}
 ) {
   return /* html */ `
     <span></span>
@@ -25,8 +25,8 @@ export class DurationDisplayBase extends HTMLElement {
 
   _state:
     | {
-      duration: number | undefined;
-    }
+        duration: number | undefined;
+      }
     | undefined;
 
   constructor() {
@@ -78,7 +78,7 @@ export const DurationDisplay: ConnectedComponentConstructor<DurationDisplayState
   DurationDisplayBase,
   useDurationDisplayState,
   useDurationDisplayProps,
-  'DurationDisplay',
+  'DurationDisplay'
 );
 
 // Register the custom element

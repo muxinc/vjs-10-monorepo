@@ -1,5 +1,5 @@
-import type { PlayButtonState } from '@vjs-10/media-store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { PlayButtonState } from '@vjs-10/media-store';
 
 import { playButtonStateDefinition } from '@vjs-10/media-store';
 
@@ -70,7 +70,7 @@ export const PlayButton: ConnectedComponentConstructor<PlayButtonState> = toConn
   PlayButtonBase,
   usePlayButtonState,
   usePlayButtonProps,
-  'PlayButton',
+  'PlayButton'
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)

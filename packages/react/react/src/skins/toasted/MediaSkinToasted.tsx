@@ -11,6 +11,7 @@ import {
 } from '@vjs-10/react-icons';
 
 import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
+
 import { DurationDisplay } from '../../components/DurationDisplay';
 import { FullscreenButton } from '../../components/FullscreenButton';
 import { MediaContainer } from '../../components/MediaContainer';
@@ -69,4 +70,4 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
       </div>
     </MediaContainer>
   );
-};
+}

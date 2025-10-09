@@ -1,6 +1,7 @@
 import type { Placement } from '@floating-ui/dom';
 
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+
 import { uniqueId } from '../utils/element-utils';
 
 export class MediaPopoverRoot extends HTMLElement {

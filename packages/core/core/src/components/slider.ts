@@ -92,7 +92,7 @@ export class Slider {
       evt.clientX,
       evt.clientY,
       { x: rect.left, y: rect.bottom },
-      { x: rect.right, y: rect.top },
+      { x: rect.right, y: rect.top }
     );
   }
 
@@ -122,7 +122,10 @@ export class Slider {
   }
 }
 
-export interface Point { x: number; y: number }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 /**
  * Get progress ratio of a point on a line segment.

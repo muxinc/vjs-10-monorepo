@@ -1,7 +1,8 @@
-import type { Placement } from '@floating-ui/dom';
 import type { MediaContainer } from '@/media-container';
+import type { Placement } from '@floating-ui/dom';
 
 import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+
 import { uniqueId } from '../utils/element-utils';
 
 export class MediaTooltipRoot extends HTMLElement {

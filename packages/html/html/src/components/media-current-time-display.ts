@@ -1,5 +1,5 @@
-import type { CurrentTimeDisplayState } from '@vjs-10/media-store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
+import type { CurrentTimeDisplayState } from '@vjs-10/media-store';
 
 import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
 
@@ -14,9 +14,9 @@ export class CurrentTimeDisplayBase extends HTMLElement {
 
   _state:
     | {
-      currentTime: number | undefined;
-      duration: number | undefined;
-    }
+        currentTime: number | undefined;
+        duration: number | undefined;
+      }
     | undefined;
 
   constructor() {
@@ -50,8 +50,8 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     this._state = state;
 
     /** @TODO Should this live here or elsewhere? (CJP) */
-    const timeLabel
-      = this.showRemaining && state.duration != null && state.currentTime != null
+    const timeLabel =
+      this.showRemaining && state.duration != null && state.currentTime != null
         ? formatDisplayTime(-(state.duration - state.currentTime))
         : formatDisplayTime(state.currentTime);
 
@@ -84,7 +84,7 @@ export const CurrentTimeDisplay: ConnectedComponentConstructor<CurrentTimeDispla
   CurrentTimeDisplayBase,
   useCurrentTimeDisplayState,
   useCurrentTimeDisplayProps,
-  'CurrentTimeDisplay',
+  'CurrentTimeDisplay'
 );
 
 // Register the custom element

@@ -1,12 +1,7 @@
 import type { AnySupportedStyle, Guide, Section, Sidebar, SupportedFramework, SupportedStyle } from '@/types/docs';
+
 import { sidebar } from '@/config/docs/sidebar';
-import {
-
-  getAvailableStyles,
-
-  isSection,
-
-} from '@/types/docs';
+import { getAvailableStyles, isSection } from '@/types/docs';
 
 /**
  * Check if an item (Guide or Section) should be shown based on framework and style.
@@ -18,13 +13,8 @@ import {
  * @param style - The currently selected style
  * @returns true if the item should be visible
  */
-function isItemVisible(
-  item: Guide | Section,
-  framework: SupportedFramework,
-  style: AnySupportedStyle,
-): boolean {
-  const frameworkMatch
-    = !item.frameworks || item.frameworks.includes(framework);
+function isItemVisible(item: Guide | Section, framework: SupportedFramework, style: AnySupportedStyle): boolean {
+  const frameworkMatch = !item.frameworks || item.frameworks.includes(framework);
   const styleMatch = !item.styles || item.styles.includes(style);
   return frameworkMatch && styleMatch;
 }
@@ -43,10 +33,10 @@ function isItemVisible(
 export function filterSidebar(
   framework: SupportedFramework,
   style: AnySupportedStyle,
-  sidebarToFilter: Sidebar = sidebar,
+  sidebarToFilter: Sidebar = sidebar
 ): Sidebar {
   return sidebarToFilter
-    .filter(item => isItemVisible(item, framework, style))
+    .filter((item) => isItemVisible(item, framework, style))
     .map((item) => {
       if (isSection(item)) {
         const filteredContents = filterSidebar(framework, style, item.contents);
@@ -81,7 +71,7 @@ export function filterSidebar(
 export function findFirstGuide(
   framework: SupportedFramework,
   style: AnySupportedStyle,
-  sidebarToSearch: Sidebar = sidebar,
+  sidebarToSearch: Sidebar = sidebar
 ): string | null {
   for (const item of sidebarToSearch) {
     if (!isItemVisible(item, framework, style)) {
@@ -133,10 +123,7 @@ export function getAllGuideSlugs(sidebarToExtract: Sidebar = sidebar): string[] 
  * @param sidebarToSearch - Optional sidebar to search (defaults to main sidebar config)
  * @returns The guide object if found, null otherwise
  */
-export function findGuideBySlug(
-  slug: string,
-  sidebarToSearch: Sidebar = sidebar,
-): Guide | null {
+export function findGuideBySlug(slug: string, sidebarToSearch: Sidebar = sidebar): Guide | null {
   for (const item of sidebarToSearch) {
     if (isSection(item)) {
       // Recursively search section contents
@@ -161,7 +148,7 @@ export function findGuideBySlug(
  */
 export function getValidStylesForGuide<F extends SupportedFramework>(
   guide: Guide,
-  framework: F,
+  framework: F
 ): readonly SupportedStyle<F>[] {
   const frameworkStyles = getAvailableStyles(framework);
 
@@ -171,5 +158,5 @@ export function getValidStylesForGuide<F extends SupportedFramework>(
   }
 
   // Return intersection of framework styles and guide styles
-  return frameworkStyles.filter(s => guide.styles!.includes(s));
+  return frameworkStyles.filter((s) => guide.styles!.includes(s));
 }

@@ -1,24 +1,9 @@
 {
   "version": "0.2",
-  "ignorePaths": [
-    "package.json",
-    "tsconfig.json"
-  ],
+  "ignorePaths": ["package.json", "tsconfig.json"],
   "dictionaryDefinitions": [],
-  "dictionaries": [
-    "css",
-    "html",
-    "node",
-    "typescript",
-    "npm"
-  ],
-  "words": [
-    "antfu",
-    "noto",
-    "nums",
-    "rahim",
-    "segoe"
-  ],
+  "dictionaries": ["css", "html", "node", "typescript", "npm"],
+  "words": ["antfu", "noto", "nums", "rahim", "segoe"],
   "ignoreWords": [],
   "import": []
 }

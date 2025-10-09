@@ -1,6 +1,7 @@
-import { file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
+import { file } from 'astro/loaders';
 import { simpleGit } from 'simple-git';
+
 import { globWithParser } from './utils/globWithParser';
 
 const git = simpleGit();
@@ -12,9 +13,7 @@ const git = simpleGit();
 function extractDateFromFilename(id: string): Date {
   const match = id.match(/^(\d{4})-(\d{2})-(\d{2})-/);
   if (!match) {
-    throw new Error(
-      `Filename "${id}" must follow format: YYYY-MM-DD-slug.{md,mdx}`,
-    );
+    throw new Error(`Filename "${id}" must follow format: YYYY-MM-DD-slug.{md,mdx}`);
   }
 
   const [, year, month, day] = match;
@@ -59,10 +58,7 @@ const blog = defineCollection({
         data: {
           ...entry.data,
           pubDate,
-          ...(updatedDate
-            && updatedDate.getTime() !== pubDate.getTime()
-            ? { updatedDate }
-            : {}),
+          ...(updatedDate && updatedDate.getTime() !== pubDate.getTime() ? { updatedDate } : {}),
         },
       };
     },

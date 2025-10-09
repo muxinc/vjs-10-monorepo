@@ -28,7 +28,12 @@ export function toConnectedComponent<
   TState,
   TResultProps extends Record<string, any>,
   TRenderFn extends RenderFn<TResultProps, TState>,
->(useStateHook: StateHookFn<TProps, TState>, usePropsHook: PropsHookFn<TProps, TState, TResultProps>, defaultRender: TRenderFn, displayName: string): ConnectedComponent<TProps, TRenderFn> {
+>(
+  useStateHook: StateHookFn<TProps, TState>,
+  usePropsHook: PropsHookFn<TProps, TState, TResultProps>,
+  defaultRender: TRenderFn,
+  displayName: string
+): ConnectedComponent<TProps, TRenderFn> {
   const ConnectedComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const connectedState = useStateHook(props as TProps);
@@ -36,7 +41,7 @@ export function toConnectedComponent<
       // Add ref to connectedProps if it exists
       const propsWithRef = ref ? { ...connectedProps, ref } : connectedProps;
       return <Context.Provider value={connectedState}>{render(propsWithRef, connectedState)}</Context.Provider>;
-    },
+    }
   );
 
   ConnectedComponent.displayName = displayName;
@@ -64,7 +69,11 @@ export function toContextComponent<
   TProps extends Record<string, any>,
   TResultProps extends Record<string, any>,
   TRenderFn extends (props: TResultProps, context: any) => ReactElement,
->(usePropsHook: (props: TProps, context: any) => TResultProps, defaultRender: TRenderFn, displayName: string): ContextComponent<TProps, TRenderFn> {
+>(
+  usePropsHook: (props: TProps, context: any) => TResultProps,
+  defaultRender: TRenderFn,
+  displayName: string
+): ContextComponent<TProps, TRenderFn> {
   const ContextComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const context = useContext(Context);
@@ -72,7 +81,7 @@ export function toContextComponent<
       // Add ref to contextProps if it exists
       const propsWithRef = ref ? { ...contextProps, ref } : contextProps;
       return render(propsWithRef, context);
-    },
+    }
   );
 
   ContextComponent.displayName = displayName;
@@ -124,7 +133,7 @@ export function useCore<
     useCallback(() => {
       return snapshotRef.current;
     }, []),
-    () => null, // server snapshot
+    () => null // server snapshot
   );
 
   return coreRef.current;

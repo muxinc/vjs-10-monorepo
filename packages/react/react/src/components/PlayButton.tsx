@@ -1,10 +1,10 @@
-import type { PropsWithChildren } from 'react';
 import type { ConnectedComponent } from '../utils/component-factory';
+import type { PropsWithChildren } from 'react';
+
+import { useMemo } from 'react';
 
 import { playButtonStateDefinition } from '@vjs-10/media-store';
-
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
-import { useMemo } from 'react';
 
 import { toConnectedComponent } from '../utils/component-factory';
 
@@ -30,7 +30,10 @@ export function usePlayButtonState(_props: any): {
 export type usePlayButtonState = typeof usePlayButtonState;
 export type PlayButtonState = ReturnType<usePlayButtonState>;
 
-export function usePlayButtonProps(props: Record<string, unknown>, state: ReturnType<typeof usePlayButtonState>): PropsWithChildren<Record<string, unknown>> {
+export function usePlayButtonProps(
+  props: Record<string, unknown>,
+  state: ReturnType<typeof usePlayButtonState>
+): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
@@ -78,7 +81,7 @@ export const PlayButton: ConnectedComponent<PlayButtonProps, typeof renderPlayBu
   usePlayButtonState,
   usePlayButtonProps,
   renderPlayButton,
-  'PlayButton',
+  'PlayButton'
 );
 
 export default PlayButton;

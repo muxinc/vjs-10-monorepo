@@ -1,6 +1,8 @@
 import type { Placement } from '@floating-ui/react';
 import type { ReactNode } from 'react';
 
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+
 import {
   arrow,
   autoUpdate,
@@ -16,8 +18,6 @@ import {
   useRole,
   useTransitionStatus,
 } from '@floating-ui/react';
-
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 interface UpdatePositioningProps {
   side: Placement;
@@ -156,7 +156,12 @@ function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
   });
 }
 
-function TooltipPositioner({ side = 'top', sideOffset = 0, collisionPadding = 0, children }: TooltipPositionerProps): JSX.Element | null {
+function TooltipPositioner({
+  side = 'top',
+  sideOffset = 0,
+  collisionPadding = 0,
+  children,
+}: TooltipPositionerProps): JSX.Element | null {
   const { context, updatePositioning } = useTooltipContext();
   const { refs, floatingStyles } = context;
 
@@ -187,8 +192,8 @@ function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Elem
   const dataAttributes = triggerElement
     ? Object.fromEntries(
         Array.from(triggerElement.attributes)
-          .filter(attr => attr.name.startsWith('data-'))
-          .map(attr => [attr.name, attr.value]),
+          .filter((attr) => attr.name.startsWith('data-'))
+          .map((attr) => [attr.name, attr.value])
       )
     : {};
 
@@ -232,7 +237,11 @@ function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Elem
 }
 
 function TooltipPortal({ children, root, rootId }: TooltipPortalProps): JSX.Element {
-  return <FloatingPortal root={root as HTMLElement} id={rootId as string}>{children}</FloatingPortal>;
+  return (
+    <FloatingPortal root={root as HTMLElement} id={rootId as string}>
+      {children}
+    </FloatingPortal>
+  );
 }
 
 // Export compound component

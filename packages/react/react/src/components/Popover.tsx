@@ -1,6 +1,8 @@
 import type { Placement } from '@floating-ui/react';
 import type { ReactNode } from 'react';
 
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
 import {
   autoUpdate,
   flip,
@@ -14,8 +16,6 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
-
-import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface PopoverContextType {
   open: boolean;
@@ -150,7 +150,11 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
 }
 
 function PopoverPortal({ children, root, rootId }: PopoverPortalProps): JSX.Element {
-  return <FloatingPortal root={root as HTMLElement} id={rootId as string}>{children}</FloatingPortal>;
+  return (
+    <FloatingPortal root={root as HTMLElement} id={rootId as string}>
+      {children}
+    </FloatingPortal>
+  );
 }
 
 // Export compound component

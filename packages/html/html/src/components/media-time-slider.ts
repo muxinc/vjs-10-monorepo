@@ -60,7 +60,7 @@ export class TimeSliderRootBase extends HTMLElement {
   }
 
   get orientation(): 'horizontal' | 'vertical' {
-    return this.getAttribute('orientation') as 'horizontal' | 'vertical' || 'horizontal';
+    return (this.getAttribute('orientation') as 'horizontal' | 'vertical') || 'horizontal';
   }
 
   attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null): void {
