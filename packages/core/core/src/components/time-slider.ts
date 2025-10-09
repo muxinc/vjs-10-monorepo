@@ -1,8 +1,8 @@
-import type { RangeState } from './range';
+import type { SliderState } from './slider';
 
-import { Range } from './range';
+import { Slider } from './slider';
 
-export interface TimeRangeState extends RangeState {
+export interface TimeSliderState extends SliderState {
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
@@ -10,12 +10,12 @@ export interface TimeRangeState extends RangeState {
   _durationText: string;
 }
 
-export class TimeRange extends Range {
+export class TimeSlider extends Slider {
   #seekingTime: number | null = null;
   #oldCurrentTime: number | null = null;
 
-  getState(): TimeRangeState {
-    const state = super.getState() as TimeRangeState;
+  getState(): TimeSliderState {
+    const state = super.getState() as TimeSliderState;
 
     // When dragging, use pointer position for immediate feedback;
     // While seeking, use seeking time so it doesn't jump back to the current time;
@@ -61,7 +61,7 @@ export class TimeRange extends Range {
   #handlePointerDown(event: PointerEvent) {
     super.handleEvent(event);
 
-    const { _pointerRatio, duration, requestSeek } = super.getState() as TimeRangeState;
+    const { _pointerRatio, duration, requestSeek } = super.getState() as TimeSliderState;
 
     this.#seekingTime = _pointerRatio * duration;
     requestSeek(this.#seekingTime);
@@ -70,7 +70,7 @@ export class TimeRange extends Range {
   #handlePointerMove(event: PointerEvent) {
     super.handleEvent(event);
 
-    const { _dragging, _pointerRatio, duration, requestSeek } = super.getState() as TimeRangeState;
+    const { _dragging, _pointerRatio, duration, requestSeek } = super.getState() as TimeSliderState;
 
     if (_dragging) {
       this.#seekingTime = _pointerRatio * duration;
@@ -79,7 +79,7 @@ export class TimeRange extends Range {
   }
 
   #handlePointerUp(event: PointerEvent) {
-    const { _dragging, _pointerRatio, duration, requestSeek } = super.getState() as TimeRangeState;
+    const { _dragging, _pointerRatio, duration, requestSeek } = super.getState() as TimeSliderState;
 
     if (_dragging) {
       this.#seekingTime = _pointerRatio * duration;

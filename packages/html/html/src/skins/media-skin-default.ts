@@ -4,8 +4,8 @@ import { uniqueId } from '../utils/element-utils';
 import '../media-container';
 import '../components/media-play-button';
 import '../components/media-mute-button';
-import '../components/media-volume-range';
-import '../components/media-time-range';
+import '../components/media-volume-slider';
+import '../components/media-time-slider';
 import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
@@ -114,8 +114,8 @@ export function getTemplateHTML() {
         flex-grow: 1;
       }
 
-      /* TimeRange Component Styles */
-      media-time-range-root {
+      /* TimeSlider Component Styles */
+      media-time-slider-root {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -126,21 +126,21 @@ export function getTemplateHTML() {
       }
 
       /* Horizontal orientation styles */
-      media-time-range-root[data-orientation="horizontal"] {
+      media-time-slider-root[data-orientation="horizontal"] {
         min-width: 100px;
         width: 100%;
         height: 20px;
       }
 
       /* Vertical orientation styles */
-      media-time-range-root[data-orientation="vertical"] {
+      media-time-slider-root[data-orientation="vertical"] {
         min-width: 20px;
         width: 20px;
         height: 100px;
         flex-direction: column;
       }
 
-      media-time-range-track {
+      media-time-slider-track {
         position: relative;
         width: 100%;
         height: .375rem;
@@ -151,18 +151,18 @@ export function getTemplateHTML() {
       }
 
       /* Horizontal track styles */
-      media-time-range-track[data-orientation="horizontal"] {
+      media-time-slider-track[data-orientation="horizontal"] {
         width: 100%;
         height: .375rem;
       }
 
       /* Vertical track styles */
-      media-time-range-track[data-orientation="vertical"] {
+      media-time-slider-track[data-orientation="vertical"] {
         width: .375rem;
         height: 100%;
       }
 
-      media-time-range-thumb {
+      media-time-slider-thumb {
         width: .75rem;
         height: .75rem;
         background-color: #fff;
@@ -170,12 +170,12 @@ export function getTemplateHTML() {
         pointer-events: none;
       }
 
-      media-time-range-pointer {
+      media-time-slider-pointer {
         background-color: rgba(255, 255, 255, .5);
         pointer-events: none;
       }
 
-      media-time-range-progress {
+      media-time-slider-progress {
         background-color: #007bff;
         border-radius: inherit;
       }
@@ -185,8 +185,8 @@ export function getTemplateHTML() {
         padding: 14px 0;
       }
 
-      /* VolumeRange Component Styles */
-      media-volume-range-root {
+      /* VolumeSlider Component Styles */
+      media-volume-slider-root {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -197,21 +197,21 @@ export function getTemplateHTML() {
       }
 
       /* Horizontal orientation styles */
-      media-volume-range-root[data-orientation="horizontal"] {
+      media-volume-slider-root[data-orientation="horizontal"] {
         min-width: 80px;
         width: 80px;
         height: 20px;
       }
 
       /* Vertical orientation styles */
-      media-volume-range-root[data-orientation="vertical"] {
+      media-volume-slider-root[data-orientation="vertical"] {
         min-width: 20px;
         width: 20px;
         height: 80px;
         flex-direction: column;
       }
 
-      media-volume-range-track {
+      media-volume-slider-track {
         position: relative;
         width: 100%;
         height: .375rem;
@@ -222,18 +222,18 @@ export function getTemplateHTML() {
       }
 
       /* Horizontal track styles */
-      media-volume-range-track[data-orientation="horizontal"] {
+      media-volume-slider-track[data-orientation="horizontal"] {
         width: 100%;
         height: .375rem;
       }
 
       /* Vertical track styles */
-      media-volume-range-track[data-orientation="vertical"] {
+      media-volume-slider-track[data-orientation="vertical"] {
         width: .375rem;
         height: 100%;
       }
 
-      media-volume-range-thumb {
+      media-volume-slider-thumb {
         width: .75rem;
         height: .75rem;
         background-color: #fff;
@@ -241,7 +241,7 @@ export function getTemplateHTML() {
         pointer-events: none;
       }
 
-      media-volume-range-progress {
+      media-volume-slider-progress {
         background-color: #007bff;
         border-radius: inherit;
       }
@@ -302,13 +302,13 @@ export function getTemplateHTML() {
           </media-tooltip-root>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
-          <media-time-range-root>
-            <media-time-range-track>
-              <media-time-range-progress></media-time-range-progress>
-              <media-time-range-pointer></media-time-range-pointer>
-            </media-time-range-track>
-            <media-time-range-thumb></media-time-range-thumb>
-          </media-time-range-root>
+          <media-time-slider-root>
+            <media-time-slider-track>
+              <media-time-slider-progress></media-time-slider-progress>
+              <media-time-slider-pointer></media-time-slider-pointer>
+            </media-time-slider-track>
+            <media-time-slider-thumb></media-time-slider-thumb>
+          </media-time-slider-root>
           <media-duration-display></media-duration-display>
           <media-popover-root open-on-hover delay="200" close-delay="100">
             <media-popover-trigger>
@@ -321,12 +321,12 @@ export function getTemplateHTML() {
             <media-popover-portal root-id="${portalId}">
               <media-popover-positioner side="top" side-offset="0">
                 <media-popover-popup>
-                  <media-volume-range-root orientation="vertical">
-                    <media-volume-range-track>
-                      <media-volume-range-progress></media-volume-range-progress>
-                    </media-volume-range-track>
-                    <media-volume-range-thumb></media-volume-range-thumb>
-                  </media-volume-range-root>
+                  <media-volume-slider-root orientation="vertical">
+                    <media-volume-slider-track>
+                      <media-volume-slider-progress></media-volume-slider-progress>
+                    </media-volume-slider-track>
+                    <media-volume-slider-thumb></media-volume-slider-thumb>
+                  </media-volume-slider-root>
                 </media-popover-popup>
               </media-popover-positioner>
             </media-popover-portal>

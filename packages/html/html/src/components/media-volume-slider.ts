@@ -1,26 +1,53 @@
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { VolumeRange as CoreVolumeRange } from '@vjs-10/core';
-import { volumeRangeStateDefinition } from '@vjs-10/media-store';
+import { VolumeSlider as CoreVolumeSlider } from '@vjs-10/core';
+import { volumeSliderStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 /**
- * VolumeRange Root component - Main container with pointer event handling
+ * VolumeSlider Root props hook - equivalent to React's useVolumeSliderRootProps
+ * Handles element attributes and properties based on state
  */
-interface VolumeRangeRootState {
+export const getVolumeSliderRootProps: PropsHook<{
   volume: number;
   muted: boolean;
   volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
-  core: CoreVolumeRange | null;
+  core: CoreVolumeSlider | null;
+}> = (state, element) => {
+  const volumeText = `${Math.round(state.muted ? 0 : state.volume * 100)}%`;
+
+  const baseProps: Record<string, any> = {
+    /** data attributes/props */
+    'data-muted': state.muted.toString(),
+    'data-volume-level': state.volumeLevel,
+    'data-orientation': (element as any).orientation || 'horizontal',
+    /** aria attributes/props */
+    'aria-label': 'Volume',
+    'aria-valuetext': volumeText,
+    'aria-orientation': (element as any).orientation || 'horizontal',
+  };
+
+  return baseProps;
+};
+
+/**
+ * VolumeSlider Root component - Main container with pointer event handling
+ */
+interface VolumeSliderRootState {
+  volume: number;
+  muted: boolean;
+  volumeLevel: string;
+  requestVolumeChange: (volume: number) => void;
+  core: CoreVolumeSlider | null;
 }
 
-export class VolumeRangeRootBase extends HTMLElement {
+export class VolumeSliderRootBase extends HTMLElement {
   static readonly observedAttributes: readonly string[] = ['orientation'];
 
-  _state: VolumeRangeRootState | undefined;
-  _core: CoreVolumeRange | null = null;
+  _state: VolumeSliderRootState | undefined;
+  _core: CoreVolumeSlider | null = null;
 
   get volume(): number | undefined {
     return this._state?.volume;
@@ -40,7 +67,7 @@ export class VolumeRangeRootBase extends HTMLElement {
 
   attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null): void {
     if (name === 'orientation' && this._state) {
-      this._render(useVolumeRangeRootProps(this._state, this), this._state);
+      this._render(getVolumeSliderRootProps(this._state, this), this._state);
     }
   }
 
@@ -48,8 +75,8 @@ export class VolumeRangeRootBase extends HTMLElement {
     this._state = state;
 
     if (state && !this._core) {
-      this._core = new CoreVolumeRange();
-      this._core.subscribe(() => this._render(useVolumeRangeRootProps(state, this), state));
+      this._core = new CoreVolumeSlider();
+      this._core.subscribe(() => this._render(getVolumeSliderRootProps(state, this), state));
       this._core.attach(this);
       state.core = this._core;
     }
@@ -79,16 +106,16 @@ export class VolumeRangeRootBase extends HTMLElement {
 }
 
 /**
- * VolumeRange Track component - Track element that captures pointer events
+ * VolumeSlider Track component - Track element that captures pointer events
  */
-export class VolumeRangeTrackBase extends HTMLElement {
+export class VolumeSliderTrackBase extends HTMLElement {
   constructor() {
     super();
   }
 
   connectedCallback(): void {
-    // Set this element as the track element in the core VolumeRange
-    const rootElement = this.closest('media-volume-range-root') as any;
+    // Set this element as the track element in the core VolumeSlider
+    const rootElement = this.closest('media-volume-slider-root') as any;
     if (rootElement?._state?.core) {
       rootElement._state.core.setState({ _trackElement: this });
     }
@@ -110,9 +137,9 @@ export class VolumeRangeTrackBase extends HTMLElement {
 }
 
 /**
- * VolumeRange Progress component - Shows current progress
+ * VolumeSlider Progress component - Shows current progress
  */
-export class VolumeRangeProgressBase extends HTMLElement {
+export class VolumeSliderProgressBase extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -140,9 +167,9 @@ export class VolumeRangeProgressBase extends HTMLElement {
 }
 
 /**
- * VolumeRange Thumb component - Draggable thumb element
+ * VolumeSlider Thumb component - Draggable thumb element
  */
-export class VolumeRangeThumbBase extends HTMLElement {
+export class VolumeSliderThumbBase extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -166,162 +193,131 @@ export class VolumeRangeThumbBase extends HTMLElement {
 }
 
 /**
- * VolumeRange Root state hook - equivalent to React's useVolumeRangeRootState
+ * VolumeSlider Root state hook - equivalent to React's useVolumeSliderRootState
  * Handles media store state subscription and transformation
  */
-export const useVolumeRangeRootState: StateHook<{
+export const useVolumeSliderRootState: StateHook<{
   volume: number;
   muted: boolean;
   volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
-  core: CoreVolumeRange | null;
+  core: CoreVolumeSlider | null;
 }> = {
-  keys: volumeRangeStateDefinition.keys,
+  keys: volumeSliderStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
-    ...volumeRangeStateDefinition.stateTransform(rawState),
-    ...volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
+    ...volumeSliderStateDefinition.stateTransform(rawState),
+    ...volumeSliderStateDefinition.createRequestMethods(mediaStore.dispatch),
     core: null,
   }),
 };
 
 /**
- * VolumeRange Root props hook - equivalent to React's useVolumeRangeRootProps
- * Handles element attributes and properties based on state
+ * VolumeSlider Track props hook
  */
-export const useVolumeRangeRootProps: PropsHook<{
+export const getVolumeSliderTrackProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-volume-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+/**
+ * VolumeSlider Progress props hook
+ */
+export const getVolumeSliderProgressProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-volume-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+/**
+ * VolumeSlider Thumb props hook
+ */
+export const getVolumeSliderThumbProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-volume-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+/**
+ * Connected VolumeSlider Root component using hook-style architecture
+ */
+export const VolumeSliderRoot: ConnectedComponentConstructor<{
   volume: number;
   muted: boolean;
   volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
-  core: CoreVolumeRange | null;
-}> = (state, element) => {
-  const volumeText = `${Math.round(state.muted ? 0 : state.volume * 100)}%`;
-
-  const baseProps: Record<string, any> = {
-    /** data attributes/props */
-    'data-muted': state.muted.toString(),
-    'data-volume-level': state.volumeLevel,
-    'data-orientation': (element as any).orientation || 'horizontal',
-    /** aria attributes/props */
-    'aria-label': 'Volume',
-    'aria-valuetext': volumeText,
-    'aria-orientation': (element as any).orientation || 'horizontal',
-  };
-
-  return baseProps;
-};
+  core: CoreVolumeSlider | null;
+}> = toConnectedHTMLComponent(VolumeSliderRootBase, useVolumeSliderRootState, getVolumeSliderRootProps, 'VolumeSliderRoot');
 
 /**
- * VolumeRange Track props hook
+ * Connected VolumeSlider Track component
  */
-export const useVolumeRangeTrackProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-volume-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-/**
- * VolumeRange Progress props hook
- */
-export const useVolumeRangeProgressProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-volume-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-/**
- * VolumeRange Thumb props hook
- */
-export const useVolumeRangeThumbProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-volume-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-/**
- * Connected VolumeRange Root component using hook-style architecture
- */
-export const VolumeRangeRoot: ConnectedComponentConstructor<{
-  volume: number;
-  muted: boolean;
-  volumeLevel: string;
-  requestVolumeChange: (volume: number) => void;
-  core: CoreVolumeRange | null;
-}> = toConnectedHTMLComponent(VolumeRangeRootBase, useVolumeRangeRootState, useVolumeRangeRootProps, 'VolumeRangeRoot');
-
-/**
- * Connected VolumeRange Track component
- */
-export const VolumeRangeTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeRangeTrackBase,
+export const VolumeSliderTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderTrackBase,
   { keys: [], transform: () => ({}) },
-  useVolumeRangeTrackProps,
-  'VolumeRangeTrack',
+  getVolumeSliderTrackProps,
+  'VolumeSliderTrack',
 );
 
 /**
- * Connected VolumeRange Progress component
+ * Connected VolumeSlider Progress component
  */
-export const VolumeRangeProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeRangeProgressBase,
+export const VolumeSliderProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderProgressBase,
   { keys: [], transform: () => ({}) },
-  useVolumeRangeProgressProps,
-  'VolumeRangeProgress',
+  getVolumeSliderProgressProps,
+  'VolumeSliderProgress',
 );
 
 /**
- * Connected VolumeRange Thumb component
+ * Connected VolumeSlider Thumb component
  */
-export const VolumeRangeThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeRangeThumbBase,
+export const VolumeSliderThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderThumbBase,
   { keys: [], transform: () => ({}) },
-  useVolumeRangeThumbProps,
-  'VolumeRangeThumb',
+  getVolumeSliderThumbProps,
+  'VolumeSliderThumb',
 );
 
 /**
- * Compound VolumeRange component object
+ * Compound VolumeSlider component object
  */
-export const VolumeRange = Object.assign(
+export const VolumeSlider = Object.assign(
   {},
   {
-    Root: VolumeRangeRoot,
-    Track: VolumeRangeTrack,
-    Progress: VolumeRangeProgress,
-    Thumb: VolumeRangeThumb,
+    Root: VolumeSliderRoot,
+    Track: VolumeSliderTrack,
+    Progress: VolumeSliderProgress,
+    Thumb: VolumeSliderThumb,
   },
 ) as {
-  Root: typeof VolumeRangeRoot;
-  Track: typeof VolumeRangeTrack;
-  Progress: typeof VolumeRangeProgress;
-  Thumb: typeof VolumeRangeThumb;
+  Root: typeof VolumeSliderRoot;
+  Track: typeof VolumeSliderTrack;
+  Progress: typeof VolumeSliderProgress;
+  Thumb: typeof VolumeSliderThumb;
 };
 
 // Register custom elements
-if (!globalThis.customElements.get('media-volume-range-root')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-volume-range-root', VolumeRangeRoot);
+if (!globalThis.customElements.get('media-volume-slider-root')) {
+  globalThis.customElements.define('media-volume-slider-root', VolumeSliderRoot);
 }
 
-if (!globalThis.customElements.get('media-volume-range-track')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-volume-range-track', VolumeRangeTrack);
+if (!globalThis.customElements.get('media-volume-slider-track')) {
+  globalThis.customElements.define('media-volume-slider-track', VolumeSliderTrack);
 }
 
-if (!globalThis.customElements.get('media-volume-range-progress')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-volume-range-progress', VolumeRangeProgress);
+if (!globalThis.customElements.get('media-volume-slider-progress')) {
+  globalThis.customElements.define('media-volume-slider-progress', VolumeSliderProgress);
 }
 
-if (!globalThis.customElements.get('media-volume-range-thumb')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-volume-range-thumb', VolumeRangeThumb);
+if (!globalThis.customElements.get('media-volume-slider-thumb')) {
+  globalThis.customElements.define('media-volume-slider-thumb', VolumeSliderThumb);
 }
 
-export default VolumeRange;
+export default VolumeSlider;

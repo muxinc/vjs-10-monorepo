@@ -1,22 +1,55 @@
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { TimeRange as CoreTimeRange } from '@vjs-10/core';
-import { timeRangeStateDefinition } from '@vjs-10/media-store';
+import { TimeSlider as CoreTimeSlider } from '@vjs-10/core';
+import { timeSliderStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-interface TimeRangeRootState {
+interface TimeSliderRootState {
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
-  core: CoreTimeRange | null;
+  core: CoreTimeSlider | null;
 }
 
-export class TimeRangeRootBase extends HTMLElement {
+/**
+ * TimeSlider Root props hook - equivalent to React's useTimeSliderRootProps
+ * Handles element attributes and properties based on state
+ */
+export const getTimeSliderRootProps: PropsHook<{
+  currentTime: number;
+  duration: number;
+  requestSeek: (time: number) => void;
+  core: CoreTimeSlider | null;
+}> = (state, element) => {
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const currentTimeText = formatTime(state.currentTime);
+  const durationText = formatTime(state.duration);
+
+  const baseProps: Record<string, any> = {
+    /** data attributes/props */
+    'data-current-time': state.currentTime.toString(),
+    'data-duration': state.duration.toString(),
+    'data-orientation': (element as any).orientation || 'horizontal',
+    /** aria attributes/props */
+    'aria-label': 'Seek',
+    'aria-valuetext': `${currentTimeText} of ${durationText}`,
+    'aria-orientation': (element as any).orientation || 'horizontal',
+  };
+
+  return baseProps;
+};
+
+export class TimeSliderRootBase extends HTMLElement {
   static readonly observedAttributes: readonly string[] = ['orientation'];
 
-  _state: TimeRangeRootState | undefined;
-  _core: CoreTimeRange | null = null;
+  _state: TimeSliderRootState | undefined;
+  _core: CoreTimeSlider | null = null;
 
   get currentTime(): number {
     return this._state?.currentTime ?? 0;
@@ -32,7 +65,7 @@ export class TimeRangeRootBase extends HTMLElement {
 
   attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null): void {
     if (name === 'orientation' && this._state) {
-      this._render(useTimeRangeRootProps(this._state, this), this._state);
+      this._render(getTimeSliderRootProps(this._state, this), this._state);
     }
   }
 
@@ -40,8 +73,8 @@ export class TimeRangeRootBase extends HTMLElement {
     this._state = state;
 
     if (state && !this._core) {
-      this._core = new CoreTimeRange();
-      this._core.subscribe(() => this._render(useTimeRangeRootProps(state, this), state));
+      this._core = new CoreTimeSlider();
+      this._core.subscribe(() => this._render(getTimeSliderRootProps(state, this), state));
       this._core.attach(this);
       state.core = this._core;
     }
@@ -70,14 +103,14 @@ export class TimeRangeRootBase extends HTMLElement {
   }
 }
 
-export class TimeRangeTrackBase extends HTMLElement {
+export class TimeSliderTrackBase extends HTMLElement {
   constructor() {
     super();
   }
 
   connectedCallback(): void {
-    // Set this element as the track element in the core TimeRange
-    const rootElement = this.closest('media-time-range-root') as any;
+    // Set this element as the track element in the core TimeSlider
+    const rootElement = this.closest('media-time-slider-root') as any;
     if (rootElement?._state?.core) {
       rootElement._state.core.setState({ _trackElement: this });
     }
@@ -98,7 +131,7 @@ export class TimeRangeTrackBase extends HTMLElement {
   }
 }
 
-export class TimeRangeProgressBase extends HTMLElement {
+export class TimeSliderProgressBase extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -125,7 +158,7 @@ export class TimeRangeProgressBase extends HTMLElement {
   }
 }
 
-export class TimeRangePointerBase extends HTMLElement {
+export class TimeSliderPointerBase extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -152,7 +185,7 @@ export class TimeRangePointerBase extends HTMLElement {
   }
 }
 
-export class TimeRangeThumbBase extends HTMLElement {
+export class TimeSliderThumbBase extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -175,157 +208,123 @@ export class TimeRangeThumbBase extends HTMLElement {
   }
 }
 
-export const useTimeRangeRootState: StateHook<{
+export const useTimeSliderRootState: StateHook<{
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
-  core: CoreTimeRange | null;
+  core: CoreTimeSlider | null;
 }> = {
-  keys: timeRangeStateDefinition.keys,
+  keys: timeSliderStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
-    ...timeRangeStateDefinition.stateTransform(rawState),
-    ...timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
+    ...timeSliderStateDefinition.stateTransform(rawState),
+    ...timeSliderStateDefinition.createRequestMethods(mediaStore.dispatch),
     core: null,
   }),
 };
 
-export const useTimeRangeRootProps: PropsHook<{
+export const getTimeSliderTrackProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-time-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+export const getTimeSliderProgressProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-time-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+export const getTimeSliderPointerProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-time-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+export const getTimeSliderThumbProps: PropsHook<Record<string, never>> = (_state, element) => {
+  // Get orientation from parent root element if not provided in state
+  const rootElement = element.closest('media-time-slider-root') as any;
+  return {
+    'data-orientation': rootElement?.orientation || 'horizontal',
+  };
+};
+
+export const TimeSliderRoot: ConnectedComponentConstructor<{
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
-  core: CoreTimeRange | null;
-}> = (state, element) => {
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
+  core: CoreTimeSlider | null;
+}> = toConnectedHTMLComponent(TimeSliderRootBase, useTimeSliderRootState, getTimeSliderRootProps, 'TimeSliderRoot');
 
-  const currentTimeText = formatTime(state.currentTime);
-  const durationText = formatTime(state.duration);
-
-  const baseProps: Record<string, any> = {
-    /** data attributes/props */
-    'data-current-time': state.currentTime.toString(),
-    'data-duration': state.duration.toString(),
-    'data-orientation': (element as any).orientation || 'horizontal',
-    /** aria attributes/props */
-    'aria-label': 'Seek',
-    'aria-valuetext': `${currentTimeText} of ${durationText}`,
-    'aria-orientation': (element as any).orientation || 'horizontal',
-  };
-
-  return baseProps;
-};
-
-export const useTimeRangeTrackProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-time-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-export const useTimeRangeProgressProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-time-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-export const useTimeRangePointerProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-time-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-export const useTimeRangeThumbProps: PropsHook<{}> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
-  const rootElement = element.closest('media-time-range-root') as any;
-  return {
-    'data-orientation': rootElement?.orientation || 'horizontal',
-  };
-};
-
-export const TimeRangeRoot: ConnectedComponentConstructor<{
-  currentTime: number;
-  duration: number;
-  requestSeek: (time: number) => void;
-  core: CoreTimeRange | null;
-}> = toConnectedHTMLComponent(TimeRangeRootBase, useTimeRangeRootState, useTimeRangeRootProps, 'TimeRangeRoot');
-
-export const TimeRangeTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  TimeRangeTrackBase,
+export const TimeSliderTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  TimeSliderTrackBase,
   { keys: [], transform: () => ({}) },
-  useTimeRangeTrackProps,
-  'TimeRangeTrack',
+  getTimeSliderTrackProps,
+  'TimeSliderTrack',
 );
 
-export const TimeRangeProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  TimeRangeProgressBase,
+export const TimeSliderProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  TimeSliderProgressBase,
   { keys: [], transform: () => ({}) },
-  useTimeRangeProgressProps,
-  'TimeRangeProgress',
+  getTimeSliderProgressProps,
+  'TimeSliderProgress',
 );
 
-export const TimeRangePointer: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  TimeRangePointerBase,
+export const TimeSliderPointer: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  TimeSliderPointerBase,
   { keys: [], transform: () => ({}) },
-  useTimeRangePointerProps,
-  'TimeRangePointer',
+  getTimeSliderPointerProps,
+  'TimeSliderPointer',
 );
 
-export const TimeRangeThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  TimeRangeThumbBase,
+export const TimeSliderThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  TimeSliderThumbBase,
   { keys: [], transform: () => ({}) },
-  useTimeRangeThumbProps,
-  'TimeRangeThumb',
+  getTimeSliderThumbProps,
+  'TimeSliderThumb',
 );
 
-export const TimeRange = Object.assign(
+export const TimeSlider = Object.assign(
   {},
   {
-    Root: TimeRangeRoot,
-    Track: TimeRangeTrack,
-    Progress: TimeRangeProgress,
-    Pointer: TimeRangePointer,
-    Thumb: TimeRangeThumb,
+    Root: TimeSliderRoot,
+    Track: TimeSliderTrack,
+    Progress: TimeSliderProgress,
+    Pointer: TimeSliderPointer,
+    Thumb: TimeSliderThumb,
   },
 ) as {
-  Root: typeof TimeRangeRoot;
-  Track: typeof TimeRangeTrack;
-  Progress: typeof TimeRangeProgress;
-  Pointer: typeof TimeRangePointer;
-  Thumb: typeof TimeRangeThumb;
+  Root: typeof TimeSliderRoot;
+  Track: typeof TimeSliderTrack;
+  Progress: typeof TimeSliderProgress;
+  Pointer: typeof TimeSliderPointer;
+  Thumb: typeof TimeSliderThumb;
 };
 
 // Register custom elements
-if (!globalThis.customElements.get('media-time-range-root')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-time-range-root', TimeRangeRoot);
+if (!globalThis.customElements.get('media-time-slider-root')) {
+  globalThis.customElements.define('media-time-slider-root', TimeSliderRoot);
 }
 
-if (!globalThis.customElements.get('media-time-range-track')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-time-range-track', TimeRangeTrack);
+if (!globalThis.customElements.get('media-time-slider-track')) {
+  globalThis.customElements.define('media-time-slider-track', TimeSliderTrack);
 }
 
-if (!globalThis.customElements.get('media-time-range-progress')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-time-range-progress', TimeRangeProgress);
+if (!globalThis.customElements.get('media-time-slider-progress')) {
+  globalThis.customElements.define('media-time-slider-progress', TimeSliderProgress);
 }
 
-if (!globalThis.customElements.get('media-time-range-pointer')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-time-range-pointer', TimeRangePointer);
+if (!globalThis.customElements.get('media-time-slider-pointer')) {
+  globalThis.customElements.define('media-time-slider-pointer', TimeSliderPointer);
 }
 
-if (!globalThis.customElements.get('media-time-range-thumb')) {
-  // @ts-ignore - Custom element constructor compatibility
-  globalThis.customElements.define('media-time-range-thumb', TimeRangeThumb);
+if (!globalThis.customElements.get('media-time-slider-thumb')) {
+  globalThis.customElements.define('media-time-slider-thumb', TimeSliderThumb);
 }
 
-export default TimeRange;
+export default TimeSlider;

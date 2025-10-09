@@ -16,7 +16,7 @@ import { FullscreenButton } from '../../components/FullscreenButton';
 import { MediaContainer } from '../../components/MediaContainer';
 import MuteButton from '../../components/MuteButton';
 import PlayButton from '../../components/PlayButton';
-import { TimeRange } from '../../components/TimeRange';
+import { TimeSlider } from '../../components/TimeSlider';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
@@ -46,13 +46,13 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <DurationDisplay className={`${styles.TimeDisplay} opacity-50`} />
         </div>
 
-        <TimeRange.Root className={`${styles.SliderRoot} ${styles.TimeSliderRoot}`}>
-          <TimeRange.Track className={styles.SliderTrack}>
-            <TimeRange.Progress className={styles.SliderProgress} />
-            <TimeRange.Pointer className={styles.SliderPointer} />
-          </TimeRange.Track>
-          <TimeRange.Thumb className={`${styles.SliderThumb} ${styles.TimeSliderThumb}`} />
-        </TimeRange.Root>
+        <TimeSlider.Root className={`${styles.SliderRoot} ${styles.TimeSliderRoot}`}>
+          <TimeSlider.Track className={styles.SliderTrack}>
+            <TimeSlider.Progress className={styles.SliderProgress} />
+            <TimeSlider.Pointer className={styles.SliderPointer} />
+          </TimeSlider.Track>
+          <TimeSlider.Thumb className={`${styles.SliderThumb} ${styles.TimeSliderThumb}`} />
+        </TimeSlider.Root>
 
         <div className={styles.ButtonGroup}>
           <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>

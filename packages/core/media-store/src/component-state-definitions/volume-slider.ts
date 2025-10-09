@@ -1,24 +1,24 @@
-export interface VolumeRangeState {
+export interface VolumeSliderState {
   volume: number;
   muted: boolean;
   volumeLevel: 'high' | 'medium' | 'low' | 'off';
 }
 
-export interface VolumeRangeMethods {
+export interface VolumeSliderMethods {
   requestVolumeChange: (volume: number) => void;
 }
 
-export interface VolumeRangeStateDefinition {
+export interface VolumeSliderStateDefinition {
   keys: string[];
-  stateTransform: (rawState: any) => VolumeRangeState;
-  createRequestMethods: (dispatch: (action: { type: string; detail?: any }) => void) => VolumeRangeMethods;
+  stateTransform: (rawState: any) => VolumeSliderState;
+  createRequestMethods: (dispatch: (action: { type: string; detail?: any }) => void) => VolumeSliderMethods;
 }
 
 /**
- * VolumeRange state definition
+ * VolumeSlider state definition
  * Defines the core state logic that can be shared between implementations
  */
-export const volumeRangeStateDefinition: VolumeRangeStateDefinition = {
+export const volumeSliderStateDefinition: VolumeSliderStateDefinition = {
   keys: ['volume', 'muted', 'volumeLevel'],
   stateTransform: (rawState: any) => ({
     volume: rawState.volume ?? 1,

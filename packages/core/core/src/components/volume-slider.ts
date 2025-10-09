@@ -1,8 +1,8 @@
-import type { RangeState } from './range';
+import type { SliderState } from './slider';
 
-import { Range } from './range';
+import { Slider } from './slider';
 
-export interface VolumeRangeState extends RangeState {
+export interface VolumeSliderState extends SliderState {
   volume: number;
   muted: boolean;
   volumeLevel: string;
@@ -10,9 +10,9 @@ export interface VolumeRangeState extends RangeState {
   _volumeText: string;
 }
 
-export class VolumeRange extends Range {
-  getState(): VolumeRangeState {
-    const state = super.getState() as VolumeRangeState;
+export class VolumeSlider extends Slider {
+  getState(): VolumeSliderState {
+    const state = super.getState() as VolumeSliderState;
 
     // When dragging, use pointer position for immediate feedback;
     // Otherwise, use current volume;
@@ -49,14 +49,14 @@ export class VolumeRange extends Range {
   #handlePointerDown(event: PointerEvent) {
     super.handleEvent(event);
 
-    const { _pointerRatio, requestVolumeChange } = super.getState() as VolumeRangeState;
+    const { _pointerRatio, requestVolumeChange } = super.getState() as VolumeSliderState;
     requestVolumeChange(_pointerRatio);
   }
 
   #handlePointerMove(event: PointerEvent) {
     super.handleEvent(event);
 
-    const { _dragging, _pointerRatio, requestVolumeChange } = super.getState() as VolumeRangeState;
+    const { _dragging, _pointerRatio, requestVolumeChange } = super.getState() as VolumeSliderState;
 
     if (_dragging) {
       requestVolumeChange(_pointerRatio);
@@ -64,7 +64,7 @@ export class VolumeRange extends Range {
   }
 
   #handlePointerUp(event: PointerEvent) {
-    const { _dragging, _pointerRatio, requestVolumeChange } = super.getState() as VolumeRangeState;
+    const { _dragging, _pointerRatio, requestVolumeChange } = super.getState() as VolumeSliderState;
 
     if (_dragging) {
       requestVolumeChange(_pointerRatio);
