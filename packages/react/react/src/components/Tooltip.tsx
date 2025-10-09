@@ -236,7 +236,7 @@ function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Elem
   );
 }
 
-function TooltipPortal({ children, root, rootId }: TooltipPortalProps): JSX.Element {
+function TooltipPortal({ children, root, rootId = '@default_portal_id' }: TooltipPortalProps): JSX.Element {
   return (
     <FloatingPortal root={root as HTMLElement} id={rootId as string}>
       {children}

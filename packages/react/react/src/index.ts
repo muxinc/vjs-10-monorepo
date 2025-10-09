@@ -6,6 +6,8 @@ export { MediaContainer, useMediaContainerRef } from './components/MediaContaine
 export { MuteButton } from './components/MuteButton';
 export { PlayButton } from './components/PlayButton';
 export { Popover } from './components/Popover';
+export { TimeSlider } from './components/TimeSlider';
+export { Tooltip } from './components/Tooltip';
 export { MediaElementVideo, Video } from './components/Video';
 export { VolumeSlider } from './components/VolumeSlider';
 export * from './skins';

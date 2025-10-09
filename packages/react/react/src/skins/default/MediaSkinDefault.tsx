@@ -42,8 +42,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Tooltip.Root delay={600} closeDelay={0}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-              <PlayIcon className={styles.PlayIcon}></PlayIcon>
-              <PauseIcon className={styles.PauseIcon}></PauseIcon>
+              <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
+              <PauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
             </PlayButton>
           </Tooltip.Trigger>
           <Tooltip.Portal rootId={portalId}>
@@ -77,9 +77,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Popover.Root openOnHover delay={200} closeDelay={100}>
           <Popover.Trigger>
             <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
-              <VolumeHighIcon className={styles.VolumeHighIcon} />
-              <VolumeLowIcon className={styles.VolumeLowIcon} />
-              <VolumeOffIcon className={styles.VolumeOffIcon} />
+              <VolumeHighIcon className={`${styles.VolumeHighIcon} ${styles.Icon}`} />
+              <VolumeLowIcon className={`${styles.VolumeLowIcon} ${styles.Icon}`} />
+              <VolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
             </MuteButton>
           </Popover.Trigger>
           <Popover.Portal rootId={portalId}>
@@ -98,23 +98,21 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
 
         <Tooltip.Root delay={600} closeDelay={0}>
           <Tooltip.Trigger>
-            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
-              <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
-              <FullscreenExitIcon className={styles.FullScreenExitIcon} />
+            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
+              <FullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
+              <FullscreenExitIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
             </FullscreenButton>
           </Tooltip.Trigger>
           <Tooltip.Portal rootId={portalId}>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullScreenTooltipPopup}`}>
-                <span className={styles.FullScreenEnterTooltip}>Enter Fullscreen</span>
-                <span className={styles.FullScreenExitTooltip}>Exit Fullscreen</span>
+              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
+                <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
+                <span className={styles.FullscreenExitTooltip}>Exit Fullscreen</span>
               </Tooltip.Popup>
             </Tooltip.Positioner>
           </Tooltip.Portal>
         </Tooltip.Root>
       </div>
-
-      <div id={portalId} className="absolute z-10" />
     </MediaContainer>
   );
 }

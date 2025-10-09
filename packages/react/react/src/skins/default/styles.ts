@@ -42,6 +42,7 @@ const styles: MediaDefaultSkinStyles = {
     // High contrast mode
     'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20',
   ),
+  Icon: cn('icon'),
   Button: cn(
     'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-full',
     // Background/foreground
@@ -60,8 +61,8 @@ const styles: MediaDefaultSkinStyles = {
     'active:scale-95',
   ),
   IconButton: cn(
-    'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20',
+    'grid [&_.icon]:[grid-area:1/1]',
+    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
@@ -89,7 +90,7 @@ const styles: MediaDefaultSkinStyles = {
   PlayTooltip: cn('play-tooltip'),
   PauseTooltip: cn('pause-tooltip'),
   MuteButton: cn(
-    '[&_svg]:opacity-0',
+    '[&_.icon]:opacity-0',
     '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
     '[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
     '[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',
@@ -98,29 +99,29 @@ const styles: MediaDefaultSkinStyles = {
   VolumeHighIcon: cn('volume-high-icon'),
   VolumeLowIcon: cn('volume-low-icon'),
   VolumeOffIcon: cn('volume-off-icon'),
-  FullScreenButton: cn(
+  FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
     '[&_path]:transition-transform ease-out',
   ),
-  FullScreenEnterIcon: cn(
+  FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
     'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
     'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
-  FullScreenExitIcon: cn(
+  FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
     '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
     '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
     'group-hover/button:[&_.arrow-1]:translate-0',
     'group-hover/button:[&_.arrow-2]:translate-0',
   ),
-  FullScreenTooltipPopup: cn(
+  FullscreenTooltipPopup: cn(
     '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
     '[&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline',
   ),
-  FullScreenEnterTooltip: cn('fullscreen-enter-tooltip'),
-  FullScreenExitTooltip: cn('fullscreen-exit-tooltip'),
+  FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
+  FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
   SliderRoot: cn(
