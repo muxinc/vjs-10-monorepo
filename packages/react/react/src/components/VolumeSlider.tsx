@@ -1,14 +1,8 @@
 import type { ConnectedComponent } from '../utils/component-factory';
 
-<<<<<<< HEAD:packages/react/react/src/components/VolumeSlider.tsx
 import { VolumeSlider as CoreVolumeSlider } from '@vjs-10/core';
 
 import { volumeSliderStateDefinition } from '@vjs-10/media-store';
-=======
-import { VolumeRange as CoreVolumeRange } from '@vjs-10/core';
-
-import { volumeRangeStateDefinition } from '@vjs-10/media-store';
->>>>>>> 33bb24e (applying lint:fix):packages/react/react/src/components/VolumeRange.tsx
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 import { useCallback, useMemo } from 'react';
 
@@ -42,11 +36,7 @@ export function useVolumeSliderRootState(props: VolumeSliderProps): VolumeSlider
   const mediaStore = useMediaStore();
   const mediaState = useMediaSelector(volumeSliderStateDefinition.stateTransform, shallowEqual);
   const mediaMethods = useMemo(
-<<<<<<< HEAD:packages/react/react/src/components/VolumeSlider.tsx
     () => volumeSliderStateDefinition.createRequestMethods(mediaStore.dispatch),
-=======
-    () => volumeRangeStateDefinition.createRequestMethods(mediaStore.dispatch),
->>>>>>> 33bb24e (applying lint:fix):packages/react/react/src/components/VolumeRange.tsx
     [mediaStore],
   );
   const core = useCore(CoreVolumeSlider, { ...mediaState, ...mediaMethods });
@@ -94,33 +84,18 @@ export function renderVolumeSliderRoot(props: VolumeSliderRenderProps): JSX.Elem
   return <div {...props} />;
 }
 
-<<<<<<< HEAD:packages/react/react/src/components/VolumeSlider.tsx
 const VolumeSliderRoot: ConnectedComponent<VolumeSliderProps, typeof renderVolumeSliderRoot> = toConnectedComponent(
   useVolumeSliderRootState,
   useVolumeSliderRootProps,
   renderVolumeSliderRoot,
   'VolumeSlider.Root',
-=======
-const VolumeRangeRoot: ConnectedComponent<VolumeRange.Props, typeof renderVolumeRangeRoot> = toConnectedComponent(
-  useVolumeRangeRootState,
-  useVolumeRangeRootProps,
-  renderVolumeRangeRoot,
-  'VolumeRange.Root',
->>>>>>> 33bb24e (applying lint:fix):packages/react/react/src/components/VolumeRange.tsx
 );
 
 // ============================================================================
 // TRACK COMPONENT
 // ============================================================================
 
-<<<<<<< HEAD:packages/react/react/src/components/VolumeSlider.tsx
 export function useVolumeSliderTrackProps(props: React.ComponentProps<'div'>, context: VolumeSliderState): VolumeSliderRenderProps {
-=======
-export function useVolumeRangeTrackProps(
-  props: React.ComponentProps<'div'>,
-  context: VolumeRange.State,
-): VolumeRangeRenderProps {
->>>>>>> 33bb24e (applying lint:fix):packages/react/react/src/components/VolumeRange.tsx
   return {
     ref: useCallback((el: HTMLDivElement) => {
       context.core?.setState({ _trackElement: el });
@@ -147,14 +122,7 @@ const VolumeSliderTrack: ConnectedComponent<
 // THUMB COMPONENT
 // ============================================================================
 
-<<<<<<< HEAD:packages/react/react/src/components/VolumeSlider.tsx
 export function getVolumeSliderThumbProps(props: React.ComponentProps<'div'>, context: VolumeSliderState): VolumeSliderRenderProps {
-=======
-export function useVolumeRangeThumbProps(
-  props: React.ComponentProps<'div'>,
-  context: VolumeRange.State,
-): VolumeRangeRenderProps {
->>>>>>> 33bb24e (applying lint:fix):packages/react/react/src/components/VolumeRange.tsx
   return {
     'data-orientation': context.orientation,
     ...props,
@@ -211,17 +179,10 @@ const VolumeSliderProgress: ConnectedComponent<
 export const VolumeSlider = Object.assign(
   {},
   {
-<<<<<<< HEAD:packages/react/react/src/components/VolumeSlider.tsx
     Root: VolumeSliderRoot,
     Track: VolumeSliderTrack,
     Thumb: VolumeSliderThumb,
     Progress: VolumeSliderProgress,
-=======
-    Root: VolumeRangeRoot,
-    Track: VolumeRangeTrack,
-    Thumb: VolumeRangeThumb,
-    Progress: VolumeRangeProgress,
->>>>>>> 33bb24e (applying lint:fix):packages/react/react/src/components/VolumeRange.tsx
   },
 ) as {
   Root: typeof VolumeSliderRoot;
