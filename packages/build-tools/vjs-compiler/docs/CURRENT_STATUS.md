@@ -1,7 +1,7 @@
 # VJS Compiler v2: Current Implementation Status
 
-**Last Updated:** 2025-10-08
-**Branch:** `build/framework-compiler`
+**Last Updated:** 2025-10-09
+**Branch:** `build/framework-compiler-squash`
 
 ---
 

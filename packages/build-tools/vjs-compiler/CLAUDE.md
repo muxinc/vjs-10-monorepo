@@ -227,8 +227,8 @@ A change is NOT complete until:
 
 **Key Documents:**
 
-- `/docs/compiler-architecture.md` - Core principles and transformation pipeline
-- `/docs/compiler-rebuild-plan.md` - Phase-by-phase implementation plan with validation requirements
+- `docs/compiler-architecture.md` - Core principles and transformation pipeline
+- `docs/compiler-rebuild-plan.md` - Phase-by-phase implementation plan with validation requirements
 - `README.md` - Package overview and CLI usage
 - `docs/CURRENT_STATUS.md` - Implementation progress tracking
 
