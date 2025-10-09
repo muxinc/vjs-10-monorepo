@@ -128,6 +128,52 @@ This monorepo uses **pnpm**, not npm. The root-level `CLAUDE.md` specifies this.
 
 **Why:** pnpm provides better workspace management, faster installs, and stricter dependency resolution.
 
+### Linting Rules and Enforcement
+
+The monorepo uses **@antfu/eslint-config** with strict rules enforced by pre-commit hooks.
+
+**IMPORTANT:** `packages/build-tools` is currently in the ESLint ignore list, so linting is NOT automatically enforced for this package.
+
+#### Linting Requirements
+
+1. **For changes OUTSIDE packages/build-tools**:
+   - ✅ **MUST** pass `pnpm lint` from monorepo root
+   - ✅ **MUST** pass pre-commit hooks (runs automatically)
+   - ❌ **DO NOT** create new files outside `packages/build-tools` unless absolutely necessary
+
+2. **For changes INSIDE packages/build-tools** (this package):
+   - ✅ **SHOULD** follow @antfu/eslint-config rules when practical
+   - ✅ **SHOULD** run `pnpm lint:fix` from root if modifying files that would be linted
+   - ✅ TypeScript compilation (`npx tsc --noEmit`) **MUST** always pass
+   - 📝 Manual formatting is acceptable but try to match monorepo style:
+     - Use semicolons
+     - Single quotes for strings
+     - 2-space indentation
+     - 1tbs brace style (allow single-line)
+
+3. **Pre-commit validation**:
+   - Hooks run automatically on `git commit`
+   - Applies `eslint --fix` to staged files
+   - Backs up original state in git stash if changes are made
+   - Only runs on files NOT in ignore list
+
+#### Checking Linting (Optional for build-tools)
+
+```bash
+# From monorepo root - check specific files outside build-tools
+cd ../../../
+pnpm lint path/to/file.ts
+
+# Auto-fix linting issues
+pnpm lint:fix
+
+# TypeScript compilation (REQUIRED - always run from vjs-compiler)
+cd packages/build-tools/vjs-compiler
+npx tsc --noEmit
+```
+
+**Goal:** When we eventually enable linting for `packages/build-tools`, minimal changes should be needed.
+
 ### Before Every Code Change
 
 1. **Plan E2E Validation** - Can this be validated e2e? How?
@@ -170,11 +216,13 @@ npx tsc --noEmit
 # All tests (MUST pass OR document failures)
 pnpm test
 
-# Linting (MUST pass)
-pnpm lint
+# Linting (automatically enforced by pre-commit hooks for non-ignored files)
+# Pre-commit hooks will run eslint --fix on staged files outside packages/build-tools
+# No manual linting needed for files inside packages/build-tools (currently ignored)
 
-# Formatting (auto-fix)
-pnpm format
+# For any changes outside packages/build-tools, verify manually:
+cd ../../../
+pnpm lint
 ```
 
 **If tests timeout or you interrupt:** Run `pkill -f "node.*vitest"` to cleanup workers before retrying.
