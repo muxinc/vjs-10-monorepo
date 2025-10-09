@@ -32,7 +32,10 @@ export function useFullscreenButtonState(_props: any): {
 export type useFullscreenButtonState = typeof useFullscreenButtonState;
 export type FullscreenButtonState = ReturnType<useFullscreenButtonState>;
 
-export function useFullscreenButtonProps(props: PropsWithChildren, state: ReturnType<typeof useFullscreenButtonState>): PropsWithChildren<Record<string, unknown>> {
+export function useFullscreenButtonProps(
+  props: PropsWithChildren,
+  state: ReturnType<typeof useFullscreenButtonState>,
+): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */

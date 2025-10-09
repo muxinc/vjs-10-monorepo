@@ -122,7 +122,10 @@ export class Slider {
   }
 }
 
-export interface Point { x: number; y: number }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 /**
  * Get progress ratio of a point on a line segment.

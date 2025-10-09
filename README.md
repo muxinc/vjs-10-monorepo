@@ -3,8 +3,8 @@
 A monorepo for Video.js 10 related library packages, organized by platform and runtime environment.
 
 ---
-### 🚧 Note to new viewers 🚧
 
+### 🚧 Note to new viewers 🚧
 
 \[90s under-construction gif\]
 
@@ -12,17 +12,17 @@ Thanks for checking out the project! It's in its early stages and currently a mi
 
 #### Get up to speed
 
-* Read the [v10 discussion topic](https://github.com/videojs/video.js/discussions/9035)
-* Watch [Heff's recent presentation](https://players.brightcove.net/3737230800001/eyILA5XG7K_default/index.html?videoId=6379311036112)
-* More roadmap and architecture docs to come...
+- Read the [v10 discussion topic](https://github.com/videojs/video.js/discussions/9035)
+- Watch [Heff's recent presentation](https://players.brightcove.net/3737230800001/eyILA5XG7K_default/index.html?videoId=6379311036112)
+- More roadmap and architecture docs to come...
 
 #### How you can help currently
 
-* Run the React and HTML demos
-* Give us feedback in a github issue on:
-  * The aesthetics of the player(s)
-  * The initial embed code and component structure
-  * The general direction
+- Run the React and HTML demos
+- Give us feedback in a github issue on:
+  - The aesthetics of the player(s)
+  - The initial embed code and component structure
+  - The general direction
 
 Thank you!
 

@@ -52,12 +52,14 @@ export function useMediaContainerRef(): RefCallback<HTMLElement | null> {
  *   </MediaContainer>
  * );
  */
-export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement>>> = forwardRef(({ children, ...props }, ref) => {
-  const containerRef = useMediaContainerRef();
-  const composedRef = useComposedRefs(ref, containerRef);
-  return (
-    <div ref={composedRef} {...props}>
-      {children}
-    </div>
-  );
-});
+export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement>>> = forwardRef(
+  ({ children, ...props }, ref) => {
+    const containerRef = useMediaContainerRef();
+    const composedRef = useComposedRefs(ref, containerRef);
+    return (
+      <div ref={composedRef} {...props}>
+        {children}
+      </div>
+    );
+  },
+);

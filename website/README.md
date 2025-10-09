@@ -134,13 +134,9 @@ Documentation pages can be restricted to specific frameworks or styles:
 **Within MDX content** (using conditional components):
 
 ```mdx
-<FrameworkCase frameworks={["react"]}>
-  This content only appears in React docs.
-</FrameworkCase>
+<FrameworkCase frameworks={['react']}>This content only appears in React docs.</FrameworkCase>
 
-<StyleCase styles={["tailwind"]}>
-  This content only appears when Tailwind is selected.
-</StyleCase>
+<StyleCase styles={['tailwind']}>This content only appears when Tailwind is selected.</StyleCase>
 ```
 
 ##### Static Site Generation

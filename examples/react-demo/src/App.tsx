@@ -1,44 +1,54 @@
 import type { ChangeEventHandler } from 'react';
 
 import { MediaProvider, MediaSkinDefault, MediaSkinToasted, Video } from '@vjs-10/react';
+
 import { useCallback, useMemo, useState } from 'react';
+
 import './globals.css';
 
-const skins = [{
-  key: 'default',
-  name: 'Frosted',
-  component: MediaSkinDefault,
-}, {
-  key: 'toasted',
-  name: 'Toasted',
-  component: MediaSkinToasted,
-}] as const;
+const skins = [
+  {
+    key: 'default',
+    name: 'Frosted',
+    component: MediaSkinDefault,
+  },
+  {
+    key: 'toasted',
+    name: 'Toasted',
+    component: MediaSkinToasted,
+  },
+] as const;
 
 type SkinKey = (typeof skins)[number]['key'];
 
-const mediaSources = [{
-  key: '1',
-  name: 'Mux 1',
-  value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8',
-}, {
-  key: '2',
-  name: 'Mux 2',
-  value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8',
-}, {
-  key: '3',
-  name: 'Mux 3',
-  value: 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4',
-}, {
-  key: '4',
-  name: 'Mux 4',
-  value: 'https://stream.mux.com/lyrKpPcGfqyzeI00jZAfW6MvP6GNPrkML.m3u8',
-}] as const;
+const mediaSources = [
+  {
+    key: '1',
+    name: 'Mux 1',
+    value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8',
+  },
+  {
+    key: '2',
+    name: 'Mux 2',
+    value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8',
+  },
+  {
+    key: '3',
+    name: 'Mux 3',
+    value: 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4',
+  },
+  {
+    key: '4',
+    name: 'Mux 4',
+    value: 'https://stream.mux.com/lyrKpPcGfqyzeI00jZAfW6MvP6GNPrkML.m3u8',
+  },
+] as const;
 
 type MediaSourceKey = (typeof mediaSources)[number]['key'];
 
 function getParam<T>(key: string, defaultValue: T): T {
   const params = new URLSearchParams(window.location.search);
-  return params.get(key) as T || defaultValue;
+  return (params.get(key) as T) || defaultValue;
 }
 function setParam(key: string, value: string) {
   const params = new URLSearchParams(window.location.search);

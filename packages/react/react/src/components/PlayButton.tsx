@@ -30,7 +30,10 @@ export function usePlayButtonState(_props: any): {
 export type usePlayButtonState = typeof usePlayButtonState;
 export type PlayButtonState = ReturnType<usePlayButtonState>;
 
-export function usePlayButtonProps(props: Record<string, unknown>, state: ReturnType<typeof usePlayButtonState>): PropsWithChildren<Record<string, unknown>> {
+export function usePlayButtonProps(
+  props: Record<string, unknown>,
+  state: ReturnType<typeof usePlayButtonState>,
+): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */

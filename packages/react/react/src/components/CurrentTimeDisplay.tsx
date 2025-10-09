@@ -23,7 +23,10 @@ export function useCurrentTimeDisplayState(_props: any): {
 export type useCurrentTimeDisplayState = typeof useCurrentTimeDisplayState;
 export type CurrentTimeDisplayState = ReturnType<useCurrentTimeDisplayState>;
 
-export function useCurrentTimeDisplayProps(props: PropsWithChildren, _state: ReturnType<typeof useCurrentTimeDisplayState>): PropsWithChildren<Record<string, unknown>> {
+export function useCurrentTimeDisplayProps(
+  props: PropsWithChildren,
+  _state: ReturnType<typeof useCurrentTimeDisplayState>,
+): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** external props spread last to allow for overriding */
     ...props,

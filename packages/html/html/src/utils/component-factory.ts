@@ -26,7 +26,12 @@ export interface ConnectedComponentConstructor<State> {
  * @param displayName - Display name for debugging
  * @returns Connected custom element class with media store integration
  */
-export function toConnectedHTMLComponent<State = any>(BaseClass: CustomElementConstructor, stateHook: StateHook<State>, propsHook: PropsHook<State>, displayName?: string): ConnectedComponentConstructor<State> {
+export function toConnectedHTMLComponent<State = any>(
+  BaseClass: CustomElementConstructor,
+  stateHook: StateHook<State>,
+  propsHook: PropsHook<State>,
+  displayName?: string,
+): ConnectedComponentConstructor<State> {
   const ConnectedComponent = class extends ConsumerMixin(BaseClass) {
     static get observedAttributes(): string[] {
       return [

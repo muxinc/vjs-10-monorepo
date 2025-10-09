@@ -28,7 +28,12 @@ export function toConnectedComponent<
   TState,
   TResultProps extends Record<string, any>,
   TRenderFn extends RenderFn<TResultProps, TState>,
->(useStateHook: StateHookFn<TProps, TState>, usePropsHook: PropsHookFn<TProps, TState, TResultProps>, defaultRender: TRenderFn, displayName: string): ConnectedComponent<TProps, TRenderFn> {
+>(
+  useStateHook: StateHookFn<TProps, TState>,
+  usePropsHook: PropsHookFn<TProps, TState, TResultProps>,
+  defaultRender: TRenderFn,
+  displayName: string,
+): ConnectedComponent<TProps, TRenderFn> {
   const ConnectedComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const connectedState = useStateHook(props as TProps);
@@ -64,7 +69,11 @@ export function toContextComponent<
   TProps extends Record<string, any>,
   TResultProps extends Record<string, any>,
   TRenderFn extends (props: TResultProps, context: any) => ReactElement,
->(usePropsHook: (props: TProps, context: any) => TResultProps, defaultRender: TRenderFn, displayName: string): ContextComponent<TProps, TRenderFn> {
+>(
+  usePropsHook: (props: TProps, context: any) => TResultProps,
+  defaultRender: TRenderFn,
+  displayName: string,
+): ContextComponent<TProps, TRenderFn> {
   const ContextComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const context = useContext(Context);

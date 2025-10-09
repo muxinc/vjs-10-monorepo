@@ -1,4 +1,5 @@
 import type { ParseDataOptions } from 'astro/loaders';
+
 import { glob } from 'astro/loaders';
 
 /**
@@ -7,7 +8,7 @@ import { glob } from 'astro/loaders';
  */
 type Parser = <TData extends Record<string, unknown>>(
   options: ParseDataOptions<TData>,
-  originalEntry: string,
+  originalEntry: string
 ) => Promise<ParseDataOptions<TData>>;
 
 type GlobWithParserOptions = Parameters<typeof glob>[0] & {
@@ -36,11 +37,7 @@ type GlobWithParserOptions = Parameters<typeof glob>[0] & {
  * })
  * ```
  */
-export function globWithParser({
-  parser,
-  generateId,
-  ...globOptions
-}: GlobWithParserOptions) {
+export function globWithParser({ parser, generateId, ...globOptions }: GlobWithParserOptions) {
   /**
    * Store mapping of transformed IDs to original entry filenames.
    * Created per-invocation to avoid memory leaks across builds.

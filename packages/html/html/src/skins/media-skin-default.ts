@@ -1,6 +1,6 @@
 import { MediaSkin } from '../media-skin';
-
 import { uniqueId } from '../utils/element-utils';
+
 import '../media-container';
 import '../components/media-play-button';
 import '../components/media-mute-button';

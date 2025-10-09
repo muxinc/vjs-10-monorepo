@@ -46,7 +46,7 @@ export function useMediaStore(): MediaStore {
   return useContext(MediaContext);
 }
 
-export function useMediaDispatch(): ((value: any) => unknown) {
+export function useMediaDispatch(): (value: any) => unknown {
   const store = useContext(MediaContext);
   const dispatch = store?.dispatch ?? identity;
   return (value: any) => {
@@ -118,7 +118,10 @@ export function shallowEqual(objA: any, objB: any): boolean {
   return true;
 }
 
-export function useMediaSelector<S = any,>(selector: (state: any) => S, equalityFn: (a: S, b: S) => boolean = refEquality): S {
+export function useMediaSelector<S = any>(
+  selector: (state: any) => S,
+  equalityFn: (a: S, b: S) => boolean = refEquality,
+): S {
   const store = useContext(MediaContext);
   const selectedState = useSyncExternalStoreWithSelector(
     store?.subscribe ?? identity,

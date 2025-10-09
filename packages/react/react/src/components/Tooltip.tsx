@@ -156,7 +156,12 @@ function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
   });
 }
 
-function TooltipPositioner({ side = 'top', sideOffset = 0, collisionPadding = 0, children }: TooltipPositionerProps): JSX.Element | null {
+function TooltipPositioner({
+  side = 'top',
+  sideOffset = 0,
+  collisionPadding = 0,
+  children,
+}: TooltipPositionerProps): JSX.Element | null {
   const { context, updatePositioning } = useTooltipContext();
   const { refs, floatingStyles } = context;
 
@@ -232,7 +237,11 @@ function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Elem
 }
 
 function TooltipPortal({ children, root, rootId }: TooltipPortalProps): JSX.Element {
-  return <FloatingPortal root={root as HTMLElement} id={rootId as string}>{children}</FloatingPortal>;
+  return (
+    <FloatingPortal root={root as HTMLElement} id={rootId as string}>
+      {children}
+    </FloatingPortal>
+  );
 }
 
 // Export compound component

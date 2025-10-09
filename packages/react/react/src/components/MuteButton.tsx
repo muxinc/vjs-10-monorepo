@@ -32,7 +32,10 @@ export function useMuteButtonState(_props: any): {
 export type useMuteButtonState = typeof useMuteButtonState;
 export type MuteButtonState = ReturnType<useMuteButtonState>;
 
-export function useMuteButtonProps(props: PropsWithChildren, state: ReturnType<typeof useMuteButtonState>): PropsWithChildren<Record<string, unknown>> {
+export function useMuteButtonProps(
+  props: PropsWithChildren,
+  state: ReturnType<typeof useMuteButtonState>,
+): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** data attributes/props - non-boolean */
     'data-volume-level': state.volumeLevel,
