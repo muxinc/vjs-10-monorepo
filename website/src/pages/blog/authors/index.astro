@@ -16,7 +16,9 @@ const authors = await getCollection('authors');
           authors.map((author) => (
             <li class="border-b pb-6 last:border-b-0">
               <a href={`/blog/authors/${author.id}`} class="flex items-start gap-4 hover:opacity-80">
-                {author.data.avatar && <img src={author.data.avatar} alt={author.data.name} width="50" height="50" class="rounded" />}
+                {author.data.avatar && (
+                  <img src={author.data.avatar} alt={author.data.name} width="50" height="50" class="rounded" />
+                )}
                 <div>
                   <h2 class="text-xl font-semibold mb-1">{author.data.name}</h2>
                   {author.data.bio && <p class="text-gray-600">{author.data.bio}</p>}

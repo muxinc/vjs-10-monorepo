@@ -9,44 +9,52 @@ import { getAvailableStyles, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import { filterSidebar, getAllGuideSlugs } from '@/utils/docs/sidebar';
 
 export async function getStaticPaths() {
-  const docs = await getCollection('docs');
-  const paths = [];
+  const docsCollection = await getCollection('docs');
 
-  // Build a map of allowed slugs for each framework/style combination
-  const allowedSlugsMap = new Map<string, Set<string>>();
-  for (const framework of SUPPORTED_FRAMEWORKS) {
+  /**
+   * Get all valid framework/style combinations.
+   */
+  type FrameworkStyleKey = `${SupportedFramework}-${AnySupportedStyle}`;
+  type AllowedSlugsMap = Map<FrameworkStyleKey, Set<string>>;
+  const allFrameworkStyleCombinations = SUPPORTED_FRAMEWORKS.flatMap((framework) => {
     const availableStyles = getAvailableStyles(framework);
-    for (const style of availableStyles) {
-      const key = `${framework}-${style}`;
-      const filteredSidebar = filterSidebar(framework, style);
-      allowedSlugsMap.set(key, new Set(getAllGuideSlugs(filteredSidebar)));
-    }
+    return availableStyles.map((style) => ({
+      framework,
+      style,
+      key: `${framework}-${style}` as FrameworkStyleKey,
+    }));
+  });
+
+  /**
+   * Build a map of allowed slugs for each framework/style combination.
+   * Only docs that appear in the filtered sidebar will be allowed to generate pages.
+   */
+  const allowedSlugsMap: AllowedSlugsMap = new Map();
+
+  for (const { framework, style, key } of allFrameworkStyleCombinations) {
+    const filteredSidebar = filterSidebar(framework, style);
+    const allowedSlugs = getAllGuideSlugs(filteredSidebar);
+    allowedSlugsMap.set(key, new Set(allowedSlugs));
   }
 
-  // Generate paths using the precomputed map
-  for (const framework of SUPPORTED_FRAMEWORKS) {
-    const availableStyles = getAvailableStyles(framework);
-    for (const style of availableStyles) {
-      const key = `${framework}-${style}`;
-      const allowedSlugs = allowedSlugsMap.get(key)!;
+  // Generate a path for each doc that's visible in at least one framework/style combination
+  const staticPaths = allFrameworkStyleCombinations.flatMap(({ framework, style, key }) => {
+    const allowedSlugs = allowedSlugsMap.get(key)!;
 
-      // Only generate paths for docs that are visible in the sidebar
-      for (const doc of docs) {
-        if (allowedSlugs.has(doc.id)) {
-          paths.push({
-            params: {
-              framework,
-              style,
-              slug: doc.id,
-            },
-            props: { doc, framework, style },
-          });
-        }
-      }
-    }
-  }
+    // Filter docs to only those visible in this combination's sidebar
+    return docsCollection
+      .filter((doc) => allowedSlugs.has(doc.id))
+      .map((doc) => ({
+        params: {
+          framework,
+          style,
+          slug: doc.id,
+        },
+        props: { doc, framework, style },
+      }));
+  });
 
-  return paths;
+  return staticPaths;
 }
 
 type Props = {

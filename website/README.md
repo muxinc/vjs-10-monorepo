@@ -5,10 +5,10 @@ Inside of your Astro project, you'll see the following folders and files:
 ```text
 ├── public/
 ├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
+│  ├── components/
+│  ├── content/
+│  ├── layouts/
+│  └── pages/
 ├── astro.config.mjs
 ├── README.md
 ├── package.json
@@ -118,17 +118,17 @@ Documentation pages can be restricted to specific frameworks or styles:
 **In sidebar config** ([config/docs/sidebar.ts](src/config/docs/sidebar.ts)):
 
 ```ts
-{
+const sidebar = {
   title: 'React Concepts',
   guides: [
-    { slug: 'concepts/hooks' },  // Available to all
+    { slug: 'concepts/hooks' }, // Available to all
     {
       slug: 'concepts/styling',
-      frameworks: ['react'],      // Only for React
+      frameworks: ['react'], // Only for React
       styles: ['styled-components'] // Only for styled-components
     }
   ]
-}
+};
 ```
 
 **Within MDX content** (using conditional components):
@@ -272,7 +272,7 @@ See [types/docs.ts](src/types/docs.ts) for complete type definitions.
 3. Add to sidebar in `src/config/docs/sidebar.ts`:
 
    ```ts
-   {
+   const sidebar = {
      title: 'Category',
      guides: [
        {
@@ -281,7 +281,7 @@ See [types/docs.ts](src/types/docs.ts) for complete type definitions.
          styles: ['tailwind', 'css'] // optional
        }
      ]
-   }
+   };
    ```
 
 4. Use conditional components for framework/style-specific content

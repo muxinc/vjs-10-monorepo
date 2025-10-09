@@ -1,11 +1,11 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
-import { getCollection } from 'astro:content';
+import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
+import { getCollection } from 'astro:content';
 import { Selectors } from '@/components/docs/Selectors';
 import SidebarItem from '@/components/docs/SidebarItem.astro';
-import { type AnySupportedStyle, type SupportedFramework } from '@/types/docs';
 import { filterSidebar } from '@/utils/docs/sidebar';
 
 import Base from './Base.astro';

@@ -1,17 +1,12 @@
 ---
-import {
-	type SupportedFramework,
-	type AnySupportedStyle,
-	type Guide,
-	type Section,
-	isSection,
-} from '@/types/docs';
+import type { AnySupportedStyle, Guide, Section, SupportedFramework } from '@/types/docs';
+import { isSection } from '@/types/docs';
 
 type Props = {
-	item: Guide | Section;
-	framework: SupportedFramework;
-	style: AnySupportedStyle;
-	docTitles: Map<string, string>;
+  item: Guide | Section;
+  framework: SupportedFramework;
+  style: AnySupportedStyle;
+  docTitles: Map<string, string>;
 };
 
 const { item, framework, style, docTitles } = Astro.props;
@@ -22,12 +17,7 @@ const { item, framework, style, docTitles } = Astro.props;
     <details open>
       <summary>{item.sidebarLabel}</summary>
       {item.contents.map((contentItem) => (
-        <Astro.self
-          item={contentItem}
-          framework={framework}
-          style={style}
-          docTitles={docTitles}
-        />
+        <Astro.self item={contentItem} framework={framework} style={style} docTitles={docTitles} />
       ))}
     </details>
   ) : (

@@ -6,9 +6,11 @@ export default antfu(
   {
     react: true,
     typescript: true,
+    astro: true,
     formatters: {
       css: true,
       html: true,
+      astro: 'prettier',
       markdown: 'prettier',
       svg: 'prettier',
     },

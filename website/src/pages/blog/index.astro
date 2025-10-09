@@ -13,7 +13,7 @@ const postsWithAuthors = await Promise.all(
   posts.map(async (post) => ({
     ...post,
     authors: await getEntries(post.data.authors),
-  }))
+  })),
 );
 ---
 
@@ -26,15 +26,20 @@ const postsWithAuthors = await Promise.all(
           postsWithAuthors.map((post) => (
             <li class="border-b pb-8 last:border-b-0">
               <a href={`/blog/${post.id}`}>
-                {post.data.heroImage && <Image width={720} height={360} src={post.data.heroImage} alt="" class="mb-4" />}
+                {post.data.heroImage && (
+                  <Image width={720} height={360} src={post.data.heroImage} alt="" class="mb-4" />
+                )}
                 <h4 class="title text-2xl font-semibold mb-2">{post.data.title}</h4>
                 <p class="date text-gray-600 mb-2">
                   <FormattedDate date={post.data.pubDate} />
                 </p>
                 <p class="authors text-sm">
-                  By {post.authors.map((author: any, index: number) => (
+                  By{' '}
+                  {post.authors.map((author: any, index: number) => (
                     <>
-                      <a href={`/blog/authors/${author.id}`} class="hover:underline">{author.data.name}</a>
+                      <a href={`/blog/authors/${author.id}`} class="hover:underline">
+                        {author.data.name}
+                      </a>
                       {index < post.authors.length - 1 && ', '}
                     </>
                   ))}

@@ -1,27 +1,23 @@
 ---
-import {
-	SUPPORTED_FRAMEWORKS,
-	type SupportedFramework,
-	type AnySupportedStyle,
-	getAvailableStyles,
-} from '@/types/docs';
+import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
+import { getAvailableStyles, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import { getDocsRedirectUrl } from '@/utils/docs/redirects';
 
 export function getStaticPaths() {
-	const paths = [];
-	for (const framework of SUPPORTED_FRAMEWORKS) {
-		const availableStyles = getAvailableStyles(framework);
-		for (const style of availableStyles) {
-			paths.push({ params: { framework, style } });
-		}
-	}
+  const paths = [];
+  for (const framework of SUPPORTED_FRAMEWORKS) {
+    const availableStyles = getAvailableStyles(framework);
+    for (const style of availableStyles) {
+      paths.push({ params: { framework, style } });
+    }
+  }
 
-	return paths;
+  return paths;
 }
 
 const { framework, style } = Astro.params as {
-	framework: SupportedFramework;
-	style: AnySupportedStyle;
+  framework: SupportedFramework;
+  style: AnySupportedStyle;
 };
 
 return Astro.redirect(getDocsRedirectUrl(framework, style));

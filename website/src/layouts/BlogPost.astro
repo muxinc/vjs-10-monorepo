@@ -7,7 +7,7 @@ import FormattedDate from '@/components/FormattedDate.astro';
 import Base from './Base.astro';
 
 type Props = CollectionEntry<'blog'>['data'] & {
-	authors: CollectionEntry<'authors'>[];
+  authors: CollectionEntry<'authors'>[];
 };
 
 const { title, description, pubDate, updatedDate, heroImage, authors } = Astro.props;
@@ -33,12 +33,14 @@ const { title, description, pubDate, updatedDate, heroImage, authors } = Astro.p
           </div>
           <h1 class="mb-4">{title}</h1>
           <div class="authors mb-4">
-            By {authors.map((author, index) => (
-              <>
-                <a href={`/blog/authors/${author.id}`}>{author.data.name}</a>
-                {index < authors.length - 1 && ', '}
-              </>
-            ))}
+            By {
+              authors.map((author, index) => (
+                <>
+                  <a href={`/blog/authors/${author.id}`}>{author.data.name}</a>
+                  {index < authors.length - 1 && ', '}
+                </>
+              ))
+            }
           </div>
           <hr />
         </div>
