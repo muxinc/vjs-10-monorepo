@@ -2,7 +2,7 @@ import { map } from 'nanostores';
 
 import { shallowEqual } from '../utils/state';
 
-export interface RangeState {
+export interface SliderState {
   _trackElement: HTMLElement | null;
   _pointerRatio: number;
   _hovering: boolean;
@@ -11,10 +11,10 @@ export interface RangeState {
   _pointerWidth: number;
 }
 
-export class Range {
+export class Slider {
   #element: HTMLElement | null = null;
   #abortController: AbortController | null = null;
-  #state = map<RangeState>({
+  #state = map<SliderState>({
     _trackElement: null,
     _pointerRatio: 0,
     _hovering: false,
@@ -42,16 +42,16 @@ export class Range {
     this.#abortController = null;
   }
 
-  subscribe(callback: (state: RangeState) => void): () => void {
+  subscribe(callback: (state: SliderState) => void): () => void {
     return this.#state.subscribe(callback);
   }
 
-  setState(state: Partial<RangeState>): void {
+  setState(state: Partial<SliderState>): void {
     if (shallowEqual(state, this.#state.get())) return;
     this.#state.set({ ...this.#state.get(), ...state });
   }
 
-  getState(): RangeState {
+  getState(): SliderState {
     const state = this.#state.get();
 
     let _pointerWidth = 0;

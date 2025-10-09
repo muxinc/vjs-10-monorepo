@@ -5,7 +5,7 @@ export { FullscreenButton } from './components/media-fullscreen-button.js';
 export { MuteButton } from './components/media-mute-button.js';
 // New hook-style components
 export { PlayButton } from './components/media-play-button.js';
-export { VolumeRange } from './components/media-volume-range.js';
+export { VolumeSlider } from './components/media-volume-slider.js';
 export * as MediaProvider from './media-provider.js';
 export * as MediaThemeDefault from './skins/media-skin-default.js';
 

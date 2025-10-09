@@ -1,2 +1,2 @@
-export { TimeRange, type TimeRangeState } from './components/time-range.js';
-export { VolumeRange, type VolumeRangeState } from './components/volume-range.js';
+export { TimeSlider, type TimeSliderState } from './components/time-slider.js';
+export { VolumeSlider, type VolumeSliderState } from './components/volume-slider.js';

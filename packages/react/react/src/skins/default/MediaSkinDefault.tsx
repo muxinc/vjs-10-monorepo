@@ -19,9 +19,9 @@ import { MediaContainer } from '../../components/MediaContainer';
 import MuteButton from '../../components/MuteButton';
 import PlayButton from '../../components/PlayButton';
 import { Popover } from '../../components/Popover';
-import { TimeRange } from '../../components/TimeRange';
+import { TimeSlider } from '../../components/TimeSlider';
 import { Tooltip } from '../../components/Tooltip';
-import { VolumeRange } from '../../components/VolumeRange';
+import { VolumeSlider } from '../../components/VolumeSlider';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
@@ -62,13 +62,13 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             className={styles.TimeDisplay}
           />
 
-          <TimeRange.Root className={styles.SliderRoot}>
-            <TimeRange.Track className={styles.SliderTrack}>
-              <TimeRange.Progress className={styles.SliderProgress} />
-              <TimeRange.Pointer className={styles.SliderPointer} />
-            </TimeRange.Track>
-            <TimeRange.Thumb className={styles.SliderThumb} />
-          </TimeRange.Root>
+          <TimeSlider.Root className={styles.SliderRoot}>
+            <TimeSlider.Track className={styles.SliderTrack}>
+              <TimeSlider.Progress className={styles.SliderProgress} />
+              <TimeSlider.Pointer className={styles.SliderPointer} />
+            </TimeSlider.Track>
+            <TimeSlider.Thumb className={styles.SliderThumb} />
+          </TimeSlider.Root>
 
           <DurationDisplay className={styles.TimeDisplay} />
         </div>
@@ -84,12 +84,12 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <Popover.Portal rootId={portalId}>
             <Popover.Positioner side="top" sideOffset={12}>
               <Popover.Popup className={styles.PopoverPopup}>
-                <VolumeRange.Root className={styles.SliderRoot} orientation="vertical">
-                  <VolumeRange.Track className={styles.SliderTrack}>
-                    <VolumeRange.Progress className={styles.SliderProgress} />
-                  </VolumeRange.Track>
-                  <VolumeRange.Thumb className={styles.SliderThumb} />
-                </VolumeRange.Root>
+                <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
+                  <VolumeSlider.Track className={styles.SliderTrack}>
+                    <VolumeSlider.Progress className={styles.SliderProgress} />
+                  </VolumeSlider.Track>
+                  <VolumeSlider.Thumb className={styles.SliderThumb} />
+                </VolumeSlider.Root>
               </Popover.Popup>
             </Popover.Positioner>
           </Popover.Portal>

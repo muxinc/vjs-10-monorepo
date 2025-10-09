@@ -7,6 +7,6 @@ export { MuteButton } from './components/MuteButton';
 export { PlayButton } from './components/PlayButton';
 export { Popover } from './components/Popover';
 export { MediaElementVideo, Video } from './components/Video';
-export { VolumeRange } from './components/VolumeRange';
+export { VolumeSlider } from './components/VolumeSlider';
 export * from './skins';
 export * from '@vjs-10/react-media-store';

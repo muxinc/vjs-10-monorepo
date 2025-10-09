@@ -1,28 +1,26 @@
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { TimeRange as CoreTimeRange } from '@vjs-10/core';
+import { TimeSlider as CoreTimeSlider } from '@vjs-10/core';
 
-import { timeRangeStateDefinition } from '@vjs-10/media-store';
+import { timeSliderStateDefinition } from '@vjs-10/media-store';
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 import { useCallback, useMemo } from 'react';
 
 import { toConnectedComponent, toContextComponent, useCore } from '../utils/component-factory';
 
-export namespace TimeRange {
-  export interface State {
-    currentTime: number;
-    duration: number;
-    requestSeek: (time: number) => void;
-    core: CoreTimeRange;
-    orientation: 'horizontal' | 'vertical';
-  }
-
-  export interface Props extends React.ComponentProps<'div'> {
-    orientation?: 'horizontal' | 'vertical';
-  }
+export interface TimeSliderState {
+  currentTime: number;
+  duration: number;
+  requestSeek: (time: number) => void;
+  core: CoreTimeSlider;
+  orientation: 'horizontal' | 'vertical';
 }
 
-interface TimeRangeRenderProps extends React.ComponentProps<'div'> {
+export interface TimeSliderProps extends React.ComponentProps<'div'> {
+  orientation?: 'horizontal' | 'vertical';
+}
+
+interface TimeSliderRenderProps extends React.ComponentProps<'div'> {
   'data-orientation'?: 'horizontal' | 'vertical';
   'data-current-time'?: number;
   'data-duration'?: number;
@@ -32,12 +30,12 @@ interface TimeRangeRenderProps extends React.ComponentProps<'div'> {
 // ROOT COMPONENT
 // ============================================================================
 
-export function useTimeRangeRootState(props: TimeRange.Props): TimeRange.State {
+export function useTimeSliderRootState(props: TimeSliderProps): TimeSliderState {
   const { orientation = 'horizontal' } = props;
   const mediaStore = useMediaStore();
-  const mediaState = useMediaSelector(timeRangeStateDefinition.stateTransform, shallowEqual);
-  const mediaMethods = useMemo(() => timeRangeStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
-  const core = useCore(CoreTimeRange, { ...mediaState, ...mediaMethods });
+  const mediaState = useMediaSelector(timeSliderStateDefinition.stateTransform, shallowEqual);
+  const mediaMethods = useMemo(() => timeSliderStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
+  const core = useCore(CoreTimeSlider, { ...mediaState, ...mediaMethods });
 
   return {
     ...mediaState,
@@ -47,7 +45,7 @@ export function useTimeRangeRootState(props: TimeRange.Props): TimeRange.State {
   };
 }
 
-export function useTimeRangeRootProps(props: TimeRange.Props, state: TimeRange.State): TimeRangeRenderProps {
+export function useTimeSliderRootProps(props: TimeSliderProps, state: TimeSliderState): TimeSliderRenderProps {
   const { _fillWidth, _pointerWidth, _currentTimeText, _durationText } = state.core.getState();
 
   const { children, className, id, style, orientation = 'horizontal' } = props;
@@ -78,25 +76,22 @@ export function useTimeRangeRootProps(props: TimeRange.Props, state: TimeRange.S
   };
 }
 
-type useTimeRangeRootState = typeof useTimeRangeRootState;
-type useTimeRangeRootProps = typeof useTimeRangeRootProps;
-
-export function renderTimeRangeRoot(props: TimeRangeRenderProps): JSX.Element {
+export function renderTimeSliderRoot(props: TimeSliderRenderProps): JSX.Element {
   return <div {...props} />;
 }
 
-const TimeRangeRoot: ConnectedComponent<TimeRange.Props, typeof renderTimeRangeRoot> = toConnectedComponent(
-  useTimeRangeRootState,
-  useTimeRangeRootProps,
-  renderTimeRangeRoot,
-  'TimeRange.Root',
+const TimeSliderRoot: ConnectedComponent<TimeSliderProps, typeof renderTimeSliderRoot> = toConnectedComponent(
+  useTimeSliderRootState,
+  useTimeSliderRootProps,
+  renderTimeSliderRoot,
+  'TimeSlider.Root',
 );
 
 // ============================================================================
 // TRACK COMPONENT
 // ============================================================================
 
-export function useTimeRangeTrackProps(props: React.ComponentProps<'div'>, context: TimeRange.State): TimeRangeRenderProps {
+export function useTimeSliderTrackProps(props: React.ComponentProps<'div'>, context: TimeSliderState): TimeSliderRenderProps {
   return {
     ref: useCallback((el: HTMLDivElement) => {
       context.core?.setState({ _trackElement: el });
@@ -110,23 +105,21 @@ export function useTimeRangeTrackProps(props: React.ComponentProps<'div'>, conte
   };
 }
 
-type useTimeRangeTrackProps = typeof useTimeRangeTrackProps;
-
-export function renderTimeRangeTrack(props: TimeRangeRenderProps): JSX.Element {
+export function renderTimeSliderTrack(props: TimeSliderRenderProps): JSX.Element {
   return <div {...props} />;
 }
 
-const TimeRangeTrack: ConnectedComponent<React.ComponentProps<'div'>, typeof renderTimeRangeTrack> = toContextComponent(
-  useTimeRangeTrackProps,
-  renderTimeRangeTrack,
-  'TimeRange.Track',
+const TimeSliderTrack: ConnectedComponent<React.ComponentProps<'div'>, typeof renderTimeSliderTrack> = toContextComponent(
+  useTimeSliderTrackProps,
+  renderTimeSliderTrack,
+  'TimeSlider.Track',
 );
 
 // ============================================================================
 // THUMB COMPONENT
 // ============================================================================
 
-export function useTimeRangeThumbProps(props: React.ComponentProps<'div'>, context: TimeRange.State): TimeRangeRenderProps {
+export function getTimeSliderThumbProps(props: React.ComponentProps<'div'>, context: TimeSliderState): TimeSliderRenderProps {
   return {
     'data-orientation': context.orientation,
     ...props,
@@ -140,23 +133,21 @@ export function useTimeRangeThumbProps(props: React.ComponentProps<'div'>, conte
   };
 }
 
-type useTimeRangeThumbProps = typeof useTimeRangeThumbProps;
-
-export function renderTimeRangeThumb(props: TimeRangeRenderProps): JSX.Element {
+export function renderTimeSliderThumb(props: TimeSliderRenderProps): JSX.Element {
   return <div {...props} />;
 }
 
-const TimeRangeThumb: ConnectedComponent<React.ComponentProps<'div'>, typeof renderTimeRangeThumb> = toContextComponent(
-  useTimeRangeThumbProps,
-  renderTimeRangeThumb,
-  'TimeRange.Thumb',
+const TimeSliderThumb: ConnectedComponent<React.ComponentProps<'div'>, typeof renderTimeSliderThumb> = toContextComponent(
+  getTimeSliderThumbProps,
+  renderTimeSliderThumb,
+  'TimeSlider.Thumb',
 );
 
 // ============================================================================
 // POINTER COMPONENT
 // ============================================================================
 
-export function useTimeRangePointerProps(props: React.ComponentProps<'div'>, context: TimeRange.State): TimeRangeRenderProps {
+export function getTimeSliderPointerProps(props: React.ComponentProps<'div'>, context: TimeSliderState): TimeSliderRenderProps {
   return {
     'data-orientation': context.orientation,
     ...props,
@@ -169,22 +160,20 @@ export function useTimeRangePointerProps(props: React.ComponentProps<'div'>, con
   };
 }
 
-type useTimeRangePointerProps = typeof useTimeRangePointerProps;
-
-export function renderTimeRangePointer(props: TimeRangeRenderProps): JSX.Element {
+export function renderTimeSliderPointer(props: TimeSliderRenderProps): JSX.Element {
   return <div {...props} />;
 }
 
-const TimeRangePointer: ConnectedComponent<
+const TimeSliderPointer: ConnectedComponent<
   React.ComponentProps<'div'>,
-  typeof renderTimeRangePointer
-> = toContextComponent(useTimeRangePointerProps, renderTimeRangePointer, 'TimeRange.Pointer');
+  typeof renderTimeSliderPointer
+> = toContextComponent(getTimeSliderPointerProps, renderTimeSliderPointer, 'TimeSlider.Pointer');
 
 // ============================================================================
 // PROGRESS COMPONENT
 // ============================================================================
 
-export function useTimeRangeProgressProps(props: React.ComponentProps<'div'>, context: TimeRange.State): TimeRangeRenderProps {
+export function getTimeSliderProgressProps(props: React.ComponentProps<'div'>, context: TimeSliderState): TimeSliderRenderProps {
   return {
     'data-orientation': context.orientation,
     ...props,
@@ -198,36 +187,34 @@ export function useTimeRangeProgressProps(props: React.ComponentProps<'div'>, co
   };
 }
 
-type useTimeRangeProgressProps = typeof useTimeRangeProgressProps;
-
-export function renderTimeRangeProgress(props: TimeRangeRenderProps): JSX.Element {
+export function renderTimeSliderProgress(props: TimeSliderRenderProps): JSX.Element {
   return <div {...props} />;
 }
 
-const TimeRangeProgress: ConnectedComponent<
+const TimeSliderProgress: ConnectedComponent<
   React.ComponentProps<'div'>,
-  typeof renderTimeRangeProgress
-> = toContextComponent(useTimeRangeProgressProps, renderTimeRangeProgress, 'TimeRange.Progress');
+  typeof renderTimeSliderProgress
+> = toContextComponent(getTimeSliderProgressProps, renderTimeSliderProgress, 'TimeSlider.Progress');
 
 // ============================================================================
 // EXPORTS
 // ============================================================================
 
-export const TimeRange = Object.assign(
+export const TimeSlider = Object.assign(
   {},
   {
-    Root: TimeRangeRoot,
-    Track: TimeRangeTrack,
-    Thumb: TimeRangeThumb,
-    Pointer: TimeRangePointer,
-    Progress: TimeRangeProgress,
+    Root: TimeSliderRoot,
+    Track: TimeSliderTrack,
+    Thumb: TimeSliderThumb,
+    Pointer: TimeSliderPointer,
+    Progress: TimeSliderProgress,
   },
 ) as {
-  Root: typeof TimeRangeRoot;
-  Track: typeof TimeRangeTrack;
-  Thumb: typeof TimeRangeThumb;
-  Pointer: typeof TimeRangePointer;
-  Progress: typeof TimeRangeProgress;
+  Root: typeof TimeSliderRoot;
+  Track: typeof TimeSliderTrack;
+  Thumb: typeof TimeSliderThumb;
+  Pointer: typeof TimeSliderPointer;
+  Progress: typeof TimeSliderProgress;
 };
 
-export default TimeRange;
+export default TimeSlider;
