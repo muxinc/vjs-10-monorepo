@@ -1,6 +1,19 @@
 import type { PropsWithChildren } from 'react';
 
 import {
+  CurrentTimeDisplay,
+  DurationDisplay,
+  FullscreenButton,
+  MediaContainer,
+  MuteButton,
+  PlayButton,
+  Popover,
+  TimeSlider,
+  Tooltip,
+  VolumeSlider,
+} from '@vjs-10/react';
+
+import {
   FullscreenEnterIcon,
   FullscreenExitIcon,
   PauseIcon,
@@ -10,17 +23,6 @@ import {
   VolumeOffIcon,
 } from '@vjs-10/react-icons';
 
-import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
-
-import { DurationDisplay } from '../../components/DurationDisplay';
-import { FullscreenButton } from '../../components/FullscreenButton';
-import { MediaContainer } from '../../components/MediaContainer';
-import MuteButton from '../../components/MuteButton';
-import PlayButton from '../../components/PlayButton';
-import { Popover } from '../../components/Popover';
-import { TimeSlider } from '../../components/TimeSlider';
-import { Tooltip } from '../../components/Tooltip';
-import { VolumeSlider } from '../../components/VolumeSlider';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
@@ -39,8 +41,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Tooltip.Root delay={600} closeDelay={0}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-              <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
-              <PauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
+              <PlayIcon className={styles.PlayIcon}></PlayIcon>
+              <PauseIcon className={styles.PauseIcon}></PauseIcon>
             </PlayButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
@@ -74,9 +76,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Popover.Root openOnHover delay={200} closeDelay={100}>
           <Popover.Trigger>
             <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
-              <VolumeHighIcon className={`${styles.VolumeHighIcon} ${styles.Icon}`} />
-              <VolumeLowIcon className={`${styles.VolumeLowIcon} ${styles.Icon}`} />
-              <VolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
+              <VolumeHighIcon className={styles.VolumeHighIcon} />
+              <VolumeLowIcon className={styles.VolumeLowIcon} />
+              <VolumeOffIcon className={styles.VolumeOffIcon} />
             </MuteButton>
           </Popover.Trigger>
           <Popover.Portal>
@@ -95,16 +97,16 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
 
         <Tooltip.Root delay={600} closeDelay={0}>
           <Tooltip.Trigger>
-            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
-              <FullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
-              <FullscreenExitIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
+            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
+              <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
+              <FullscreenExitIcon className={styles.FullScreenExitIcon} />
             </FullscreenButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
-                <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
-                <span className={styles.FullscreenExitTooltip}>Exit Fullscreen</span>
+              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullScreenTooltipPopup}`}>
+                <span className={styles.FullScreenEnterTooltip}>Enter Fullscreen</span>
+                <span className={styles.FullScreenExitTooltip}>Exit Fullscreen</span>
               </Tooltip.Popup>
             </Tooltip.Positioner>
           </Tooltip.Portal>

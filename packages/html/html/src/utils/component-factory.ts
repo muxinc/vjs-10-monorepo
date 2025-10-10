@@ -35,7 +35,7 @@ export function toConnectedHTMLComponent<State = any>(
   const ConnectedComponent = class extends ConsumerMixin(BaseClass) {
     static get observedAttributes(): string[] {
       return [
-        // @ts-ignore
+        // @ts-expect-error ts(2339)
         ...(super.observedAttributes ?? []),
       ];
     }
@@ -53,9 +53,8 @@ export function toConnectedHTMLComponent<State = any>(
           const state = stateHook.transform(rawState, mediaStore);
 
           // Phase 2: Update element attributes/properties (props concern)
-          // @ts-ignore - Element property access
-          const props = propsHook(state ?? {}, this);
-          // @ts-ignore
+          const props = propsHook(state ?? {} as State, this);
+          // @ts-expect-error any
           this._update(props, state, mediaStore);
         });
       },
@@ -70,7 +69,7 @@ export function toConnectedHTMLComponent<State = any>(
     }
 
     handleEvent(event: CustomEvent): void {
-      // @ts-ignore
+      // @ts-expect-error any
       super.handleEvent?.(event);
     }
   };

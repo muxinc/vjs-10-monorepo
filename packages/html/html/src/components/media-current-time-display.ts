@@ -89,7 +89,6 @@ export const CurrentTimeDisplay: ConnectedComponentConstructor<CurrentTimeDispla
 
 // Register the custom element
 if (!globalThis.customElements.get('media-current-time-display')) {
-  // @ts-ignore - Custom element constructor compatibility
   globalThis.customElements.define('media-current-time-display', CurrentTimeDisplay);
 }
 

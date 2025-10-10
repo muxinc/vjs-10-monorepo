@@ -2,7 +2,6 @@ export interface MediaDefaultSkinStyles {
   readonly MediaContainer: string;
   readonly Overlay: string;
   readonly Controls: string;
-  readonly Icon: string;
   readonly Button: string;
   readonly IconButton: string;
   readonly PlayButton: string;
@@ -16,12 +15,12 @@ export interface MediaDefaultSkinStyles {
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
   readonly VolumeOffIcon: string;
-  readonly FullscreenButton: string;
-  readonly FullscreenEnterIcon: string;
-  readonly FullscreenExitIcon: string;
-  readonly FullscreenTooltipPopup: string;
-  readonly FullscreenEnterTooltip: string;
-  readonly FullscreenExitTooltip: string;
+  readonly FullScreenButton: string;
+  readonly FullScreenEnterIcon: string;
+  readonly FullScreenExitIcon: string;
+  readonly FullScreenTooltipPopup: string;
+  readonly FullScreenEnterTooltip: string;
+  readonly FullScreenExitTooltip: string;
   readonly SliderRoot: string;
   readonly SliderTrack: string;
   readonly SliderProgress: string;

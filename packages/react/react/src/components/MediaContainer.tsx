@@ -52,13 +52,15 @@ export function useMediaContainerRef(): RefCallback<HTMLElement | null> {
  *   </MediaContainer>
  * );
  */
-export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement>>> = forwardRef(
-  ({ children, ...props }, ref) => {
+export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement> & { portalId?: string }>> = forwardRef(
+  ({ children, portalId = '@default_portal_id', ...props }, ref) => {
     const containerRef = useMediaContainerRef();
     const composedRef = useComposedRefs(ref, containerRef);
     return (
       <div ref={composedRef} {...props}>
         {children}
+        {/* @TODO We need to make sure this is non-brittle longer term (CJP) */}
+        <div id={portalId} style={{ position: 'absolute', zIndex: 10 }} />
       </div>
     );
   },

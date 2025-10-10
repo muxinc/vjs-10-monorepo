@@ -1,5 +1,4 @@
 import { MediaSkin } from '../media-skin';
-import { uniqueId } from '../utils/element-utils';
 
 import '../media-container';
 import '../components/media-play-button';
@@ -14,9 +13,7 @@ import '../components/media-tooltip';
 import '@vjs-10/html-icons';
 
 export function getTemplateHTML() {
-  const portalId = uniqueId();
-
-  return /* html */ `
+  return /* html */`
     ${MediaSkin.getTemplateHTML()}
     <style>
       /** @TODO: Improve/Polish CSS Here */
@@ -246,11 +243,6 @@ export function getTemplateHTML() {
         border-radius: inherit;
       }
 
-      .portal {
-        position: absolute;
-        z-index: 10;
-      }
-
       /* Tooltip Component Styles */
       media-tooltip-popup {
         background: rgb(20 20 30 / .9);
@@ -279,7 +271,6 @@ export function getTemplateHTML() {
     </style>
     <media-container>
       <slot name="media" slot="media"></slot>
-      <div id="${portalId}" class="portal"></div>
       <div class="overlay">
         <div class="spacer"></div>
         <div class="control-bar">
@@ -291,7 +282,7 @@ export function getTemplateHTML() {
                 <media-pause-icon class="icon pause-icon"></media-pause-icon>
               </media-play-button>
             </media-tooltip-trigger>
-            <media-tooltip-portal root-id="${portalId}">
+            <media-tooltip-portal>
               <media-tooltip-positioner side="top" side-offset="8" collision-padding="8">
                 <media-tooltip-popup>
                   <span class="tooltip play-tooltip">Play</span>
@@ -318,7 +309,7 @@ export function getTemplateHTML() {
                 <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
               </media-mute-button>
             </media-popover-trigger>
-            <media-popover-portal root-id="${portalId}">
+            <media-popover-portal>
               <media-popover-positioner side="top" side-offset="0">
                 <media-popover-popup>
                   <media-volume-slider-root orientation="vertical">
@@ -338,7 +329,7 @@ export function getTemplateHTML() {
                 <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
               </media-fullscreen-button>
             </media-tooltip-trigger>
-            <media-tooltip-portal root-id="${portalId}">
+            <media-tooltip-portal>
               <media-tooltip-positioner side="top" side-offset="8" collision-padding="8">
                 <media-tooltip-popup>
                   <span class="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>

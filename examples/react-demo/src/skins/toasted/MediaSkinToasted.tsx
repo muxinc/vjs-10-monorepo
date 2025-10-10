@@ -1,6 +1,16 @@
 import type { PropsWithChildren } from 'react';
 
 import {
+  CurrentTimeDisplay,
+  DurationDisplay,
+  FullscreenButton,
+  MediaContainer,
+  MuteButton,
+  PlayButton,
+  TimeSlider,
+} from '@vjs-10/react';
+
+import {
   FullscreenEnterIcon,
   FullscreenExitIcon,
   PauseIcon,
@@ -10,21 +20,13 @@ import {
   VolumeOffIcon,
 } from '@vjs-10/react-icons';
 
-import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
-
-import { DurationDisplay } from '../../components/DurationDisplay';
-import { FullscreenButton } from '../../components/FullscreenButton';
-import { MediaContainer } from '../../components/MediaContainer';
-import MuteButton from '../../components/MuteButton';
-import PlayButton from '../../components/PlayButton';
-import { TimeSlider } from '../../components/TimeSlider';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
+export default function MediaSkinToasted({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
