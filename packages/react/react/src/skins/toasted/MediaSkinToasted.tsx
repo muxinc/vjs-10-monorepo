@@ -33,8 +33,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
 
       <div className={styles.Controls}>
         <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-          <PlayIcon className={styles.PlayIcon}></PlayIcon>
-          <PauseIcon className={styles.PauseIcon}></PauseIcon>
+          <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
+          <PauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
         </PlayButton>
 
         <div className="flex items-center gap-1">
@@ -57,14 +57,14 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
 
         <div className={styles.ButtonGroup}>
           <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
-            <VolumeHighIcon className={styles.VolumeHighIcon} />
-            <VolumeLowIcon className={styles.VolumeLowIcon} />
-            <VolumeOffIcon className={styles.VolumeOffIcon} />
+            <VolumeHighIcon className={`${styles.VolumeHighIcon} ${styles.Icon}`} />
+            <VolumeLowIcon className={`${styles.VolumeLowIcon} ${styles.Icon}`} />
+            <VolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
           </MuteButton>
 
-          <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
-            <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
-            <FullscreenExitIcon className={styles.FullScreenExitIcon} />
+          <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
+            <FullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
+            <FullscreenExitIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
           </FullscreenButton>
         </div>
       </div>

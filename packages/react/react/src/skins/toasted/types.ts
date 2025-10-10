@@ -2,6 +2,7 @@ export interface MediaToastedSkinStyles {
   readonly MediaContainer: string;
   readonly Overlay: string;
   readonly Controls: string;
+  readonly Icon: string;
   readonly Button: string;
   readonly ButtonGroup: string;
   readonly IconButton: string;
@@ -12,9 +13,9 @@ export interface MediaToastedSkinStyles {
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
   readonly VolumeOffIcon: string;
-  readonly FullScreenButton: string;
-  readonly FullScreenEnterIcon: string;
-  readonly FullScreenExitIcon: string;
+  readonly FullscreenButton: string;
+  readonly FullscreenEnterIcon: string;
+  readonly FullscreenExitIcon: string;
   readonly TimeSliderRoot: string;
   readonly TimeSliderThumb: string;
   readonly TimeDisplay: string;

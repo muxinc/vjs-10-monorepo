@@ -1,6 +1,13 @@
 import type { MediaToastedSkinStyles } from './types';
 
-import { cn } from '../../utils/cn';
+// NOTE: Removing import to sidestep for compiler complexity (CJP)
+// import { cn } from '../../utils/cn';
+// A (very crude) utility to merge class names
+// Usually I'd use something like `clsx` or `classnames` but this is ok for our simple use case.
+// It just makes the billions of Tailwind classes a little easier to read.
+function cn(...classes: (string | undefined)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
 
 const styles: MediaToastedSkinStyles = {
   MediaContainer: cn(
@@ -33,6 +40,7 @@ const styles: MediaToastedSkinStyles = {
     'has-[[data-paused]]:translate-y-0 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0 has-[[data-paused]]:duration-75',
     'group-hover/root:translate-y-0 group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
   ),
+  Icon: cn('icon'),
   Button: cn(
     'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-md',
     // Background/foreground
@@ -52,8 +60,8 @@ const styles: MediaToastedSkinStyles = {
   ),
   ButtonGroup: cn('flex items-center gap-1.5'),
   IconButton: cn(
-    'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20',
+    'grid [&_.icon]:[grid-area:1/1]',
+    '[&_.icon]:shrink-0 [&_.icon]:transition [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
@@ -62,7 +70,7 @@ const styles: MediaToastedSkinStyles = {
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
   MuteButton: cn(
-    '[&_svg]:hidden',
+    '[&_.icon]:hidden',
     '[&[data-volume-level="high"]_.volume-high-icon]:inline',
     '[&[data-volume-level="medium"]_.volume-low-icon]:inline',
     '[&[data-volume-level="low"]_.volume-low-icon]:inline',
@@ -71,17 +79,17 @@ const styles: MediaToastedSkinStyles = {
   VolumeHighIcon: cn('volume-high-icon'),
   VolumeLowIcon: cn('volume-low-icon'),
   VolumeOffIcon: cn('volume-off-icon'),
-  FullScreenButton: cn(
+  FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
     '[&_path]:transition-transform ease-out',
   ),
-  FullScreenEnterIcon: cn(
+  FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
     'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
     'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
-  FullScreenExitIcon: cn(
+  FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
     '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
     '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',

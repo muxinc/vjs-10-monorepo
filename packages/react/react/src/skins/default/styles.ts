@@ -1,6 +1,13 @@
 import type { MediaDefaultSkinStyles } from './types';
 
-import { cn } from '../../utils/cn';
+// NOTE: Removing import to sidestep for compiler complexity (CJP)
+// import { cn } from '../../utils/cn';
+// A (very crude) utility to merge class names
+// Usually I'd use something like `clsx` or `classnames` but this is ok for our simple use case.
+// It just makes the billions of Tailwind classes a little easier to read.
+function cn(...classes: (string | undefined)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
 
 const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
