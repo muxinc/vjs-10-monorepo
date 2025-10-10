@@ -81,6 +81,9 @@ importers:
       '@vjs-10/react':
         specifier: workspace:*
         version: link:../../packages/react/react
+      '@vjs-10/react-icons':
+        specifier: workspace:*
+        version: link:../../packages/react/react-icons
       react:
         specifier: ^18.0.0
         version: 18.3.1
