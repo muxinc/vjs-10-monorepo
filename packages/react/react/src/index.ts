@@ -2,7 +2,6 @@ export { CurrentTimeDisplay } from './components/CurrentTimeDisplay';
 export { DurationDisplay } from './components/DurationDisplay';
 export { FullscreenButton } from './components/FullscreenButton';
 export { MediaContainer, useMediaContainerRef } from './components/MediaContainer';
-
 export { MuteButton } from './components/MuteButton';
 export { PlayButton } from './components/PlayButton';
 export { Popover } from './components/Popover';
