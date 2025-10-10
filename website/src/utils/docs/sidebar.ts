@@ -1,7 +1,7 @@
 import type { AnySupportedStyle, Guide, Section, Sidebar, SupportedFramework, SupportedStyle } from '@/types/docs';
 
 import { sidebar } from '@/config/docs/sidebar';
-import { getAvailableStyles, isSection } from '@/types/docs';
+import { FRAMEWORK_STYLES, isSection } from '@/types/docs';
 
 /**
  * Check if an item (Guide or Section) should be shown based on framework and style.
@@ -150,7 +150,7 @@ export function getValidStylesForGuide<F extends SupportedFramework>(
   guide: Guide,
   framework: F,
 ): readonly SupportedStyle<F>[] {
-  const frameworkStyles = getAvailableStyles(framework);
+  const frameworkStyles = FRAMEWORK_STYLES[framework];
 
   // If guide has no style restrictions, all framework styles are valid
   if (!guide.styles) {

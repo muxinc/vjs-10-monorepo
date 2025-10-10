@@ -10,13 +10,6 @@ export type SupportedStyle<F extends SupportedFramework> = (typeof FRAMEWORK_STY
 export type AnySupportedStyle = SupportedStyle<SupportedFramework>;
 
 /**
- * Get the available styles for a given framework
- */
-export function getAvailableStyles<F extends SupportedFramework>(framework: F): readonly SupportedStyle<F>[] {
-  return FRAMEWORK_STYLES[framework];
-}
-
-/**
  * Get the default style for a given framework (first available style)
  */
 export function getDefaultStyle<F extends SupportedFramework>(framework: F): SupportedStyle<F> {

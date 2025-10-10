@@ -1,7 +1,7 @@
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
 import type { BrowserNavigator } from '@/utils/docs/navigation';
-import { getAvailableStyles, SUPPORTED_FRAMEWORKS } from '@/types/docs';
+import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import {
   defaultBrowserNavigator,
   getCurrentGuideSlug,
@@ -46,7 +46,7 @@ export function Selectors({
     navigateToUrl(target.url, target.replaceHistory, navigator);
   };
 
-  const availableStyles = getAvailableStyles(currentFramework);
+  const availableStyles = FRAMEWORK_STYLES[currentFramework];
 
   return (
     <div>

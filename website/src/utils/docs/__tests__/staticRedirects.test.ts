@@ -1,61 +1,106 @@
+import type { Sidebar } from '../../../types/docs';
 import { describe, expect, it } from 'vitest';
 import { generateDocsRedirects } from '../staticRedirects';
 
 describe('staticRedirects', () => {
   describe('generateDocsRedirects', () => {
-    const redirects = generateDocsRedirects();
+    // Mock sidebar with predictable structure for testing
+    const mockSidebar: Sidebar = [
+      // Guide with no restrictions - visible to all frameworks and styles
+      {
+        slug: 'getting-started',
+      },
+      // Section with mixed guides
+      {
+        sidebarLabel: 'Core Concepts',
+        contents: [
+          {
+            slug: 'core/basics',
+          },
+          {
+            slug: 'core/html-only',
+            frameworks: ['html'],
+          },
+          {
+            slug: 'core/react-only',
+            frameworks: ['react'],
+          },
+        ],
+      },
+      // Style-specific guides
+      {
+        sidebarLabel: 'Styling',
+        contents: [
+          {
+            slug: 'styling/tailwind-only',
+            styles: ['tailwind'],
+          },
+          {
+            slug: 'styling/css-only',
+            styles: ['css'],
+          },
+          {
+            slug: 'styling/styled-components-only',
+            styles: ['styled-components'],
+          },
+        ],
+      },
+      // Combination: react + tailwind only
+      {
+        slug: 'advanced/react-tailwind',
+        frameworks: ['react'],
+        styles: ['tailwind'],
+      },
+    ];
+
+    const redirects = generateDocsRedirects(mockSidebar);
 
     it('should redirect /docs to html+css first guide', () => {
-      expect(redirects['/docs']).toBeDefined();
-      expect(redirects['/docs']).toMatch(/^\/docs\/framework\/html\/style\/css\/.+/);
-    });
-
-    it('should redirect /docs/framework/html to first guide with default style (css)', () => {
-      expect(redirects['/docs/framework/html']).toBeDefined();
-      expect(redirects['/docs/framework/html']).toMatch(
-        /^\/docs\/framework\/html\/style\/css\/.+/,
+      expect(redirects['/docs']).toBe(
+        '/docs/framework/html/style/css/getting-started',
       );
     });
 
-    it('should redirect /docs/framework/react to first guide with default style (css)', () => {
-      expect(redirects['/docs/framework/react']).toBeDefined();
-      expect(redirects['/docs/framework/react']).toMatch(
-        /^\/docs\/framework\/react\/style\/css\/.+/,
+    it('should redirect /docs/framework/html to html+css first guide', () => {
+      expect(redirects['/docs/framework/html']).toBe(
+        '/docs/framework/html/style/css/getting-started',
       );
     });
 
-    it('should redirect /docs/framework/html/style/css to first html+css guide', () => {
-      expect(redirects['/docs/framework/html/style/css']).toBeDefined();
-      expect(redirects['/docs/framework/html/style/css']).toMatch(
-        /^\/docs\/framework\/html\/style\/css\/.+/,
+    it('should redirect /docs/framework/react to react+css first guide', () => {
+      expect(redirects['/docs/framework/react']).toBe(
+        '/docs/framework/react/style/css/getting-started',
       );
     });
 
-    it('should redirect /docs/framework/html/style/tailwind to first html+tailwind guide', () => {
-      expect(redirects['/docs/framework/html/style/tailwind']).toBeDefined();
-      expect(redirects['/docs/framework/html/style/tailwind']).toMatch(
-        /^\/docs\/framework\/html\/style\/tailwind\/.+/,
+    it('should redirect /docs/framework/html/style/css to first html+css compatible guide', () => {
+      expect(redirects['/docs/framework/html/style/css']).toBe(
+        '/docs/framework/html/style/css/getting-started',
       );
     });
 
-    it('should redirect /docs/framework/react/style/css to first react+css guide', () => {
-      expect(redirects['/docs/framework/react/style/css']).toBeDefined();
-      expect(redirects['/docs/framework/react/style/css']).toMatch(
-        /^\/docs\/framework\/react\/style\/css\/.+/,
+    it('should redirect /docs/framework/html/style/tailwind to first html+tailwind compatible guide', () => {
+      // 'getting-started' has no style restrictions, so it's first for html+tailwind too
+      expect(redirects['/docs/framework/html/style/tailwind']).toBe(
+        '/docs/framework/html/style/tailwind/getting-started',
       );
     });
 
-    it('should redirect /docs/framework/react/style/tailwind to first react+tailwind guide', () => {
-      expect(redirects['/docs/framework/react/style/tailwind']).toBeDefined();
-      expect(redirects['/docs/framework/react/style/tailwind']).toMatch(
-        /^\/docs\/framework\/react\/style\/tailwind\/.+/,
+    it('should redirect /docs/framework/react/style/css to first react+css compatible guide', () => {
+      expect(redirects['/docs/framework/react/style/css']).toBe(
+        '/docs/framework/react/style/css/getting-started',
       );
     });
 
-    it('should redirect /docs/framework/react/style/styled-components to first react+styled-components guide', () => {
-      expect(redirects['/docs/framework/react/style/styled-components']).toBeDefined();
-      expect(redirects['/docs/framework/react/style/styled-components']).toMatch(
-        /^\/docs\/framework\/react\/style\/styled-components\/.+/,
+    it('should redirect /docs/framework/react/style/tailwind to first react+tailwind compatible guide', () => {
+      expect(redirects['/docs/framework/react/style/tailwind']).toBe(
+        '/docs/framework/react/style/tailwind/getting-started',
+      );
+    });
+
+    it('should redirect /docs/framework/react/style/styled-components to first react+styled-components compatible guide', () => {
+      expect(redirects['/docs/framework/react/style/styled-components']).toBe(
+        '/docs/framework/react/style/styled-components/getting-started',
       );
     });
 
@@ -85,35 +130,6 @@ describe('staticRedirects', () => {
       });
     });
 
-    it('should use concepts/everyone as first guide for html+css (based on actual sidebar)', () => {
-      // Based on the actual sidebar config, 'concepts/everyone' is the first guide
-      // that's visible to html+css (it has no framework/style restrictions)
-      expect(redirects['/docs']).toBe(
-        '/docs/framework/html/style/css/concepts/everyone',
-      );
-      expect(redirects['/docs/framework/html']).toBe(
-        '/docs/framework/html/style/css/concepts/everyone',
-      );
-      expect(redirects['/docs/framework/html/style/css']).toBe(
-        '/docs/framework/html/style/css/concepts/everyone',
-      );
-    });
-
-    it('should use concepts/everyone as first guide for react+css', () => {
-      // 'concepts/everyone' has no restrictions, so it should be first for react+css
-      expect(redirects['/docs/framework/react/style/css']).toBe(
-        '/docs/framework/react/style/css/concepts/everyone',
-      );
-    });
-
-    it('should use concepts/tailwind-only as first guide for html+tailwind', () => {
-      // Based on sidebar: concepts/everyone (no style restriction) comes before concepts/tailwind-only
-      // So html+tailwind should use concepts/everyone
-      expect(redirects['/docs/framework/html/style/tailwind']).toBe(
-        '/docs/framework/html/style/tailwind/concepts/everyone',
-      );
-    });
-
     it('should return object with string keys and string values', () => {
       Object.entries(redirects).forEach(([source, destination]) => {
         expect(typeof source).toBe('string');
@@ -133,6 +149,60 @@ describe('staticRedirects', () => {
       Object.values(redirects).forEach((destination) => {
         expect(destination).not.toMatch(/\/$/);
       });
+    });
+
+    describe('framework and style filtering', () => {
+      it('should skip framework-restricted guides for non-matching frameworks', () => {
+        // The mock has 'core/html-only' which shouldn't appear in react redirects
+        Object.entries(redirects).forEach(([source, destination]) => {
+          if (source.includes('/react/')) {
+            expect(destination).not.toContain('html-only');
+          }
+        });
+      });
+
+      it('should skip style-restricted guides for non-matching styles', () => {
+        // The mock has 'styling/css-only' which shouldn't appear in tailwind redirects
+        Object.entries(redirects).forEach(([source, destination]) => {
+          if (source.includes('/tailwind')) {
+            expect(destination).not.toContain('css-only');
+          }
+        });
+      });
+    });
+
+    describe('empty sidebar handling', () => {
+      it('should return empty redirects object when sidebar is empty', () => {
+        const emptyRedirects = generateDocsRedirects([]);
+        expect(Object.keys(emptyRedirects)).toHaveLength(0);
+      });
+
+      it('should skip redirect when no matching guide exists for framework/style combo', () => {
+        // Sidebar with only react-specific guides
+        const reactOnlySidebar: Sidebar = [
+          {
+            slug: 'react-guide',
+            frameworks: ['react'],
+          },
+        ];
+
+        const reactOnlyRedirects = generateDocsRedirects(reactOnlySidebar);
+
+        // Should have no html redirects since no guides match html
+        expect(reactOnlyRedirects['/docs/framework/html']).toBeUndefined();
+        expect(reactOnlyRedirects['/docs/framework/html/style/css']).toBeUndefined();
+      });
+    });
+  });
+
+  describe('generateDocsRedirects with real sidebar', () => {
+    it('should generate non-empty redirects from actual sidebar config', () => {
+      // Smoke test to ensure real sidebar integration works
+      const realRedirects = generateDocsRedirects();
+
+      expect(Object.keys(realRedirects).length).toBeGreaterThan(0);
+      expect(realRedirects['/docs']).toBeDefined();
+      expect(realRedirects['/docs']).toMatch(/^\/docs\/framework\/html\/style\/css\/.+/);
     });
   });
 });

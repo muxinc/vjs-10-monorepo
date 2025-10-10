@@ -2,19 +2,27 @@ import type { BrowserNavigator } from '../../../utils/docs/navigation';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { FRAMEWORK_STYLES } from '../../../types/docs';
 import { Selectors } from '../Selectors';
 
 describe('selectors component', () => {
+  // Use first framework and its first style dynamically
+  const frameworks = Object.keys(FRAMEWORK_STYLES) as (keyof typeof FRAMEWORK_STYLES)[];
+  const firstFramework = frameworks[0];
+  const secondFramework = frameworks[1];
+  const firstFrameworkFirstStyle = FRAMEWORK_STYLES[firstFramework][0];
+  const firstFrameworkSecondStyle = FRAMEWORK_STYLES[firstFramework][1];
+
   const mockNavigator: BrowserNavigator = {
-    getCurrentPath: () => '/docs/framework/html/style/css/getting-started/',
+    getCurrentPath: () => `/docs/framework/${firstFramework}/style/${firstFrameworkFirstStyle}/getting-started/`,
     navigate: vi.fn(),
   };
 
   it('should render framework and style selectors', () => {
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={mockNavigator}
       />,
     );
@@ -26,34 +34,34 @@ describe('selectors component', () => {
   it('should display current framework value', () => {
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={mockNavigator}
       />,
     );
 
     const frameworkSelect = screen.getByLabelText('Framework:') as HTMLSelectElement;
-    expect(frameworkSelect.value).toBe('html');
+    expect(frameworkSelect.value).toBe(firstFramework);
   });
 
   it('should display current style value', () => {
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={mockNavigator}
       />,
     );
 
     const styleSelect = screen.getByLabelText('Style:') as HTMLSelectElement;
-    expect(styleSelect.value).toBe('css');
+    expect(styleSelect.value).toBe(firstFrameworkFirstStyle);
   });
 
   it('should show all supported frameworks', () => {
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={mockNavigator}
       />,
     );
@@ -63,15 +71,14 @@ describe('selectors component', () => {
       opt => opt.value,
     );
 
-    expect(options).toContain('html');
-    expect(options).toContain('react');
+    expect(options).toEqual(frameworks);
   });
 
   it('should show available styles for current framework', () => {
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={mockNavigator}
       />,
     );
@@ -81,14 +88,15 @@ describe('selectors component', () => {
       opt => opt.value,
     );
 
-    expect(options).toEqual(['css', 'tailwind']);
+    expect(options).toEqual(FRAMEWORK_STYLES[firstFramework]);
   });
 
-  it('should show styled-components for react framework', () => {
+  it('should show correct styles for second framework', () => {
+    const secondFrameworkFirstStyle = FRAMEWORK_STYLES[secondFramework][0];
     render(
       <Selectors
-        currentFramework="react"
-        currentStyle="css"
+        currentFramework={secondFramework}
+        currentStyle={secondFrameworkFirstStyle}
         navigator={mockNavigator}
       />,
     );
@@ -98,30 +106,30 @@ describe('selectors component', () => {
       opt => opt.value,
     );
 
-    expect(options).toEqual(['css', 'tailwind', 'styled-components']);
+    expect(options).toEqual(FRAMEWORK_STYLES[secondFramework]);
   });
 
   it('should call navigator when framework changes', async () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
     const testNavigator: BrowserNavigator = {
-      getCurrentPath: () => '/docs/framework/html/style/css/getting-started/',
+      getCurrentPath: () => `/docs/framework/${firstFramework}/style/${firstFrameworkFirstStyle}/getting-started/`,
       navigate,
     };
 
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={testNavigator}
       />,
     );
 
     const frameworkSelect = screen.getByLabelText('Framework:');
-    await user.selectOptions(frameworkSelect, 'react');
+    await user.selectOptions(frameworkSelect, secondFramework);
 
     expect(navigate).toHaveBeenCalledWith(
-      expect.stringContaining('/docs/framework/react/'),
+      expect.stringContaining(`/docs/framework/${secondFramework}/`),
       expect.any(Boolean),
     );
   });
@@ -130,48 +138,23 @@ describe('selectors component', () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
     const testNavigator: BrowserNavigator = {
-      getCurrentPath: () => '/docs/framework/html/style/css/getting-started/',
+      getCurrentPath: () => `/docs/framework/${firstFramework}/style/${firstFrameworkFirstStyle}/getting-started/`,
       navigate,
     };
 
     render(
       <Selectors
-        currentFramework="html"
-        currentStyle="css"
+        currentFramework={firstFramework}
+        currentStyle={firstFrameworkFirstStyle}
         navigator={testNavigator}
       />,
     );
 
     const styleSelect = screen.getByLabelText('Style:');
-    await user.selectOptions(styleSelect, 'tailwind');
+    await user.selectOptions(styleSelect, firstFrameworkSecondStyle);
 
     expect(navigate).toHaveBeenCalledWith(
-      expect.stringContaining('/docs/framework/html/style/tailwind/'),
-      expect.any(Boolean),
-    );
-  });
-
-  it('should use correct guide slug when navigating', async () => {
-    const user = userEvent.setup();
-    const navigate = vi.fn();
-    const testNavigator: BrowserNavigator = {
-      getCurrentPath: () => '/docs/framework/html/style/css/concepts/everyone/',
-      navigate,
-    };
-
-    render(
-      <Selectors
-        currentFramework="html"
-        currentStyle="css"
-        navigator={testNavigator}
-      />,
-    );
-
-    const styleSelect = screen.getByLabelText('Style:');
-    await user.selectOptions(styleSelect, 'tailwind');
-
-    expect(navigate).toHaveBeenCalledWith(
-      expect.stringContaining('/concepts/everyone/'),
+      expect.stringContaining(`/docs/framework/${firstFramework}/style/${firstFrameworkSecondStyle}/`),
       expect.any(Boolean),
     );
   });

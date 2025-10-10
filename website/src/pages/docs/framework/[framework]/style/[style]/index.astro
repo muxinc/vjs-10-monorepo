@@ -1,12 +1,11 @@
 ---
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
-import { getAvailableStyles, SUPPORTED_FRAMEWORKS } from '@/types/docs';
-import { getDocsRedirectUrl } from '@/utils/docs/redirects';
+import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 
 export function getStaticPaths() {
   const paths = [];
   for (const framework of SUPPORTED_FRAMEWORKS) {
-    const availableStyles = getAvailableStyles(framework);
+    const availableStyles = FRAMEWORK_STYLES(framework);
     for (const style of availableStyles) {
       paths.push({ params: { framework, style } });
     }
