@@ -1,16 +1,13 @@
 import { file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
-import { simpleGit } from 'simple-git';
-
+import { defaultGitService } from './utils/gitService';
 import { globWithParser } from './utils/globWithParser';
-
-const git = simpleGit();
 
 /**
  * Extract date from filename in format: YYYY-MM-DD-slug.{md,mdx}
  * Throws an error if the filename doesn't match the expected pattern
  */
-function extractDateFromFilename(id: string): Date {
+export function extractDateFromFilename(id: string): Date {
   const match = id.match(/^(\d{4})-(\d{2})-(\d{2})-/);
   if (!match) {
     throw new Error(`Filename "${id}" must follow format: YYYY-MM-DD-slug.{md,mdx}`);
@@ -18,21 +15,6 @@ function extractDateFromFilename(id: string): Date {
 
   const [, year, month, day] = match;
   return new Date(`${year}-${month}-${day}`);
-}
-
-/**
- * Get the last modified date of a file from git history
- * Returns null if git command fails or file is not in git history
- */
-async function getGitLastModifiedDate(filePath: string): Promise<Date | null> {
-  try {
-    const log = await git.log({ file: filePath, maxCount: 1 });
-    if (!log.latest) return null;
-
-    return new Date(log.latest.date);
-  } catch {
-    return null;
-  }
 }
 
 const blog = defineCollection({
@@ -50,7 +32,7 @@ const blog = defineCollection({
 
       // Get updatedDate from git history (last modification date)
       const filePath = `website/src/content/blog/${originalEntry}`;
-      const updatedDate = await getGitLastModifiedDate(filePath);
+      const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
       // Return transformed entry with added fields
       return {
@@ -82,7 +64,7 @@ const docs = defineCollection({
     parser: async (entry, originalEntry) => {
       // Get updatedDate from git history
       const filePath = `website/src/content/docs/${originalEntry}`;
-      const updatedDate = await getGitLastModifiedDate(filePath);
+      const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
       // Return transformed entry with added field if updatedDate exists
       return {

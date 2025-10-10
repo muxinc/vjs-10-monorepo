@@ -1,7 +1,9 @@
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
+import type { BrowserNavigator } from '@/utils/docs/navigation';
 import { getAvailableStyles, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import {
+  defaultBrowserNavigator,
   getCurrentGuideSlug,
   getFrameworkChangeTarget,
   getStyleChangeTarget,
@@ -12,31 +14,36 @@ import { findGuideBySlug } from '@/utils/docs/sidebar';
 interface SelectorProps {
   currentFramework: SupportedFramework;
   currentStyle: AnySupportedStyle;
+  navigator?: BrowserNavigator;
 }
 
-export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
+export function Selectors({
+  currentFramework,
+  currentStyle,
+  navigator = defaultBrowserNavigator,
+}: SelectorProps) {
   const handleFrameworkChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const newFramework = event.target.value as SupportedFramework;
-    const currentGuide = findGuideBySlug(getCurrentGuideSlug());
+    const currentGuide = findGuideBySlug(getCurrentGuideSlug(navigator));
     const target = getFrameworkChangeTarget(
       currentGuide,
       currentStyle,
       newFramework,
     );
-    navigateToUrl(target.url, target.replaceHistory);
+    navigateToUrl(target.url, target.replaceHistory, navigator);
   };
 
   const handleStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newStyle = event.target.value as AnySupportedStyle;
-    const currentGuide = findGuideBySlug(getCurrentGuideSlug());
+    const currentGuide = findGuideBySlug(getCurrentGuideSlug(navigator));
     const target = getStyleChangeTarget(
       currentGuide,
       currentFramework,
       newStyle,
     );
-    navigateToUrl(target.url, target.replaceHistory);
+    navigateToUrl(target.url, target.replaceHistory, navigator);
   };
 
   const availableStyles = getAvailableStyles(currentFramework);

@@ -4,20 +4,30 @@ import mdx from '@astrojs/mdx';
 
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
+
 import { defineConfig, fontProviders } from 'astro/config';
 
-import { generateDocsRedirects } from './src/utils/docs/astroRedirects.ts';
+import { generateDocsRedirects } from './src/utils/docs/staticRedirects.ts';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://videojs.org',
+  adapter: vercel(),
   integrations: [mdx(), sitemap(), react()],
   redirects: generateDocsRedirects(),
   prefetch: true,
 
+  image: {
+    domains: ['image.mux.com'],
+  },
+
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ['@vjs/react'],
+    },
   },
 
   experimental: {
@@ -44,4 +54,5 @@ export default defineConfig({
       display: 'swap',
     }],
   },
+
 });

@@ -1,0 +1,255 @@
+import type { Guide, Section, Sidebar } from '../../../types/docs';
+import { describe, expect, it } from 'vitest';
+import {
+  filterSidebar,
+  findFirstGuide,
+  findGuideBySlug,
+  getAllGuideSlugs,
+  getValidStylesForGuide,
+} from '../sidebar';
+
+describe('sidebar utilities', () => {
+  // Test fixtures
+  const mockGuide1: Guide = {
+    slug: 'guide-1',
+    frameworks: ['html', 'react'],
+    styles: ['css', 'tailwind'],
+  };
+
+  const mockGuide2: Guide = {
+    slug: 'guide-2',
+    frameworks: ['react'],
+    styles: ['tailwind'],
+  };
+
+  const mockGuide3: Guide = {
+    slug: 'guide-3',
+    // No restrictions - visible to all
+  };
+
+  const mockSection: Section = {
+    sidebarLabel: 'Section 1',
+    frameworks: ['html', 'react'],
+    contents: [mockGuide1, mockGuide2],
+  };
+
+  const mockSidebar: Sidebar = [mockSection, mockGuide3];
+
+  describe('filterSidebar', () => {
+    it('should filter guides based on framework', () => {
+      const result = filterSidebar('html', 'css', mockSidebar);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toMatchObject({
+        sidebarLabel: 'Section 1',
+        contents: [mockGuide1], // guide-2 filtered out (react only)
+      });
+      expect(result[1]).toEqual(mockGuide3);
+    });
+
+    it('should filter guides based on style', () => {
+      const result = filterSidebar('react', 'tailwind', mockSidebar);
+
+      expect(result).toHaveLength(2);
+      const section = result[0] as Section;
+      expect(section.contents).toHaveLength(2);
+      expect(section.contents).toContainEqual(mockGuide1);
+      expect(section.contents).toContainEqual(mockGuide2);
+    });
+
+    it('should remove empty sections after filtering', () => {
+      const mockEmptySection: Section = {
+        sidebarLabel: 'Empty Section',
+        frameworks: ['html'],
+        contents: [mockGuide2], // guide-2 is react-only
+      };
+
+      const sidebar: Sidebar = [mockEmptySection];
+      const result = filterSidebar('html', 'css', sidebar);
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should keep guides with no framework/style restrictions', () => {
+      const result = filterSidebar('html', 'css', [mockGuide3]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual(mockGuide3);
+    });
+
+    it('should recursively filter nested sections', () => {
+      const nestedSection: Section = {
+        sidebarLabel: 'Parent',
+        contents: [
+          {
+            sidebarLabel: 'Child',
+            contents: [mockGuide1, mockGuide2],
+          },
+        ],
+      };
+
+      const result = filterSidebar('html', 'css', [nestedSection]);
+
+      expect(result).toHaveLength(1);
+      const parent = result[0] as Section;
+      expect(parent.contents).toHaveLength(1);
+      const child = parent.contents[0] as Section;
+      expect(child.contents).toHaveLength(1);
+      expect(child.contents[0]).toEqual(mockGuide1);
+    });
+  });
+
+  describe('findFirstGuide', () => {
+    it('should find the first visible guide in a sidebar', () => {
+      const result = findFirstGuide('html', 'css', mockSidebar);
+
+      expect(result).toBe('guide-1');
+    });
+
+    it('should skip guides that do not match framework/style', () => {
+      const sidebar: Sidebar = [mockGuide2, mockGuide1]; // guide-2 is react-only
+      const result = findFirstGuide('html', 'css', sidebar);
+
+      expect(result).toBe('guide-1');
+    });
+
+    it('should search recursively through sections', () => {
+      const nestedSidebar: Sidebar = [
+        {
+          sidebarLabel: 'Section',
+          contents: [mockGuide1],
+        },
+      ];
+      const result = findFirstGuide('html', 'css', nestedSidebar);
+
+      expect(result).toBe('guide-1');
+    });
+
+    it('should return null if no guide matches', () => {
+      const result = findFirstGuide('html', 'css', [mockGuide2]); // guide-2 is react-only
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null for empty sidebar', () => {
+      const result = findFirstGuide('html', 'css', []);
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getAllGuideSlugs', () => {
+    it('should extract all guide slugs from a sidebar', () => {
+      const result = getAllGuideSlugs(mockSidebar);
+
+      expect(result).toEqual(['guide-1', 'guide-2', 'guide-3']);
+    });
+
+    it('should extract slugs from nested sections', () => {
+      const nestedSidebar: Sidebar = [
+        {
+          sidebarLabel: 'Parent',
+          contents: [
+            {
+              sidebarLabel: 'Child',
+              contents: [mockGuide1],
+            },
+            mockGuide2,
+          ],
+        },
+        mockGuide3,
+      ];
+      const result = getAllGuideSlugs(nestedSidebar);
+
+      expect(result).toEqual(['guide-1', 'guide-2', 'guide-3']);
+    });
+
+    it('should return empty array for empty sidebar', () => {
+      const result = getAllGuideSlugs([]);
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('findGuideBySlug', () => {
+    it('should find a guide by its slug', () => {
+      const result = findGuideBySlug('guide-1', mockSidebar);
+
+      expect(result).toEqual(mockGuide1);
+    });
+
+    it('should find a guide nested in sections', () => {
+      const result = findGuideBySlug('guide-2', mockSidebar);
+
+      expect(result).toEqual(mockGuide2);
+    });
+
+    it('should return null if guide is not found', () => {
+      const result = findGuideBySlug('non-existent', mockSidebar);
+
+      expect(result).toBeNull();
+    });
+
+    it('should search deeply nested sections', () => {
+      const nestedSidebar: Sidebar = [
+        {
+          sidebarLabel: 'Level 1',
+          contents: [
+            {
+              sidebarLabel: 'Level 2',
+              contents: [
+                {
+                  sidebarLabel: 'Level 3',
+                  contents: [mockGuide1],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const result = findGuideBySlug('guide-1', nestedSidebar);
+
+      expect(result).toEqual(mockGuide1);
+    });
+  });
+
+  describe('getValidStylesForGuide', () => {
+    it('should return framework styles that guide supports', () => {
+      const result = getValidStylesForGuide(mockGuide1, 'html');
+
+      expect(result).toEqual(['css', 'tailwind']);
+    });
+
+    it('should return only styles that both framework and guide support', () => {
+      const result = getValidStylesForGuide(mockGuide1, 'react');
+
+      expect(result).toEqual(['css', 'tailwind']);
+    });
+
+    it('should return all framework styles if guide has no restrictions', () => {
+      const result = getValidStylesForGuide(mockGuide3, 'react');
+
+      expect(result).toEqual(['css', 'tailwind', 'styled-components']);
+    });
+
+    it('should handle guide with limited style support', () => {
+      const cssOnlyGuide: Guide = {
+        slug: 'css-only',
+        styles: ['css'],
+      };
+      const result = getValidStylesForGuide(cssOnlyGuide, 'react');
+
+      expect(result).toEqual(['css']);
+    });
+
+    it('should return empty array if guide does not support any framework styles', () => {
+      const styledOnlyGuide: Guide = {
+        slug: 'styled-only',
+        styles: ['styled-components'],
+      };
+      const result = getValidStylesForGuide(styledOnlyGuide, 'html');
+
+      expect(result).toEqual([]);
+    });
+  });
+});

@@ -3,10 +3,10 @@ import { FRAMEWORK_STYLES } from '../../types/docs';
 import { findFirstGuide } from '../../utils/docs/sidebar';
 
 /**
- * Generate Astro redirect configuration for all docs routes.
+ * Generate static redirect configuration for all docs routes.
  * Creates redirects from framework/style index routes to the first available guide.
  *
- * @returns Object mapping source paths to destination paths for Astro redirects config
+ * @returns Object mapping source paths to destination paths for static redirects config
  */
 export function generateDocsRedirects(): Record<string, string> {
   const redirects: Record<string, string> = {};

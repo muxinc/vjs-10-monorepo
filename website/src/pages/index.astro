@@ -1,7 +1,11 @@
 ---
+import HeroVideo from '@/components/home/HeroVideo';
+import { PLAYBACK_ID } from '@/components/home/config';
+
 import NavBar from '@/components/NavBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts';
 import Base from '@/layouts/Base.astro';
+import { Image } from 'astro:assets';
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -18,7 +22,22 @@ import Base from '@/layouts/Base.astro';
           and performance.
         </p>
       </div>
-      <div class="relative z-10 w-full aspect-video rounded-3xl bg-dark-80 -mb-11 md:-mb-21 lg:-mb-32 shadow-2xl"></div>
+      <div
+        class="relative z-10 w-full aspect-video rounded-3xl overflow-hidden bg-dark-80 -mb-11 md:-mb-21 lg:-mb-32 shadow-2xl"
+      >
+        <HeroVideo client:only="react" className="media-skin-default absolute left-0 top-0 w-full h-full">
+          <Image
+            slot="fallback"
+            priority
+            src={`https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp`}
+            inferSize
+            alt=""
+            layout="full-width"
+            fit="cover"
+            position="center"
+          />
+        </HeroVideo>
+      </div>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-28 md:h-67 grid grid-rows-4">
       <div class="bg-brand-yellow"></div>

@@ -4,6 +4,28 @@ import { getDefaultStyle } from '@/types/docs';
 import { findFirstGuide, getValidStylesForGuide } from '@/utils/docs/sidebar';
 
 /**
+ * Browser navigation interface for dependency injection (testability).
+ */
+export interface BrowserNavigator {
+  getCurrentPath: () => string;
+  navigate: (url: string, replace: boolean) => void;
+}
+
+/**
+ * Default browser navigator implementation using window.location.
+ */
+export const defaultBrowserNavigator: BrowserNavigator = {
+  getCurrentPath: () => window.location.pathname,
+  navigate: (url, replace) => {
+    if (replace) {
+      window.location.replace(url);
+    } else {
+      window.location.href = url;
+    }
+  },
+};
+
+/**
  * Build a docs URL from framework, style, and guide slug components.
  */
 export function buildDocsUrl(framework: SupportedFramework, style: AnySupportedStyle, guideSlug: string): string {
@@ -13,20 +35,16 @@ export function buildDocsUrl(framework: SupportedFramework, style: AnySupportedS
 /**
  * Navigate to a URL, optionally replacing the current history entry.
  */
-export function navigateToUrl(url: string, replaceHistory = false): void {
-  if (replaceHistory) {
-    window.location.replace(url);
-  } else {
-    window.location.href = url;
-  }
+export function navigateToUrl(url: string, replaceHistory = false, navigator: BrowserNavigator = defaultBrowserNavigator): void {
+  navigator.navigate(url, replaceHistory);
 }
 
 /**
  * Extract the current guide slug from the docs URL.
  * URL format: /docs/framework/{framework}/style/{style}/{slug}/
  */
-export function getCurrentGuideSlug(): string {
-  const pathParts = window.location.pathname.split('/').filter(Boolean);
+export function getCurrentGuideSlug(navigator: BrowserNavigator = defaultBrowserNavigator): string {
+  const pathParts = navigator.getCurrentPath().split('/').filter(Boolean);
   const styleIndex = pathParts.indexOf('style');
   const slugParts = pathParts.slice(styleIndex + 2);
   return slugParts.join('/');
