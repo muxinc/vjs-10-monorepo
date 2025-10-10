@@ -7,6 +7,7 @@ import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-med
 import { useCallback, useMemo } from 'react';
 
 import { toConnectedComponent, toContextComponent, useCore } from '../utils/component-factory';
+import { useComposedRefs } from '../utils/useComposedRefs';
 
 export interface TimeSliderState {
   currentTime: number;
@@ -16,7 +17,7 @@ export interface TimeSliderState {
   orientation: 'horizontal' | 'vertical';
 }
 
-export interface TimeSliderProps extends React.ComponentProps<'div'> {
+export interface TimeSliderProps extends React.ComponentPropsWithRef<'div'> {
   orientation?: 'horizontal' | 'vertical';
 }
 
@@ -48,13 +49,17 @@ export function useTimeSliderRootState(props: TimeSliderProps): TimeSliderState 
 export function useTimeSliderRootProps(props: TimeSliderProps, state: TimeSliderState): TimeSliderRenderProps {
   const { _fillWidth, _pointerWidth, _currentTimeText, _durationText } = state.core.getState();
 
-  const { children, className, id, style, orientation = 'horizontal' } = props;
+  const { children, className, id, style, orientation = 'horizontal', ref } = props;
+
+  const internalRef = useCallback((el: HTMLDivElement) => {
+    if (!el) return;
+    state.core?.attach(el);
+  }, [state.core]);
+
+  const composedRef = useComposedRefs(ref, internalRef);
 
   return {
-    ref: useCallback((el: HTMLDivElement) => {
-      if (!el) return;
-      state.core?.attach(el);
-    }, []),
+    ref: composedRef,
     id,
     role: 'slider',
     'aria-label': 'Seek',
@@ -95,7 +100,7 @@ export function useTimeSliderTrackProps(props: React.ComponentProps<'div'>, cont
   return {
     ref: useCallback((el: HTMLDivElement) => {
       context.core?.setState({ _trackElement: el });
-    }, []),
+    }, [context.core]),
     'data-orientation': context.orientation,
     ...props,
     style: {

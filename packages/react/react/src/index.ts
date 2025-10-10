@@ -5,6 +5,7 @@ export { MediaContainer, useMediaContainerRef } from './components/MediaContaine
 export { MuteButton } from './components/MuteButton';
 export { PlayButton } from './components/PlayButton';
 export { Popover } from './components/Popover';
+export { PreviewTimeDisplay } from './components/PreviewTimeDisplay';
 export { TimeSlider } from './components/TimeSlider';
 export { Tooltip } from './components/Tooltip';
 export { MediaElementVideo, Video } from './components/Video';
