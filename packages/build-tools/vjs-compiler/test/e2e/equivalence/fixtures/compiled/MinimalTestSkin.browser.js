@@ -1,3 +1,4 @@
+
 // MinimalTestSkin - Compiled for E2E Testing (Phase 2: Package Imports)
 // Base class stub for browser testing
 class MediaSkin extends HTMLElement {
@@ -141,3 +142,4 @@ export function getTemplateHTML() {
 if (!customElements.get('minimal-test-skin')) {
   customElements.define('minimal-test-skin', MinimalTestSkin);
 }
+

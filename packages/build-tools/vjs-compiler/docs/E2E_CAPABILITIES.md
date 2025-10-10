@@ -2,7 +2,41 @@
 
 **Purpose:** Document what we CAN and CANNOT validate end-to-end today.
 
-**Last Updated:** 2025-10-08
+**Last Updated:** 2025-10-10
+
+---
+
+## Baseline Established: Simplified Demo Skins 🎯
+
+**NEW:** We now have simplified demo app skins that compile successfully and provide a baseline for E2E validation.
+
+### What Changed (2025-10-10)
+
+1. **Created simplified skins** - `frosted-simple/` and `toasted-simple/` in `examples/react-demo/src/skins/`
+   - All arbitrary variant selectors removed
+   - Uses ONLY simple Tailwind utilities
+   - ✅ Compiles successfully (149/163 tests passing)
+
+2. **Added compilation tests** - `test/integration/compile-demo-skins.test.ts`
+   - Validates package import mapping
+   - Validates subpath imports for icons
+   - Validates CSS generation
+
+3. **Documented baseline** - See `CURRENT_STATUS.md` for details
+
+### Baseline E2E Validation Approach (Updated)
+
+**Phase 1: Simplified Skins** (Current - Working Today)
+1. Compile simplified demo skins
+2. Load in browser (React demo + compiled WC)
+3. Manual visual comparison
+4. Validate: Layout, colors, hover states, transitions
+
+**Phase 2: Arbitrary Variants** (Next - Week 2-3)
+1. Implement arbitrary variant support
+2. Compile full demo skins (with icon visibility, etc.)
+3. Automated Playwright tests
+4. Full functional equivalence
 
 ---
 

@@ -1,3 +1,4 @@
+
 // MediaSkinDefault - Compiled for E2E Testing
 // Base class stub for browser testing
 class MediaSkin extends HTMLElement {
@@ -99,7 +100,6 @@ export function getTemplateHTML() {
         position: absolute;
         inset: var(--spacing-0);
         pointer-events: none;
-        z-index: 10;
         --tw-gradient-position: to top in oklab;
         background-image: linear-gradient(var(--tw-gradient-stops));
         --tw-gradient-to: transparent;
@@ -129,7 +129,6 @@ export function getTemplateHTML() {
         inset-inline: var(--spacing-3);
         bottom: var(--spacing-3);
         border-radius: var(--radius-full);
-        z-index: 20;
         display: flex;
         align-items: center;
         padding: var(--spacing-1);
@@ -214,6 +213,11 @@ export function getTemplateHTML() {
           .controls:is(:where(.group\/root):hover *) {
           transition-delay: 0ms
           }
+      }
+      
+      .Icon {
+        /* Tailwind classes: icon */
+        /* No CSS generated */
       }
       
       .button {
@@ -309,23 +313,80 @@ export function getTemplateHTML() {
         display: grid
       }
       
-      .Icon {
-        /* Tailwind classes: icon */
-        /* No CSS generated */
-      }
-      
       .PlayButton {
         /* Tailwind classes: [&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0 [&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100 */
         /* No CSS generated */
       }
       
       .PlayIcon {
-        /* Tailwind classes: play-icon icon */
+        /* Tailwind classes: play-icon */
         /* No CSS generated */
       }
       
       .PauseIcon {
-        /* Tailwind classes: pause-icon icon */
+        /* Tailwind classes: pause-icon */
+        /* No CSS generated */
+      }
+      
+      media-tooltip-popup {
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--radius-md);
+        color: var(--color-white);
+        padding-inline: var(--spacing-2);
+        padding-block: var(--spacing-1);
+        --tw-backdrop-saturate: saturate(150%);
+        -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+        backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+        --tw-backdrop-brightness: brightness(90%);
+        -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+        backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+        --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+        box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+        --tw-ring-inset: inset
+      }
+      
+      media-tooltip-popup::after {
+        content: var(--tw-content);
+        position: absolute
+      }
+      
+      media-tooltip-popup::after {
+        content: var(--tw-content);
+        inset: var(--spacing-0)
+      }
+      
+      media-tooltip-popup::after {
+        content: var(--tw-content);
+        border-radius: inherit
+      }
+      
+      media-tooltip-popup::after {
+        content: var(--tw-content);
+        pointer-events: none
+      }
+      
+      @supports (color: color-mix(in lab, red, red)) {
+          media-tooltip-popup {
+          background-color: color-mix(in oklab, var(--color-white) 10%, transparent)
+          }
+          media-tooltip-popup {
+          --tw-ring-color: color-mix(in oklab, var(--color-white) 10%, transparent)
+          }
+      }
+      
+      .PlayTooltipPopup {
+        /* Tailwind classes: [&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden [&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline */
+        /* No CSS generated */
+      }
+      
+      .PlayTooltip {
+        /* Tailwind classes: play-tooltip */
+        /* No CSS generated */
+      }
+      
+      .PauseTooltip {
+        /* Tailwind classes: pause-tooltip */
         /* No CSS generated */
       }
       
@@ -335,17 +396,17 @@ export function getTemplateHTML() {
       }
       
       .VolumeHighIcon {
-        /* Tailwind classes: volume-high-icon icon */
+        /* Tailwind classes: volume-high-icon */
         /* No CSS generated */
       }
       
       .VolumeLowIcon {
-        /* Tailwind classes: volume-low-icon icon */
+        /* Tailwind classes: volume-low-icon */
         /* No CSS generated */
       }
       
       .VolumeOffIcon {
-        /* Tailwind classes: volume-off-icon icon */
+        /* Tailwind classes: volume-off-icon */
         /* No CSS generated */
       }
       
@@ -355,12 +416,27 @@ export function getTemplateHTML() {
       }
       
       .FullscreenEnterIcon {
-        /* Tailwind classes: fullscreen-enter-icon icon group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px */
+        /* Tailwind classes: fullscreen-enter-icon group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px */
         /* No CSS generated */
       }
       
       .FullscreenExitIcon {
-        /* Tailwind classes: fullscreen-exit-icon icon [&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px [&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px group-hover/button:[&_.arrow-1]:translate-0 group-hover/button:[&_.arrow-2]:translate-0 */
+        /* Tailwind classes: fullscreen-exit-icon [&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px [&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px group-hover/button:[&_.arrow-1]:translate-0 group-hover/button:[&_.arrow-2]:translate-0 */
+        /* No CSS generated */
+      }
+      
+      .FullscreenTooltipPopup {
+        /* Tailwind classes: [&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden [&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline */
+        /* No CSS generated */
+      }
+      
+      .FullscreenEnterTooltip {
+        /* Tailwind classes: fullscreen-enter-tooltip */
+        /* No CSS generated */
+      }
+      
+      .FullscreenExitTooltip {
+        /* Tailwind classes: fullscreen-exit-tooltip */
         /* No CSS generated */
       }
       
@@ -376,7 +452,7 @@ export function getTemplateHTML() {
         font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,)
       }
       
-      .range-root {
+      .slider-root {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -384,7 +460,7 @@ export function getTemplateHTML() {
         position: relative
       }
       
-      .range-track {
+      .slider-track {
         width: 100%;
         position: relative;
         -webkit-user-select: none;
@@ -395,21 +471,21 @@ export function getTemplateHTML() {
       }
       
       @supports (color: color-mix(in lab, red, red)) {
-          .range-track {
+          .slider-track {
           background-color: color-mix(in oklab, var(--color-white) 20%, transparent)
           }
       }
       
-      .range-progress {
+      .slider-progress {
         background-color: var(--color-white);
         border-radius: inherit
       }
       
-      media-time-range-pointer {
+      media-time-slider-pointer {
         border-radius: inherit
       }
       
-      .range-thumb {
+      .slider-thumb {
         background-color: var(--color-white);
         z-index: 10;
         -webkit-user-select: none;
@@ -421,33 +497,44 @@ export function getTemplateHTML() {
         outline-offset: calc(2px * -1)
       }
       
-      .range-thumb:focus-visible {
+      .slider-thumb:focus-visible {
         outline-style: var(--tw-outline-style);
         outline-width: 2px
       }
       
-      .range-thumb:focus-visible {
+      .slider-thumb:focus-visible {
         outline-offset: 2px
       }
       
-      .range-thumb:focus-visible {
+      .slider-thumb:focus-visible {
         outline-color: var(--color-blue-500)
       }
       
-      .range-thumb:active {
+      .slider-thumb:is(:where(.group\/slider):focus-within *) {
+        opacity: 100%
+      }
+      
+      .slider-thumb:active {
+        width: var(--spacing-3);
+        height: var(--spacing-3)
+      }
+      
+      .slider-thumb:is(:where(.group\/slider):active *) {
         width: var(--spacing-3);
         height: var(--spacing-3)
       }
       
       @media (hover: hover) {
-          .range-thumb:hover {
+          .slider-thumb:is(:where(.group\/slider):hover *) {
+          opacity: 100%
+          }
+          .slider-thumb:hover {
           cursor: ew-resize
           }
       }
       
       media-popover-popup {
         position: relative;
-        z-index: 30;
         padding-inline: var(--spacing-2);
         padding-block: var(--spacing-4);
         border-radius: var(--radius-2xl);
@@ -507,21 +594,33 @@ export function getTemplateHTML() {
           <div class="overlay" aria-hidden="true"></div>
 
           <div class="controls" data-testid="media-controls">
-            <media-play-button class="button icon-button">
-              <media-play-icon></media-play-icon>
-              <media-pause-icon></media-pause-icon>
-            </media-play-button>
+            <media-tooltip-root delay="600" closeDelay="0">
+              <media-tooltip-trigger>
+                <media-play-button class="button icon-button">
+                  <media-play-icon class="icon"></media-play-icon>
+                  <media-pause-icon class="icon"></media-pause-icon>
+                </media-play-button>
+              </media-tooltip-trigger>
+              <media-tooltip-portal>
+                <media-tooltip-positioner side="top" sideOffset="12" collisionPadding="12">
+                  <media-tooltip-popup class="play-tooltip-popup">
+                    <span class="play-tooltip">Play</span>
+                    <span class="pause-tooltip">Pause</span>
+                  </media-tooltip-popup>
+                </media-tooltip-positioner>
+              </media-tooltip-portal>
+            </media-tooltip-root>
 
             <div class="time-controls">
               <media-current-time-display class="time-display"></media-current-time-display>
 
-              <media-time-range-root class="range-root">
-                <media-time-range-track class="range-track">
-                  <media-time-range-progress class="range-progress"></media-time-range-progress>
-                  <media-time-range-pointer></media-time-range-pointer>
-                </media-time-range-track>
-                <media-time-range-thumb class="range-thumb"></media-time-range-thumb>
-              </media-time-range-root>
+              <media-time-slider-root class="slider-root">
+                <media-time-slider-track class="slider-track">
+                  <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
+                  <media-time-slider-pointer></media-time-slider-pointer>
+                </media-time-slider-track>
+                <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
+              </media-time-slider-root>
 
               <media-duration-display class="time-display"></media-duration-display>
             </div>
@@ -529,27 +628,41 @@ export function getTemplateHTML() {
             <media-popover-root openOnHover delay="200" closeDelay="100">
               <media-popover-trigger>
                 <media-mute-button class="button icon-button">
-                  <media-volume-high-icon></media-volume-high-icon>
-                  <media-volume-low-icon></media-volume-low-icon>
-                  <media-volume-off-icon></media-volume-off-icon>
+                  <media-volume-high-icon class="icon"></media-volume-high-icon>
+                  <media-volume-low-icon class="icon"></media-volume-low-icon>
+                  <media-volume-off-icon class="icon"></media-volume-off-icon>
                 </media-mute-button>
               </media-popover-trigger>
-              <media-popover-positioner side="top" sideOffset="8">
-                <media-popover-popup>
-                  <media-volume-range-root class="range-root" orientation="vertical">
-                    <media-volume-range-track class="range-track">
-                      <media-volume-range-progress class="range-progress"></media-volume-range-progress>
-                    </media-volume-range-track>
-                    <media-volume-range-thumb class="range-thumb"></media-volume-range-thumb>
-                  </media-volume-range-root>
-                </media-popover-popup>
-              </media-popover-positioner>
+              <media-popover-portal>
+                <media-popover-positioner side="top" sideOffset="12">
+                  <media-popover-popup>
+                    <media-volume-slider-root class="slider-root" orientation="vertical">
+                      <media-volume-slider-track class="slider-track">
+                        <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
+                      </media-volume-slider-track>
+                      <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
+                    </media-volume-slider-root>
+                  </media-popover-popup>
+                </media-popover-positioner>
+              </media-popover-portal>
             </media-popover-root>
 
-            <media-fullscreen-button class="button icon-button">
-              <media-fullscreen-enter-icon></media-fullscreen-enter-icon>
-              <media-fullscreen-exit-icon></media-fullscreen-exit-icon>
-            </media-fullscreen-button>
+            <media-tooltip-root delay="600" closeDelay="0">
+              <media-tooltip-trigger>
+                <media-fullscreen-button class="button icon-button">
+                  <media-fullscreen-enter-icon class="icon"></media-fullscreen-enter-icon>
+                  <media-fullscreen-exit-icon class="icon"></media-fullscreen-exit-icon>
+                </media-fullscreen-button>
+              </media-tooltip-trigger>
+              <media-tooltip-portal>
+                <media-tooltip-positioner side="top" sideOffset="12" collisionPadding="12">
+                  <media-tooltip-popup class="fullscreen-tooltip-popup">
+                    <span class="fullscreen-enter-tooltip">Enter Fullscreen</span>
+                    <span class="fullscreen-exit-tooltip">Exit Fullscreen</span>
+                  </media-tooltip-popup>
+                </media-tooltip-positioner>
+              </media-tooltip-portal>
+            </media-tooltip-root>
           </div>
         </media-container>
   `;
@@ -559,3 +672,4 @@ export function getTemplateHTML() {
 if (!customElements.get('media-skin-default')) {
   customElements.define('media-skin-default', MediaSkinDefault);
 }
+

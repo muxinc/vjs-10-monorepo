@@ -1,16 +1,101 @@
 # VJS Compiler v2: Current Implementation Status
 
-**Last Updated:** 2025-10-09
+**Last Updated:** 2025-10-10
 **Branch:** `build/framework-compiler-squash`
 
 ---
 
 ## Summary
 
-We have successfully implemented **Phases 0-6** of the compiler rebuild with complete "Identify, Then Transform" architecture, full Tailwind theme support, compound components, and comprehensive E2E equivalence testing infrastructure. The compiler can parse, analyze, categorize, and transform React skins (including compound components like `<TimeRange.Root>`) with proper CSS selector generation, element/class attribute handling, and comprehensive Tailwind utility support. Production skin MediaSkinDefault compiles successfully.
+We have successfully implemented **Phases 0-6** of the compiler rebuild with complete "Identify, Then Transform" architecture, full Tailwind theme support, compound components, and comprehensive E2E equivalence testing infrastructure. The compiler can parse, analyze, categorize, and transform React skins (including compound components like `<TimeRange.Root>`) with proper CSS selector generation, element/class attribute handling, and comprehensive Tailwind utility support.
 
-**All 102 tests passing** (101 Vitest + 1 E2E compilation test)
-**E2E equivalence tests ready** (11 test cases written, awaiting demo setup)
+**Test Status:** 149/163 tests passing (91.4%)
+- 147 existing tests passing (unchanged)
+- 2 new demo skin compilation tests passing
+- 5 pre-existing failures (JSX edge cases)
+- 9 skipped tests (arbitrary variants)
+
+**New:** Simplified demo app skins created for baseline E2E validation (frosted-simple, toasted-simple)
+
+---
+
+## Demo App Skins 🆕
+
+### Purpose
+
+Two sets of skins are now available in `examples/react-demo/src/skins/`:
+
+1. **Full versions** (`frosted/`, `toasted/`) - Production-quality skins with all features
+   - ❌ Include arbitrary variant selectors `[&_.child]:opacity-0`
+   - ❌ Currently **do not compile** (Tailwind v4 limitation)
+   - ✅ Used in React demo app for visual reference
+   - 📋 Target for Phase 2 (arbitrary variant support)
+
+2. **Simplified versions** (`frosted-simple/`, `toasted-simple/`) - Baseline test skins
+   - ✅ ONLY simple Tailwind utilities (no arbitrary variants)
+   - ✅ **Compile successfully** with current compiler
+   - ✅ Used for E2E validation baseline
+   - ✅ Validate package import mapping (@vjs-10/react → @vjs-10/html)
+   - 📋 See README.md in each directory for details
+
+### Why Demo Skins?
+
+Demo app skins simplify import mapping testing:
+
+**Before (package skins):**
+```typescript
+// Complex relative paths
+import { MediaSkin } from '../../../media-skin';
+import '../../../components/media-play-button';
+```
+
+**After (demo skins):**
+```typescript
+// Simple package imports
+import { MediaSkin } from '@vjs-10/html';
+import { PlayButton } from '@vjs-10/html';
+import { PlayIcon } from '@vjs-10/html-icons';
+```
+
+This sidesteps relative path complexity and makes VJS import identification clearer.
+
+### Simplified Skin Limitations
+
+Features removed from `-simple` versions:
+
+- ❌ Icon visibility (play/pause, mute states, fullscreen) - uses `[&_.icon]:opacity-0`
+- ❌ SVG child styling - uses `[&_svg]:grid-area`
+- ❌ Tooltip content visibility - uses `[&_.tooltip]:hidden`
+- ❌ Data attribute child selectors - uses `[&[data-paused]_.icon]:opacity-100`
+
+**What still works:**
+- ✅ Layout, positioning, colors, backgrounds
+- ✅ Hover/focus/disabled states (on root element)
+- ✅ Transitions and animations
+- ✅ Container queries
+- ✅ Named groups (group/button, group/slider)
+- ✅ Data attribute selectors on root ([data-orientation])
+
+### Test Coverage
+
+Simplified demo skins have dedicated compilation tests:
+
+```bash
+# Run demo skin compilation tests
+pnpm test -- compile-demo-skins.test.ts
+```
+
+**Test validation:**
+- ✅ Package imports generated correctly
+- ✅ Icon imports use subpaths (@vjs-10/html-icons/media-play-icon)
+- ✅ Base template included
+- ✅ CSS compiles (simplified utilities only)
+- ✅ No React imports in output
+- ✅ No style imports in output
+
+**Output sizes:**
+- frosted-simple: ~25KB
+- toasted-simple: ~11KB
 
 ---
 
