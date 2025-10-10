@@ -1,8 +1,12 @@
 import type { ChangeEventHandler } from 'react';
 
 import { MediaProvider, MediaSkinDefault, MediaSkinToasted, Video } from '@vjs-10/react';
-
+// NOTE: Commented out imports are for testing locally/externally defined skins.
+// import { MediaProvider, Video } from '@vjs-10/react';
 import { useCallback, useMemo, useState } from 'react';
+
+// import MediaSkinDefault from './skins/frosted/MediaSkinDefault';
+// import MediaSkinToasted from './skins/toasted/MediaSkinToasted';
 
 import './globals.css';
 
