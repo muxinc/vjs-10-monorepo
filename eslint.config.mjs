@@ -5,6 +5,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 export default antfu(
   {
     react: true,
+    astro: true,
     typescript: true,
     astro: true,
     formatters: {
@@ -13,6 +14,7 @@ export default antfu(
       astro: 'prettier',
       markdown: 'prettier',
       svg: 'prettier',
+      astro: 'prettier',
     },
     stylistic: {
       semi: true,
