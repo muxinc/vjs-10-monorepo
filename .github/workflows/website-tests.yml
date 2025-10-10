@@ -2,6 +2,11 @@ name: Website Tests
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - 'website/**'
+  pull_request:
     paths:
       - 'website/**'
 
