@@ -1,7 +1,7 @@
 import { MediaProvider, MediaSkinDefault, Video } from '@vjs-10/react';
 import clsx from 'clsx';
 import { PLAYBACK_ID } from './config';
-import '@/styles/player.css';
+import '@/styles/vjs.css';
 
 export default function HeroVideo({ className }: { className?: string }) {
   return (
