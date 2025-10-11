@@ -11,9 +11,6 @@ export default function HeroVideo({ className }: { className?: string }) {
           // @ts-expect-error -- types are incorrect
           src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`}
           poster={`https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`}
-          autoPlay
-          muted
-          loop
           playsInline
         />
       </MediaSkinDefault>
