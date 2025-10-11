@@ -1,5 +1,23 @@
 # VJS-10 Architecture & Design Philosophy
 
+## How to Read This Document
+
+This document describes VJS-10's **architectural principles and patterns**, not implementation chronology.
+
+**Status Indicators:**
+
+- ✅ **Implemented** - Currently exists in codebase with code references
+- 🚧 **In Progress** - Partially implemented, under active development
+- 📋 **Planned** - Architectural vision, not yet started
+
+**Code References:**
+
+- File paths link to actual implementation locations
+- Examples show real patterns from working code
+- Sections without status indicators describe foundational principles
+
+---
+
 ## Overview
 
 VJS-10 represents a significant architectural evolution in media player component libraries, prioritizing platform-native development experiences while maintaining shared core logic. This document outlines the design philosophy, architectural influences, and key decisions that shape the VJS-10 ecosystem.
@@ -651,65 +669,79 @@ export function useMuteButtonProps(props, state) {
 </MuteButton>;
 ```
 
-**Reference**: [`packages/react/react/src/skins/MediaSkinDefault.tsx`](packages/react/react/src/skins/MediaSkinDefault.tsx)
+**Reference**:
+
+- Default skin: [`packages/react/react/src/skins/default/MediaSkinDefault.tsx`](packages/react/react/src/skins/default/MediaSkinDefault.tsx)
+- Toasted skin: [`packages/react/react/src/skins/toasted/MediaSkinToasted.tsx`](packages/react/react/src/skins/toasted/MediaSkinToasted.tsx)
 
 ## Base UI Compound Component Architecture
 
+**Status:** ✅ Implemented
+
 **Inspiration**: [Base UI Slider compound components](https://base-ui.com/react/components/slider) (`Slider.Root`, `Slider.Track`, `Slider.Thumb`)
 
-```tsx
-// Planned: Base UI-inspired compound architecture
-<VolumeRange.Root value={volume} onValueChange={handleVolumeChange}>
-  <VolumeRange.Control>
-    <VolumeRange.Track>
-      <VolumeRange.Indicator />
-      <VolumeRange.Thumb />
-    </VolumeRange.Track>
-  </VolumeRange.Control>
-  <VolumeRange.Value />
-  {' '}
-  {/* Optional: displays "75%" */}
-</VolumeRange.Root>;
-```
+VJS-10 implements Base UI-inspired compound components for sliders, providing fine-grained control over each sub-component:
 
-#### Planned TimeRange Compound Structure
+### TimeSlider Implementation
 
 ```tsx
-// Planned: Base UI-inspired compound architecture with media-specific enhancements
-<TimeRange.Root value={currentTime} max={duration} onValueChange={handleSeek}>
-  <TimeRange.Control>
-    <TimeRange.Track>
-      <TimeRange.BufferedIndicator />
-      <TimeRange.ChapterMarkers />
-      <TimeRange.Indicator />
-      <TimeRange.Preview />
-      {' '}
-      {/* Media-specific: thumbnail preview */}
-      <TimeRange.Thumb />
-    </TimeRange.Track>
-  </TimeRange.Control>
-  <TimeRange.CurrentTime />
-  <TimeRange.Duration />
-</TimeRange.Root>;
+<TimeSlider.Root className={styles.SliderRoot}>
+  <TimeSlider.Track className={styles.SliderTrack}>
+    <TimeSlider.Progress className={styles.SliderProgress} />
+    <TimeSlider.Pointer className={styles.SliderPointer} />
+  </TimeSlider.Track>
+  <TimeSlider.Thumb className={styles.SliderThumb} />
+</TimeSlider.Root>;
 ```
+
+**Components:**
+
+- `TimeSlider.Root` - Root container with state management and ARIA attributes
+- `TimeSlider.Track` - Track element for visual rail
+- `TimeSlider.Progress` - Filled portion showing current progress
+- `TimeSlider.Pointer` - Preview/hover indicator (media-specific enhancement)
+- `TimeSlider.Thumb` - Draggable thumb control
+
+### VolumeSlider Implementation
+
+```tsx
+<VolumeSlider.Root orientation="vertical" className={styles.SliderRoot}>
+  <VolumeSlider.Track className={styles.SliderTrack}>
+    <VolumeSlider.Progress className={styles.SliderProgress} />
+  </VolumeSlider.Track>
+  <VolumeSlider.Thumb className={styles.SliderThumb} />
+</VolumeSlider.Root>;
+```
+
+**Components:**
+
+- `VolumeSlider.Root` - Root container with volume state
+- `VolumeSlider.Track` - Track element
+- `VolumeSlider.Progress` - Filled portion showing current volume
+- `VolumeSlider.Thumb` - Draggable thumb control
 
 ### Media-Specific Enhancements
 
-Unlike Base UI's generic sliders, VJS-10 compound ranges will support media-specific sub-components:
+Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features:
 
-- **`TimeRange.Preview`**: Thumbnail previews on hover
-- **`TimeRange.ChapterMarkers`**: Chapter marker integration
-- **`TimeRange.BufferedIndicator`**: Buffered content visualization
-- **`VolumeRange.MuteButton`**: Integrated mute functionality
+- **`TimeSlider.Pointer`**: Hover preview indicator for scrubbing
+- **CSS Variables**: `--slider-fill`, `--slider-pointer` for styling
+- **Data Attributes**: `data-orientation`, `data-current-time`, `data-duration`
+- **Media State Integration**: Automatic synchronization with media playback
 
 ### Architectural Benefits
 
 1. **Maximum Flexibility**: Fine-grained control over each sub-component
-2. **Media-Specific Features**: Support for previews, chapters, buffering indicators
-3. **Base UI Consistency**: Familiar compound component API patterns
-4. **Styling Granularity**: Target specific sub-components with CSS selectors
-5. **Accessibility**: Built-in ARIA relationships between compound components
-6. **Primitive Philosophy**: Maintains unstyled, behavior-focused approach
+2. **Base UI Consistency**: Familiar compound component API patterns
+3. **Styling Granularity**: Target specific sub-components with CSS selectors
+4. **Accessibility**: Built-in ARIA relationships between compound components
+5. **Primitive Philosophy**: Maintains unstyled, behavior-focused approach
+
+**References:**
+
+- Implementation: [`packages/react/react/src/components/TimeSlider.tsx`](packages/react/react/src/components/TimeSlider.tsx)
+- Implementation: [`packages/react/react/src/components/VolumeSlider.tsx`](packages/react/react/src/components/VolumeSlider.tsx)
+- Usage: [`packages/react/react/src/skins/default/MediaSkinDefault.tsx`](packages/react/react/src/skins/default/MediaSkinDefault.tsx)
 
 ### VidStack: Multi-Framework Common Core Architecture
 
@@ -874,24 +906,24 @@ export function useMuteButtonState() {
 
 **VidStack's Bundle Strategy**: Modular architecture enabling selective component inclusion and tree-shaking, with the library designed for scalability and minimal bundle size.
 
-**VJS-10 Adoption**: Monorepo structure directly reflects VidStack's modular philosophy:
+**VJS-10 Adoption**: Monorepo structure enables modular inclusion:
 
 ```json
-// VidStack's selective inclusion -> VJS-10's granular packages
+// VidStack's selective inclusion -> VJS-10's platform packages
 {
   "dependencies": {
     "@vjs-10/media-store": "^1.0.0", // Only state management
     "@vjs-10/react-icons": "^1.0.0", // Only icons
-    "@vjs-10/react-mute-button": "^1.0.0" // Only specific components
+    "@vjs-10/react": "^1.0.0" // React components (tree-shakeable)
   }
 }
 ```
 
 **Performance Characteristics**:
 
-- **Tree-Shaking**: Import only needed components and utilities
-- **Incremental Adoption**: Add components without importing entire player framework
-- **Platform Targeting**: Include only relevant platform packages
+- **Tree-Shaking**: Import only needed components from `@vjs-10/react`
+- **Platform Separation**: Include only relevant platform packages (react vs html vs react-native)
+- **Incremental Adoption**: Start with core packages, add platform-specific components as needed
 
 #### VidStack → VJS-10 Architectural Summary
 
@@ -901,7 +933,7 @@ export function useMuteButtonState() {
 | **Component Distribution** | Documentation-based copy-paste        | Hybrid npm + CLI copy-and-own (planned)              |
 | **Reactive State**         | Maverick Signals                      | nanostores with shared transformations               |
 | **Framework Adaptation**   | Host functions + createReactComponent | Platform-specific implementations sharing core logic |
-| **Bundle Strategy**        | Modular player components             | Granular monorepo packages                           |
+| **Bundle Strategy**        | Modular player components             | Platform-separated packages with tree-shaking        |
 | **Developer Experience**   | TypeScript-first, SSR-ready           | TypeScript project references, platform-native DX    |
 
 **References**:

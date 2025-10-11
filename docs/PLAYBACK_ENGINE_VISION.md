@@ -1,6 +1,59 @@
-# Composable Playback Engine Architecture
+# Composable Playback Engine Architecture (Vision)
 
 _A Guide to Building Modular, Performance-Optimized Video Playback Systems_
+
+## Implementation Status
+
+**Status:** 📋 Planned - This document describes a future architectural vision
+
+**Current State (as of 2025-10-10):**
+
+- VJS-10 currently has a minimal `HlsJSPlaybackEngine` implementation ([`packages/core/playback-engine/src/HlsJSPlaybackEngine.ts`](packages/core/playback-engine/src/HlsJSPlaybackEngine.ts))
+- Current interface: `IBasePlaybackEngine` with basic src, mediaElement, element, and destroy properties
+- **This document describes the future composable architecture**, not the current implementation
+- The architecture described here represents design goals and principles we aim to achieve
+
+**Purpose of This Document:**
+
+- Articulate the architectural vision for VJS-10's future playback engine
+- Document design principles and patterns for composability
+- Provide reference for future implementation work
+- Explain the rationale behind the "outward vs inward" separation
+
+**What This Document Is NOT:**
+
+- NOT a description of current implementation
+- NOT an API reference for existing code
+- NOT a step-by-step implementation guide
+
+For current playback engine implementation details, see the actual source files in `packages/core/playback-engine/`.
+
+## Current Implementation vs Vision
+
+| Aspect                    | Current (HlsJSPlaybackEngine)                             | Vision (This Document)                                         |
+| ------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
+| **Architecture**          | Thin wrapper around hls.js                                | Composable functional core with multiple interfaces            |
+| **Interface**             | Simple `IBasePlaybackEngine` (src, mediaElement, destroy) | Full HTMLMediaElement subset + media-specific extensions       |
+| **Composition**           | Monolithic hls.js instance                                | Functional middleware composition                              |
+| **Use Case Support**      | HLS playback only                                         | Multiple content types, optimized builds per use case          |
+| **State Management**      | Internal to hls.js                                        | XState-based state machines                                    |
+| **Extensibility**         | Limited to hls.js configuration                           | Composable adapters, composable state machines                 |
+| **Bundle Optimization**   | Full hls.js bundle (~800KB)                               | Tree-shakeable functional units                                |
+| **Testing**               | Integration tests only                                    | Unit testable functional components                            |
+| **Framework Integration** | Event-based imperative API                                | Multiple interface options (imperative, reactive, declarative) |
+
+**Migration Path:**
+
+The vision architecture is designed to be implemented incrementally:
+
+1. **Phase 1**: Implement functional core with basic HLS support
+2. **Phase 2**: Add composable middleware system
+3. **Phase 3**: Build multiple interface adapters
+4. **Phase 4**: Optimize for different use cases (progressive, tree-shaking)
+
+The current `HlsJSPlaybackEngine` serves as a working baseline while the composable architecture is developed.
+
+---
 
 # Executive Summary
 
