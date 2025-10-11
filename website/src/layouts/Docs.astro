@@ -1,9 +1,9 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
 
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
-import { getCollection } from 'astro:content';
+import NavBar from '@/components/NavBar/Docs.astro';
 import { Selectors } from '@/components/docs/Selectors';
 import SidebarItem from '@/components/docs/SidebarItem.astro';
 import { filterSidebar } from '@/utils/docs/sidebar';
@@ -25,8 +25,15 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
 ---
 
 <Base title={doc.data.title} description={doc.data.description}>
-  <div class="docs-container">
-    <aside>
+  <div
+    class="grid grid-cols-1 lg:grid-cols-(--lg-grid-cols) min-h-screen"
+    style="--lg-grid-cols: calc(var(--spacing) * 75) 1fr;grid-template-rows:auto minmax(0,1fr);"
+  >
+    <NavBar class="col-span-full border-b border-light-40" />
+    <aside
+      class="hidden lg:block lg:border-r border-light-40 sticky overflow-y-scroll"
+      style="top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
+    >
       <Selectors client:load currentFramework={framework} currentStyle={style} />
       <nav>
         {
@@ -40,9 +47,7 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
       <article>
         <h1>{doc.data.title}</h1>
         <p>{doc.data.description}</p>
-        <div class="prose">
-          <slot />
-        </div>
+        <slot />
       </article>
     </main>
   </div>

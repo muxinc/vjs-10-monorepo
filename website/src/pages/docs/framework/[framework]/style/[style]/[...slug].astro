@@ -17,7 +17,7 @@ export async function getStaticPaths() {
   type FrameworkStyleKey = `${SupportedFramework}-${AnySupportedStyle}`;
   type AllowedSlugsMap = Map<FrameworkStyleKey, Set<string>>;
   const allFrameworkStyleCombinations = SUPPORTED_FRAMEWORKS.flatMap((framework) => {
-    const availableStyles = FRAMEWORK_STYLES(framework);
+    const availableStyles = FRAMEWORK_STYLES[framework];
     return availableStyles.map((style) => ({
       framework,
       style,

@@ -1,0 +1,16 @@
+---
+import Shared, { type Props } from './Shared.astro';
+
+const props = Astro.props;
+---
+
+<Shared {...props}>
+  <!-- Desktop nav links -->
+  <div class="hidden lg:flex h-full">
+    <a href="/" class="h-full flex items-center px-3">Home</a>
+    <a href="/docs" class="h-full flex items-center px-3">Docs</a>
+    <a href="/blog" class="h-full flex items-center px-3">Blog</a>
+  </div>
+  <!-- Logo -->
+  <a href="/" class="flex items-center px-3 text-h5">VideoJS</a>
+</Shared>

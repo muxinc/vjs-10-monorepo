@@ -1,4 +1,6 @@
 # TODO
 
-- testing of all the wild filtering and redirect stuff that's going on
+not comprehensive. just the things I'm worried about forgetting
+
+- an seo strategy; after all one page will have a bunch of lang/style combos. One canonical? Good meta/description tags? Idk...
 - a kick-ass 404 page

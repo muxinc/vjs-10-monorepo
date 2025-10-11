@@ -6,7 +6,7 @@ import { SITE_TITLE } from '@/consts';
 
 import '@/styles/global.css';
 
-export interface Props {
+interface Props {
   title: string;
   description: string;
   image?: ImageMetadata;
@@ -55,7 +55,9 @@ const { title, description, image } = Astro.props;
     <!-- Whatever else -->
     <slot name="head" />
   </head>
-  <body class="bg-light-80 text-dark-100 font-sans antialiased text-pretty text-base">
+  <body
+    class="bg-light-80 text-dark-100 font-sans antialiased text-pretty text-base min-w-80 [--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]"
+  >
     <slot />
   </body>
 </html>
