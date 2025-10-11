@@ -160,7 +160,54 @@ export function useVideoElementNative(): MediaStateOwner {
 };
 ```
 
-#### 3. Interface Abstraction vs. Implementation Requirements
+#### 3. Well-Defined Playback Engine Contract
+
+**Media Elements Innovation**: Beyond creating HTMLMediaElement-compatible custom elements, media-elements established patterns for wrapping diverse playback engines (hls.js, dash.js, Shaka Player) behind a consistent interface. While each integration is currently a "one-off" implementation, the pattern demonstrates the value of a well-defined contract between media elements and the playback engines they wrap.
+
+**Current Media Elements Pattern** (one-off integrations):
+
+```typescript
+// HlsVideoElement wraps hls.js
+class HlsVideoElement extends CustomVideoElement {
+  api: Hls | null = null;
+
+  async load() {
+    this.api = new Hls(this.config);
+    this.api.loadSource(this.src);
+    this.api.attachMedia(this.nativeEl);
+  }
+}
+
+// DashVideoElement wraps dash.js (different API)
+class DashVideoElement extends CustomVideoElement {
+  player: dashjs.MediaPlayer | null = null;
+
+  async load() {
+    this.player = dashjs.MediaPlayer().create();
+    this.player.initialize(this.nativeEl, this.src, this.autoplay);
+  }
+}
+```
+
+**Key Observation**: Each playback engine has a unique API surface (hls.js's `loadSource/attachMedia`, dash.js's `initialize`, Shaka's `attach/load`), requiring custom integration code for each provider.
+
+**VJS-10 Vision**: Building on this pattern, VJS-10 aims to define a **standardized playback engine contract** that enables:
+
+1. **Unified Public-Facing API**: All playback engines expose the same interface regardless of internal implementation
+2. **Pluggable Providers**: Swap between HLS.js, Dash.js, Shaka, or native playback without changing consumer code
+3. **Composable Internals**: Playback engines composed from functional units rather than monolithic classes
+
+This vision is detailed in [`docs/PLAYBACK_ENGINE_VISION.md`](docs/PLAYBACK_ENGINE_VISION.md) and represents a evolution from media-elements' "one-off integration per provider" pattern to a formalized, extensible playback engine contract.
+
+**Contract Philosophy**:
+
+- **Outward-facing**: Consistent HTMLMediaElement-like API for all providers
+- **Inward-facing**: Composable functional units for internal implementation
+- **Provider-agnostic**: Consumer code doesn't need to know about hls.js vs dash.js vs Shaka
+
+**Reference**: See playback engine vision document for full architectural details.
+
+#### 4. Interface Abstraction vs. Implementation Requirements
 
 **Media Elements Approach**: Tight coupling between contract and DOM implementation
 
@@ -184,7 +231,7 @@ export function useVideoElementNative(): MediaStateOwner {
 | **HTMLMediaElement Contract** | Full native implementation  | JavaScript interface only |
 | **Extension Method**          | Class inheritance           | Interface implementation  |
 
-#### 4. State Mediation Architecture
+#### 5. State Mediation Architecture
 
 **Media Elements Pattern**: Custom elements as state mediators between providers and native elements:
 
@@ -218,7 +265,7 @@ export const temporal = {
 };
 ```
 
-#### 5. Event-Driven Architecture Continuity
+#### 6. Event-Driven Architecture Continuity
 
 **Shared Foundation**: Both systems rely on EventTarget for reactive updates:
 
@@ -305,14 +352,21 @@ export type MediaStateOwner = Partial<HTMLVideoElement>
 
 **Reference**: [`packages/core/media-store/src/state-mediators/audible.ts`](packages/core/media-store/src/state-mediators/audible.ts)
 
-#### 2. Decoupled State Management Architecture
+#### 2. State Mediator Pattern
 
-**Media Chrome Pattern**: Complete separation of state management from UI components, with MediaStore as a central state coordinator.
+**Media Chrome Innovation**: Originated the **state mediator** concept as a pattern for managing media state transformations and side effects. Media Chrome's state mediators sit between the raw HTMLMediaElement API and component state, providing a clean abstraction layer.
 
-**VJS-10 Adaptation**: Evolved into layered state mediators with framework-agnostic core:
+**Original Media Chrome Pattern**:
+
+- Centralized MediaStore with state mediator objects
+- Each mediator handles a specific aspect of media state (volume, time, playback)
+- Mediators encapsulate get/set logic, event subscriptions, and side effects
+- Complete separation of state management from UI components
+
+**VJS-10 Evolution**: Cleaned up and modularized Media Chrome's state mediator concept:
 
 ```typescript
-// Media Chrome's centralized MediaStore concept -> VJS-10's distributed mediators
+// VJS-10's modular state mediators (evolved from Media Chrome pattern)
 export const audible = {
   muted: {
     get(stateOwners: any) {
@@ -337,14 +391,21 @@ export const audible = {
 };
 ```
 
-**Key Architectural Inheritances**:
+**VJS-10 Improvements**:
 
-- **State/UI Separation**: State logic completely independent of rendering
+- **Modular/Composable**: State mediators are independent modules (audible, temporal, playable) rather than centralized
+- **Framework-Agnostic**: Core mediator logic works across platforms (HTML, React, React Native)
+- **Cleaner API**: Simplified mediator structure with clear get/set/events/actions pattern
+- **Type-Safe**: Full TypeScript support with inference
+
+**Key Architectural Inheritances from Media Chrome**:
+
+- **State/UI Separation**: State logic completely independent of rendering (Media Chrome's core principle)
 - **Event-Driven Updates**: Media element events trigger state changes
 - **Side Effect Management**: Smart defaults (e.g., auto-volume on unmute)
 - **Non-Optimistic Updates**: Wait for actual media element changes
 
-**Reference**: Media Chrome's approach described in [`MEDIA_CHROME_MIGRATION.md`](MEDIA_CHROME_MIGRATION.md)
+**Reference**: [`packages/core/media-store/src/state-mediators/audible.ts`](packages/core/media-store/src/state-mediators/audible.ts)
 
 #### 3. Media-Specific State Abstractions
 
@@ -674,7 +735,7 @@ export function useMuteButtonProps(props, state) {
 - Default skin: [`packages/react/react/src/skins/default/MediaSkinDefault.tsx`](packages/react/react/src/skins/default/MediaSkinDefault.tsx)
 - Toasted skin: [`packages/react/react/src/skins/toasted/MediaSkinToasted.tsx`](packages/react/react/src/skins/toasted/MediaSkinToasted.tsx)
 
-## Base UI Compound Component Architecture
+#### 7. Compound Component Architecture
 
 **Status:** ✅ Implemented
 
@@ -682,7 +743,7 @@ export function useMuteButtonProps(props, state) {
 
 VJS-10 implements Base UI-inspired compound components for sliders, providing fine-grained control over each sub-component:
 
-### TimeSlider Implementation
+**TimeSlider Implementation**:
 
 ```tsx
 <TimeSlider.Root className={styles.SliderRoot}>
@@ -702,7 +763,7 @@ VJS-10 implements Base UI-inspired compound components for sliders, providing fi
 - `TimeSlider.Pointer` - Preview/hover indicator (media-specific enhancement)
 - `TimeSlider.Thumb` - Draggable thumb control
 
-### VolumeSlider Implementation
+**VolumeSlider Implementation**:
 
 ```tsx
 <VolumeSlider.Root orientation="vertical" className={styles.SliderRoot}>
@@ -720,7 +781,7 @@ VJS-10 implements Base UI-inspired compound components for sliders, providing fi
 - `VolumeSlider.Progress` - Filled portion showing current volume
 - `VolumeSlider.Thumb` - Draggable thumb control
 
-### Media-Specific Enhancements
+**Media-Specific Enhancements**:
 
 Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features:
 
@@ -729,7 +790,7 @@ Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features
 - **Data Attributes**: `data-orientation`, `data-current-time`, `data-duration`
 - **Media State Integration**: Automatic synchronization with media playback
 
-### Architectural Benefits
+**Architectural Benefits**:
 
 1. **Maximum Flexibility**: Fine-grained control over each sub-component
 2. **Base UI Consistency**: Familiar compound component API patterns
@@ -743,15 +804,21 @@ Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features
 - Implementation: [`packages/react/react/src/components/VolumeSlider.tsx`](packages/react/react/src/components/VolumeSlider.tsx)
 - Usage: [`packages/react/react/src/skins/default/MediaSkinDefault.tsx`](packages/react/react/src/skins/default/MediaSkinDefault.tsx)
 
-### VidStack: Multi-Framework Common Core Architecture
+### VidStack: Framework-Agnostic Common Core Architecture
 
-VJS-10's multi-platform architecture and component distribution philosophy draws significant inspiration from [VidStack](https://vidstack.io/), a modern video player library that pioneered several architectural patterns for cross-framework media component development.
+**Primary Influence**: VJS-10's multi-platform architecture draws its most significant inspiration from [VidStack](https://vidstack.io/)'s **framework-agnostic common core** pattern—a fundamental departure from the "thin wrapper" approach used by libraries like Media Chrome.
 
-#### 1. Common Core Philosophy & Framework Abstraction
+#### 1. Framework-Agnostic Common Core (Primary Influence)
 
-**VidStack Innovation**: Built around a shared "common core" that targets both Web Components and React via their Maverick component library, avoiding the thin wrapper approach used by libraries like Media Chrome
+**VidStack's Key Innovation**: Unlike Media Chrome (which wraps Web Components for React), VidStack built a true **shared common core** using their Maverick library that provides framework-agnostic UI logic. This means the same business logic, state management, and component behaviors work across Web Components AND React without wrappers or translations.
 
-**VJS-10 Adoption**: Direct architectural influence on the monorepo's core package strategy:
+**Why This Matters**:
+
+- **Media Chrome Approach**: Web Component → React wrapper (thin abstraction, two implementations)
+- **VidStack Approach**: Common Core → Web Component adaptation + React adaptation (shared logic)
+- **Result**: VidStack avoids duplication while Media Chrome must maintain framework-specific logic
+
+**VJS-10 Adoption**: This philosophy directly shaped VJS-10's core package architecture:
 
 ```tsx
 // VidStack's common core concept -> VJS-10's core packages targeting multiple runtimes
@@ -811,37 +878,7 @@ npx vjs-10 add time-range --framework=html --customizable=true
 - **Copy-and-Own CLI**: Full component source code ownership for production customization
 - **Documentation Examples**: VidStack-style copy-paste patterns for learning and integration
 
-#### 3. Maverick Signals & Reactive Architecture
-
-**VidStack's Maverick Foundation**: Custom signals library (~1kB) providing reactive observables, computed properties, and effect subscriptions for framework-agnostic state management.
-
-**VJS-10 State Management Influence**: While VJS-10 uses nanostores rather than signals, VidStack's reactive architecture patterns influenced the framework-agnostic approach:
-
-```typescript
-// VidStack's Maverick Signals concept -> VJS-10's nanostore approach
-// Both achieve framework-agnostic reactive state
-
-// VidStack Pattern (Maverick Signals)
-const volume = signal(1.0);
-const muted = signal(false);
-const volumeLevel = computed(() =>
-  muted.get() ? 'off' : volume.get() > 0.5 ? 'high' : 'low',
-);
-
-// VJS-10 Pattern (nanostores)
-const $volume = atom(1.0);
-const $muted = atom(false);
-const $volumeLevel = computed([$volume, $muted], (volume, muted) =>
-  muted ? 'off' : volume > 0.5 ? 'high' : 'low',);
-```
-
-**Reactive Architecture Parallels**:
-
-- **Request-Response State Model**: Both systems use event-driven state changes
-- **Framework Adaptation**: Reactive primitives that work across different frameworks
-- **Performance Optimization**: Minimal bundle size with efficient reactivity
-
-#### 4. Cross-Platform Component Patterns
+#### 3. Cross-Platform Component Patterns
 
 **VidStack's Framework Strategy**: Base components define core logic independent of rendering, then adapt to specific frameworks via `Host(Component, HTMLElement)` for Web Components and `createReactComponent(Component)` for React.
 
@@ -902,39 +939,16 @@ export function useMuteButtonState() {
 | **State Management**     | Maverick Signals                      | nanostores with shared transformations |
 | **Lifecycle Management** | onSetup/onAttach/onConnect/onDestroy  | Standard platform lifecycles           |
 
-#### 5. Modular Architecture & Performance
-
-**VidStack's Bundle Strategy**: Modular architecture enabling selective component inclusion and tree-shaking, with the library designed for scalability and minimal bundle size.
-
-**VJS-10 Adoption**: Monorepo structure enables modular inclusion:
-
-```json
-// VidStack's selective inclusion -> VJS-10's platform packages
-{
-  "dependencies": {
-    "@vjs-10/media-store": "^1.0.0", // Only state management
-    "@vjs-10/react-icons": "^1.0.0", // Only icons
-    "@vjs-10/react": "^1.0.0" // React components (tree-shakeable)
-  }
-}
-```
-
-**Performance Characteristics**:
-
-- **Tree-Shaking**: Import only needed components from `@vjs-10/react`
-- **Platform Separation**: Include only relevant platform packages (react vs html vs react-native)
-- **Incremental Adoption**: Start with core packages, add platform-specific components as needed
-
 #### VidStack → VJS-10 Architectural Summary
 
-| Influence Area             | VidStack Foundation                   | VJS-10 Evolution                                     |
-| -------------------------- | ------------------------------------- | ---------------------------------------------------- |
-| **Multi-Framework Core**   | Maverick-based common core            | Core packages with strict dependency hierarchy       |
-| **Component Distribution** | Documentation-based copy-paste        | Hybrid npm + CLI copy-and-own (planned)              |
-| **Reactive State**         | Maverick Signals                      | nanostores with shared transformations               |
-| **Framework Adaptation**   | Host functions + createReactComponent | Platform-specific implementations sharing core logic |
-| **Bundle Strategy**        | Modular player components             | Platform-separated packages with tree-shaking        |
-| **Developer Experience**   | TypeScript-first, SSR-ready           | TypeScript project references, platform-native DX    |
+| Influence Area                               | VidStack Foundation                   | VJS-10 Evolution                                     |
+| -------------------------------------------- | ------------------------------------- | ---------------------------------------------------- |
+| **Framework-Agnostic Common Core** (PRIMARY) | Maverick-based common core            | Core packages with strict dependency hierarchy       |
+| **Component Distribution**                   | Documentation-based copy-paste        | Hybrid npm + CLI copy-and-own (planned)              |
+| **Framework Adaptation**                     | Host functions + createReactComponent | Platform-specific implementations sharing core logic |
+| **State Management**                         | Maverick Signals                      | nanostores with state mediators                      |
+
+**Key Takeaway**: VidStack's most important influence on VJS-10 is the **framework-agnostic common core** pattern, which enables sharing UI logic across HTML, React, and React Native without thin wrappers or duplication.
 
 **References**:
 
@@ -943,19 +957,25 @@ export function useMuteButtonState() {
 - [Maverick Signals](https://github.com/maverick-js/signals)
 - [VidStack GitHub](https://github.com/vidstack/player)
 
-### Adobe React Spectrum Hook Architecture
+### Adobe React Spectrum: State/Behavior/UI Hook Separation
 
-VJS-10's hook-based component architecture draws significant inspiration from [Adobe React Spectrum](https://react-spectrum.adobe.com/)'s three-layer separation of concerns, particularly their framework-agnostic approach to component behaviors.
+**Primary Influence**: VJS-10's hook-based component architecture draws its most significant inspiration from [Adobe React Spectrum](https://react-spectrum.adobe.com/)'s **three-layer hook separation** pattern, which cleanly divides component logic into state, behavior, and UI layers.
 
-#### Adobe Spectrum Three-Layer Architecture
+#### Adobe Spectrum Three-Layer Hook Architecture
 
-**Adobe's Philosophy**: Split each component into three parts: state, behavior, and the rendered component, made possible by React Hooks.
+**Adobe's Philosophy**: "Split each component into three parts: state, behavior, and the rendered component, made possible by React Hooks."
 
 **The Three Layers**:
 
-1. **State Layer** (React Stately) - Platform-independent core logic
-2. **Behavior Layer** (React Aria) - Platform-specific interactions & accessibility
-3. **Component Layer** (React Spectrum) - Design system-specific rendering
+1. **State Hooks** (React Stately) - "Implements state management and core logic for each component" - Platform-independent, no view system assumptions
+2. **Behavior Hooks** (React Aria) - "Implements event handling, accessibility, internationalization" - Platform-specific interactions, returns props to spread
+3. **Component Layer** (React Spectrum) - Renders actual platform elements with design system styling
+
+**Why This Separation Matters**:
+
+- **State hooks** can work across web, React Native, and other platforms
+- **Behavior hooks** handle web-specific concerns (keyboard, mouse, screen readers)
+- **Components** provide design system-specific styling without reimplementing logic
 
 **Reference**: [Adobe Spectrum Architecture Documentation](https://react-spectrum.adobe.com/architecture.html)
 
@@ -1117,6 +1137,16 @@ export const MuteButton = toConnectedComponent(
 ```
 
 This factory pattern systematically applies Adobe Spectrum's architectural principles across all VJS-10 components.
+
+#### Adobe Spectrum → VJS-10 Summary
+
+**Primary Takeaway**: Adobe Spectrum's most important influence on VJS-10 is the **state/behavior/UI hook separation** pattern. This three-layer architecture enables:
+
+1. **State hooks** (`useMuteButtonState`) - Platform-agnostic, reusable across web/React Native
+2. **Behavior hooks** (`useMuteButtonProps`) - Platform-specific accessibility and prop transformation
+3. **UI layer** (`renderMuteButton`) - Design system rendering without business logic
+
+This clean separation of concerns is implemented systematically across all VJS-10 components via the `toConnectedComponent()` factory, directly mirroring Adobe Spectrum's architectural philosophy.
 
 **References**:
 
