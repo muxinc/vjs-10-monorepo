@@ -1,11 +1,12 @@
 import type { Placement } from '@floating-ui/react';
-import type { ReactNode } from 'react';
+import type { MutableRefObject, ReactNode } from 'react';
 
 import {
   autoUpdate,
   flip,
   FloatingPortal,
   offset,
+  safePolygon,
   shift,
   useDismiss,
   useFloating,
@@ -15,7 +16,16 @@ import {
   useRole,
 } from '@floating-ui/react';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import {
+  Children,
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 interface PopoverContextType {
   open: boolean;
@@ -52,7 +62,7 @@ interface PopoverPopupProps {
 
 interface PopoverPortalProps {
   children: ReactNode;
-  root?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
+  root?: HTMLElement | ShadowRoot | MutableRefObject<HTMLElement | ShadowRoot | null> | null;
   rootId?: string;
 }
 
@@ -85,6 +95,7 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
       open: delay,
       close: closeDelay,
     },
+    handleClose: safePolygon({ blockPointerEvents: true }),
   });
   const focus = useFocus(context);
   const dismiss = useDismiss(context);
@@ -92,12 +103,12 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
 
-  const updatePositioning = (newPlacement: Placement, newSideOffset: number) => {
+  const updatePositioning = useCallback((newPlacement: Placement, newSideOffset: number) => {
     setPlacement(newPlacement);
     setSideOffset(newSideOffset);
-  };
+  }, []);
 
-  const value: PopoverContextType = {
+  const value: PopoverContextType = useMemo(() => ({
     open,
     setOpen,
     refs,
@@ -106,7 +117,7 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
     getFloatingProps,
     context,
     updatePositioning,
-  };
+  }), [open, refs, floatingStyles, getReferenceProps, getFloatingProps, context, updatePositioning]);
 
   return <PopoverContext.Provider value={value}>{children}</PopoverContext.Provider>;
 }
@@ -114,7 +125,8 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
 function PopoverTrigger({ children }: PopoverTriggerProps): JSX.Element {
   const { refs, getReferenceProps } = usePopoverContext();
 
-  return React.cloneElement(React.Children.only(children) as JSX.Element, {
+  // eslint-disable-next-line react/no-clone-element, react/no-children-only
+  return cloneElement(Children.only(children) as JSX.Element, {
     ref: refs.setReference,
     ...getReferenceProps(),
   });
@@ -158,6 +170,7 @@ function PopoverPortal({ children, root, rootId }: PopoverPortalProps): JSX.Elem
 }
 
 // Export compound component
+// eslint-disable-next-line react-refresh/only-export-components
 export const Popover: {
   Root: typeof PopoverRoot;
   Trigger: typeof PopoverTrigger;

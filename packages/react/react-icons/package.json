@@ -24,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown",
+    "build": "pnpm generate:icons && tsdown",
     "build:watch": "tsdown --watch --silent",
     "dev": "pnpm generate:icons && pnpm run build:watch",
     "clean": "rm -rf dist src/generated-icons",
