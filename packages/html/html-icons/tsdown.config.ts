@@ -1,4 +1,3 @@
-import path from 'node:path';
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
@@ -8,7 +7,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   alias: {
-    '@': path.resolve(__dirname, 'src'),
+    '@': new URL('./src', import.meta.url).pathname,
   },
   dts: {
     oxc: true,
