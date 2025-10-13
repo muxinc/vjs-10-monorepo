@@ -2,7 +2,7 @@
  * Transform imports from React to web component format
  */
 
-import type { ImportDeclaration, OutputContext, PathContext } from '../../types.js';
+import type { ComponentExportStrategy, ImportDeclaration, OutputContext, PathContext } from '../../types.js';
 
 import * as path from 'node:path';
 
@@ -69,6 +69,9 @@ export function transformImports(
       if (isMediaSkinImport && importMode === 'package') {
         // Phase 2: Package import for MediaSkin
         // import { MediaSkin } from '../MediaSkin' → import { MediaSkin } from '@vjs-10/html'
+        if (!pathContext.targetPackage) {
+          throw new Error('targetPackage is required for package import mode with relative MediaSkin import');
+        }
         transformed.push({
           type: 'named',
           path: pathContext.targetPackage.name,
@@ -171,6 +174,14 @@ function deduplicateImports(imports: TransformedImport[]): TransformedImport[] {
  * @returns Relative import path from output to target component
  */
 function calculateComponentImportPath(componentName: string, pathContext: PathContext, packageSource: string): string {
+  // Relative imports require targetPackage context
+  if (!pathContext.targetPackage?.rootPath) {
+    throw new Error(
+      `Cannot calculate relative import path without targetPackage.rootPath. ` +
+        `Use importMode: 'package' for external compilation.`
+    );
+  }
+
   // Convert component name to kebab-case
   const kebabName = toKebabCase(componentName);
   const webComponentName = kebabName.startsWith('media-') ? kebabName : `media-${kebabName}`;
@@ -202,10 +213,32 @@ function isIconPackage(packageSource: string): boolean {
 }
 
 /**
+ * Get default export strategy for known VJS packages
+ * Used when no package discovery is available
+ *
+ * @param packageName - Package name
+ * @returns Default export strategy
+ */
+function getDefaultExportStrategy(packageName: string): ComponentExportStrategy {
+  // VJS html and react packages use named-from-main
+  if (packageName === '@vjs-10/html' || packageName === '@vjs-10/react') {
+    return 'named-from-main';
+  }
+
+  // Icon packages use wildcard-subpath
+  if (packageName.includes('-icons')) {
+    return 'wildcard-subpath';
+  }
+
+  // Default to named-from-main
+  return 'named-from-main';
+}
+
+/**
  * Calculate package import path for Phase 2 (npm package imports)
  *
  * Phase 2.1: Uses discovered package exports (if available)
- * - If no discovery provided, falls back to legacy behavior
+ * - If no discovery provided, falls back to default strategy for known packages
  * - If discovery shows components exported from main, import from main package
  * - If discovery shows subpath exports, use appropriate subpath
  *
@@ -234,13 +267,20 @@ function calculatePackageImportPath(componentName: string, pathContext: PathCont
   let exportMap = pathContext.packageExports?.get(targetPackage);
 
   // Phase 2.1 backward compatibility: fall back to targetPackageExports
-  if (!exportMap && targetPackage === pathContext.targetPackage.name) {
+  if (!exportMap && pathContext.targetPackage && targetPackage === pathContext.targetPackage.name) {
     exportMap = pathContext.targetPackageExports;
   }
 
   if (!exportMap) {
-    // Fallback: No discovery provided, use legacy behavior
-    // (for backward compatibility during transition)
+    // Fallback: No discovery provided, use default strategy for known packages
+    const defaultStrategy = getDefaultExportStrategy(targetPackage);
+
+    if (defaultStrategy === 'named-from-main') {
+      // Components exported from main package - import main package
+      return targetPackage;
+    }
+
+    // For other strategies, fall back to legacy behavior
     return generateLegacyPackageImport(targetPackage, packageSource, webComponentName);
   }
 

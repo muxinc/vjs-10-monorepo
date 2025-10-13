@@ -45,10 +45,13 @@ export function generateModule(options: GenerateModuleOptions): string {
   // Add MediaSkin base class import (required for web components)
   // Path depends on import mode:
   // - Phase 1 (relative): '../../../media-skin'
-  // - Phase 2 (package): '@vjs-10/html'
+  // - Phase 2 (package): '@vjs-10/html' (or default if no paths)
   const mediaSkinImport: TransformedImport = {
     type: 'named',
-    path: importMode === 'package' && paths ? paths.targetPackage.name : '../../../media-skin',
+    path:
+      importMode === 'package'
+        ? paths?.targetPackage?.name || '@vjs-10/html' // Default to @vjs-10/html for external compilation
+        : '../../../media-skin',
     specifiers: ['MediaSkin'],
   };
 

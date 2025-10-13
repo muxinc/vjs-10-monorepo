@@ -14,6 +14,14 @@ import * as path from 'node:path';
  * @returns Transformed import path relative to output
  */
 export function calculateImportPath(importPath: string, pathContext: PathContext): string {
+  // Require package context for relative path calculation
+  if (!pathContext.sourcePackage?.rootPath || !pathContext.targetPackage?.rootPath) {
+    throw new Error(
+      `Cannot calculate relative import path without sourcePackage and targetPackage. ` +
+        `Use importMode: 'package' for external compilation.`
+    );
+  }
+
   // 1. Resolve import relative to source file
   const resolvedSource = path.resolve(path.dirname(pathContext.skinPath), importPath);
 

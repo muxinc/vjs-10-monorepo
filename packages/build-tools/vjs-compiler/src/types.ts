@@ -28,14 +28,14 @@ export interface CompileSkinConfig {
 export interface PathContext {
   // Input file locations
   skinPath: string; // Absolute path to skin file
-  stylesPath: string; // Absolute path to styles file
+  stylesPath?: string; // Absolute path to styles file
 
   // Output location
   outputPath: string; // Absolute path to output file
 
-  // Package context
-  sourcePackage: PackageInfo;
-  targetPackage: PackageInfo;
+  // Package context (optional - only needed for monorepo internal compilation)
+  sourcePackage?: PackageInfo;
+  targetPackage?: PackageInfo;
 
   // Package mapping (Phase 2)
   packageMappings?: PackageMappings;

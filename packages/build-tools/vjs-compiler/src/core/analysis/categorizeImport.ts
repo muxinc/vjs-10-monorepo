@@ -59,7 +59,7 @@ export function categorizeImport(
   if (isRelativeImport(source)) {
     // If source package and resolved path are in same package, it's same-package
     // For now, assume relative imports in a VJS package are same-package components
-    if (isVJSPackage(paths.sourcePackage.name)) {
+    if (paths.sourcePackage && isVJSPackage(paths.sourcePackage.name)) {
       return 'vjs-component-same-package';
     }
   }

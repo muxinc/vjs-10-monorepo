@@ -47,15 +47,18 @@ export interface CompileSkinResult {
 export async function compileSkin(config: CompileSkinConfig): Promise<CompileSkinResult> {
   const { skinSource, stylesSource, paths, output } = config;
 
-  // Phase 0: Discovery (BOUNDARY - only if package mode)
+  // Phase 0: Discovery (BOUNDARY - only if package mode AND we have package paths)
   // Phase 2.2: Discover ALL packages that will be referenced
-  if (output.importMode === 'package' && !paths.packageExports) {
+  const needsDiscovery =
+    output.importMode === 'package' && !paths.packageExports && paths.targetPackage?.rootPath;
+
+  if (needsDiscovery) {
     try {
       // Build map of all packages to discover
       const packagesToDiscover = new Map<string, string>();
 
       // Always discover target package
-      packagesToDiscover.set(paths.targetPackage.name, paths.targetPackage.rootPath);
+      packagesToDiscover.set(paths.targetPackage!.name, paths.targetPackage!.rootPath);
 
       // Discover all packages from package mappings
       if (paths.packageMappings) {
@@ -73,7 +76,7 @@ export async function compileSkin(config: CompileSkinConfig): Promise<CompileSki
           if (targetPackage === '@vjs-10/html-icons') {
             // Assume icons package is sibling to html package
             // path/to/html/html → path/to/html/html-icons
-            const htmlPackageDir = paths.targetPackage.rootPath;
+            const htmlPackageDir = paths.targetPackage!.rootPath;
             const parentDir = htmlPackageDir.substring(0, htmlPackageDir.lastIndexOf('/'));
             const iconsPath = `${parentDir}/html-icons`;
             packagesToDiscover.set(targetPackage, iconsPath);
@@ -85,9 +88,11 @@ export async function compileSkin(config: CompileSkinConfig): Promise<CompileSki
       paths.packageExports = await discoverMultiplePackages(packagesToDiscover);
 
       // Phase 2.1 backward compatibility: set targetPackageExports
-      const targetExports = paths.packageExports.get(paths.targetPackage.name);
-      if (targetExports) {
-        paths.targetPackageExports = targetExports;
+      if (paths.targetPackage) {
+        const targetExports = paths.packageExports.get(paths.targetPackage.name);
+        if (targetExports) {
+          paths.targetPackageExports = targetExports;
+        }
       }
     } catch (error) {
       // Non-fatal: continue without discovery (will use legacy behavior)

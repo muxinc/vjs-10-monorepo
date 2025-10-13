@@ -8,7 +8,7 @@
     "dev": "pnpm exec vite",
     "build": "pnpm exec vite build",
     "preview": "pnpm exec vite preview",
-    "compile-skins": "cd ../../.. && pnpm exec node test/e2e/app/scripts/compile-skins.js",
+    "compile-skins": "cd ../../.. && pnpm exec tsx test/e2e/app/scripts/compile-skins.js",
     "predev": "pnpm compile-skins",
     "test:e2e": "pnpm exec playwright test"
   },
@@ -24,8 +24,10 @@
     "@playwright/test": "^1.48.2",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@vjs-10/vjs-compiler": "workspace:*",
     "@vitejs/plugin-react": "^5.0.3",
     "playwright": "^1.48.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.2",
     "vite": "^7.1.6"
   }

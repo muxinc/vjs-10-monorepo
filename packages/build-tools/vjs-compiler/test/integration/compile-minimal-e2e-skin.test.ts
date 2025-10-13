@@ -41,13 +41,10 @@ describe('compile Minimal E2E Skin', () => {
         skinPath,
         stylesPath: undefined,
         outputPath: resolve(__dirname, '../e2e/app/src/compiled/01-minimal.js'),
-        sourcePackage: {
-          name: '@vjs-10/react',
-          rootPath: '/Users/cpillsbury/dev/experiments/vjs-10-monorepo/packages/react/react',
-        },
-        targetPackage: {
-          name: '@vjs-10/html',
-          rootPath: '/Users/cpillsbury/dev/experiments/vjs-10-monorepo/packages/html/html',
+        // External compilation: no sourcePackage/targetPackage needed
+        packageMappings: {
+          '@vjs-10/react': '@vjs-10/html',
+          '@vjs-10/react-icons': '@vjs-10/html-icons',
         },
       },
       moduleType: 'skin',

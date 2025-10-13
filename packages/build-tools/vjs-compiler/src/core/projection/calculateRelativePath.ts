@@ -91,6 +91,11 @@ export function resolveImportPath(originalSource: string, category: ImportCatego
 function transformComponentImport(source: string, context: PathContext): string {
   const { outputPath, targetPackage } = context;
 
+  if (!targetPackage) {
+    // No target package context - return as-is
+    return source;
+  }
+
   // Extract component name from source
   // Examples:
   //   '../components/MediaPlayButton' -> 'MediaPlayButton'
@@ -120,6 +125,11 @@ function transformComponentImport(source: string, context: PathContext): string 
  */
 function transformCorePackageImport(source: string, context: PathContext): string {
   const { outputPath, targetPackage } = context;
+
+  if (!targetPackage) {
+    // No target package context - return as-is
+    return source;
+  }
 
   // Detect what we're importing
   if (source.includes('MediaSkin') || source.includes('media-skin')) {
