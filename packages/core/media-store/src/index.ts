@@ -3,6 +3,7 @@ export * from './component-state-definitions/duration-display';
 export * from './component-state-definitions/fullscreen-button';
 export * from './component-state-definitions/mute-button';
 export * from './component-state-definitions/play-button';
+export * from './component-state-definitions/preview-time-display';
 export * from './component-state-definitions/time-slider';
 export * from './component-state-definitions/volume-slider';
 export * from './factory';

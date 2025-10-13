@@ -6,6 +6,7 @@ export interface TimeSliderState extends SliderState {
   currentTime: number;
   duration: number;
   requestSeek: (time: number) => void;
+  requestPreview: (time: number) => void;
   _currentTimeText: string;
   _durationText: string;
 }
@@ -70,10 +71,13 @@ export class TimeSlider extends Slider {
   #handlePointerMove(event: PointerEvent) {
     super.handleEvent(event);
 
-    const { _dragging, _pointerRatio, duration, requestSeek } = super.getState() as TimeSliderState;
+    const { _dragging, _pointerRatio, duration, requestSeek, requestPreview } = super.getState() as TimeSliderState;
+
+    const previewTime = _pointerRatio * duration;
+    requestPreview(previewTime);
 
     if (_dragging) {
-      this.#seekingTime = _pointerRatio * duration;
+      this.#seekingTime = previewTime;
       requestSeek(this.#seekingTime);
     }
   }

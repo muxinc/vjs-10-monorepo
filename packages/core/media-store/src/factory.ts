@@ -41,6 +41,7 @@ export interface StateMediator {
   currentTime: FacadeProp<HTMLMediaElement['currentTime']>;
   duration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
   seekable: ReadonlyFacadeProp<[number, number] | undefined>;
+  previewTime: FacadeProp<number>;
   fullscreen: FacadeProp<boolean>;
 }
 
@@ -58,7 +59,7 @@ export function createMediaStore({
 }: {
   media?: any;
   container?: any;
-  stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>;
+  stateMediator: Partial<StateMediator>;
 }): MediaStore {
   const stateOwners: StateOwners = {};
   const store = map<any>({});
@@ -117,16 +118,21 @@ export function createMediaStore({
       } else if (type === 'containerstateownerchangerequest') {
         updateStateOwners({ container: detail });
       } else {
-        for (const stateObject of Object.values(stateMediator).filter(
-          (stateMediatorEntry): stateMediatorEntry is FacadeProp<any, any, any> => 'set' in stateMediatorEntry,
-        )) {
-          const { set, actions } = stateObject;
-          if (actions[type]) {
+        Object.entries(stateMediator).forEach(([stateName, stateObject]) => {
+          const { set, actions } = stateObject as FacadeProp<any, any, any>;
+
+          if (actions?.[type]) {
             const actionFn = actions[type];
             const actionValue = actionFn(action);
-            (set as FacadeSetter<any>)(actionValue, stateOwners);
+            if (set) {
+              (set as FacadeSetter<any>)(actionValue, stateOwners);
+            } else {
+              // If there is no setter, store the action value in the store.
+              // Might need revisiting.
+              store.setKey(stateName, actionValue);
+            }
           }
-        }
+        });
       }
     },
 
@@ -155,9 +161,10 @@ export function createMediaStore({
   };
 }
 
-function getInitialState(stateMediator: Partial<StateMediator> & Pick<StateMediator, 'paused'>, stateOwners: any) {
+function getInitialState(stateMediator: Partial<StateMediator>, stateOwners: any) {
   const initialState: any = {};
   for (const [stateName, { get }] of Object.entries(stateMediator)) {
+    if (!get) continue;
     initialState[stateName] = get(stateOwners);
   }
   return initialState;
