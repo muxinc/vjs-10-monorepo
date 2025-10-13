@@ -35,11 +35,12 @@ VJS-10's media state management architecture uses patterns from the [media-eleme
 **Core Architecture Pattern**:
 
 ```typescript
-// Media Elements: CustomVideoElement extends HTMLVideoElement
-export class CustomVideoElement extends HTMLVideoElement implements HTMLVideoElement {
-  readonly nativeEl: HTMLVideoElement;
+// Media Elements: CustomVideoElement extends HTMLElement, wraps native video
+// (Safari doesn't support extending built-in elements like HTMLVideoElement)
+export class CustomVideoElement extends HTMLElement {
+  readonly nativeEl: HTMLVideoElement; // Wrapped native element in shadow DOM
 
-  // Maintains HTMLMediaElement contract
+  // Proxies HTMLMediaElement properties to wrapped native element
   get currentTime() { return this.nativeEl?.currentTime ?? 0; }
   set currentTime(val) { if (this.nativeEl) this.nativeEl.currentTime = val; }
 
@@ -55,7 +56,7 @@ class HlsVideoElement extends CustomVideoElement {
     if (Hls.isSupported()) {
       this.api = new Hls(this.config);
       this.api.loadSource(this.src);
-      this.api.attachMedia(this.nativeEl);
+      this.api.attachMedia(this.nativeEl); // Native video wrapped in shadow DOM
     }
   }
 }
@@ -63,8 +64,9 @@ class HlsVideoElement extends CustomVideoElement {
 
 **Key Architectural Assumptions**:
 
-- Media state owner must be an `HTMLElement` (DOM-based)
-- Must implement the complete `HTMLMediaElement` interface
+- Must extend `HTMLElement` (Safari limitation prevents extending built-in elements)
+- Wraps native `<video>` or `<audio>` element in shadow DOM
+- Proxies HTMLMediaElement properties/methods to wrapped native element
 - Provider-specific logic encapsulated in custom element classes
 - Shadow DOM for consistent styling and behavior
 
@@ -211,7 +213,8 @@ This vision is detailed in [`docs/PLAYBACK_ENGINE_VISION.md`](docs/PLAYBACK_ENGI
 
 **Media Elements Approach**: Tight coupling between contract and DOM implementation
 
-- Must extend `HTMLVideoElement` or `HTMLAudioElement`
+- Must extend `HTMLElement` (Safari limitation prevents extending built-in elements)
+- Wraps native `<video>` or `<audio>` in shadow DOM
 - Requires Shadow DOM and custom element registration
 - Web Components as the primary abstraction layer
 
@@ -223,13 +226,13 @@ This vision is detailed in [`docs/PLAYBACK_ENGINE_VISION.md`](docs/PLAYBACK_ENGI
 
 **Contract Comparison**:
 
-| Aspect                        | Media Elements              | VJS-10 Evolution          |
-| ----------------------------- | --------------------------- | ------------------------- |
-| **Base Class**                | `HTMLVideoElement` required | `EventTarget` + interface |
-| **DOM Requirements**          | Shadow DOM, custom elements | None (platform-dependent) |
-| **Platform Support**          | Web Components only         | HTML, React, React Native |
-| **HTMLMediaElement Contract** | Full native implementation  | JavaScript interface only |
-| **Extension Method**          | Class inheritance           | Interface implementation  |
+| Aspect                        | Media Elements                          | VJS-10 Evolution          |
+| ----------------------------- | --------------------------------------- | ------------------------- |
+| **Base Class**                | `HTMLElement` with wrapped native video | `EventTarget` + interface |
+| **DOM Requirements**          | Shadow DOM, custom elements             | None (platform-dependent) |
+| **Platform Support**          | Web Components only                     | HTML, React, React Native |
+| **HTMLMediaElement Contract** | Proxied to wrapped native element       | JavaScript interface only |
+| **Extension Method**          | Class inheritance from `HTMLElement`    | Interface implementation  |
 
 #### 5. State Mediation Architecture
 
