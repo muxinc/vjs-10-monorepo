@@ -13,7 +13,7 @@ const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip',
     // Base typography
-    'text-sm',
+    'text-[0.8125rem]', // 13px
     // Prevent rounded corners in fullscreen.
     '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
@@ -27,6 +27,7 @@ const styles: MediaDefaultSkinStyles = {
     // Hide when playing (for now).
     //  FIXME: This is crude temporary logic, we’ll improve it later I guess with a [data-show-controls] attribute or something?
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0',
+    'has-[+.controls_[aria-expanded="true"]]:opacity-100 has-[+.controls_[aria-expanded="true"]]:delay-0',
     'group-hover/root:opacity-100 group-hover/root:delay-0',
   ),
   Controls: cn(
@@ -38,8 +39,9 @@ const styles: MediaDefaultSkinStyles = {
     // Animation
     'transition will-change-transform origin-bottom ease-out',
     //  FIXME: Temporary hide/show logic
-    'scale-90 opacity-0 delay-500',
+    'scale-90 opacity-0 delay-500 duration-300',
     'has-[[data-paused]]:scale-100 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0',
+    'has-[[aria-expanded="true"]]:scale-100 has-[[aria-expanded="true"]]:opacity-100 has-[[aria-expanded="true"]]:delay-0',
     'group-hover/root:scale-100 group-hover/root:opacity-100 group-hover/root:delay-0',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
@@ -149,10 +151,12 @@ const styles: MediaDefaultSkinStyles = {
     'opacity-0 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
-    'size-2.5 active:size-3 group-active/slider:size-3 hover:cursor-ew-resize',
+    'size-2.5 active:size-3 group-active/slider:size-3',
+    '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
+    '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
   PopoverPopup: cn(
-    'relative px-2 py-4 rounded-2xl',
+    'relative px-1.5 py-3.5 rounded-full',
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
     // Border to enhance contrast on lighter videos

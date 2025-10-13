@@ -27,22 +27,26 @@ const styles: MediaToastedSkinStyles = {
     'opacity-0 delay-500 duration-300',
     //  FIXME: Temporary hide/show logic
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0 has-[+.controls_[data-paused]]:duration-75',
+    'has-[+.controls_[aria-expanded="true"]]:opacity-100 has-[+.controls_[aria-expanded="true"]]:delay-0 has-[+.controls_[aria-expanded="true"]]:duration-75',
     'group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
+    // High contrast mode
+    'contrast-more:from-black/75',
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-0 bottom-0 flex items-center gap-3.5 z-20 px-6 pb-6 pt-10 text-white text-shadow',
+    '@container/controls absolute inset-x-0 bottom-0 flex items-center gap-3.5 z-20 px-4 pb-4 pt-10 text-white text-shadow',
     'shadow-sm shadow-black/15',
     // Animation
     'transition ease-in-out',
     //  FIXME: Temporary hide/show logic
     'translate-y-full opacity-0 delay-500 duration-300',
     'has-[[data-paused]]:translate-y-0 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0 has-[[data-paused]]:duration-75',
+    'has-[[aria-expanded="true"]]:translate-y-0 has-[[aria-expanded="true"]]:opacity-100 has-[[aria-expanded="true"]]:delay-0 has-[[aria-expanded="true"]]:duration-75',
     'group-hover/root:translate-y-0 group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
   ),
   Icon: cn('icon'),
   Button: cn(
-    'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-md',
+    'group/button cursor-pointer relative shrink-0 transition select-none p-2.5 rounded-md',
     // Background/foreground
     'bg-transparent text-white',
     // Hover and focus states
@@ -69,6 +73,18 @@ const styles: MediaToastedSkinStyles = {
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
+  TooltipPopup: cn(
+    'whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md text-white text-xs @7xl/root:text-sm px-2 py-1',
+    'bg-black/30 backdrop-blur-sm',
+    // Animation
+    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
+  ),
+  PlayTooltipPopup: cn(
+    '[&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden',
+    '[&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline',
+  ),
+  PlayTooltip: cn('play-tooltip'),
+  PauseTooltip: cn('pause-tooltip'),
   MuteButton: cn(
     '[&_.icon]:hidden',
     '[&[data-volume-level="high"]_.volume-high-icon]:inline',
@@ -82,27 +98,26 @@ const styles: MediaToastedSkinStyles = {
   FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
-    '[&_path]:transition-transform ease-out',
   ),
   FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
-    'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
-    'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
   FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
-    '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
-    '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
-    'group-hover/button:[&_.arrow-1]:translate-0',
-    'group-hover/button:[&_.arrow-2]:translate-0',
   ),
+  FullscreenTooltipPopup: cn(
+    '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
+    '[&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline',
+  ),
+  FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
+  FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeSliderRoot: cn('mx-2'),
   TimeSliderThumb: cn('opacity-0'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
   SliderRoot: cn(
     'flex items-center justify-center flex-1 group/slider relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
-    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
+    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-18',
   ),
   SliderTrack: cn(
     'relative select-none rounded-full bg-white/10',
@@ -114,8 +129,11 @@ const styles: MediaToastedSkinStyles = {
   SliderThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500',
-    'size-3 active:size-3.5 group-active/slider:size-3.5 hover:cursor-ew-resize',
+    'size-2.5 active:size-3 group-active/slider:size-3',
+    '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
+    '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
+  PopoverPopup: cn('py-2'),
 };
 
 export default styles;
