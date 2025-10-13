@@ -129,7 +129,7 @@ function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: T
   const { status: transitionStatus } = useTransitionStatus(context);
 
   const hover = useHover(context, {
-    restMs: 300,
+    // restMs: 300, // this broke the time slider tooltip, todo: find solution!
     delay: {
       open: delay,
       close: closeDelay,
@@ -166,7 +166,6 @@ function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: T
     arrowRef,
     transitionStatus,
     trackCursorAxis,
-  };
   }), [getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus, trackCursorAxis]);
 
   return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
