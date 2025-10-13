@@ -12,12 +12,14 @@ import { compileSkin } from '@vjs-10/vjs-compiler';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-console.log('🔨 Compiling minimal E2E test skin...\n');
+console.log('🔨 Compiling E2E test skins...\n');
 
-async function compileSkins() {
-  // Compile 01-minimal skin
-  const skinPath = resolve(__dirname, '../src/skins/01-minimal/MediaSkinMinimal.tsx');
-  const outputPath = resolve(__dirname, '../src/compiled/01-minimal.js');
+/**
+ * Compile a single test skin
+ */
+async function compileSingleSkin(skinName, skinFileName) {
+  const skinPath = resolve(__dirname, `../src/skins/${skinName}/${skinFileName}.tsx`);
+  const outputPath = resolve(__dirname, `../src/compiled/${skinName}.js`);
 
   const skinSource = readFileSync(skinPath, 'utf-8');
 
@@ -54,13 +56,19 @@ async function compileSkins() {
     mkdirSync(dirname(outputPath), { recursive: true });
     writeFileSync(outputPath, result.code, 'utf-8');
 
-    console.log('✅ Minimal E2E skin compiled successfully');
+    console.log(`✅ ${skinName} compiled successfully`);
     console.log(`   Size: ${result.code.length} bytes`);
     console.log(`   Output: ${outputPath}\n`);
   } catch (error) {
-    console.error('❌ Compilation failed:', error.message);
-    process.exit(1);
+    console.error(`❌ ${skinName} compilation failed:`, error.message);
+    throw error;
   }
+}
+
+async function compileSkins() {
+  // Compile all test skins
+  await compileSingleSkin('00-structural', 'MediaSkinStructural');
+  await compileSingleSkin('01-minimal', 'MediaSkinMinimal');
 }
 
 compileSkins().catch((error) => {
