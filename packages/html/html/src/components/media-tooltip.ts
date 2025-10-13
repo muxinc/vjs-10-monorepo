@@ -10,11 +10,13 @@ export class MediaTooltipRoot extends HTMLElement {
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
   #arrowElement: HTMLElement | null = null;
+  #mousePosition = { x: 0, y: 0 };
 
   constructor() {
     super();
     this.addEventListener('mouseenter', this);
     this.addEventListener('mouseleave', this);
+    this.addEventListener('mousemove', this);
   }
 
   handleEvent(event: Event): void {
@@ -22,6 +24,8 @@ export class MediaTooltipRoot extends HTMLElement {
       this.#handleMouseEnter();
     } else if (event.type === 'mouseleave') {
       this.#handleMouseLeave();
+    } else if (event.type === 'mousemove') {
+      this.#handleMouseMove(event as MouseEvent);
     }
   }
 
@@ -35,15 +39,20 @@ export class MediaTooltipRoot extends HTMLElement {
   }
 
   static get observedAttributes(): string[] {
-    return ['delay', 'close-delay'];
+    return ['delay', 'close-delay', 'track-cursor-axis'];
   }
 
   get delay(): number {
-    return Number.parseInt(this.getAttribute('delay') ?? '600', 10);
+    return Number.parseInt(this.getAttribute('delay') ?? '0', 10);
   }
 
   get closeDelay(): number {
     return Number.parseInt(this.getAttribute('close-delay') ?? '0', 10);
+  }
+
+  get trackCursorAxis(): 'x' | 'y' | 'both' | undefined {
+    const value = this.getAttribute('track-cursor-axis');
+    return value === 'x' || value === 'y' || value === 'both' ? value : undefined;
   }
 
   get #triggerElement(): MediaTooltipTrigger | null {
@@ -121,7 +130,54 @@ export class MediaTooltipRoot extends HTMLElement {
         middleware.push(arrow({ element: this.#arrowElement }));
       }
 
-      computePosition(trigger, popup, {
+      // Use cursor position for positioning if trackCursorAxis is enabled
+      const referenceElement = this.trackCursorAxis
+        ? {
+            getBoundingClientRect: () => {
+              const triggerRect = trigger.getBoundingClientRect();
+
+              if (this.trackCursorAxis === 'x') {
+                // Track horizontal cursor position, use trigger's vertical position
+                return {
+                  width: 0,
+                  height: 0,
+                  top: triggerRect.top,
+                  right: this.#mousePosition.x,
+                  bottom: triggerRect.bottom,
+                  left: this.#mousePosition.x,
+                  x: this.#mousePosition.x,
+                  y: triggerRect.top,
+                };
+              } else if (this.trackCursorAxis === 'y') {
+                // Track vertical cursor position, use trigger's horizontal position
+                return {
+                  width: 0,
+                  height: 0,
+                  top: this.#mousePosition.y,
+                  right: triggerRect.right,
+                  bottom: this.#mousePosition.y,
+                  left: triggerRect.left,
+                  x: triggerRect.left,
+                  y: this.#mousePosition.y,
+                };
+              } else {
+                // Track both axes (trackCursorAxis === 'both')
+                return {
+                  width: 0,
+                  height: 0,
+                  top: this.#mousePosition.y,
+                  right: this.#mousePosition.x,
+                  bottom: this.#mousePosition.y,
+                  left: this.#mousePosition.x,
+                  x: this.#mousePosition.x,
+                  y: this.#mousePosition.y,
+                };
+              }
+            },
+          }
+        : trigger;
+
+      computePosition(referenceElement, popup, {
         placement,
         middleware,
       }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
@@ -142,7 +198,16 @@ export class MediaTooltipRoot extends HTMLElement {
     };
 
     updatePosition();
-    this.#cleanup = autoUpdate(trigger, popup, updatePosition);
+
+    if (!this.trackCursorAxis) {
+      this.#cleanup = autoUpdate(trigger, popup, updatePosition);
+    }
+  }
+
+  #updatePosition(): void {
+    if (this.#open && this.trackCursorAxis) {
+      this.#setupFloating();
+    }
   }
 
   #clearHoverTimeout(): void {
@@ -164,6 +229,16 @@ export class MediaTooltipRoot extends HTMLElement {
     this.#hoverTimeout = globalThis.setTimeout(() => {
       this.#setOpen(false);
     }, this.closeDelay);
+  }
+
+  #handleMouseMove(event: MouseEvent): void {
+    if (this.trackCursorAxis) {
+      this.#mousePosition = { x: event.clientX, y: event.clientY };
+      // Update position if tooltip is open
+      if (this.#open) {
+        this.#updatePosition();
+      }
+    }
   }
 }
 
@@ -195,7 +270,7 @@ export class MediaTooltipTrigger extends HTMLElement {
             }
 
             const attributeName = mutation.attributeName;
-            if (!attributeName) {
+            if (!attributeName || !attributeName.startsWith('data-')) {
               return;
             }
 
