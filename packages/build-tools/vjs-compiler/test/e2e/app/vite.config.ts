@@ -13,9 +13,11 @@ export default defineConfig({
     rollupOptions: {
       input: {
         // React pages
+        'react-00-structural': resolve(__dirname, 'src/react/00-structural.html'),
         'react-01-minimal': resolve(__dirname, 'src/react/01-minimal.html'),
 
         // Web Component pages
+        'wc-00-structural': resolve(__dirname, 'src/wc/00-structural.html'),
         'wc-01-minimal': resolve(__dirname, 'src/wc/01-minimal.html'),
       },
     },

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 0: Structural Skin (Web Component)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Level 0: Structural Skin (Web Component)</h1>
+    <p>
+      Testing: Pure structure with no styling
+    </p>
+
+    <media-provider>
+      <media-skin-structural>
+        <video slot="media" src="/test-video.mp4" style="width: 100%; height: auto;"></video>
+      </media-skin-structural>
+    </media-provider>
+
+    <div class="info">
+      <h3>Expected Features:</h3>
+      <ul>
+        <li>Single play button (no positioning/styling)</li>
+        <li>Play and pause icons</li>
+        <li>NO class attributes anywhere</li>
+        <li>Pure DOM structure only</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import compiled web component skin
+    import '../compiled/00-structural.js';
+
+    // Import HTML package for MediaProvider and other base components
+    import '@vjs-10/html';
+  </script>
+</body>
+</html>
