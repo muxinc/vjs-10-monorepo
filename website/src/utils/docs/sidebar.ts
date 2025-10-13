@@ -1,7 +1,7 @@
 import type { AnySupportedStyle, Guide, Section, Sidebar, SupportedFramework, SupportedStyle } from '@/types/docs';
 
-import { sidebar } from '@/config/docs/sidebar';
-import { FRAMEWORK_STYLES, isSection } from '@/types/docs';
+import { sidebar } from '../../config/docs/sidebar';
+import { FRAMEWORK_STYLES, isSection } from '../../types/docs';
 
 /**
  * Check if an item (Guide or Section) should be shown based on framework and style.

@@ -1,14 +1,13 @@
 // @ts-check
 
 import mdx from '@astrojs/mdx';
-
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+
 import vercel from '@astrojs/vercel';
+
 import tailwindcss from '@tailwindcss/vite';
-
 import { defineConfig, fontProviders } from 'astro/config';
-
 import { generateDocsRedirects } from './src/utils/docs/staticRedirects.ts';
 
 // https://astro.build/config
@@ -27,6 +26,11 @@ export default defineConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       exclude: ['@vjs/react'],
+    },
+    resolve: {
+      alias: {
+        '@': new URL('./src', import.meta.url).pathname,
+      },
     },
   },
 
