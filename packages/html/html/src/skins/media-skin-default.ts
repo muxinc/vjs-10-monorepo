@@ -8,6 +8,7 @@ import '../components/media-time-slider';
 import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
+import '../components/media-preview-time-display';
 import '../components/media-popover';
 import '../components/media-tooltip';
 import '@vjs-10/html-icons';
@@ -293,13 +294,26 @@ export function getTemplateHTML() {
           </media-tooltip-root>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
-          <media-time-slider-root>
-            <media-time-slider-track>
-              <media-time-slider-progress></media-time-slider-progress>
-              <media-time-slider-pointer></media-time-slider-pointer>
-            </media-time-slider-track>
-            <media-time-slider-thumb></media-time-slider-thumb>
-          </media-time-slider-root>
+          
+          <media-tooltip-root track-cursor-axis="x">
+            <media-tooltip-trigger>
+              <media-time-slider-root>
+                <media-time-slider-track>
+                  <media-time-slider-progress></media-time-slider-progress>
+                  <media-time-slider-pointer></media-time-slider-pointer>
+                </media-time-slider-track>
+                <media-time-slider-thumb></media-time-slider-thumb>
+              </media-time-slider-root>
+            </media-tooltip-trigger>
+            <media-tooltip-portal>
+              <media-tooltip-positioner side="top" side-offset="18" collision-padding="12">
+                <media-tooltip-popup>
+                  <preview-time-display></preview-time-display>
+                </media-tooltip-popup>
+              </media-tooltip-positioner>
+            </media-tooltip-portal>
+          </media-tooltip-root>
+
           <media-duration-display></media-duration-display>
           <media-popover-root open-on-hover delay="200" close-delay="100">
             <media-popover-trigger>
@@ -310,7 +324,7 @@ export function getTemplateHTML() {
               </media-mute-button>
             </media-popover-trigger>
             <media-popover-portal>
-              <media-popover-positioner side="top" side-offset="0">
+              <media-popover-positioner side="top">
                 <media-popover-popup>
                   <media-volume-slider-root orientation="vertical">
                     <media-volume-slider-track>

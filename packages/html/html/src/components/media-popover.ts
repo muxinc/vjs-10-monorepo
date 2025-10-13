@@ -165,16 +165,23 @@ export class MediaPopoverPortal extends HTMLElement {
   }
 
   #setupPortal(): void {
-    const portalId = this.getAttribute('root-id');
+    const portalId = this.getAttribute('root-id') ?? '@default_portal_id';
     if (!portalId) return;
 
-    const portalContainer = (this.getRootNode() as ShadowRoot | Document).getElementById(portalId);
+    /* @TODO We need to make sure portal logic is non-brittle longer term (CJP) */
+    // NOTE: Hacky solution in part to ensure styling propogates from skin to container's baked in portal (TL;DR - Shadow DOM vs. Light DOM CSS) (CJP)
+    const portalContainer
+      = ((this.getRootNode() as ShadowRoot | Document).getElementById(portalId)
+        ?? (this.getRootNode() as ShadowRoot | Document)
+          .querySelector('media-container')
+          ?.shadowRoot
+          ?.getElementById(portalId))
+        ? (this.getRootNode() as ShadowRoot | Document).querySelector('media-container')
+        : undefined;
     if (!portalContainer) return;
 
-    portalContainer.addEventListener('mouseenter', this);
-    portalContainer.addEventListener('mouseleave', this);
-
     this.#portal = document.createElement('div');
+    this.#portal.slot = 'portal';
     this.#portal.id = uniqueId();
     portalContainer.append(this.#portal);
 
