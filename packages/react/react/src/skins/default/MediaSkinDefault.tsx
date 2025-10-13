@@ -36,7 +36,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
       <div className={styles.Overlay} aria-hidden="true" />
 
       <div className={styles.Controls} data-testid="media-controls">
-        <Tooltip.Root delay={600}>
+        <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
               <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
@@ -104,7 +104,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           </Popover.Portal>
         </Popover.Root>
 
-        <Tooltip.Root delay={600}>
+        <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
             <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
               <FullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />

@@ -9,6 +9,10 @@ export interface MediaToastedSkinStyles {
   readonly PlayButton: string;
   readonly PlayIcon: string;
   readonly PauseIcon: string;
+  readonly PlayTooltipPopup: string;
+  readonly PlayTooltip: string;
+  readonly PauseTooltip: string;
+  readonly TooltipPopup: string;
   readonly MuteButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
@@ -16,9 +20,13 @@ export interface MediaToastedSkinStyles {
   readonly FullscreenButton: string;
   readonly FullscreenEnterIcon: string;
   readonly FullscreenExitIcon: string;
+  readonly FullscreenTooltipPopup: string;
+  readonly FullscreenEnterTooltip: string;
+  readonly FullscreenExitTooltip: string;
+  readonly PopoverPopup: string;
   readonly TimeSliderRoot: string;
-  readonly TimeSliderThumb: string;
   readonly TimeDisplay: string;
+  readonly DurationDisplay: string;
   readonly SliderRoot: string;
   readonly SliderTrack: string;
   readonly SliderProgress: string;

@@ -1,5 +1,5 @@
 import type { Placement } from '@floating-ui/react';
-import type { ReactNode } from 'react';
+import type { MutableRefObject, ReactNode, RefObject } from 'react';
 
 import {
   arrow,
@@ -18,7 +18,17 @@ import {
   useTransitionStatus,
 } from '@floating-ui/react';
 
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  Children,
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 interface UpdatePositioningProps {
   side: Placement;
@@ -27,7 +37,7 @@ interface UpdatePositioningProps {
 }
 
 interface TooltipContextType {
-  arrowRef: React.MutableRefObject<HTMLElement | null>;
+  arrowRef: MutableRefObject<HTMLElement | null>;
   context: ReturnType<typeof useFloating>['context'];
   transitionStatus: ReturnType<typeof useTransitionStatus>['status'];
   getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
@@ -66,7 +76,7 @@ interface TooltipArrowProps {
 
 interface TooltipPortalProps {
   children: ReactNode;
-  root?: HTMLElement | ShadowRoot | React.MutableRefObject<HTMLElement | ShadowRoot | null> | null;
+  root?: HTMLElement | ShadowRoot | MutableRefObject<HTMLElement | ShadowRoot | null> | null;
   rootId?: string;
 }
 
@@ -119,6 +129,7 @@ function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: T
   const { status: transitionStatus } = useTransitionStatus(context);
 
   const hover = useHover(context, {
+    restMs: 300,
     delay: {
       open: delay,
       close: closeDelay,
@@ -141,13 +152,13 @@ function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: T
 
   const { getReferenceProps, getFloatingProps } = useInteractions(interactions);
 
-  const updatePositioning = ({ side, sideOffset, collisionPadding }: UpdatePositioningProps) => {
+  const updatePositioning = useCallback(({ side, sideOffset, collisionPadding }: UpdatePositioningProps) => {
     setPlacement(side);
     setSideOffset(sideOffset);
     setCollisionPadding(collisionPadding);
-  };
+  }, []);
 
-  const value: TooltipContextType = {
+  const value: TooltipContextType = useMemo(() => ({
     getReferenceProps,
     getFloatingProps,
     context,
@@ -156,6 +167,7 @@ function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: T
     transitionStatus,
     trackCursorAxis,
   };
+  }), [getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus, trackCursorAxis]);
 
   return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
 }
@@ -164,7 +176,8 @@ function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
   const { context, getReferenceProps } = useTooltipContext();
   const { refs, open } = context;
 
-  return React.cloneElement(React.Children.only(children) as JSX.Element, {
+  // eslint-disable-next-line react/no-clone-element, react/no-children-only
+  return cloneElement(Children.only(children) as JSX.Element, {
     ref: refs.setReference,
     ...getReferenceProps(),
     'data-popup-open': open ? '' : undefined,
@@ -185,9 +198,9 @@ function TooltipPositioner({
     updatePositioning({ side, sideOffset, collisionPadding });
   }, [side, sideOffset, collisionPadding, updatePositioning]);
 
-  const positionerContextValue: TooltipPositionerContextType = {
+  const positionerContextValue: TooltipPositionerContextType = useMemo(() => ({
     side,
-  };
+  }), [side]);
 
   return (
     <TooltipPositionerContext.Provider value={positionerContextValue}>
@@ -243,7 +256,7 @@ function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Elem
 
   return (
     <div
-      ref={arrowRef as React.RefObject<HTMLDivElement>}
+      ref={arrowRef as RefObject<HTMLDivElement>}
       className={className}
       aria-hidden="true"
       data-side={side}
@@ -266,6 +279,7 @@ function TooltipPortal({ children, root, rootId = '@default_portal_id' }: Toolti
 }
 
 // Export compound component
+// eslint-disable-next-line react-refresh/only-export-components
 export const Tooltip: {
   Root: typeof TooltipRoot;
   Trigger: typeof TooltipTrigger;

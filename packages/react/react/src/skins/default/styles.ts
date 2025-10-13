@@ -13,7 +13,7 @@ const styles: MediaDefaultSkinStyles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip',
     // Base typography
-    'text-sm',
+    'text-[0.8125rem]', // 13px
     // Prevent rounded corners in fullscreen.
     '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
@@ -27,19 +27,21 @@ const styles: MediaDefaultSkinStyles = {
     // Hide when playing (for now).
     //  FIXME: This is crude temporary logic, we’ll improve it later I guess with a [data-show-controls] attribute or something?
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0',
+    'has-[+.controls_[aria-expanded="true"]]:opacity-100 has-[+.controls_[aria-expanded="true"]]:delay-0',
     'group-hover/root:opacity-100 group-hover/root:delay-0',
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white text-shadow',
+    '@container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white',
     'shadow-sm shadow-black/15',
     // Background
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     // Animation
     'transition will-change-transform origin-bottom ease-out',
     //  FIXME: Temporary hide/show logic
-    'scale-90 opacity-0 delay-500',
+    'scale-90 opacity-0 delay-500 duration-300',
     'has-[[data-paused]]:scale-100 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0',
+    'has-[[aria-expanded="true"]]:scale-100 has-[[aria-expanded="true"]]:opacity-100 has-[[aria-expanded="true"]]:delay-0',
     'group-hover/root:scale-100 group-hover/root:opacity-100 group-hover/root:delay-0',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
@@ -69,7 +71,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   IconButton: cn(
     'grid [&_.icon]:[grid-area:1/1]',
-    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
+    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/25',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
@@ -85,8 +87,6 @@ const styles: MediaDefaultSkinStyles = {
     'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
     // Ring
     'ring-1 ring-white/10 ring-inset',
-    // Text shadow
-    'text-shadow shadow-black/10',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none',
   ),
@@ -130,7 +130,7 @@ const styles: MediaDefaultSkinStyles = {
   FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
   FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
-  TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
+  TimeDisplay: cn('tabular-nums text-shadow-2xs/25'),
   SliderRoot: cn(
     'flex items-center justify-center flex-1 group/slider relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
@@ -149,10 +149,12 @@ const styles: MediaDefaultSkinStyles = {
     'opacity-0 transition-[opacity,height,width] ease-in-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
     'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
-    'size-2.5 active:size-3 group-active/slider:size-3 hover:cursor-ew-resize',
+    'size-2.5 active:size-3 group-active/slider:size-3',
+    '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
+    '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
   PopoverPopup: cn(
-    'relative px-2 py-4 rounded-2xl',
+    'relative px-1.5 py-3.5 rounded-full',
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
     // Border to enhance contrast on lighter videos

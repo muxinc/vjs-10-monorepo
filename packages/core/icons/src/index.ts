@@ -1,21 +1,37 @@
 // Import SVG files as strings
-import fullscreenEnterSvg from '../assets/fullscreen-enter.svg';
-import fullscreenExitSvg from '../assets/fullscreen-exit.svg';
-import pauseSvg from '../assets/pause.svg';
-import playSvg from '../assets/play.svg';
-import volumeHighSvg from '../assets/volume-high.svg';
-import volumeLowSvg from '../assets/volume-low.svg';
-import volumeOffSvg from '../assets/volume-off.svg';
+import fullscreenEnter from '../assets/fullscreen-enter.svg';
+import fullscreenExit from '../assets/fullscreen-exit.svg';
+import microFullscreenEnter from '../assets/micro-fullscreen-enter.svg';
+import microFullscreenExit from '../assets/micro-fullscreen-exit.svg';
+import microPause from '../assets/micro-pause.svg';
+import microPlay from '../assets/micro-play.svg';
+import microVolumeHigh from '../assets/micro-volume-high.svg';
+import microVolumeLow from '../assets/micro-volume-low.svg';
+import microVolumeOff from '../assets/micro-volume-off.svg';
+import pause from '../assets/pause.svg';
+import play from '../assets/play.svg';
+import volumeHigh from '../assets/volume-high.svg';
+import volumeLow from '../assets/volume-low.svg';
+import volumeOff from '../assets/volume-off.svg';
 
 export const SVG_ICONS: Record<string, string> = {
-  play: playSvg,
-  pause: pauseSvg,
-  volumeHigh: volumeHighSvg,
-  volumeLow: volumeLowSvg,
-  volumeOff: volumeOffSvg,
-  fullscreenEnter: fullscreenEnterSvg,
-  fullscreenExit: fullscreenExitSvg,
+  play,
+  pause,
+  volumeHigh,
+  volumeLow,
+  volumeOff,
+  fullscreenEnter,
+  fullscreenExit,
+  microPlay,
+  microPause,
+  microVolumeHigh,
+  microVolumeLow,
+  microVolumeOff,
+  microFullscreenEnter,
+  microFullscreenExit,
 };
+
+// TODO: Check if we need below? It seems to be unused now.
 
 // Legacy interface for backward compatibility
 export interface IconDefinition {

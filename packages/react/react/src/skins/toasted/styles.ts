@@ -27,26 +27,29 @@ const styles: MediaToastedSkinStyles = {
     'opacity-0 delay-500 duration-300',
     //  FIXME: Temporary hide/show logic
     'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0 has-[+.controls_[data-paused]]:duration-75',
+    'has-[+.controls_[aria-expanded="true"]]:opacity-100 has-[+.controls_[aria-expanded="true"]]:delay-0 has-[+.controls_[aria-expanded="true"]]:duration-75',
     'group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
+    // High contrast mode
+    'contrast-more:from-black/75',
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-0 bottom-0 flex items-center gap-3.5 z-20 px-6 pb-6 pt-10 text-white text-shadow',
-    'shadow-sm shadow-black/15',
+    '@container/controls absolute inset-x-0 bottom-0 flex items-center gap-3.5 z-20 px-4 pb-4 pt-10 text-white',
     // Animation
     'transition ease-in-out',
     //  FIXME: Temporary hide/show logic
     'translate-y-full opacity-0 delay-500 duration-300',
     'has-[[data-paused]]:translate-y-0 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0 has-[[data-paused]]:duration-75',
+    'has-[[aria-expanded="true"]]:translate-y-0 has-[[aria-expanded="true"]]:opacity-100 has-[[aria-expanded="true"]]:delay-0 has-[[aria-expanded="true"]]:duration-75',
     'group-hover/root:translate-y-0 group-hover/root:opacity-100 group-hover/root:delay-0 group-hover/root:duration-75',
   ),
   Icon: cn('icon'),
   Button: cn(
-    'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-md',
+    'group/button cursor-pointer relative shrink-0 transition select-none p-2.5 rounded-md',
     // Background/foreground
     'bg-transparent text-white',
     // Hover and focus states
-    'hover:text-white/70 focus-visible:text-white/70',
+    'hover:text-white/80 focus-visible:text-white/80',
     // Focus state
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
     // Disabled state
@@ -54,14 +57,14 @@ const styles: MediaToastedSkinStyles = {
     // Loading state
     'aria-busy:pointer-events-none aria-busy:cursor-not-allowed',
     // Expanded state
-    'aria-expanded:text-white/70',
+    'aria-expanded:text-white/80',
     // Pressed state
     'active:scale-95',
   ),
   ButtonGroup: cn('flex items-center gap-1.5'),
   IconButton: cn(
     'grid [&_.icon]:[grid-area:1/1]',
-    '[&_.icon]:shrink-0 [&_.icon]:transition [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
+    '[&_.icon]:shrink-0 [&_.icon]:transition [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/40',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
@@ -69,6 +72,18 @@ const styles: MediaToastedSkinStyles = {
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
+  TooltipPopup: cn(
+    'whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md text-white text-xs @7xl/root:text-sm px-2 py-1',
+    'bg-black/10 backdrop-blur-md',
+    // Animation
+    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
+  ),
+  PlayTooltipPopup: cn(
+    '[&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden',
+    '[&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline',
+  ),
+  PlayTooltip: cn('play-tooltip'),
+  PauseTooltip: cn('pause-tooltip'),
   MuteButton: cn(
     '[&_.icon]:hidden',
     '[&[data-volume-level="high"]_.volume-high-icon]:inline',
@@ -82,40 +97,42 @@ const styles: MediaToastedSkinStyles = {
   FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
-    '[&_path]:transition-transform ease-out',
   ),
   FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
-    'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
-    'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
   FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
-    '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
-    '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
-    'group-hover/button:[&_.arrow-1]:translate-0',
-    'group-hover/button:[&_.arrow-2]:translate-0',
   ),
+  FullscreenTooltipPopup: cn(
+    '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
+    '[&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline',
+  ),
+  FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
+  FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeSliderRoot: cn('mx-2'),
-  TimeSliderThumb: cn('opacity-0'),
-  TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
+  TimeDisplay: cn('tabular-nums text-shadow-2xs/20'),
+  DurationDisplay: cn('text-white/50 contents'),
   SliderRoot: cn(
     'flex items-center justify-center flex-1 group/slider relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
-    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
+    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-18',
   ),
   SliderTrack: cn(
-    'relative select-none rounded-full bg-white/10',
-    '[&[data-orientation="horizontal"]]:w-full [&[data-orientation="horizontal"]]:h-1',
-    '[&[data-orientation="vertical"]]:w-1',
+    'relative select-none rounded-full bg-white/10 transition-[height,width] ease-in-out',
+    '[&[data-orientation="horizontal"]]:w-full [&[data-orientation="horizontal"]]:h-0.5',
+    '[&[data-orientation="vertical"]]:w-0.5',
   ),
   SliderProgress: cn('bg-white rounded-[inherit]'),
   SliderPointer: cn('hidden'),
   SliderThumb: cn(
-    'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15 transition-[opacity,height,width] ease-in-out',
+    'opacity-0 scale-70 group-hover/slider:opacity-100 group-hover/slider:scale-100 focus-visible:opacity-100 focus-visible:scale-100',
+    'bg-white z-10 size-3 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15 transition-[opacity,scale] ease-out',
     '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500',
-    'size-3 active:size-3.5 group-active/slider:size-3.5 hover:cursor-ew-resize',
+    '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
+    '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
+  PopoverPopup: cn('py-2'),
 };
 
 export default styles;
