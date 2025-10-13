@@ -7,18 +7,15 @@ export default antfu(
     react: true,
     astro: true,
     typescript: true,
-    astro: true,
     formatters: {
       css: true,
       html: true,
       astro: 'prettier',
       markdown: 'prettier',
       svg: 'prettier',
-      astro: 'prettier',
     },
     stylistic: {
       semi: true,
-      spacedComment: true,
       indent: 2,
       quotes: 'single',
     },
