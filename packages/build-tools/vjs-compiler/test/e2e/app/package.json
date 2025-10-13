@@ -1,0 +1,32 @@
+{
+  "name": "vjs-compiler-e2e-test-app",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "E2E test application for VJS compiler validation",
+  "scripts": {
+    "dev": "pnpm exec vite",
+    "build": "pnpm exec vite build",
+    "preview": "pnpm exec vite preview",
+    "compile-skins": "cd ../../.. && pnpm exec node test/e2e/app/scripts/compile-skins.js",
+    "predev": "pnpm compile-skins",
+    "test:e2e": "pnpm exec playwright test"
+  },
+  "dependencies": {
+    "@vjs-10/html": "workspace:*",
+    "@vjs-10/html-icons": "workspace:*",
+    "@vjs-10/react": "workspace:*",
+    "@vjs-10/react-icons": "workspace:*",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^5.0.3",
+    "playwright": "^1.48.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.6"
+  }
+}

@@ -1,5 +1,6 @@
 packages:
   - 'packages/build-tools/*'
+  - packages/build-tools/vjs-compiler/test/e2e/app
   - 'packages/core/*'
   - 'packages/html/*'
   - 'packages/react/*'
