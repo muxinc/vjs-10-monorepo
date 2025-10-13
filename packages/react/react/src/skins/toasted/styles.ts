@@ -111,7 +111,7 @@ const styles: MediaToastedSkinStyles = {
   FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
   FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeSliderRoot: cn('mx-2'),
-  TimeDisplay: cn('tabular-nums text-shadow-2xs/40'),
+  TimeDisplay: cn('tabular-nums text-shadow-2xs/20'),
   DurationDisplay: cn('text-white/50 contents'),
   SliderRoot: cn(
     'flex items-center justify-center flex-1 group/slider relative',
