@@ -20,26 +20,27 @@ This document describes VJS-10's **architectural principles and patterns**, not 
 
 ## Overview
 
-VJS-10 represents a significant architectural evolution in media player component libraries, prioritizing platform-native development experiences while maintaining shared core logic. This document outlines the design philosophy, architectural influences, and key decisions that shape the VJS-10 ecosystem.
+VJS-10 is a media player component library that prioritizes platform-native development experiences while maintaining shared core logic. This document outlines the design philosophy, architectural influences, and key decisions that shape the VJS-10 ecosystem.
 
 ## Architectural Influences & Inspirations
 
 ### Media Elements: Platform-Agnostic HTMLMediaElement Contract
 
-VJS-10's media state management architecture draws significant inspiration from the [media-elements monorepo](https://github.com/muxinc/media-elements), which pioneered the concept of creating HTMLMediaElement-compatible elements that work across different media providers while maintaining consistent interfaces.
+VJS-10's media state management architecture uses patterns from the [media-elements monorepo](https://github.com/muxinc/media-elements) for creating HTMLMediaElement-compatible elements that work across different media providers while maintaining consistent interfaces.
 
 #### 1. Extended HTMLMediaElement Contract Foundation
 
-**Media Elements Innovation**: The media-elements monorepo established the pattern of creating custom elements that "look like" HTMLMediaElement but can be extended for different media providers (HLS, DASH, YouTube, Vimeo, etc.).
+**Media Elements Pattern**: The media-elements monorepo established the pattern of creating custom elements that "look like" HTMLMediaElement but can be extended for different media providers (HLS, DASH, YouTube, Vimeo, etc.).
 
 **Core Architecture Pattern**:
 
 ```typescript
-// Media Elements: CustomVideoElement extends HTMLVideoElement
-export class CustomVideoElement extends HTMLVideoElement implements HTMLVideoElement {
-  readonly nativeEl: HTMLVideoElement;
+// Media Elements: CustomVideoElement extends HTMLElement, wraps native video
+// (Safari doesn't support extending built-in elements like HTMLVideoElement)
+export class CustomVideoElement extends HTMLElement {
+  readonly nativeEl: HTMLVideoElement; // Wrapped native element in shadow DOM
 
-  // Maintains HTMLMediaElement contract
+  // Proxies HTMLMediaElement properties to wrapped native element
   get currentTime() { return this.nativeEl?.currentTime ?? 0; }
   set currentTime(val) { if (this.nativeEl) this.nativeEl.currentTime = val; }
 
@@ -55,7 +56,7 @@ class HlsVideoElement extends CustomVideoElement {
     if (Hls.isSupported()) {
       this.api = new Hls(this.config);
       this.api.loadSource(this.src);
-      this.api.attachMedia(this.nativeEl);
+      this.api.attachMedia(this.nativeEl); // Native video wrapped in shadow DOM
     }
   }
 }
@@ -63,8 +64,9 @@ class HlsVideoElement extends CustomVideoElement {
 
 **Key Architectural Assumptions**:
 
-- Media state owner must be an `HTMLElement` (DOM-based)
-- Must implement the complete `HTMLMediaElement` interface
+- Must extend `HTMLElement` (Safari limitation prevents extending built-in elements)
+- Wraps native `<video>` or `<audio>` element in shadow DOM
+- Proxies HTMLMediaElement properties/methods to wrapped native element
 - Provider-specific logic encapsulated in custom element classes
 - Shadow DOM for consistent styling and behavior
 
@@ -72,7 +74,7 @@ class HlsVideoElement extends CustomVideoElement {
 
 #### 2. VJS-10's Platform-Agnostic Evolution
 
-**VJS-10 Innovation**: Relaxed the HTMLElement requirement while maintaining the HTMLMediaElement contract, enabling true cross-platform compatibility.
+**VJS-10 Approach**: Relaxed the HTMLElement requirement while maintaining the HTMLMediaElement contract, enabling true cross-platform compatibility.
 
 **Architectural Relaxation**:
 
@@ -162,7 +164,7 @@ export function useVideoElementNative(): MediaStateOwner {
 
 #### 3. Well-Defined Playback Engine Contract
 
-**Media Elements Innovation**: Beyond creating HTMLMediaElement-compatible custom elements, media-elements established patterns for wrapping diverse playback engines (hls.js, dash.js, Shaka Player) behind a consistent interface. While each integration is currently a "one-off" implementation, the pattern demonstrates the value of a well-defined contract between media elements and the playback engines they wrap.
+**Media Elements Pattern**: Beyond creating HTMLMediaElement-compatible custom elements, media-elements established patterns for wrapping diverse playback engines (hls.js, dash.js, Shaka Player) behind a consistent interface. While each integration is currently a "one-off" implementation, the pattern demonstrates the value of a well-defined contract between media elements and the playback engines they wrap.
 
 **Current Media Elements Pattern** (one-off integrations):
 
@@ -211,7 +213,8 @@ This vision is detailed in [`docs/PLAYBACK_ENGINE_VISION.md`](docs/PLAYBACK_ENGI
 
 **Media Elements Approach**: Tight coupling between contract and DOM implementation
 
-- Must extend `HTMLVideoElement` or `HTMLAudioElement`
+- Must extend `HTMLElement` (Safari limitation prevents extending built-in elements)
+- Wraps native `<video>` or `<audio>` in shadow DOM
 - Requires Shadow DOM and custom element registration
 - Web Components as the primary abstraction layer
 
@@ -223,47 +226,80 @@ This vision is detailed in [`docs/PLAYBACK_ENGINE_VISION.md`](docs/PLAYBACK_ENGI
 
 **Contract Comparison**:
 
-| Aspect                        | Media Elements              | VJS-10 Evolution          |
-| ----------------------------- | --------------------------- | ------------------------- |
-| **Base Class**                | `HTMLVideoElement` required | `EventTarget` + interface |
-| **DOM Requirements**          | Shadow DOM, custom elements | None (platform-dependent) |
-| **Platform Support**          | Web Components only         | HTML, React, React Native |
-| **HTMLMediaElement Contract** | Full native implementation  | JavaScript interface only |
-| **Extension Method**          | Class inheritance           | Interface implementation  |
+| Aspect                        | Media Elements                          | VJS-10 Evolution          |
+| ----------------------------- | --------------------------------------- | ------------------------- |
+| **Base Class**                | `HTMLElement` with wrapped native video | `EventTarget` + interface |
+| **DOM Requirements**          | Shadow DOM, custom elements             | None (platform-dependent) |
+| **Platform Support**          | Web Components only                     | HTML, React, React Native |
+| **HTMLMediaElement Contract** | Proxied to wrapped native element       | JavaScript interface only |
+| **Extension Method**          | Class inheritance from `HTMLElement`    | Interface implementation  |
 
-#### 5. State Mediation Architecture
+#### 5. MediaStateOwner Contract and State Management
 
-**Media Elements Pattern**: Custom elements as state mediators between providers and native elements:
+This section covers two related concepts:
+
+1. **MediaStateOwner** - The interface custom elements implement (HTMLMediaElement-like contract)
+2. **State management layer** - How UI components interact with the MediaStateOwner
+
+The MediaStateOwner provides a consistent interface whether you're using:
+
+- A custom element wrapping hls.js (Media Elements pattern)
+- A React ref to HTMLVideoElement (VJS-10 React)
+- A React Native Video component wrapper (VJS-10 React Native)
+
+**Media Elements Pattern**: Custom elements implement HTMLMediaElement-like interface
 
 ```typescript
-// Media Elements: Element-centric mediation
+// Media Elements: Custom element implements the MediaStateOwner contract
 class HlsVideoElement extends CustomVideoElement {
+  // Implements HTMLMediaElement-like interface by proxying to nativeEl
+  // get/set currentTime, play(), pause(), etc. → this.nativeEl
+
   load() {
-    // Element mediates between hls.js and native video element
+    // Provider logic (hls.js) mediates between source and native element
     this.api = new Hls();
-    this.api.attachMedia(this.nativeEl); // DOM element required
+    this.api.attachMedia(this.nativeEl); // Wraps native <video> in shadow DOM
   }
 }
 ```
 
-**VJS-10 Pattern**: State mediators work with any MediaStateOwner:
+Key characteristics:
+
+- Custom element extends `HTMLElement`
+- Wraps native `<video>` in shadow DOM
+- Proxies HTMLMediaElement properties to wrapped element
+- Provider logic (hls.js, dash.js) manages source/playback
+
+**VJS-10 Pattern**: MediaStateOwner as platform-agnostic interface
+
+The MediaStateOwner interface abstracts away DOM requirements, enabling the state
+management layer to work with any object implementing the contract:
 
 ```typescript
-// VJS-10: Interface-based mediation
+// VJS-10: State mediator reads/writes MediaStateOwner interface
 export const temporal = {
   currentTime: {
     get(stateOwners: { media: MediaStateOwner }) {
+      // Reads from MediaStateOwner (could be custom element, React ref, RN wrapper)
       return stateOwners.media?.currentTime ?? 0; // No DOM assumptions
     },
     set(value: number, stateOwners: { media: MediaStateOwner }) {
+      // Writes to MediaStateOwner through the interface
       if (stateOwners.media) {
         stateOwners.media.currentTime = value; // JavaScript interface only
       }
     },
-    mediaEvents: ['timeupdate', 'loadedmetadata'],
+    mediaEvents: ['timeupdate', 'loadedmetadata'], // Events from MediaStateOwner
   },
 };
 ```
+
+Key characteristics:
+
+- State mediators interact with `MediaStateOwner` interface, not DOM directly
+- Same state management logic works across HTML, React, React Native
+- MediaStateOwner can be implemented differently per platform
+- Platform-agnostic state layer enabled by consistent contract
 
 #### 6. Event-Driven Architecture Continuity
 
@@ -307,7 +343,7 @@ const mediaStateOwner: MediaStateOwner = {
 | **Event Architecture**   | DOM event forwarding         | Platform-agnostic EventTarget              |
 | **Provider Integration** | Custom element classes       | State mediator functions                   |
 
-**Key Innovation**: VJS-10 maintains the proven HTMLMediaElement contract from media-elements while removing platform-specific constraints, enabling the same state management patterns to work across web components, React components, and React Native.
+**Key Difference**: VJS-10 maintains the proven HTMLMediaElement contract from media-elements while removing platform-specific constraints, enabling the same state management patterns to work across web components, React components, and React Native.
 
 **References**:
 
@@ -317,72 +353,86 @@ const mediaStateOwner: MediaStateOwner = {
 
 ### Media Chrome: Foundational State Management & Media Architecture
 
-VJS-10's core architectural principles are heavily rooted in [Media Chrome](https://github.com/muxinc/media-chrome)'s pioneering approach to media player component architecture. Media Chrome established several foundational patterns that VJS-10 has evolved and adapted.
+VJS-10's core architectural principles use patterns from [Media Chrome](https://github.com/muxinc/media-chrome)'s approach to media player component architecture. Media Chrome established several foundational patterns that VJS-10 has evolved and adapted.
 
 #### 1. Extended HTMLMediaElement Contract
 
-**Media Chrome Innovation**: Built around an "extended HTMLMediaElement" contract that goes beyond standard web APIs to support modern media features.
+**Media Chrome Pattern**: Built around an "extended HTMLMediaElement" contract that goes beyond standard web APIs to support modern media features like live streaming, quality selection, and advanced playback states.
 
-**VJS-10 Evolution**: The state mediator pattern directly inherits this concept through `MediaStateOwner`:
+**VJS-10 Evolution**: Building on the MediaStateOwner contract from Media Elements (see [§Media Elements](#media-elements-platform-agnostic-htmlmediaelement-contract)), Media Chrome extended it with media-specific properties:
 
 ```typescript
-// VJS-10's MediaStateOwner extends HTMLMediaElement concepts
+// Media Chrome-inspired extensions to MediaStateOwner
 export type MediaStateOwner = Partial<HTMLVideoElement>
-  & Pick<
-    HTMLMediaElement,
-    'play' | 'paused' | 'addEventListener' | 'removeEventListener'
-  > & {
+  & Pick<HTMLMediaElement, 'play' | 'paused' | 'addEventListener' | 'removeEventListener'>
+  & EventTarget & {
     // Media Chrome-inspired extensions
-    streamType?: StreamTypes;
-    targetLiveWindow?: number;
-    liveEdgeStart?: number;
-    videoRenditions?: Rendition[] & EventTarget;
-    audioTracks?: AudioTrack[] & EventTarget;
-    webkitDisplayingFullscreen?: boolean;
-    webkitCurrentPlaybackTargetIsWireless?: boolean;
+    streamType?: StreamTypes; // Live vs. on-demand detection
+    targetLiveWindow?: number; // Live DVR window management
+    videoRenditions?: Rendition[] & EventTarget; // Quality selection
+    audioTracks?: AudioTrack[] & EventTarget; // Audio track switching
     // ... additional media-specific properties
   };
 ```
 
-**Key Inheritance**:
-
-- **Extensible Media Interface**: Beyond basic HTMLMediaElement
-- **Event-Driven Architecture**: Media element as event source
-- **Cross-Platform Abstractions**: Handling platform-specific media APIs
+These extensions enable state mediators to handle modern media features while maintaining the platform-agnostic contract. The MediaStateOwner serves as the interface that state mediators read from and write to, abstracting away whether the underlying implementation is an HTMLMediaElement, React Native Video component, or other platform-specific element.
 
 **Reference**: [`packages/core/media-store/src/state-mediators/audible.ts`](packages/core/media-store/src/state-mediators/audible.ts)
 
 #### 2. State Mediator Pattern
 
-**Media Chrome Innovation**: Originated the **state mediator** concept as a pattern for managing media state transformations and side effects. Media Chrome's state mediators sit between the raw HTMLMediaElement API and component state, providing a clean abstraction layer.
+**Media Chrome Foundation**: Originated the **state mediator** concept as a pattern for managing media state transformations and side effects. Media Chrome's state mediators establish a crucial architectural layer that sits between the media store and the media element, working together with the MediaStateOwner contract.
 
-**Original Media Chrome Pattern**:
+**Architectural Layers**:
+
+```
+┌─────────────────┐
+│  UI Components  │
+└────────┬────────┘
+         │
+    ┌────▼──────────┐
+    │  Media Store  │ ← Reactive state (nanostores, signals)
+    └────┬──────────┘
+         │
+    ┌────▼──────────────┐
+    │ State Mediators   │ ← Media Chrome pattern: transform, validate, side effects
+    │ (audible,         │
+    │  temporal, etc.)  │
+    └────┬──────────────┘
+         │
+    ┌────▼──────────────┐
+    │ MediaStateOwner   │ ← Media Elements contract: HTMLMediaElement-like interface
+    │ (custom element,  │
+    │  video ref, etc.) │
+    └───────────────────┘
+```
+
+**Media Chrome's State Mediator Pattern**:
 
 - Centralized MediaStore with state mediator objects
 - Each mediator handles a specific aspect of media state (volume, time, playback)
 - Mediators encapsulate get/set logic, event subscriptions, and side effects
 - Complete separation of state management from UI components
 
-**VJS-10 Evolution**: Cleaned up and modularized Media Chrome's state mediator concept:
+**VJS-10 Evolution**: Modular state mediators work with the MediaStateOwner interface:
 
 ```typescript
-// VJS-10's modular state mediators (evolved from Media Chrome pattern)
+// State mediator interacts with MediaStateOwner, not DOM directly
 export const audible = {
   muted: {
-    get(stateOwners: any) {
-      const { media } = stateOwners;
-      return media?.muted ?? false;
+    get(stateOwners: { media: MediaStateOwner }) {
+      return stateOwners.media?.muted ?? false; // Read from MediaStateOwner
     },
-    set(value: boolean, stateOwners: any) {
-      const { media } = stateOwners;
-      if (!media) return;
-      media.muted = value;
-      // Media Chrome-style side effects
-      if (!value && !media.volume) {
-        media.volume = 0.25;
+    set(value: boolean, stateOwners: { media: MediaStateOwner }) {
+      if (!stateOwners.media) return;
+      stateOwners.media.muted = value; // Write to MediaStateOwner
+
+      // Side effect: smart volume restoration
+      if (!value && !stateOwners.media.volume) {
+        stateOwners.media.volume = 0.25;
       }
     },
-    mediaEvents: ['volumechange'], // Media Chrome event-driven pattern
+    mediaEvents: ['volumechange'], // Subscribe to MediaStateOwner events
     actions: {
       muterequest: () => true,
       unmuterequest: () => false,
@@ -391,30 +441,74 @@ export const audible = {
 };
 ```
 
+**State Mediator Responsibilities**:
+
+- **Get/Set logic**: Read from and write to MediaStateOwner
+- **Event subscriptions**: Listen to MediaStateOwner events (timeupdate, volumechange, etc.)
+- **Side effects**: Smart defaults (e.g., unmute sets volume to 0.25)
+- **Validation**: Ensure state changes are valid
+
+**Why This Separation Matters**:
+
+The state mediator layer provides clean abstraction between:
+
+- Reactive state management (store layer)
+- Platform-specific media elements (MediaStateOwner contract)
+
+This enables the same state management logic to work across HTML custom elements, React refs, and React Native components.
+
 **VJS-10 Improvements**:
 
-- **Modular/Composable**: State mediators are independent modules (audible, temporal, playable) rather than centralized
+- **Modular/Composable**: State mediators are independent modules (audible, temporal, playable)
 - **Framework-Agnostic**: Core mediator logic works across platforms (HTML, React, React Native)
 - **Cleaner API**: Simplified mediator structure with clear get/set/events/actions pattern
 - **Type-Safe**: Full TypeScript support with inference
 
 **Key Architectural Inheritances from Media Chrome**:
 
-- **State/UI Separation**: State logic completely independent of rendering (Media Chrome's core principle)
+- **State/UI Separation**: State logic completely independent of rendering
 - **Event-Driven Updates**: Media element events trigger state changes
-- **Side Effect Management**: Smart defaults (e.g., auto-volume on unmute)
+- **Side Effect Management**: Smart defaults and coordinated state changes
 - **Non-Optimistic Updates**: Wait for actual media element changes
 
-**Reference**: [`packages/core/media-store/src/state-mediators/audible.ts`](packages/core/media-store/src/state-mediators/audible.ts)
+**DOM-Dependent Complexities**:
 
-#### 3. Media-Specific State Abstractions
+Some Web APIs require tighter DOM coupling and can't be fully abstracted:
 
-**Media Chrome Contribution**: Pioneered media-specific state concepts like `mediaVolumeLevel`, `streamType`, and advanced playback states.
+- **Fullscreen API**: `requestFullscreen()` must be called on actual DOM element
+- **Picture-in-Picture**: `requestPictureInPicture()` requires HTMLVideoElement
+- **Remote Playback**: `remote.watchAvailability()` tied to DOM element lifecycle
 
-**VJS-10 Implementation**: Organized into specialized state mediators:
+**VJS-10 Approach**:
+
+MediaStateOwner provides optional DOM element access when needed:
 
 ```typescript
-// Media Chrome's media-specific state -> VJS-10's organized mediators
+export interface MediaStateOwner {
+  // ... HTMLMediaElement-like properties
+  element?: HTMLElement; // Optional DOM element access for platform-specific APIs
+}
+
+// Usage for fullscreen (requires DOM)
+if (mediaStateOwner.element) {
+  await mediaStateOwner.element.requestFullscreen();
+}
+```
+
+Platform-specific implementations handle these APIs appropriately:
+
+- **HTML**: Direct DOM element access via `mediaStateOwner.element`
+- **React**: Access via `ref.current` mapped to `element` property
+- **React Native**: Platform-specific APIs (not DOM-based fullscreen)
+
+This pragmatic approach maintains the MediaStateOwner abstraction while acknowledging when platform-specific handling is necessary.
+
+**Media-Specific State Examples**:
+
+Media Chrome introduced media-specific state concepts like `mediaVolumeLevel`, `streamType`, and advanced playback states. VJS-10 organizes these into specialized state mediators:
+
+```typescript
+// Temporal state management - time-based controls
 export const temporal = {
   currentTime: {
     get(stateOwners: any) {
@@ -439,20 +533,17 @@ export const temporal = {
     mediaEvents: ['durationchange', 'loadedmetadata'],
   },
 };
+
+// Volume level abstraction - "off", "low", "medium", "high"
+// instead of raw numbers for better UI state management
 ```
-
-**Media Chrome Concepts Evolved**:
-
-- **Volume Level Abstraction**: `off`, `low`, `medium`, `high` instead of raw numbers
-- **Temporal State Management**: Time-based controls with smart defaults
-- **Playback State Modeling**: Beyond simple play/pause
 
 **References**:
 
-- [`packages/core/media-store/src/state-mediators/temporal.ts`](packages/core/media-store/src/state-mediators/temporal.ts)
 - [`packages/core/media-store/src/state-mediators/audible.ts`](packages/core/media-store/src/state-mediators/audible.ts)
+- [`packages/core/media-store/src/state-mediators/temporal.ts`](packages/core/media-store/src/state-mediators/temporal.ts)
 
-#### 4. Component State Change Side Effects
+#### 3. Side Effect Coordination
 
 **Media Chrome Pattern**: State changes trigger coordinated side effects across the media ecosystem.
 
@@ -497,9 +588,16 @@ const mediatorExample = {
 - **Smart Defaults**: Reasonable fallbacks for edge cases
 - **Event Cascade Management**: State changes trigger related updates
 
-#### 5. Event-Driven State Architecture
+#### 4. Event-Driven State Updates and Action Dispatch
 
 **Media Chrome Foundation**: All state changes flow through custom events, creating a reactive system.
+
+**Terminology Note**: State mediators respond to two types of inputs:
+
+- **Media events** (`mediaEvents`) - Signals from the MediaStateOwner describing state changes that occurred (e.g., `'volumechange'`, `'timeupdate'`). These originate from the underlying media element, whether that's an HTMLMediaElement, a React Native Video component, or another platform-specific implementation.
+- **Action dispatches** (`actions`) - Signals from UI components requesting state changes (e.g., `muterequest`, `seekrequest`)
+
+While termed "actions" (following Redux convention), these dispatches function like XState events - they're descriptive signals of user intent, not imperative commands. The state mediator layer transforms these signals into actual state changes with appropriate validation and side effects.
 
 **VJS-10 Evolution**: Maintained event-driven core with enhanced action system:
 
@@ -520,9 +618,9 @@ export const playable = {
         media.play().catch(() => {}); // Media Chrome's error handling pattern
       }
     },
-    mediaEvents: ['play', 'pause', 'loadstart'],
+    mediaEvents: ['play', 'pause', 'loadstart'], // Media events from element
     actions: {
-      // Media Chrome's request pattern evolved
+      // Action dispatches from UI components
       playrequest: () => false, // false = not paused
       pauserequest: () => true, // true = paused
     },
@@ -532,15 +630,15 @@ export const playable = {
 
 **Event Architecture Evolution**:
 
-- **Request/Response Pattern**: Components dispatch requests, state mediators handle responses
+- **Request/Response Pattern**: Components dispatch action requests, state mediators handle responses
 - **Event Normalization**: Consistent patterns across different media APIs
 - **Error Handling**: Graceful degradation following Media Chrome patterns
 
-#### 6. Web Component Architecture Foundations
+#### 5. Web Component Foundation (vs. Common Core)
 
-**Media Chrome Legacy**: Established patterns for media-focused web components with Shadow DOM encapsulation.
+**Media Chrome Legacy**: Established patterns for media-focused web components with Shadow DOM encapsulation, representing a web-first approach that contrasts with VidStack's common core strategy.
 
-**VJS-10 Platform Evolution**: Extended Media Chrome's component concepts across platforms:
+**VJS-10 Platform Evolution**: Extended Media Chrome's component concepts across platforms while adopting VidStack's common core philosophy:
 
 **HTML Platform (Web Component Heritage)**:
 
@@ -598,11 +696,9 @@ export function renderMuteButton(props, state) {
 | **Side Effects**           | Coordinated state changes     | Systematic mediator side effects           |
 | **Platform Strategy**      | Web-first with React wrappers | Platform-native with shared core           |
 
-**Media Chrome Migration Reference**: See [`MEDIA_CHROME_MIGRATION.md`](MEDIA_CHROME_MIGRATION.md) for detailed transformation examples.
-
 ### Base UI Component Primitives
 
-VJS-10's React component architecture is heavily inspired by [Base UI](https://base-ui.com/), MUI's headless component library. This influence manifests in several key ways:
+VJS-10's React component architecture follows patterns from [Base UI](https://base-ui.com/), MUI's headless component library. This influence manifests in several key ways:
 
 #### 1. Primitive Component Philosophy
 
@@ -806,11 +902,11 @@ Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features
 
 ### VidStack: Framework-Agnostic Common Core Architecture
 
-**Primary Influence**: VJS-10's multi-platform architecture draws its most significant inspiration from [VidStack](https://vidstack.io/)'s **framework-agnostic common core** pattern—a fundamental departure from the "thin wrapper" approach used by libraries like Media Chrome.
+**Primary Influence**: VJS-10's multi-platform architecture follows [VidStack](https://vidstack.io/)'s **framework-agnostic common core** pattern—a fundamental departure from the "thin wrapper" approach used by libraries like Media Chrome.
 
 #### 1. Framework-Agnostic Common Core (Primary Influence)
 
-**VidStack's Key Innovation**: Unlike Media Chrome (which wraps Web Components for React), VidStack built a true **shared common core** using their Maverick library that provides framework-agnostic UI logic. This means the same business logic, state management, and component behaviors work across Web Components AND React without wrappers or translations.
+**VidStack's Approach**: Unlike Media Chrome (which wraps Web Components for React), VidStack built a true **shared common core** using their Maverick library that provides framework-agnostic UI logic. This means the same business logic, state management, and component behaviors work across Web Components AND React without wrappers or translations.
 
 **Why This Matters**:
 
@@ -959,7 +1055,7 @@ export function useMuteButtonState() {
 
 ### Adobe React Spectrum: State/Behavior/UI Hook Separation
 
-**Primary Influence**: VJS-10's hook-based component architecture draws its most significant inspiration from [Adobe React Spectrum](https://react-spectrum.adobe.com/)'s **three-layer hook separation** pattern, which cleanly divides component logic into state, behavior, and UI layers.
+**Primary Influence**: VJS-10's hook-based component architecture uses [Adobe React Spectrum](https://react-spectrum.adobe.com/)'s **three-layer hook separation** pattern, which divides component logic into state, behavior, and UI layers.
 
 #### Adobe Spectrum Three-Layer Hook Architecture
 
