@@ -32,7 +32,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white text-shadow',
+    '@container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white',
     'shadow-sm shadow-black/15',
     // Background
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
@@ -71,7 +71,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   IconButton: cn(
     'grid [&_.icon]:[grid-area:1/1]',
-    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
+    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/25',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
@@ -87,8 +87,6 @@ const styles: MediaDefaultSkinStyles = {
     'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
     // Ring
     'ring-1 ring-white/10 ring-inset',
-    // Text shadow
-    'text-shadow shadow-black/10',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none',
   ),
@@ -132,7 +130,7 @@ const styles: MediaDefaultSkinStyles = {
   FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
   FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
-  TimeDisplay: cn('tabular-nums text-shadow-2xs shadow-black/50'),
+  TimeDisplay: cn('tabular-nums text-shadow-2xs/25'),
   SliderRoot: cn(
     'flex items-center justify-center flex-1 group/slider relative',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',

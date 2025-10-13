@@ -35,7 +35,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
       <div className={styles.Overlay} aria-hidden="true" />
 
       <div className={styles.Controls}>
-        <Tooltip.Root delay={400} closeDelay={0}>
+        <Tooltip.Root delay={500} closeDelay={0}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
               <MicroPlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
@@ -43,7 +43,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             </PlayButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
-            <Tooltip.Positioner side="top" sideOffset={6} collisionPadding={12}>
+            <Tooltip.Positioner side="top-start" sideOffset={6} collisionPadding={12}>
               <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
                 <span className={styles.PlayTooltip}>Play</span>
                 <span className={styles.PauseTooltip}>Pause</span>
@@ -58,8 +58,11 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             // showRemaining
             className={styles.TimeDisplay}
           />
-          <span className="opacity-50">/</span>
-          <DurationDisplay className={`${styles.TimeDisplay} opacity-50`} />
+
+          <span className={styles.DurationDisplay}>
+            /
+            <DurationDisplay className={`${styles.TimeDisplay}`} />
+          </span>
         </div>
 
         <TimeSlider.Root className={`${styles.SliderRoot} ${styles.TimeSliderRoot}`}>
@@ -67,7 +70,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             <TimeSlider.Progress className={styles.SliderProgress} />
             <TimeSlider.Pointer className={styles.SliderPointer} />
           </TimeSlider.Track>
-          <TimeSlider.Thumb className={`${styles.SliderThumb} ${styles.TimeSliderThumb}`} />
+          <TimeSlider.Thumb className={styles.SliderThumb} />
         </TimeSlider.Root>
 
         <div className={styles.ButtonGroup}>
@@ -93,7 +96,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             </Popover.Portal>
           </Popover.Root>
 
-          <Tooltip.Root delay={400} closeDelay={0}>
+          <Tooltip.Root delay={500} closeDelay={0}>
             <Tooltip.Trigger>
               <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
                 <MicroFullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
@@ -101,7 +104,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
               </FullscreenButton>
             </Tooltip.Trigger>
             <Tooltip.Portal>
-              <Tooltip.Positioner side="top" sideOffset={6} collisionPadding={12}>
+              <Tooltip.Positioner side="top-end" sideOffset={6} collisionPadding={12}>
                 <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
                   <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
                   <span className={styles.FullscreenExitTooltip}>Exit Fullscreen</span>
