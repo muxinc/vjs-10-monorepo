@@ -1,4 +1,5 @@
-// explicitly avoiding aliases so that this file can be loaded in astro.config
+// astro.config depends on this file.
+// use only relative imports
 import type { Sidebar } from '../../types/docs';
 import { FRAMEWORK_STYLES } from '../../types/docs';
 import { findFirstGuide } from '../../utils/docs/sidebar';

@@ -1,3 +1,6 @@
+// astro.config depends on this file.
+// use only relative imports
+
 export const FRAMEWORK_STYLES = {
   html: ['css', 'tailwind'],
   react: ['css', 'tailwind', 'styled-components'],

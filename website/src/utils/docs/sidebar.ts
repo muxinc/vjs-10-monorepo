@@ -1,3 +1,6 @@
+// astro.config depends on this file.
+// use only relative imports
+
 import type { AnySupportedStyle, Guide, Section, Sidebar, SupportedFramework, SupportedStyle } from '@/types/docs';
 
 import { sidebar } from '../../config/docs/sidebar';
