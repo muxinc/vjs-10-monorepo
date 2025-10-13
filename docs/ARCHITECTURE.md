@@ -234,39 +234,72 @@ This vision is detailed in [`docs/PLAYBACK_ENGINE_VISION.md`](docs/PLAYBACK_ENGI
 | **HTMLMediaElement Contract** | Proxied to wrapped native element       | JavaScript interface only |
 | **Extension Method**          | Class inheritance from `HTMLElement`    | Interface implementation  |
 
-#### 5. State Mediation Architecture
+#### 5. MediaStateOwner Contract and State Management
 
-**Media Elements Pattern**: Custom elements as state mediators between providers and native elements:
+This section covers two related concepts:
+
+1. **MediaStateOwner** - The interface custom elements implement (HTMLMediaElement-like contract)
+2. **State management layer** - How UI components interact with the MediaStateOwner
+
+The MediaStateOwner provides a consistent interface whether you're using:
+
+- A custom element wrapping hls.js (Media Elements pattern)
+- A React ref to HTMLVideoElement (VJS-10 React)
+- A React Native Video component wrapper (VJS-10 React Native)
+
+**Media Elements Pattern**: Custom elements implement HTMLMediaElement-like interface
 
 ```typescript
-// Media Elements: Element-centric mediation
+// Media Elements: Custom element implements the MediaStateOwner contract
 class HlsVideoElement extends CustomVideoElement {
+  // Implements HTMLMediaElement-like interface by proxying to nativeEl
+  // get/set currentTime, play(), pause(), etc. → this.nativeEl
+
   load() {
-    // Element mediates between hls.js and native video element
+    // Provider logic (hls.js) mediates between source and native element
     this.api = new Hls();
-    this.api.attachMedia(this.nativeEl); // DOM element required
+    this.api.attachMedia(this.nativeEl); // Wraps native <video> in shadow DOM
   }
 }
 ```
 
-**VJS-10 Pattern**: State mediators work with any MediaStateOwner:
+Key characteristics:
+
+- Custom element extends `HTMLElement`
+- Wraps native `<video>` in shadow DOM
+- Proxies HTMLMediaElement properties to wrapped element
+- Provider logic (hls.js, dash.js) manages source/playback
+
+**VJS-10 Pattern**: MediaStateOwner as platform-agnostic interface
+
+The MediaStateOwner interface abstracts away DOM requirements, enabling the state
+management layer to work with any object implementing the contract:
 
 ```typescript
-// VJS-10: Interface-based mediation
+// VJS-10: State mediator reads/writes MediaStateOwner interface
 export const temporal = {
   currentTime: {
     get(stateOwners: { media: MediaStateOwner }) {
+      // Reads from MediaStateOwner (could be custom element, React ref, RN wrapper)
       return stateOwners.media?.currentTime ?? 0; // No DOM assumptions
     },
     set(value: number, stateOwners: { media: MediaStateOwner }) {
+      // Writes to MediaStateOwner through the interface
       if (stateOwners.media) {
         stateOwners.media.currentTime = value; // JavaScript interface only
       }
     },
-    mediaEvents: ['timeupdate', 'loadedmetadata'],
+    mediaEvents: ['timeupdate', 'loadedmetadata'], // Events from MediaStateOwner
   },
 };
 ```
+
+Key characteristics:
+
+- State mediators interact with `MediaStateOwner` interface, not DOM directly
+- Same state management logic works across HTML, React, React Native
+- MediaStateOwner can be implemented differently per platform
+- Platform-agnostic state layer enabled by consistent contract
 
 #### 6. Event-Driven Architecture Continuity
 
@@ -455,7 +488,106 @@ export const temporal = {
 - [`packages/core/media-store/src/state-mediators/temporal.ts`](packages/core/media-store/src/state-mediators/temporal.ts)
 - [`packages/core/media-store/src/state-mediators/audible.ts`](packages/core/media-store/src/state-mediators/audible.ts)
 
-#### 4. Component State Change Side Effects
+#### 4. State Mediator Architecture and MediaStateOwner
+
+Media Chrome's state mediator pattern establishes a crucial architectural layer that sits BETWEEN the media store and the media element, working together with the MediaStateOwner contract from Media Elements.
+
+**Architectural Layers**:
+
+```
+┌─────────────────┐
+│  UI Components  │
+└────────┬────────┘
+         │
+    ┌────▼──────────┐
+    │  Media Store  │ ← Reactive state (nanostores, signals)
+    └────┬──────────┘
+         │
+    ┌────▼──────────────┐
+    │ State Mediators   │ ← Media Chrome pattern: transform, validate, side effects
+    │ (audible,         │
+    │  temporal, etc.)  │
+    └────┬──────────────┘
+         │
+    ┌────▼──────────────┐
+    │ MediaStateOwner   │ ← Media Elements contract: HTMLMediaElement-like interface
+    │ (custom element,  │
+    │  video ref, etc.) │
+    └───────────────────┘
+```
+
+**Media Chrome's State Mediators**: Objects that encapsulate:
+
+- **Get/Set logic**: Read from and write to MediaStateOwner
+- **Event subscriptions**: Listen to MediaStateOwner events (timeupdate, volumechange, etc.)
+- **Side effects**: Smart defaults (e.g., unmute sets volume to 0.25)
+- **Validation**: Ensure state changes are valid
+
+**VJS-10 Evolution**: Modular state mediators work with MediaStateOwner interface:
+
+```typescript
+// State mediator interacts with MediaStateOwner, not DOM directly
+export const audible = {
+  muted: {
+    get(stateOwners: { media: MediaStateOwner }) {
+      return stateOwners.media?.muted ?? false; // Read from MediaStateOwner
+    },
+    set(value: boolean, stateOwners: { media: MediaStateOwner }) {
+      if (!stateOwners.media) return;
+      stateOwners.media.muted = value; // Write to MediaStateOwner
+
+      // Side effect: smart volume restoration
+      if (!value && !stateOwners.media.volume) {
+        stateOwners.media.volume = 0.25;
+      }
+    },
+    mediaEvents: ['volumechange'], // Subscribe to MediaStateOwner events
+  },
+};
+```
+
+**Why This Separation Matters**:
+
+The state mediator layer provides clean abstraction between:
+
+- Reactive state management (store layer)
+- Platform-specific media elements (MediaStateOwner contract)
+
+This enables the same state management logic to work across HTML custom elements, React refs, and React Native components.
+
+**DOM-Dependent Complexities**:
+
+Some Web APIs require tighter DOM coupling and can't be fully abstracted:
+
+- **Fullscreen API**: `requestFullscreen()` must be called on actual DOM element
+- **Picture-in-Picture**: `requestPictureInPicture()` requires HTMLVideoElement
+- **Remote Playback**: `remote.watchAvailability()` tied to DOM element lifecycle
+
+**VJS-10 Approach**:
+
+MediaStateOwner provides optional DOM element access when needed:
+
+```typescript
+export interface MediaStateOwner {
+  // ... HTMLMediaElement-like properties
+  element?: HTMLElement; // Optional DOM element access for platform-specific APIs
+}
+
+// Usage for fullscreen (requires DOM)
+if (mediaStateOwner.element) {
+  await mediaStateOwner.element.requestFullscreen();
+}
+```
+
+Platform-specific implementations handle these APIs appropriately:
+
+- **HTML**: Direct DOM element access via `mediaStateOwner.element`
+- **React**: Access via `ref.current` mapped to `element` property
+- **React Native**: Platform-specific APIs (not DOM-based fullscreen)
+
+This pragmatic approach maintains the MediaStateOwner abstraction while acknowledging when platform-specific handling is necessary.
+
+#### 5. Event-Driven State Architecture
 
 **Media Chrome Pattern**: State changes trigger coordinated side effects across the media ecosystem.
 
@@ -500,7 +632,7 @@ const mediatorExample = {
 - **Smart Defaults**: Reasonable fallbacks for edge cases
 - **Event Cascade Management**: State changes trigger related updates
 
-#### 5. Event-Driven State Architecture
+#### 6. Event-Driven Request/Response Pattern
 
 **Media Chrome Foundation**: All state changes flow through custom events, creating a reactive system.
 
@@ -539,7 +671,7 @@ export const playable = {
 - **Event Normalization**: Consistent patterns across different media APIs
 - **Error Handling**: Graceful degradation following Media Chrome patterns
 
-#### 6. Web Component Architecture Foundations
+#### 7. Web Component Architecture Foundations
 
 **Media Chrome Legacy**: Established patterns for media-focused web components with Shadow DOM encapsulation.
 
