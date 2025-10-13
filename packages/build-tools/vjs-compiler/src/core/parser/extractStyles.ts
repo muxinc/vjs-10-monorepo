@@ -4,7 +4,7 @@
 
 import type { StylesObject } from '../../types.js';
 
-import traverse from '@babel/traverse';
+import { traverse } from '../../utils/babelImports.js';
 import * as t from '@babel/types';
 
 /**

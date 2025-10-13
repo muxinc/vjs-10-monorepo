@@ -9,13 +9,14 @@
     "vjs-compiler": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.v1.json",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch --silent",
     "build:v1": "tsc --project tsconfig.v1.json",
-    "build:v2": "tsc",
+    "build:v2": "tsdown",
     "clean": "rm -rf dist",
-    "dev": "tsc --project tsconfig.v1.json --watch",
+    "dev": "tsdown --watch --silent",
     "dev:v1": "tsc --project tsconfig.v1.json --watch",
-    "dev:v2": "tsc --watch",
+    "dev:v2": "tsdown --watch --silent",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:v1": "vitest run --config vitest.config.v1.ts",
@@ -44,6 +45,7 @@
     "@types/node": "^22.10.5",
     "html-validate": "^8.24.1",
     "playwright": "^1.56.0",
+    "tsdown": "^0.15.4",
     "typescript": "^5.4.0",
     "vite": "^7.1.6",
     "vitest": "^3.0.0"

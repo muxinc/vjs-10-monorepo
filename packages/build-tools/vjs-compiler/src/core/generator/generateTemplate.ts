@@ -4,7 +4,7 @@
 
 import type * as t from '@babel/types';
 
-import generate from '@babel/generator';
+import { generate } from '../../utils/babelImports.js';
 
 /**
  * Generate HTML template string from JSX element

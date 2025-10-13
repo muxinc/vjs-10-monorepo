@@ -1,7 +1,7 @@
 import type { ImportUsage, StyleKeyUsage } from '../../types.js';
 import type { NodePath } from '@babel/traverse';
 
-import traverse from '@babel/traverse';
+import { traverse } from '../../utils/babelImports.js';
 import * as t from '@babel/types';
 
 /**

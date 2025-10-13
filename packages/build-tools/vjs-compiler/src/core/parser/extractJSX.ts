@@ -2,7 +2,7 @@
  * Extract JSX element from React component function
  */
 
-import traverse from '@babel/traverse';
+import { traverse } from '../../utils/babelImports.js';
 import * as t from '@babel/types';
 
 /**
