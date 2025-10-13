@@ -11,6 +11,7 @@ export class MediaTooltipRoot extends HTMLElement {
   #cleanup: (() => void) | null = null;
   #arrowElement: HTMLElement | null = null;
   #mousePosition = { x: 0, y: 0 };
+  #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
 
   constructor() {
     super();
@@ -36,6 +37,9 @@ export class MediaTooltipRoot extends HTMLElement {
   disconnectedCallback(): void {
     this.#clearHoverTimeout();
     this.#cleanup?.();
+
+    this.#transitionStatus = 'unmounted';
+    this.#updateVisibility();
   }
 
   static get observedAttributes(): string[] {
@@ -75,6 +79,17 @@ export class MediaTooltipRoot extends HTMLElement {
     if (this.#open === open) return;
 
     this.#open = open;
+
+    if (open) {
+      this.#transitionStatus = 'initial';
+      requestAnimationFrame(() => {
+        this.#transitionStatus = 'open';
+        this.#updateVisibility();
+      });
+    } else {
+      this.#transitionStatus = 'close';
+    }
+
     this.#updateVisibility();
 
     if (open) {
@@ -86,17 +101,22 @@ export class MediaTooltipRoot extends HTMLElement {
   }
 
   #updateVisibility(): void {
-    this.toggleAttribute('data-open', this.#open);
     this.style.display = 'contents';
 
     if (this.#popupElement) {
-      this.#popupElement.style.display = this.#open ? 'block' : 'none';
+      const placement = this.#positionerElement?.side ?? 'top';
+      this.#popupElement.setAttribute('data-side', placement);
+
+      this.#popupElement.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
+      this.#popupElement.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
+      this.#popupElement.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+      this.#popupElement.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
     }
 
-    // Update trigger aria-expanded
     const triggerElement = this.#triggerElement?.firstElementChild as HTMLElement;
     if (triggerElement) {
       triggerElement.setAttribute('aria-expanded', this.#open.toString());
+      triggerElement.toggleAttribute('data-popup-open', this.#open);
     }
   }
 
@@ -125,19 +145,16 @@ export class MediaTooltipRoot extends HTMLElement {
         }),
       ];
 
-      // Add arrow middleware if arrow element exists
       if (this.#arrowElement) {
         middleware.push(arrow({ element: this.#arrowElement }));
       }
 
-      // Use cursor position for positioning if trackCursorAxis is enabled
       const referenceElement = this.trackCursorAxis
         ? {
             getBoundingClientRect: () => {
               const triggerRect = trigger.getBoundingClientRect();
 
               if (this.trackCursorAxis === 'x') {
-                // Track horizontal cursor position, use trigger's vertical position
                 return {
                   width: 0,
                   height: 0,
@@ -149,7 +166,6 @@ export class MediaTooltipRoot extends HTMLElement {
                   y: triggerRect.top,
                 };
               } else if (this.trackCursorAxis === 'y') {
-                // Track vertical cursor position, use trigger's horizontal position
                 return {
                   width: 0,
                   height: 0,
@@ -180,13 +196,14 @@ export class MediaTooltipRoot extends HTMLElement {
       computePosition(referenceElement, popup, {
         placement,
         middleware,
-      }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
+      }).then(({ x, y, middlewareData, placement: computedPlacement }: { x: number; y: number; middlewareData: any; placement: Placement }) => {
         Object.assign(popup.style, {
           left: `${x}px`,
           top: `${y}px`,
         });
 
-        // Position arrow if it exists
+        popup.setAttribute('data-side', computedPlacement);
+
         if (this.#arrowElement && middlewareData.arrow) {
           const { x: arrowX, y: arrowY } = middlewareData.arrow;
           Object.assign(this.#arrowElement.style, {
@@ -234,7 +251,7 @@ export class MediaTooltipRoot extends HTMLElement {
   #handleMouseMove(event: MouseEvent): void {
     if (this.trackCursorAxis) {
       this.#mousePosition = { x: event.clientX, y: event.clientY };
-      // Update position if tooltip is open
+
       if (this.#open) {
         this.#updatePosition();
       }
@@ -371,7 +388,6 @@ export class MediaTooltipPositioner extends HTMLElement {
 export class MediaTooltipPopup extends HTMLElement {
   connectedCallback(): void {
     this.setAttribute('role', 'tooltip');
-    this.style.display = 'none';
   }
 }
 

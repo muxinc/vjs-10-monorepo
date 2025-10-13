@@ -253,6 +253,19 @@ export function getTemplateHTML() {
         font-size: 13px;
         font-family: system-ui, -apple-system, sans-serif;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: .15s ease-in-out;
+        transition: transform var(--transition), scale var(--transition), opacity var(--transition);
+      }
+
+      media-tooltip-popup[data-starting-style] {
+        transition-duration: 0s;
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      
+      media-tooltip-popup[data-ending-style] {
+        transform: scale(0.9);
+        opacity: 0;
       }
 
       .tooltip {
