@@ -20,17 +20,17 @@ This document describes VJS-10's **architectural principles and patterns**, not 
 
 ## Overview
 
-VJS-10 represents a significant architectural evolution in media player component libraries, prioritizing platform-native development experiences while maintaining shared core logic. This document outlines the design philosophy, architectural influences, and key decisions that shape the VJS-10 ecosystem.
+VJS-10 is a media player component library that prioritizes platform-native development experiences while maintaining shared core logic. This document outlines the design philosophy, architectural influences, and key decisions that shape the VJS-10 ecosystem.
 
 ## Architectural Influences & Inspirations
 
 ### Media Elements: Platform-Agnostic HTMLMediaElement Contract
 
-VJS-10's media state management architecture draws significant inspiration from the [media-elements monorepo](https://github.com/muxinc/media-elements), which pioneered the concept of creating HTMLMediaElement-compatible elements that work across different media providers while maintaining consistent interfaces.
+VJS-10's media state management architecture uses patterns from the [media-elements monorepo](https://github.com/muxinc/media-elements) for creating HTMLMediaElement-compatible elements that work across different media providers while maintaining consistent interfaces.
 
 #### 1. Extended HTMLMediaElement Contract Foundation
 
-**Media Elements Innovation**: The media-elements monorepo established the pattern of creating custom elements that "look like" HTMLMediaElement but can be extended for different media providers (HLS, DASH, YouTube, Vimeo, etc.).
+**Media Elements Pattern**: The media-elements monorepo established the pattern of creating custom elements that "look like" HTMLMediaElement but can be extended for different media providers (HLS, DASH, YouTube, Vimeo, etc.).
 
 **Core Architecture Pattern**:
 
@@ -72,7 +72,7 @@ class HlsVideoElement extends CustomVideoElement {
 
 #### 2. VJS-10's Platform-Agnostic Evolution
 
-**VJS-10 Innovation**: Relaxed the HTMLElement requirement while maintaining the HTMLMediaElement contract, enabling true cross-platform compatibility.
+**VJS-10 Approach**: Relaxed the HTMLElement requirement while maintaining the HTMLMediaElement contract, enabling true cross-platform compatibility.
 
 **Architectural Relaxation**:
 
@@ -162,7 +162,7 @@ export function useVideoElementNative(): MediaStateOwner {
 
 #### 3. Well-Defined Playback Engine Contract
 
-**Media Elements Innovation**: Beyond creating HTMLMediaElement-compatible custom elements, media-elements established patterns for wrapping diverse playback engines (hls.js, dash.js, Shaka Player) behind a consistent interface. While each integration is currently a "one-off" implementation, the pattern demonstrates the value of a well-defined contract between media elements and the playback engines they wrap.
+**Media Elements Pattern**: Beyond creating HTMLMediaElement-compatible custom elements, media-elements established patterns for wrapping diverse playback engines (hls.js, dash.js, Shaka Player) behind a consistent interface. While each integration is currently a "one-off" implementation, the pattern demonstrates the value of a well-defined contract between media elements and the playback engines they wrap.
 
 **Current Media Elements Pattern** (one-off integrations):
 
@@ -307,7 +307,7 @@ const mediaStateOwner: MediaStateOwner = {
 | **Event Architecture**   | DOM event forwarding         | Platform-agnostic EventTarget              |
 | **Provider Integration** | Custom element classes       | State mediator functions                   |
 
-**Key Innovation**: VJS-10 maintains the proven HTMLMediaElement contract from media-elements while removing platform-specific constraints, enabling the same state management patterns to work across web components, React components, and React Native.
+**Key Difference**: VJS-10 maintains the proven HTMLMediaElement contract from media-elements while removing platform-specific constraints, enabling the same state management patterns to work across web components, React components, and React Native.
 
 **References**:
 
@@ -317,11 +317,11 @@ const mediaStateOwner: MediaStateOwner = {
 
 ### Media Chrome: Foundational State Management & Media Architecture
 
-VJS-10's core architectural principles are heavily rooted in [Media Chrome](https://github.com/muxinc/media-chrome)'s pioneering approach to media player component architecture. Media Chrome established several foundational patterns that VJS-10 has evolved and adapted.
+VJS-10's core architectural principles use patterns from [Media Chrome](https://github.com/muxinc/media-chrome)'s approach to media player component architecture. Media Chrome established several foundational patterns that VJS-10 has evolved and adapted.
 
 #### 1. Extended HTMLMediaElement Contract
 
-**Media Chrome Innovation**: Built around an "extended HTMLMediaElement" contract that goes beyond standard web APIs to support modern media features.
+**Media Chrome Pattern**: Built around an "extended HTMLMediaElement" contract that goes beyond standard web APIs to support modern media features.
 
 **VJS-10 Evolution**: The state mediator pattern directly inherits this concept through `MediaStateOwner`:
 
@@ -354,7 +354,7 @@ export type MediaStateOwner = Partial<HTMLVideoElement>
 
 #### 2. State Mediator Pattern
 
-**Media Chrome Innovation**: Originated the **state mediator** concept as a pattern for managing media state transformations and side effects. Media Chrome's state mediators sit between the raw HTMLMediaElement API and component state, providing a clean abstraction layer.
+**Media Chrome Pattern**: Originated the **state mediator** concept as a pattern for managing media state transformations and side effects. Media Chrome's state mediators sit between the raw HTMLMediaElement API and component state, providing a clean abstraction layer.
 
 **Original Media Chrome Pattern**:
 
@@ -409,7 +409,7 @@ export const audible = {
 
 #### 3. Media-Specific State Abstractions
 
-**Media Chrome Contribution**: Pioneered media-specific state concepts like `mediaVolumeLevel`, `streamType`, and advanced playback states.
+**Media Chrome Pattern**: Introduced media-specific state concepts like `mediaVolumeLevel`, `streamType`, and advanced playback states.
 
 **VJS-10 Implementation**: Organized into specialized state mediators:
 
@@ -602,7 +602,7 @@ export function renderMuteButton(props, state) {
 
 ### Base UI Component Primitives
 
-VJS-10's React component architecture is heavily inspired by [Base UI](https://base-ui.com/), MUI's headless component library. This influence manifests in several key ways:
+VJS-10's React component architecture follows patterns from [Base UI](https://base-ui.com/), MUI's headless component library. This influence manifests in several key ways:
 
 #### 1. Primitive Component Philosophy
 
@@ -806,11 +806,11 @@ Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features
 
 ### VidStack: Framework-Agnostic Common Core Architecture
 
-**Primary Influence**: VJS-10's multi-platform architecture draws its most significant inspiration from [VidStack](https://vidstack.io/)'s **framework-agnostic common core** pattern—a fundamental departure from the "thin wrapper" approach used by libraries like Media Chrome.
+**Primary Influence**: VJS-10's multi-platform architecture follows [VidStack](https://vidstack.io/)'s **framework-agnostic common core** pattern—a fundamental departure from the "thin wrapper" approach used by libraries like Media Chrome.
 
 #### 1. Framework-Agnostic Common Core (Primary Influence)
 
-**VidStack's Key Innovation**: Unlike Media Chrome (which wraps Web Components for React), VidStack built a true **shared common core** using their Maverick library that provides framework-agnostic UI logic. This means the same business logic, state management, and component behaviors work across Web Components AND React without wrappers or translations.
+**VidStack's Approach**: Unlike Media Chrome (which wraps Web Components for React), VidStack built a true **shared common core** using their Maverick library that provides framework-agnostic UI logic. This means the same business logic, state management, and component behaviors work across Web Components AND React without wrappers or translations.
 
 **Why This Matters**:
 
@@ -959,7 +959,7 @@ export function useMuteButtonState() {
 
 ### Adobe React Spectrum: State/Behavior/UI Hook Separation
 
-**Primary Influence**: VJS-10's hook-based component architecture draws its most significant inspiration from [Adobe React Spectrum](https://react-spectrum.adobe.com/)'s **three-layer hook separation** pattern, which cleanly divides component logic into state, behavior, and UI layers.
+**Primary Influence**: VJS-10's hook-based component architecture uses [Adobe React Spectrum](https://react-spectrum.adobe.com/)'s **three-layer hook separation** pattern, which divides component logic into state, behavior, and UI layers.
 
 #### Adobe Spectrum Three-Layer Hook Architecture
 
