@@ -20,10 +20,8 @@ import Base from '@/layouts/Base.astro';
           and performance.
         </p>
       </div>
-      <div
-        class="relative z-10 w-full aspect-video rounded-3xl overflow-hidden bg-dark-80 -mb-11 md:-mb-21 lg:-mb-32 shadow-2xl"
-      >
-        <HeroVideo client:load className="absolute left-0 top-0 w-full h-full" />
+      <div class="vjs relative z-10 w-full -mb-11 md:-mb-21 lg:-mb-32 grid grid-cols-1 grid-rows-1">
+        <HeroVideo client:load className="aspect-video rounded-3xl bg-dark-80 shadow-2xl" />
       </div>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-28 md:h-67 grid grid-rows-4">

@@ -1,3 +1,11 @@
 @import 'tailwindcss';
 
 @source "../../../packages/react";
+
+/* theme inline tells tailwind to reference the value of these properties */
+@theme inline {
+  --font-*: initial;
+  /* --font-instrument-sans and --font-ibm-plex-mono are defined in Base.astro */
+  --font-sans: var(--font-instrument-sans);
+  --font-mono: var(--font-ibm-plex-mono);
+}
