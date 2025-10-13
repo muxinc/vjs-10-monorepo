@@ -1,4 +1,4 @@
-import type { FC, ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useSyncExternalStore } from 'react';
 
@@ -34,13 +34,12 @@ export function toConnectedComponent<
   defaultRender: TRenderFn,
   displayName: string,
 ): ConnectedComponent<TProps, TRenderFn> {
-  const ConnectedComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
+  const ConnectedComponent = forwardRef<HTMLElement, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
-      const connectedState = useStateHook(props as TProps);
-      const connectedProps = usePropsHook(props as TProps, connectedState);
-      // Add ref to connectedProps if it exists
-      const propsWithRef = ref ? { ...connectedProps, ref } : connectedProps;
-      return <Context.Provider value={connectedState}>{render(propsWithRef, connectedState)}</Context.Provider>;
+      const propsWithRef = ref ? { ...props, ref } : props;
+      const connectedState = useStateHook(propsWithRef as unknown as TProps);
+      const connectedProps = usePropsHook(propsWithRef as unknown as TProps, connectedState);
+      return <Context.Provider value={connectedState}>{render(connectedProps, connectedState)}</Context.Provider>;
     },
   );
 
@@ -52,8 +51,8 @@ export function toConnectedComponent<
 /**
  * Type helper to infer the component type from the factory
  */
-export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn extends RenderFn<any, any>> = FC<
-  TProps & { render?: TRenderFn }
+export type ConnectedComponent<TProps extends Record<string, any>, TRenderFn extends RenderFn<any, any>> = React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<TProps & { render?: TRenderFn }> & React.RefAttributes<HTMLElement>
 >;
 
 /**
@@ -74,13 +73,12 @@ export function toContextComponent<
   defaultRender: TRenderFn,
   displayName: string,
 ): ContextComponent<TProps, TRenderFn> {
-  const ContextComponent = forwardRef<any, TProps & { render?: TRenderFn }>(
+  const ContextComponent = forwardRef<HTMLElement, TProps & { render?: TRenderFn }>(
     ({ render = defaultRender, ...props }, ref) => {
       const context = useContext(Context);
-      const contextProps = usePropsHook(props as TProps, context);
-      // Add ref to contextProps if it exists
-      const propsWithRef = ref ? { ...contextProps, ref } : contextProps;
-      return render(propsWithRef, context);
+      const propsWithRef = ref ? { ...props, ref } : props;
+      const contextProps = usePropsHook(propsWithRef as unknown as TProps, context);
+      return render(contextProps, context);
     },
   );
 
@@ -95,7 +93,9 @@ export function toContextComponent<
 export type ContextComponent<
   TProps extends Record<string, any>,
   TRenderFn extends (props: any, context: any) => ReactElement,
-> = FC<TProps & { render?: TRenderFn }>;
+> = React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<TProps & { render?: TRenderFn }> & React.RefAttributes<any>
+>;
 
 /**
  * Hook that manages a CoreClass instance and triggers re-renders when state changes.

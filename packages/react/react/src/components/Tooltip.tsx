@@ -8,6 +8,7 @@ import {
   FloatingPortal,
   offset,
   shift,
+  useClientPoint,
   useDismiss,
   useFloating,
   useFocus,
@@ -42,12 +43,14 @@ interface TooltipContextType {
   getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
   getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
   updatePositioning: (props: UpdatePositioningProps) => void;
+  trackCursorAxis?: 'x' | 'y' | 'both' | undefined;
 }
 
 interface TooltipRootProps {
   delay?: number;
   closeDelay?: number;
   children: ReactNode;
+  trackCursorAxis?: 'x' | 'y' | 'both';
 }
 
 interface TooltipTriggerProps {
@@ -101,7 +104,7 @@ function useTooltipPositionerContext(): TooltipPositionerContextType {
   return context;
 }
 
-function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps): JSX.Element {
+function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: TooltipRootProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>('top');
   const [sideOffset, setSideOffset] = useState(0);
@@ -126,7 +129,7 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
   const { status: transitionStatus } = useTransitionStatus(context);
 
   const hover = useHover(context, {
-    restMs: 300,
+    // restMs: 300, // this broke the time slider tooltip, todo: find solution!
     delay: {
       open: delay,
       close: closeDelay,
@@ -136,7 +139,18 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
   const dismiss = useDismiss(context);
   const role = useRole(context, { role: 'tooltip' });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
+  // Use client point hook when trackCursorAxis is enabled
+  const clientPoint = useClientPoint(context, {
+    axis: trackCursorAxis || 'both',
+    enabled: !!trackCursorAxis,
+  });
+
+  // Combine interactions based on whether cursor tracking is enabled
+  const interactions = trackCursorAxis
+    ? [hover, focus, dismiss, role, clientPoint]
+    : [hover, focus, dismiss, role];
+
+  const { getReferenceProps, getFloatingProps } = useInteractions(interactions);
 
   const updatePositioning = useCallback(({ side, sideOffset, collisionPadding }: UpdatePositioningProps) => {
     setPlacement(side);
@@ -151,7 +165,8 @@ function TooltipRoot({ delay = 600, closeDelay = 0, children }: TooltipRootProps
     updatePositioning,
     arrowRef,
     transitionStatus,
-  }), [getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus]);
+    trackCursorAxis,
+  }), [getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus, trackCursorAxis]);
 
   return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
 }
@@ -174,7 +189,7 @@ function TooltipPositioner({
   collisionPadding = 0,
   children,
 }: TooltipPositionerProps): JSX.Element | null {
-  const { context, updatePositioning } = useTooltipContext();
+  const { context, updatePositioning, trackCursorAxis } = useTooltipContext();
   const { refs, floatingStyles } = context;
 
   // Update positioning when props change
@@ -188,7 +203,13 @@ function TooltipPositioner({
 
   return (
     <TooltipPositionerContext.Provider value={positionerContextValue}>
-      <div ref={refs.setFloating} style={floatingStyles}>
+      <div
+        ref={refs.setFloating}
+        style={{
+          ...floatingStyles,
+          pointerEvents: trackCursorAxis ? 'none' : undefined,
+        }}
+      >
         {children}
       </div>
     </TooltipPositionerContext.Provider>
@@ -201,7 +222,7 @@ function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Elem
   const triggerElement = refs.reference.current as HTMLElement | null;
 
   // Copy data attributes from trigger element
-  const dataAttributes = triggerElement
+  const dataAttributes = triggerElement?.attributes
     ? Object.fromEntries(
         Array.from(triggerElement.attributes)
           .filter(attr => attr.name.startsWith('data-'))

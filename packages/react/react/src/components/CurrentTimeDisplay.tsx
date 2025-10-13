@@ -20,8 +20,11 @@ export function useCurrentTimeDisplayState(_props: any): {
   };
 }
 
-export type useCurrentTimeDisplayState = typeof useCurrentTimeDisplayState;
-export type CurrentTimeDisplayState = ReturnType<useCurrentTimeDisplayState>;
+export type CurrentTimeDisplayState = ReturnType<typeof useCurrentTimeDisplayState>;
+
+export interface CurrentTimeDisplayProps extends React.ComponentProps<'span'> {
+  showRemaining?: boolean;
+}
 
 export function useCurrentTimeDisplayProps(
   props: PropsWithChildren,
@@ -35,9 +38,6 @@ export function useCurrentTimeDisplayProps(
   return baseProps;
 }
 
-export type useCurrentTimeDisplayProps = typeof useCurrentTimeDisplayProps;
-type CurrentTimeDisplayProps = ReturnType<useCurrentTimeDisplayProps>;
-
 export function renderCurrentTimeDisplay(props: CurrentTimeDisplayProps, state: CurrentTimeDisplayState): JSX.Element {
   const { showRemaining, ...restProps } = props;
 
@@ -49,8 +49,6 @@ export function renderCurrentTimeDisplay(props: CurrentTimeDisplayProps, state: 
 
   return <span {...restProps}>{timeLabel}</span>;
 }
-
-export type renderCurrentTimeDisplay = typeof renderCurrentTimeDisplay;
 
 export const CurrentTimeDisplay: ConnectedComponent<CurrentTimeDisplayProps, typeof renderCurrentTimeDisplay>
   = toConnectedComponent(

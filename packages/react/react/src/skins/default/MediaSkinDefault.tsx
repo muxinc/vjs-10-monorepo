@@ -11,13 +11,13 @@ import {
 } from '@vjs-10/react-icons';
 
 import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
-
 import { DurationDisplay } from '../../components/DurationDisplay';
 import { FullscreenButton } from '../../components/FullscreenButton';
 import { MediaContainer } from '../../components/MediaContainer';
 import MuteButton from '../../components/MuteButton';
 import PlayButton from '../../components/PlayButton';
 import { Popover } from '../../components/Popover';
+import { PreviewTimeDisplay } from '../../components/PreviewTimeDisplay';
 import { TimeSlider } from '../../components/TimeSlider';
 import { Tooltip } from '../../components/Tooltip';
 import { VolumeSlider } from '../../components/VolumeSlider';
@@ -36,7 +36,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
       <div className={styles.Overlay} aria-hidden="true" />
 
       <div className={styles.Controls} data-testid="media-controls">
-        <Tooltip.Root delay={500} closeDelay={0}>
+        <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
               <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
@@ -60,13 +60,24 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
             className={styles.TimeDisplay}
           />
 
-          <TimeSlider.Root className={styles.SliderRoot}>
-            <TimeSlider.Track className={styles.SliderTrack}>
-              <TimeSlider.Progress className={styles.SliderProgress} />
-              <TimeSlider.Pointer className={styles.SliderPointer} />
-            </TimeSlider.Track>
-            <TimeSlider.Thumb className={styles.SliderThumb} />
-          </TimeSlider.Root>
+          <Tooltip.Root trackCursorAxis="x">
+            <Tooltip.Trigger>
+              <TimeSlider.Root className={styles.SliderRoot}>
+                <TimeSlider.Track className={styles.SliderTrack}>
+                  <TimeSlider.Progress className={styles.SliderProgress} />
+                  <TimeSlider.Pointer className={styles.SliderPointer} />
+                </TimeSlider.Track>
+                <TimeSlider.Thumb className={styles.SliderThumb} />
+              </TimeSlider.Root>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Positioner side="top" sideOffset={18} collisionPadding={12}>
+                <Tooltip.Popup className={`${styles.TooltipPopup}`}>
+                  <PreviewTimeDisplay />
+                </Tooltip.Popup>
+              </Tooltip.Positioner>
+            </Tooltip.Portal>
+          </Tooltip.Root>
 
           <DurationDisplay className={styles.TimeDisplay} />
         </div>
@@ -93,7 +104,7 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           </Popover.Portal>
         </Popover.Root>
 
-        <Tooltip.Root delay={500} closeDelay={0}>
+        <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
             <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
               <FullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />

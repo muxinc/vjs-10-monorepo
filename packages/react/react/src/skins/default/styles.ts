@@ -143,7 +143,7 @@ const styles: MediaDefaultSkinStyles = {
   ),
   SliderProgress: cn('bg-white rounded-[inherit]'),
   // TODO: Work out what we want to do here.
-  SliderPointer: cn('rounded-[inherit]'),
+  SliderPointer: cn('bg-white/20 rounded-[inherit]'),
   SliderThumb: cn(
     'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',
     'opacity-0 transition-[opacity,height,width] ease-in-out',
