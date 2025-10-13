@@ -1,0 +1,14 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types';
+import { twMerge } from 'tailwind-merge';
+
+type Props<Tag extends HTMLTag = 'li'> = Polymorphic<{ as: Tag }> & {
+  class?: string;
+};
+
+const { as: Tag = 'li', class: className, ...props } = Astro.props;
+---
+
+<Tag class={twMerge(className)} {...props}>
+  <slot />
+</Tag>

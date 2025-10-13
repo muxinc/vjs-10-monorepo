@@ -1,0 +1,50 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+type Props<Tag extends HTMLTag = 'pre'> = Polymorphic<{ as: Tag }> & {
+  maxWidth?: boolean;
+  class?: string;
+};
+
+const { as: Tag = 'pre', maxWidth = true, class: className, ...props } = Astro.props;
+---
+
+<div class={twMerge(clsx('relative my-10 group', maxWidth && 'max-w-3xl mx-auto'))}>
+  <Tag class={twMerge('bg-dark-100 text-light-100 rounded-lg p-5 overflow-x-auto', className)} {...props}><slot /></Tag>
+</div>
+
+<script>
+  function setupCopyButtons() {
+    const buttons = document.querySelectorAll('[data-copy-button]');
+
+    buttons.forEach((button) => {
+      if (button.hasAttribute('data-listener-attached')) return;
+      button.setAttribute('data-listener-attached', 'true');
+
+      button.addEventListener('click', async () => {
+        const pre = button.parentElement?.querySelector('pre');
+        const code = pre?.querySelector('code');
+        const text = code?.textContent || pre?.textContent || '';
+
+        try {
+          await navigator.clipboard.writeText(text);
+          const originalText = button.textContent;
+          button.textContent = 'Copied!';
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy code:', err);
+        }
+      });
+    });
+  }
+
+  // Run on initial load
+  setupCopyButtons();
+
+  // Re-run after view transitions (for Astro's client-side navigation)
+  document.addEventListener('astro:page-load', setupCopyButtons);
+</script>

@@ -7,6 +7,7 @@ import { getCollection, render } from 'astro:content';
 import DocsLayout from '@/layouts/Docs.astro';
 import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import { filterSidebar, getAllGuideSlugs } from '@/utils/docs/sidebar';
+import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
 
 export async function getStaticPaths() {
   const docsCollection = await getCollection('docs');
@@ -64,9 +65,9 @@ type Props = {
 };
 
 const { doc, framework, style } = Astro.props;
-const { Content } = await render(doc);
+const { Content, getHeadings } = await render(doc);
 ---
 
 <DocsLayout doc={doc} framework={framework} style={style}>
-  <Content />
+  <Content components={{ ...defaultMarkdownComponents }} />
 </DocsLayout>

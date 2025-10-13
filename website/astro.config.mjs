@@ -9,14 +9,24 @@ import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 import { generateDocsRedirects } from './src/utils/docs/staticRedirects.ts';
+import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks.js';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://videojs.org',
   adapter: vercel(),
-  integrations: [mdx(), sitemap(), react()],
+  integrations: [mdx({ extendMarkdownConfig: true }), sitemap(), react()],
   redirects: generateDocsRedirects(),
   prefetch: true,
+
+  markdown: {
+    // a lot of these are defaults but I'm setting them just to be explicit
+    smartypants: true,
+    gfm: true,
+    syntaxHighlight: 'shiki',
+    shikiConfig: {},
+    rehypePlugins: [rehypePrepareCodeBlocks],
+  },
 
   image: {
     domains: ['image.mux.com'],

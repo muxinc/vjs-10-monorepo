@@ -45,23 +45,23 @@
   --tracking-widest: 0.08em;
 
   --text-*: initial;
-  --text-h1: 4rem;
+  --text-h1: 4rem; /* 64px */
   --text-h1--line-height: 1;
   --text-h1--letter-spacing: -0.04em;
   --text-h1--font-weight: 600;
-  --text-h2: 3rem;
+  --text-h2: 3rem; /* 48px */
   --text-h2--line-height: calc(56 / 48);
   --text-h2--letter-spacing: -0.04em;
   --text-h2--font-weight: 600;
-  --text-h3: 2.5rem;
+  --text-h3: 2.5rem; /* 40px */
   --text-h3--line-height: 1;
   --text-h3--letter-spacing: -0.04em;
   --text-h3--font-weight: 600;
-  --text-h4: 2rem;
+  --text-h4: 2rem; /* 32px */
   --text-h4--line-height: calc(40 / 32);
   --text-h4--letter-spacing: -0.02em;
   --text-h4--font-weight: 600;
-  --text-h5: 1.5rem;
+  --text-h5: 1.5rem; /* 24px */
   --text-h5--line-height: calc(32 / 24);
   --text-h5--letter-spacing: -0.02em;
   --text-h5--font-weight: 500;

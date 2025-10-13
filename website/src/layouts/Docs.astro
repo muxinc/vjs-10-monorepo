@@ -9,6 +9,7 @@ import SidebarItem from '@/components/docs/SidebarItem.astro';
 import { filterSidebar } from '@/utils/docs/sidebar';
 
 import Base from './Base.astro';
+import H3 from '@/components/typography/H3.astro';
 
 type Props = {
   doc: CollectionEntry<'docs'>;
@@ -44,9 +45,11 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
       </nav>
     </aside>
     <main>
-      <article>
-        <h1>{doc.data.title}</h1>
-        <p>{doc.data.description}</p>
+      <article class="px-5 pb-10">
+        <header class="border-b border-light-40 max-w-3xl mx-auto pb-10 mb-10">
+          <H3 as="h1">{doc.data.title}</H3>
+          <p>{doc.data.description}</p>
+        </header>
         <slot />
       </article>
     </main>
