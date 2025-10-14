@@ -10,3 +10,43 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
   background: #f5f5f5;
 }
+
+/* Restore semantic HTML styles that Tailwind removes */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-block: 0.67em;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-block: 0.83em;
+}
+
+h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-block: 1em;
+}
+
+p {
+  margin-block: 1em;
+}
+
+ul, ol {
+  margin-block: 1em;
+  padding-inline-start: 40px;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  display: list-item;
+}
