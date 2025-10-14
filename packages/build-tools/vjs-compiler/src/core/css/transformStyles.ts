@@ -280,14 +280,17 @@ function rescopeCSSToStyleKeys(
         rescopedRules.push(mediaRule.toString());
       }
     } else {
-      // No rules found - add comment with proper selector
-      let baseSelector = `.${key}`; // Default to class selector
-      const styleKey = styleKeyMap.get(key);
-      if (styleKey) {
-        const projection = projectStyleSelector(styleKey, options);
-        baseSelector = projection.cssSelector;
+      // No rules found - optionally add comment for debugging
+      if (options?.includeEmptyRules) {
+        let baseSelector = `.${key}`; // Default to class selector
+        const styleKey = styleKeyMap.get(key);
+        if (styleKey) {
+          const projection = projectStyleSelector(styleKey, options);
+          baseSelector = projection.cssSelector;
+        }
+        rescopedRules.push(`${baseSelector} {\n  /* Tailwind classes: ${classString} */\n  /* No CSS generated */\n}`);
       }
-      rescopedRules.push(`${baseSelector} {\n  /* Tailwind classes: ${classString} */\n  /* No CSS generated */\n}`);
+      // Otherwise, skip empty rules entirely (default behavior)
     }
   }
 

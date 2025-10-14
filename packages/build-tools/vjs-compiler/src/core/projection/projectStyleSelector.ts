@@ -33,6 +33,17 @@ export interface SelectorProjection {
 export interface ProjectionOptions {
   /** Selector projection strategy (defaults to 'optimize') */
   selectorStrategy?: SelectorStrategy;
+
+  /**
+   * Include empty CSS rules in output (for debugging)
+   *
+   * When false (default), style keys that don't generate any CSS declarations
+   * are filtered out of the output. When true, empty rules with diagnostic
+   * comments are included.
+   *
+   * Default: false
+   */
+  includeEmptyRules?: boolean;
 }
 
 /**
