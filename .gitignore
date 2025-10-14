@@ -130,3 +130,5 @@ bun.lockb
 # Temporary / Testing
 # -------------------------
 temp-skin-permutations/
+test-results/
+playwright-report/

@@ -73,11 +73,50 @@ function inferElementType(styleKey: string): string {
 }
 
 /**
+ * Extract child class selectors from arbitrary variants
+ *
+ * Arbitrary variants like `[&_.icon]:opacity-0` reference child elements
+ * that need to exist in the HTML for Tailwind to generate the CSS.
+ *
+ * Patterns we extract:
+ * - `[&_.class]:utility` → `.class`
+ * - `[&[data-foo]_.class]:utility` → `.class`
+ * - `[&_.class]:[arbitrary]` → `.class`
+ *
+ * @param classString - Tailwind class string with arbitrary variants
+ * @returns Array of child class names (without the dot)
+ */
+function extractChildClassSelectors(classString: string): string[] {
+  const childClasses = new Set<string>();
+
+  // Pattern: [&_.<class-name>] or [&[...]_.<class-name>]
+  // Matches arbitrary variants that reference child classes
+  // Examples:
+  // - [&_.icon]:opacity-0 → captures "icon"
+  // - [&[data-paused]_.play-icon]:opacity-100 → captures "play-icon"
+  // - [&_.icon]:[grid-area:1/1] → captures "icon"
+  const pattern = /\[&(?:\[[^\]]+\])?_\.([a-z0-9-]+)\]/gi;
+
+  let match;
+  while ((match = pattern.exec(classString)) !== null) {
+    if (match[1]) {
+      childClasses.add(match[1]);
+    }
+  }
+
+  return Array.from(childClasses);
+}
+
+/**
  * Build HTML wrapper for Tailwind processing
  *
  * Tailwind v4 scans HTML to determine which classes to generate.
  * This function wraps class strings in appropriate HTML elements
  * to enable variant processing (pseudo-classes, data attributes, etc.)
+ *
+ * For arbitrary variants with child selectors (e.g., `[&_.icon]:opacity-0`),
+ * we generate placeholder child elements so Tailwind can see the structure
+ * and generate the appropriate CSS.
  *
  * @param classMap - Map of style keys to class strings
  * @returns HTML string with all classes
@@ -104,7 +143,15 @@ export function buildHTMLForTailwind(classMap: Record<string, string>): string {
       }
     }
 
-    return `<${elementType} ${attributes.join(' ')}></${elementType}>`;
+    // Extract child class selectors from arbitrary variants
+    const childClasses = extractChildClassSelectors(classString);
+
+    // Build child elements if any child selectors were found
+    const childElements = childClasses.length > 0
+      ? '\n  ' + childClasses.map(className => `<span class="${className}"></span>`).join('\n  ') + '\n'
+      : '';
+
+    return `<${elementType} ${attributes.join(' ')}>${childElements}</${elementType}>`;
   });
 
   return `<!DOCTYPE html>
@@ -131,6 +178,13 @@ ${elements.join('\n')}
 export async function processTailwindClasses(styles: Record<string, string>): Promise<string> {
   // Build HTML with all classes for scanning
   const html = buildHTMLForTailwind(styles);
+
+  // DEBUG: Log generated HTML
+  if (process.env.DEBUG_TAILWIND) {
+    console.log('=== Generated HTML for Tailwind ===');
+    console.log(html);
+    console.log('=== End HTML ===\n');
+  }
 
   // Build Tailwind config with content and theme
   const tailwindConfig: TailwindConfig = {
@@ -243,10 +297,35 @@ export async function processTailwindClasses(styles: Record<string, string>): Pr
 `;
 
   // Process through PostCSS
+  // NOTE: postcss-nested is REQUIRED because Tailwind v4 outputs nested CSS with & syntax
+  // for arbitrary variants like `[&_.icon]:opacity-0`, which become:
+  //   .\[\&_\.icon\]\:opacity-0 {
+  //     & .icon { opacity: 0; }
+  //   }
+  // postcss-nested flattens this to: `.\[\&_\.icon\]\:opacity-0 .icon { opacity: 0; }`
   const result = await postcss([tailwindPlugin, postcssNested()]).process(inputCSS, {
     from: undefined,
     map: false,
   });
+
+  // DEBUG: Log Tailwind output
+  if (process.env.DEBUG_TAILWIND) {
+    console.log('=== Tailwind CSS Output (after PostCSS) ===');
+    console.log(result.css);
+    console.log('=== End Tailwind Output ===\n');
+
+    // Check if descendant selectors are present
+    const hasDescendantSelectors = result.css.includes('\\[\\&');
+    console.log(`[DEBUG] Has descendant selectors with \\[\\&: ${hasDescendantSelectors}`);
+
+    if (hasDescendantSelectors) {
+      const matches = result.css.match(/\.\\\[\\&[^\s]+\s+[^\{]+\{/g);
+      console.log(`[DEBUG] Found ${matches ? matches.length : 0} descendant selector patterns`);
+      if (matches) {
+        console.log('[DEBUG] Patterns:', matches.slice(0, 3));
+      }
+    }
+  }
 
   return result.css;
 }

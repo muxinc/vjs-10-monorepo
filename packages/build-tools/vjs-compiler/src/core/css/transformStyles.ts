@@ -114,10 +114,16 @@ function rescopeCSSToStyleKeys(
     parentAtRule: postcss.AtRule | null;
   }
   const utilityRuleMap = new Map<string, RuleInfo>();
+
+  // Maps utility class name → arbitrary variant rules (with descendant selectors)
+  // These rules have patterns like: `.\[\&_\.icon\]\:\[grid-area\:1\/1\] .icon { ... }`
+  const arbitraryVariantRuleMap = new Map<string, RuleInfo[]>();
+
   let hostRule: string | null = null;
 
   root.walkRules((rule) => {
     const selector = rule.selector.trim();
+
 
     // Preserve :host rule (contains CSS variable definitions)
     if (selector === ':host') {
@@ -128,6 +134,74 @@ function rescopeCSSToStyleKeys(
     // Extract utility class name (e.g., '.flex' → 'flex', '.hover\:bg-blue-600:hover' → 'hover:bg-blue-600')
     // Only process top-level rules (parent is Root or AtRule like @media)
     if (selector.startsWith('.') && (rule.parent?.type === 'root' || rule.parent?.type === 'atrule')) {
+      // Check if this is an arbitrary variant with descendant selector
+      // Pattern: `.\[\&_<something>\] <descendant>` or `.\[\&\[<attr>\]_<something>\] <descendant>`
+      // These selectors contain a SPACE (descendant combinator) after the utility class
+      // Note: The [& is escaped by Tailwind as \[\&
+      if (selector.includes(' ') && /^\.\\\[\\&/.test(selector)) {
+        // This is an arbitrary variant with a descendant selector
+        // Examples:
+        // - `.\[\&_\.icon\]\:\[grid-area\:1\/1\] .icon`
+        // - `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused] .play-icon`
+        //
+        // The second example has an attribute selector [data-paused] AFTER the utility class
+        // but BEFORE the space. We need to strip that to match the original utility name.
+
+        const spaceIndex = selector.indexOf(' ');
+        let utilityClassPart = selector.substring(0, spaceIndex);
+
+        // Check if there's an attribute selector at the end (before the space)
+        // The utility class ALWAYS ends with an ESCAPED ] (e.g., `.\[\&_\.icon\]` or `.\[\&\[data-paused\]_\.play-icon\]`)
+        // But there might be a trailing UNESCAPED attribute selector: `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused]`
+        //                                                                                              ^-- last \]    ^-- trailing [data-paused]
+        //
+        // We need to find the last ESCAPED \] which marks the end of the utility class
+
+        // Find the last \] (escaped bracket) which marks the end of the utility class
+        let lastEscapedBracketIndex = utilityClassPart.lastIndexOf('\\]');
+
+        if (lastEscapedBracketIndex > 0 && lastEscapedBracketIndex + 2 < utilityClassPart.length) {
+          // There's something after the last \], extract it (after the 2-char sequence \])
+          const afterUtilityClass = utilityClassPart.substring(lastEscapedBracketIndex + 2);
+
+          // Check if it contains [ (unescaped attribute selector like [data-paused])
+          // The pattern is: \:utility-name[attribute-selector]
+          // e.g., "\:opacity-100[data-paused]"
+          const attrSelectorIndex = afterUtilityClass.indexOf('[');
+          if (attrSelectorIndex !== -1) {
+            // This has a trailing attribute selector, remove everything from [ onwards
+            utilityClassPart = utilityClassPart.substring(0, lastEscapedBracketIndex + 2 + attrSelectorIndex);
+          }
+        }
+
+        // Remove the leading dot and unescape
+        const utilityClass = utilityClassPart.substring(1)
+          .replace(/\\:/g, ':')
+          .replace(/\\\[/g, '[')
+          .replace(/\\\]/g, ']')
+          .replace(/\\=/g, '=')
+          .replace(/\\\//g, '/')
+          .replace(/\\&/g, '&')
+          .replace(/\\_/g, '_')
+          .replace(/\\\./g, '.');
+
+        // Store in arbitrary variant map
+        const parentAtRule = rule.parent?.type === 'atrule' ? (rule.parent as postcss.AtRule) : null;
+        const ruleInfo: RuleInfo = {
+          rule: rule.clone(),
+          parentAtRule: parentAtRule ? (parentAtRule.clone() as postcss.AtRule) : null,
+        };
+
+        const existing = arbitraryVariantRuleMap.get(utilityClass);
+        if (existing) {
+          existing.push(ruleInfo);
+        } else {
+          arbitraryVariantRuleMap.set(utilityClass, [ruleInfo]);
+        }
+        return; // Don't add to utilityRuleMap
+      }
+
+      // Regular utility class (no descendant selector)
       // First, extract the class name part (before any pseudo-classes/elements/attribute selectors)
       // We need to match: . followed by any characters until we hit an unescaped : or [
       // Pattern: . followed by (non-: non-[ non-\ non-space chars OR \ followed by any char)+
@@ -181,10 +255,20 @@ function rescopeCSSToStyleKeys(
     }
     const collectedRules: CollectedRuleInfo[] = [];
 
+    // Collect arbitrary variant rules (separate array for special handling)
+    const arbitraryVariantRules: RuleInfo[] = [];
+
     for (const utility of utilities) {
+      // Check regular utility map first
       const ruleInfo = utilityRuleMap.get(utility);
       if (ruleInfo) {
         collectedRules.push(ruleInfo);
+      }
+
+      // Also check arbitrary variant map
+      const arbitraryRules = arbitraryVariantRuleMap.get(utility);
+      if (arbitraryRules) {
+        arbitraryVariantRules.push(...arbitraryRules);
       }
     }
 
@@ -276,6 +360,152 @@ function rescopeCSSToStyleKeys(
       }
 
       // Output media query rules
+      for (const mediaRule of mediaRules) {
+        rescopedRules.push(mediaRule.toString());
+      }
+
+      // Process arbitrary variant rules (descendant selectors)
+      // These have patterns like:
+      // - `.\[\&_\.icon\]\:\[grid-area\:1\/1\] .icon { grid-area: 1/1; }`
+      // - `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused] .play-icon`
+      //
+      // The second pattern has [data-paused] BETWEEN the utility class and the space,
+      // which needs to be attached to the base selector.
+      for (const ruleInfo of arbitraryVariantRules) {
+        const { rule, parentAtRule } = ruleInfo;
+        const originalSelector = rule.selector.trim();
+
+        const spaceIndex = originalSelector.indexOf(' ');
+        if (spaceIndex === -1) continue; // Should always have a space, but defensive
+
+        // Extract what comes before the space
+        const beforeSpace = originalSelector.substring(0, spaceIndex);
+
+        // Check if there's a trailing attribute selector (after the utility class)
+        // E.g., `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused]`
+        // The `[data-paused]` at the end is the attribute selector
+        //
+        // To find it, we look for the last ESCAPED \] (end of utility class),
+        // then check if there's a [ somewhere after it
+        let attributeSelector = '';
+        const lastEscapedBracket = beforeSpace.lastIndexOf('\\]');
+
+        if (lastEscapedBracket !== -1 && lastEscapedBracket + 2 < beforeSpace.length) {
+          // There's something after the last \]
+          const afterUtility = beforeSpace.substring(lastEscapedBracket + 2);
+          const attrStart = afterUtility.indexOf('[');
+
+          if (attrStart !== -1) {
+            // Found an attribute selector
+            attributeSelector = afterUtility.substring(attrStart);
+          }
+        }
+
+        // Extract the descendant part after the space
+        const descendantPart = originalSelector.substring(spaceIndex + 1);
+
+        // Build rescoped selector: baseSelector + attributeSelector + descendant
+        // E.g., `.button` + `[data-paused]` + ` .play-icon` → `.button[data-paused] .play-icon`
+        // E.g., `.button` + `` + ` .icon` → `.button .icon`
+        const rescopedSelector = `${baseSelector}${attributeSelector} ${descendantPart}`;
+
+        // Create rescoped rule
+        const rescopedRule = postcss.rule({ selector: rescopedSelector });
+        rule.each((child) => {
+          if (child.type === 'decl') {
+            rescopedRule.append(child.clone());
+          }
+        });
+
+        // Output rule (wrap in @media if needed)
+        if (rescopedRule.nodes && rescopedRule.nodes.length > 0) {
+          if (parentAtRule) {
+            const existingMediaRule = mediaRules.find((mr) => mr.params === parentAtRule.params);
+            if (existingMediaRule) {
+              existingMediaRule.append(rescopedRule);
+            } else {
+              const mediaRule = postcss.atRule({
+                name: parentAtRule.name,
+                params: parentAtRule.params,
+              });
+              mediaRule.append(rescopedRule);
+              mediaRules.push(mediaRule);
+              rescopedRules.push(mediaRule.toString());
+            }
+          } else {
+            rescopedRules.push(rescopedRule.toString());
+          }
+        }
+      }
+    } else if (arbitraryVariantRules.length > 0) {
+      // Only arbitrary variant rules, no regular utilities
+      // Still need to process them
+      let baseSelector = `.${key}`;
+      const styleKey = styleKeyMap.get(key);
+      if (styleKey) {
+        const projection = projectStyleSelector(styleKey, options);
+        baseSelector = projection.cssSelector;
+      }
+
+      const mediaRules: postcss.AtRule[] = [];
+
+      for (const ruleInfo of arbitraryVariantRules) {
+        const { rule, parentAtRule } = ruleInfo;
+        const originalSelector = rule.selector.trim();
+
+        const spaceIndex = originalSelector.indexOf(' ');
+        if (spaceIndex === -1) continue;
+
+        // Extract what comes before the space
+        const beforeSpace = originalSelector.substring(0, spaceIndex);
+
+        // Check if there's a trailing attribute selector (after the utility class)
+        // Same logic as the first branch above
+        let attributeSelector = '';
+        const lastEscapedBracket = beforeSpace.lastIndexOf('\\]');
+
+        if (lastEscapedBracket !== -1 && lastEscapedBracket + 2 < beforeSpace.length) {
+          const afterUtility = beforeSpace.substring(lastEscapedBracket + 2);
+          const attrStart = afterUtility.indexOf('[');
+
+          if (attrStart !== -1) {
+            attributeSelector = afterUtility.substring(attrStart);
+          }
+        }
+
+        // Extract the descendant part after the space
+        const descendantPart = originalSelector.substring(spaceIndex + 1);
+
+        // Build rescoped selector: baseSelector + attributeSelector + descendant
+        const rescopedSelector = `${baseSelector}${attributeSelector} ${descendantPart}`;
+
+        const rescopedRule = postcss.rule({ selector: rescopedSelector });
+        rule.each((child) => {
+          if (child.type === 'decl') {
+            rescopedRule.append(child.clone());
+          }
+        });
+
+        if (rescopedRule.nodes && rescopedRule.nodes.length > 0) {
+          if (parentAtRule) {
+            const existingMediaRule = mediaRules.find((mr) => mr.params === parentAtRule.params);
+            if (existingMediaRule) {
+              existingMediaRule.append(rescopedRule);
+            } else {
+              const mediaRule = postcss.atRule({
+                name: parentAtRule.name,
+                params: parentAtRule.params,
+              });
+              mediaRule.append(rescopedRule);
+              mediaRules.push(mediaRule);
+            }
+          } else {
+            rescopedRules.push(rescopedRule.toString());
+          }
+        }
+      }
+
+      // Output media rules
       for (const mediaRule of mediaRules) {
         rescopedRules.push(mediaRule.toString());
       }
