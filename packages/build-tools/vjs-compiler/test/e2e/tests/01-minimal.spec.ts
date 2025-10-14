@@ -9,6 +9,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { compareScreenshots, saveComparisonArtifacts, assertVisualEquivalence } from '../app/src/test-utils/visual-comparison';
 
 test.describe('Level 1: Minimal Skin', () => {
   test('React version loads without errors', async ({ page }) => {
@@ -77,20 +78,38 @@ test.describe('Level 1: Minimal Skin', () => {
     await reactPage.waitForSelector('video'); // React: regular DOM elements
     await wcPage.waitForSelector('media-play-button'); // WC: custom elements
 
+    // Wait a moment for static video to load
+    // Static video is 1-second long and loads instantly
+    await reactPage.waitForTimeout(500);
+    await wcPage.waitForTimeout(500);
+
     // Take screenshots - use video element as common ancestor
     const reactScreenshot = await reactPage.locator('video').screenshot();
     const wcScreenshot = await wcPage.locator('video').screenshot();
 
-    // Both should have rendered something (non-zero size)
-    expect(reactScreenshot.length).toBeGreaterThan(0);
-    expect(wcScreenshot.length).toBeGreaterThan(0);
+    // Pixel-diff comparison
+    const result = compareScreenshots(reactScreenshot, wcScreenshot, {
+      threshold: 0.1,
+      includeAA: false
+    });
+
+    // Save artifacts if there's any difference (for debugging)
+    if (result.percentDiff > 0) {
+      saveComparisonArtifacts(
+        reactScreenshot,
+        wcScreenshot,
+        result,
+        'minimal-skin',
+        'test-results/visual-diffs'
+      );
+    }
+
+    // Assert visual equivalence (< 2% difference)
+    assertVisualEquivalence(result, 2.0);
 
     // Cleanup
     await reactContext.close();
     await wcContext.close();
-
-    // TODO: Add pixel-diff comparison when ready
-    // For now, just verify both rendered without errors
   });
 
   test('Button styling is applied (React)', async ({ page }) => {
