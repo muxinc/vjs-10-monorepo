@@ -18,7 +18,7 @@ function App() {
 
       <MediaProvider>
         <MediaSkinStructural>
-          <SimpleVideo src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" />
+          <SimpleVideo src="/blue-30s-440hz.mp4" />
         </MediaSkinStructural>
       </MediaProvider>
 

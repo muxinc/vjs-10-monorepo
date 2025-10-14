@@ -2,3 +2,11 @@
 
 /* @source directive tells Tailwind where to find components using Tailwind classes */
 @source "../../../../../packages/react";
+
+/* Base styles to match WC test pages */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f5f5f5;
+}
