@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { MediaProvider } from '@vjs-10/react';
+import { MediaProvider, Video } from '@vjs-10/react';
 import MediaSkinMinimal from '../skins/01-minimal/MediaSkinMinimal';
 
 function App() {
@@ -17,11 +17,7 @@ function App() {
 
       <MediaProvider>
         <MediaSkinMinimal>
-          <video
-            slot="media"
-            src="/test-video.mp4"
-            style={{ width: '100%', height: 'auto' }}
-          />
+          <Video src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" />
         </MediaSkinMinimal>
       </MediaProvider>
 
