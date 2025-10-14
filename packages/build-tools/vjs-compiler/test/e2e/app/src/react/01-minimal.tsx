@@ -18,7 +18,7 @@ function App() {
 
       <MediaProvider>
         <MediaSkinMinimal>
-          <SimpleVideo src="/blue-30s-440hz.mp4" />
+          <SimpleVideo src="/blue-30s-110hz.mp4" />
         </MediaSkinMinimal>
       </MediaProvider>
 
