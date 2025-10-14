@@ -6,6 +6,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { MediaProvider, SimpleVideo } from '@vjs-10/react';
 import MediaSkinStructural from '../skins/00-structural/MediaSkinStructural';
+import '../globals.css';
 
 function App() {
   return (

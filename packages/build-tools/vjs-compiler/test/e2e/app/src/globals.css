@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+/* @source directive tells Tailwind where to find components using Tailwind classes */
+@source "../../../../../packages/react";
