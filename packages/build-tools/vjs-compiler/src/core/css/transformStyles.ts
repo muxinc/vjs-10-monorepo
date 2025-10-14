@@ -10,6 +10,7 @@ import type { StyleKeyUsage, StylesObject } from '../../types.js';
 
 import { projectStyleSelector } from '../projection/projectStyleSelector.js';
 import { processTailwindClasses } from './processCSS.js';
+import { resolveCSSVariables } from './resolveCSSVariables.js';
 
 /**
  * CSS transformation result
@@ -73,8 +74,12 @@ export async function transformStyles(
   // Phase 3: Rescope utility classes to style keys with proper selectors
   const rescopedCSS = rescopeCSSToStyleKeys(root, styles, categorizedStyleKeys);
 
+  // Phase 3.5: Resolve CSS variables to concrete values
+  // Part of "inline-vanilla" CSS strategy's goal of producing terse, human-readable output
+  const finalCSS = resolveCSSVariables(rescopedCSS, { resolve: ['all'] });
+
   return {
-    css: rescopedCSS,
+    css: finalCSS,
     classNames,
   };
 }

@@ -79,6 +79,7 @@ async function compileSkins() {
   // Compile all test skins
   await compileSingleSkin('00-structural', 'MediaSkinStructural');
   await compileSingleSkin('01-minimal', 'MediaSkinMinimal');
+  await compileSingleSkin('02-interactive', 'MediaSkinInteractive');
 }
 
 compileSkins().catch((error) => {
