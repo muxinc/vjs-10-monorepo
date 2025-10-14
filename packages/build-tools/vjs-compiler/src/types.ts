@@ -132,6 +132,25 @@ export type ImportMode =
   | 'package'; // Phase 2: Package imports (npm publishing)
 
 /**
+ * Selector projection strategy
+ * Controls how style keys are projected to CSS selectors
+ *
+ * - 'optimize': Component Selector IDs become element selectors (no class attribute)
+ *   Example: styles.PlayButton on <PlayButton> → `media-play-button { ... }` (no class)
+ *
+ * - 'class-only': All style keys become class selectors (always add class attribute)
+ *   Example: styles.PlayButton on <PlayButton> → `.play-button { ... }` + `class="play-button"`
+ *
+ * Default: 'optimize' (backward compatible)
+ *
+ * Use 'class-only' for:
+ * - Simpler output (everything uses classes)
+ * - Testing Tailwind features without element selector complexity
+ * - Explicit class-based styling architecture
+ */
+export type SelectorStrategy = 'optimize' | 'class-only';
+
+/**
  * Output context configuration
  */
 export interface OutputContext {
@@ -139,6 +158,7 @@ export interface OutputContext {
   css: 'inline' | 'css-modules' | 'tailwind';
   typescript: boolean;
   importMode?: ImportMode; // Defaults to 'relative' for backward compatibility
+  selectorStrategy?: SelectorStrategy; // Defaults to 'optimize' for backward compatibility
 }
 
 /**

@@ -56,6 +56,9 @@ async function compileSingleSkin(skinName, skinFileName) {
       css: 'inline',
       typescript: false,
       importMode: 'package',
+      // Use class-only strategy for simpler testing (all style keys become class selectors)
+      // This avoids element selector complexity and lets us focus on Tailwind compilation
+      selectorStrategy: 'class-only',
     },
   };
 

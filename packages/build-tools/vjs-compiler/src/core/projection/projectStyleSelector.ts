@@ -6,9 +6,12 @@
  *
  * Architectural Principle: Functional Over Declarative
  * Uses projection functions to answer "what selector should be generated?"
+ *
+ * Architectural Principle: Push Assumptions to Boundaries
+ * Projection strategy is passed as configuration, not hardcoded
  */
 
-import type { StyleKeyUsage } from '../../types.js';
+import type { SelectorStrategy, StyleKeyUsage } from '../../types.js';
 
 /**
  * Projection result for a style selector
@@ -25,12 +28,22 @@ export interface SelectorProjection {
 }
 
 /**
+ * Options for selector projection
+ */
+export interface ProjectionOptions {
+  /** Selector projection strategy (defaults to 'optimize') */
+  selectorStrategy?: SelectorStrategy;
+}
+
+/**
  * Project a style key to CSS selector based on its category
  *
  * @param styleKey - Style key usage with category
+ * @param options - Projection options (strategy, etc.)
  * @returns Projection describing selector and JSX transformation
  */
-export function projectStyleSelector(styleKey: StyleKeyUsage): SelectorProjection {
+export function projectStyleSelector(styleKey: StyleKeyUsage, options?: ProjectionOptions): SelectorProjection {
+  const strategy = options?.selectorStrategy ?? 'optimize';
   const { key, usedOn, category } = styleKey;
 
   if (!category) {
@@ -46,10 +59,10 @@ export function projectStyleSelector(styleKey: StyleKeyUsage): SelectorProjectio
   // Use category-specific projection functions
   switch (category) {
     case 'component-selector-id':
-      return projectComponentSelectorIdentifier(key, usedOn);
+      return projectComponentSelectorIdentifier(key, usedOn, strategy);
 
     case 'nested-component-selector':
-      return projectNestedComponentSelector(key, usedOn);
+      return projectNestedComponentSelector(key, usedOn, strategy);
 
     case 'component-type-selector':
       return projectComponentTypeSelector(key, usedOn);
@@ -72,9 +85,11 @@ export function projectStyleSelector(styleKey: StyleKeyUsage): SelectorProjectio
 /**
  * Projection: Component Selector Identifier
  * Example: styles.PlayButton on <PlayButton>
- * Decision: Use element selector (no class needed)
+ *
+ * Strategy 'optimize': Use element selector (no class needed)
+ * Strategy 'class-only': Use class selector (always add class)
  */
-function projectComponentSelectorIdentifier(key: string, usedOn: string[]): SelectorProjection {
+function projectComponentSelectorIdentifier(key: string, usedOn: string[], strategy: SelectorStrategy): SelectorProjection {
   const componentName = usedOn[0];
   if (!componentName) {
     // Shouldn't happen, but fallback
@@ -86,6 +101,18 @@ function projectComponentSelectorIdentifier(key: string, usedOn: string[]): Sele
     };
   }
 
+  // Strategy: class-only - always use class selectors
+  if (strategy === 'class-only') {
+    const className = toKebabCase(key);
+    return {
+      cssSelector: `.${className}`,
+      needsClassAttribute: true,
+      className,
+      reason: `Component Selector ID (class-only): ${key} on ${componentName}`,
+    };
+  }
+
+  // Strategy: optimize - use element selector (no class attribute)
   // Convert component name to custom element name
   // PlayButton → play-button → media-play-button
   // MediaContainer → media-container
@@ -95,16 +122,18 @@ function projectComponentSelectorIdentifier(key: string, usedOn: string[]): Sele
   return {
     cssSelector: elementName,
     needsClassAttribute: false,
-    reason: `Component Selector ID: ${key} matches ${componentName} exactly`,
+    reason: `Component Selector ID (optimize): ${key} matches ${componentName}`,
   };
 }
 
 /**
  * Projection: Nested Component Selector
  * Example: styles.RangeRoot on <TimeRange.Root>
- * Decision: Use element selector with compound name (no class needed)
+ *
+ * Strategy 'optimize': Use element selector with compound name (no class needed)
+ * Strategy 'class-only': Use class selector (always add class)
  */
-function projectNestedComponentSelector(key: string, usedOn: string[]): SelectorProjection {
+function projectNestedComponentSelector(key: string, usedOn: string[], strategy: SelectorStrategy): SelectorProjection {
   const componentName = usedOn[0];
   if (!componentName) {
     // Shouldn't happen, but fallback
@@ -116,6 +145,18 @@ function projectNestedComponentSelector(key: string, usedOn: string[]): Selector
     };
   }
 
+  // Strategy: class-only - always use class selectors
+  if (strategy === 'class-only') {
+    const className = toKebabCase(key);
+    return {
+      cssSelector: `.${className}`,
+      needsClassAttribute: true,
+      className,
+      reason: `Nested Component Selector (class-only): ${key} on ${componentName}`,
+    };
+  }
+
+  // Strategy: optimize - use element selector (no class attribute)
   // Convert compound component to custom element name
   // TimeRange.Root → TimeRangeRoot → time-range-root → media-time-range-root
   const flattenedName = componentName.replace(/\./g, ''); // Remove dots
@@ -125,7 +166,7 @@ function projectNestedComponentSelector(key: string, usedOn: string[]): Selector
   return {
     cssSelector: elementName,
     needsClassAttribute: false,
-    reason: `Nested Component Selector: ${key} matches compound ${componentName}`,
+    reason: `Nested Component Selector (optimize): ${key} matches compound ${componentName}`,
   };
 }
 

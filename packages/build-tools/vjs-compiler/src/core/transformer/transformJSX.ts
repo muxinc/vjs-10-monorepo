@@ -6,6 +6,7 @@ import type { StyleKeyUsage } from '../../types.js';
 
 import * as t from '@babel/types';
 
+import type { ProjectionOptions } from '../projection/projectStyleSelector.js';
 import { projectStyleSelector } from '../projection/projectStyleSelector.js';
 import { toKebabCase } from './transformPaths.js';
 
@@ -20,9 +21,10 @@ import { toKebabCase } from './transformPaths.js';
  *
  * @param jsx - JSX element
  * @param categorizedStyleKeys - Categorized style keys for projection
+ * @param options - Projection options (selector strategy, etc.)
  * @returns Transformed JSX (modified in place)
  */
-export function transformJSX(jsx: t.JSXElement, categorizedStyleKeys?: StyleKeyUsage[]): t.JSXElement {
+export function transformJSX(jsx: t.JSXElement, categorizedStyleKeys?: StyleKeyUsage[], options?: ProjectionOptions): t.JSXElement {
   // Transform opening element
   transformJSXElementName(jsx.openingElement);
 
@@ -35,7 +37,7 @@ export function transformJSX(jsx: t.JSXElement, categorizedStyleKeys?: StyleKeyU
   }
 
   // Transform attributes (with style key categorization)
-  transformJSXAttributes(jsx.openingElement, categorizedStyleKeys);
+  transformJSXAttributes(jsx.openingElement, categorizedStyleKeys, options);
 
   // Transform children
   transformJSXChildren(jsx);
@@ -46,7 +48,7 @@ export function transformJSX(jsx: t.JSXElement, categorizedStyleKeys?: StyleKeyU
   // Recursively transform child JSX elements
   for (const child of jsx.children) {
     if (t.isJSXElement(child)) {
-      transformJSX(child, categorizedStyleKeys);
+      transformJSX(child, categorizedStyleKeys, options);
     }
   }
 
@@ -129,8 +131,9 @@ function flattenMemberExpression(node: t.JSXMemberExpression): string {
  *
  * @param opening - JSX opening element
  * @param categorizedStyleKeys - Categorized style keys for projection
+ * @param options - Projection options (selector strategy, etc.)
  */
-function transformJSXAttributes(opening: t.JSXOpeningElement, categorizedStyleKeys?: StyleKeyUsage[]): void {
+function transformJSXAttributes(opening: t.JSXOpeningElement, categorizedStyleKeys?: StyleKeyUsage[], options?: ProjectionOptions): void {
   // Build map of style keys to their projection
   const styleKeyMap = new Map<string, StyleKeyUsage>();
   if (categorizedStyleKeys) {
@@ -156,7 +159,7 @@ function transformJSXAttributes(opening: t.JSXOpeningElement, categorizedStyleKe
         const expr = attr.value.expression;
 
         // Resolve className expression to static string
-        const resolved = resolveClassNameExpression(expr, styleKeyMap);
+        const resolved = resolveClassNameExpression(expr, styleKeyMap, options);
 
         if (resolved === null) {
           // Could not resolve or all classes were component selectors (filtered out)
@@ -210,15 +213,17 @@ function transformJSXAttributes(opening: t.JSXOpeningElement, categorizedStyleKe
  * - Member expressions: styles.Button → "button"
  * - Template literals: `${styles.A} ${styles.B}` → "a b"
  * - String literals: "static-class" → "static-class"
- * - Filters out Component Selector IDs (they become element selectors)
+ * - Filters out Component Selector IDs (they become element selectors in 'optimize' mode)
  *
  * @param expr - Expression to resolve
  * @param styleKeyMap - Map of style keys to their categorization
+ * @param options - Projection options (selector strategy, etc.)
  * @returns Resolved class names (space-separated) or null if empty/unresolvable
  */
 function resolveClassNameExpression(
   expr: t.Expression | t.JSXEmptyExpression,
-  styleKeyMap: Map<string, StyleKeyUsage>
+  styleKeyMap: Map<string, StyleKeyUsage>,
+  options?: ProjectionOptions
 ): string | null {
   if (t.isJSXEmptyExpression(expr)) {
     return null;
@@ -233,10 +238,10 @@ function resolveClassNameExpression(
       const styleKey = styleKeyMap.get(propertyName);
 
       if (styleKey) {
-        const projection = projectStyleSelector(styleKey);
+        const projection = projectStyleSelector(styleKey, options);
 
         if (!projection.needsClassAttribute) {
-          // Component Selector ID - filter out (becomes element selector)
+          // Component Selector ID - filter out (becomes element selector in 'optimize' mode)
           return null;
         }
 
@@ -265,7 +270,7 @@ function resolveClassNameExpression(
 
       // Add expression value if present
       if (i < expr.expressions.length) {
-        const exprValue = resolveClassNameExpression(expr.expressions[i] as t.Expression, styleKeyMap);
+        const exprValue = resolveClassNameExpression(expr.expressions[i] as t.Expression, styleKeyMap, options);
         if (exprValue) {
           parts.push(exprValue);
         }
@@ -283,17 +288,17 @@ function resolveClassNameExpression(
   // Handle conditional expressions: condition ? styles.A : styles.B
   // Take consequent branch (simplification for static compilation)
   if (t.isConditionalExpression(expr)) {
-    return resolveClassNameExpression(expr.consequent, styleKeyMap);
+    return resolveClassNameExpression(expr.consequent, styleKeyMap, options);
   }
 
   // Handle logical expressions: condition && styles.Class
   if (t.isLogicalExpression(expr)) {
     // Try right side first (usual pattern: condition && styles.Class)
-    const right = resolveClassNameExpression(expr.right, styleKeyMap);
+    const right = resolveClassNameExpression(expr.right, styleKeyMap, options);
     if (right) return right;
 
     // Fallback to left side
-    return resolveClassNameExpression(expr.left, styleKeyMap);
+    return resolveClassNameExpression(expr.left, styleKeyMap, options);
   }
 
   // Unresolvable expression

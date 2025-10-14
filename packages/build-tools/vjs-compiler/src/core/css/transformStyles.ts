@@ -8,6 +8,7 @@ import postcss from 'postcss';
 
 import type { StyleKeyUsage, StylesObject } from '../../types.js';
 
+import type { ProjectionOptions } from '../projection/projectStyleSelector.js';
 import { projectStyleSelector } from '../projection/projectStyleSelector.js';
 import { processTailwindClasses } from './processCSS.js';
 import { resolveCSSVariables } from './resolveCSSVariables.js';
@@ -39,11 +40,13 @@ export interface TransformStylesResult {
  *
  * @param styles - Styles object from styles.ts
  * @param categorizedStyleKeys - Categorized style keys from usage analysis
+ * @param options - Projection options (selector strategy, etc.)
  * @returns Transformation result with CSS and class name mapping
  */
 export async function transformStyles(
   styles: StylesObject,
-  categorizedStyleKeys?: StyleKeyUsage[]
+  categorizedStyleKeys?: StyleKeyUsage[],
+  options?: ProjectionOptions
 ): Promise<TransformStylesResult> {
   const classNames: Record<string, string> = {};
 
@@ -72,7 +75,7 @@ export async function transformStyles(
   const root = postcss.parse(tailwindCSS);
 
   // Phase 3: Rescope utility classes to style keys with proper selectors
-  const rescopedCSS = rescopeCSSToStyleKeys(root, styles, categorizedStyleKeys);
+  const rescopedCSS = rescopeCSSToStyleKeys(root, styles, categorizedStyleKeys, options);
 
   // Phase 3.5: Resolve CSS variables to concrete values
   // Part of "inline-vanilla" CSS strategy's goal of producing terse, human-readable output
@@ -95,12 +98,14 @@ export async function transformStyles(
  * @param root - PostCSS AST of Tailwind output
  * @param styles - Original styles object
  * @param categorizedStyleKeys - Categorized style keys with selector information
+ * @param options - Projection options (selector strategy, etc.)
  * @returns Rescoped CSS string
  */
 function rescopeCSSToStyleKeys(
   root: postcss.Root,
   styles: Record<string, string>,
-  categorizedStyleKeys?: StyleKeyUsage[]
+  categorizedStyleKeys?: StyleKeyUsage[],
+  options?: ProjectionOptions
 ): string {
   // Phase 3: Build utility class to complete rule map
   // Maps utility class name → rule info (rule + parent at-rule if any)
@@ -188,7 +193,7 @@ function rescopeCSSToStyleKeys(
       let baseSelector = `.${key}`; // Default to class selector
       const styleKey = styleKeyMap.get(key);
       if (styleKey) {
-        const projection = projectStyleSelector(styleKey);
+        const projection = projectStyleSelector(styleKey, options);
         baseSelector = projection.cssSelector;
       }
 
@@ -275,8 +280,14 @@ function rescopeCSSToStyleKeys(
         rescopedRules.push(mediaRule.toString());
       }
     } else {
-      // No rules found - add comment
-      rescopedRules.push(`.${key} {\n  /* Tailwind classes: ${classString} */\n  /* No CSS generated */\n}`);
+      // No rules found - add comment with proper selector
+      let baseSelector = `.${key}`; // Default to class selector
+      const styleKey = styleKeyMap.get(key);
+      if (styleKey) {
+        const projection = projectStyleSelector(styleKey, options);
+        baseSelector = projection.cssSelector;
+      }
+      rescopedRules.push(`${baseSelector} {\n  /* Tailwind classes: ${classString} */\n  /* No CSS generated */\n}`);
     }
   }
 
