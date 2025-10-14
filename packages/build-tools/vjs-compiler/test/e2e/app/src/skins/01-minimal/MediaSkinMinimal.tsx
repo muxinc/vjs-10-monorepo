@@ -40,13 +40,15 @@ type SkinProps = PropsWithChildren<{
 
 export default function MediaSkinMinimal({ children, className = '' }: SkinProps): JSX.Element {
   return (
-    <MediaContainer className={`relative ${className}`}>
-      {children}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <PlayButton className="p-3 rounded-full bg-white/80 pointer-events-auto">
-          <PlayIcon />
-          <PauseIcon />
-        </PlayButton>
+    <MediaContainer className={className}>
+      <div className="relative">
+        {children}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <PlayButton className="p-3 rounded-full bg-white/80 pointer-events-auto">
+            <PlayIcon />
+            <PauseIcon />
+          </PlayButton>
+        </div>
       </div>
     </MediaContainer>
   );
