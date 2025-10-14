@@ -14,13 +14,13 @@ describe('navigation utilities', () => {
     it('should build a correct docs URL', () => {
       const result = buildDocsUrl('html', 'css', 'getting-started');
 
-      expect(result).toBe('/docs/framework/html/style/css/getting-started/');
+      expect(result).toBe('/docs/framework/html/style/css/getting-started');
     });
 
     it('should handle nested guide slugs', () => {
       const result = buildDocsUrl('react', 'tailwind', 'advanced/state-management');
 
-      expect(result).toBe('/docs/framework/react/style/tailwind/advanced/state-management/');
+      expect(result).toBe('/docs/framework/react/style/tailwind/advanced/state-management');
     });
   });
 
@@ -100,7 +100,7 @@ describe('navigation utilities', () => {
     it('should keep current guide when framework supports it', () => {
       const result = getFrameworkChangeTarget(mockGuide, 'css', 'react');
 
-      expect(result.url).toBe('/docs/framework/react/style/css/getting-started/');
+      expect(result.url).toBe('/docs/framework/react/style/css/getting-started');
       expect(result.replaceHistory).toBe(true);
     });
 
@@ -123,14 +123,14 @@ describe('navigation utilities', () => {
       };
       const result = getFrameworkChangeTarget(cssOnlyGuide, 'tailwind', 'react');
 
-      expect(result.url).toBe('/docs/framework/react/style/css/css-only/');
+      expect(result.url).toBe('/docs/framework/react/style/css/css-only');
       expect(result.replaceHistory).toBe(true);
     });
 
     it('should maintain current style when new framework supports it', () => {
       const result = getFrameworkChangeTarget(mockGuide, 'tailwind', 'react');
 
-      expect(result.url).toBe('/docs/framework/react/style/tailwind/getting-started/');
+      expect(result.url).toBe('/docs/framework/react/style/tailwind/getting-started');
       expect(result.replaceHistory).toBe(true);
     });
 
@@ -142,7 +142,7 @@ describe('navigation utilities', () => {
       };
       const result = getFrameworkChangeTarget(guide, 'tailwind', 'html');
 
-      expect(result.url).toBe('/docs/framework/html/style/css/test/');
+      expect(result.url).toBe('/docs/framework/html/style/css/test');
       expect(result.replaceHistory).toBe(true);
     });
   });
@@ -164,7 +164,7 @@ describe('navigation utilities', () => {
     it('should keep current guide when it supports new style', () => {
       const result = getStyleChangeTarget(mockGuide, 'html', 'tailwind');
 
-      expect(result.url).toBe('/docs/framework/html/style/tailwind/getting-started/');
+      expect(result.url).toBe('/docs/framework/html/style/tailwind/getting-started');
       expect(result.replaceHistory).toBe(true);
     });
 
