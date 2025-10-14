@@ -27,8 +27,9 @@ export default defineConfig({
   // Run dev server before tests
   webServer: {
     command: 'pnpm dev',
-    url: 'http://localhost:5175',
+    url: 'http://localhost:5175/src/react/01-minimal.html', // Check actual page instead of root
     reuseExistingServer: !process.env.CI,
+    timeout: 120000, // 2 minutes for compilation + startup
     stdout: 'pipe',
     stderr: 'pipe',
   },
