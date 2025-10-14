@@ -10,6 +10,7 @@ import type { StyleKeyUsage, StylesObject } from '../../types.js';
 
 import type { ProjectionOptions } from '../projection/projectStyleSelector.js';
 import { projectStyleSelector } from '../projection/projectStyleSelector.js';
+import { generateAllContainerQueries } from './generateContainerQueries.js';
 import {
   extractUtilityClassName,
   isArbitraryVariantWithDescendant,
@@ -17,6 +18,11 @@ import {
 } from './parseSelectorUtils.js';
 import { processTailwindClasses } from './processCSS.js';
 import { resolveCSSVariables } from './resolveCSSVariables.js';
+import type { ResponsiveVariant } from './responsiveVariants.js';
+import {
+  extractAllResponsiveVariants,
+  getUniqueBaseUtilities,
+} from './responsiveVariants.js';
 
 /**
  * CSS transformation result
@@ -60,10 +66,31 @@ export async function transformStyles(
     classNames[key] = key;
   }
 
+  // Step 1: Extract responsive variants from all styles for later processing
+  const responsiveVariantsByKey = extractAllResponsiveVariants(styles);
+
+  // Step 2: Collect all unique base utilities from responsive variants
+  // We need to process these through Tailwind to get their CSS for container queries
+  const allResponsiveVariants: ResponsiveVariant[] = [];
+  for (const variants of responsiveVariantsByKey.values()) {
+    allResponsiveVariants.push(...variants);
+  }
+  const responsiveBaseUtilities = getUniqueBaseUtilities(allResponsiveVariants);
+
+  // Step 3: Build combined styles object for Tailwind processing
+  // Includes original styles PLUS base utilities from responsive variants
+  const combinedStyles: Record<string, string> = { ...styles };
+
+  // Add responsive base utilities as temporary style keys so Tailwind processes them
+  let utilityIndex = 0;
+  for (const utility of responsiveBaseUtilities) {
+    combinedStyles[`__responsive_utility_${utilityIndex++}`] = utility;
+  }
+
   // Process through Tailwind v4
   let tailwindCSS: string;
   try {
-    tailwindCSS = await processTailwindClasses(styles);
+    tailwindCSS = await processTailwindClasses(combinedStyles);
   } catch (error) {
     console.error('Tailwind CSS processing failed:', error);
     // Fallback to placeholder CSS
@@ -80,11 +107,43 @@ export async function transformStyles(
   const root = postcss.parse(tailwindCSS);
 
   // Phase 3: Rescope utility classes to style keys with proper selectors
+  // Note: Responsive variants (sm:, md:, lg:) won't have CSS in Tailwind output
+  // They'll be handled separately via container queries
   const rescopedCSS = rescopeCSSToStyleKeys(root, styles, categorizedStyleKeys, options);
 
-  // Phase 3.5: Resolve CSS variables to concrete values
+  // Phase 3.5: Generate container queries for responsive variants
+  // Build selector map from categorized style keys
+  const selectorsByKey = new Map<string, string>();
+  const styleKeyMap = new Map<string, StyleKeyUsage>();
+  if (categorizedStyleKeys) {
+    for (const styleKey of categorizedStyleKeys) {
+      styleKeyMap.set(styleKey.key, styleKey);
+      const projection = projectStyleSelector(styleKey, options);
+      selectorsByKey.set(styleKey.key, projection.cssSelector);
+    }
+  }
+
+  // Fill in missing selectors with default class selectors
+  for (const key of Object.keys(styles)) {
+    if (!selectorsByKey.has(key)) {
+      selectorsByKey.set(key, `.${key}`);
+    }
+  }
+
+  // Generate container query CSS for all responsive variants
+  const containerQueryCSSByKey = generateAllContainerQueries(
+    responsiveVariantsByKey,
+    selectorsByKey,
+    tailwindCSS
+  );
+
+  // Append container query CSS to rescoped CSS
+  const containerQueryRules = Array.from(containerQueryCSSByKey.values());
+  const cssWithContainerQueries = [rescopedCSS, ...containerQueryRules].filter(Boolean).join('\n\n');
+
+  // Phase 3.6: Resolve CSS variables to concrete values
   // Part of "inline-vanilla" CSS strategy's goal of producing terse, human-readable output
-  const finalCSS = resolveCSSVariables(rescopedCSS, { resolve: ['all'] });
+  const finalCSS = resolveCSSVariables(cssWithContainerQueries, { resolve: ['all'] });
 
   return {
     css: finalCSS,
