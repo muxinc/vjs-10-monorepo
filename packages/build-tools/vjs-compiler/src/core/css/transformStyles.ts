@@ -10,6 +10,11 @@ import type { StyleKeyUsage, StylesObject } from '../../types.js';
 
 import type { ProjectionOptions } from '../projection/projectStyleSelector.js';
 import { projectStyleSelector } from '../projection/projectStyleSelector.js';
+import {
+  extractUtilityClassName,
+  isArbitraryVariantWithDescendant,
+  rescopeSelector,
+} from './parseSelectorUtils.js';
 import { processTailwindClasses } from './processCSS.js';
 import { resolveCSSVariables } from './resolveCSSVariables.js';
 
@@ -135,55 +140,10 @@ function rescopeCSSToStyleKeys(
     // Only process top-level rules (parent is Root or AtRule like @media)
     if (selector.startsWith('.') && (rule.parent?.type === 'root' || rule.parent?.type === 'atrule')) {
       // Check if this is an arbitrary variant with descendant selector
-      // Pattern: `.\[\&_<something>\] <descendant>` or `.\[\&\[<attr>\]_<something>\] <descendant>`
-      // These selectors contain a SPACE (descendant combinator) after the utility class
-      // Note: The [& is escaped by Tailwind as \[\&
-      if (selector.includes(' ') && /^\.\\\[\\&/.test(selector)) {
-        // This is an arbitrary variant with a descendant selector
-        // Examples:
-        // - `.\[\&_\.icon\]\:\[grid-area\:1\/1\] .icon`
-        // - `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused] .play-icon`
-        //
-        // The second example has an attribute selector [data-paused] AFTER the utility class
-        // but BEFORE the space. We need to strip that to match the original utility name.
-
-        const spaceIndex = selector.indexOf(' ');
-        let utilityClassPart = selector.substring(0, spaceIndex);
-
-        // Check if there's an attribute selector at the end (before the space)
-        // The utility class ALWAYS ends with an ESCAPED ] (e.g., `.\[\&_\.icon\]` or `.\[\&\[data-paused\]_\.play-icon\]`)
-        // But there might be a trailing UNESCAPED attribute selector: `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused]`
-        //                                                                                              ^-- last \]    ^-- trailing [data-paused]
-        //
-        // We need to find the last ESCAPED \] which marks the end of the utility class
-
-        // Find the last \] (escaped bracket) which marks the end of the utility class
-        let lastEscapedBracketIndex = utilityClassPart.lastIndexOf('\\]');
-
-        if (lastEscapedBracketIndex > 0 && lastEscapedBracketIndex + 2 < utilityClassPart.length) {
-          // There's something after the last \], extract it (after the 2-char sequence \])
-          const afterUtilityClass = utilityClassPart.substring(lastEscapedBracketIndex + 2);
-
-          // Check if it contains [ (unescaped attribute selector like [data-paused])
-          // The pattern is: \:utility-name[attribute-selector]
-          // e.g., "\:opacity-100[data-paused]"
-          const attrSelectorIndex = afterUtilityClass.indexOf('[');
-          if (attrSelectorIndex !== -1) {
-            // This has a trailing attribute selector, remove everything from [ onwards
-            utilityClassPart = utilityClassPart.substring(0, lastEscapedBracketIndex + 2 + attrSelectorIndex);
-          }
-        }
-
-        // Remove the leading dot and unescape
-        const utilityClass = utilityClassPart.substring(1)
-          .replace(/\\:/g, ':')
-          .replace(/\\\[/g, '[')
-          .replace(/\\\]/g, ']')
-          .replace(/\\=/g, '=')
-          .replace(/\\\//g, '/')
-          .replace(/\\&/g, '&')
-          .replace(/\\_/g, '_')
-          .replace(/\\\./g, '.');
+      // Uses postcss-selector-parser for robust parsing
+      if (isArbitraryVariantWithDescendant(selector)) {
+        // Extract utility class name using AST-based parser
+        const utilityClass = extractUtilityClassName(selector);
 
         // Store in arbitrary variant map
         const parentAtRule = rule.parent?.type === 'atrule' ? (rule.parent as postcss.AtRule) : null;
@@ -202,23 +162,12 @@ function rescopeCSSToStyleKeys(
       }
 
       // Regular utility class (no descendant selector)
-      // First, extract the class name part (before any pseudo-classes/elements/attribute selectors)
-      // We need to match: . followed by any characters until we hit an unescaped : or [
-      // Pattern: . followed by (non-: non-[ non-\ non-space chars OR \ followed by any char)+
-      // This correctly handles escaped colons (\:) and brackets (\[) as part of the class name
-      const match = selector.match(/^.((?:[^:[\\\s]|\\.)+)/);
+      // Use AST-based parser to extract utility class name
+      const utilityClass = extractUtilityClassName(selector);
 
-      if (!match || !match[1]) {
+      if (!utilityClass) {
         return;
       }
-
-      // Unescape the class name (Tailwind escapes colons, brackets, equals, slashes)
-      const utilityClass = match[1]
-        .replace(/\\:/g, ':') // Unescape colons
-        .replace(/\\\[/g, '[') // Unescape brackets
-        .replace(/\\\]/g, ']')
-        .replace(/\\=/g, '=') // Unescape equals
-        .replace(/\\\//g, '/'); // Unescape slashes
 
       // Store the rule along with its parent at-rule (if any)
       const parentAtRule = rule.parent?.type === 'atrule' ? (rule.parent as postcss.AtRule) : null;
@@ -365,52 +314,16 @@ function rescopeCSSToStyleKeys(
       }
 
       // Process arbitrary variant rules (descendant selectors)
-      // These have patterns like:
-      // - `.\[\&_\.icon\]\:\[grid-area\:1\/1\] .icon { grid-area: 1/1; }`
-      // - `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused] .play-icon`
-      //
-      // The second pattern has [data-paused] BETWEEN the utility class and the space,
-      // which needs to be attached to the base selector.
+      // Use AST-based rescoping for robust selector transformation
       for (const ruleInfo of arbitraryVariantRules) {
         const { rule, parentAtRule } = ruleInfo;
         const originalSelector = rule.selector.trim();
 
-        const spaceIndex = originalSelector.indexOf(' ');
-        if (spaceIndex === -1) continue; // Should always have a space, but defensive
-
-        // Extract what comes before the space
-        const beforeSpace = originalSelector.substring(0, spaceIndex);
-
-        // Check if there's a trailing attribute selector (after the utility class)
-        // E.g., `.\[\&\[data-paused\]_\.play-icon\]\:opacity-100[data-paused]`
-        // The `[data-paused]` at the end is the attribute selector
-        //
-        // To find it, we look for the last ESCAPED \] (end of utility class),
-        // then check if there's a [ somewhere after it
-        let attributeSelector = '';
-        const lastEscapedBracket = beforeSpace.lastIndexOf('\\]');
-
-        if (lastEscapedBracket !== -1 && lastEscapedBracket + 2 < beforeSpace.length) {
-          // There's something after the last \]
-          const afterUtility = beforeSpace.substring(lastEscapedBracket + 2);
-          const attrStart = afterUtility.indexOf('[');
-
-          if (attrStart !== -1) {
-            // Found an attribute selector
-            attributeSelector = afterUtility.substring(attrStart);
-          }
-        }
-
-        // Extract the descendant part after the space
-        const descendantPart = originalSelector.substring(spaceIndex + 1);
-
-        // Build rescoped selector: baseSelector + attributeSelector + descendant
-        // E.g., `.button` + `[data-paused]` + ` .play-icon` → `.button[data-paused] .play-icon`
-        // E.g., `.button` + `` + ` .icon` → `.button .icon`
-        const rescopedSelector = `${baseSelector}${attributeSelector} ${descendantPart}`;
+        // Use rescopeSelector to transform the selector using postcss-selector-parser
+        const rescopedSelectorStr = rescopeSelector(originalSelector, baseSelector);
 
         // Create rescoped rule
-        const rescopedRule = postcss.rule({ selector: rescopedSelector });
+        const rescopedRule = postcss.rule({ selector: rescopedSelectorStr });
         rule.each((child) => {
           if (child.type === 'decl') {
             rescopedRule.append(child.clone());
@@ -453,33 +366,10 @@ function rescopeCSSToStyleKeys(
         const { rule, parentAtRule } = ruleInfo;
         const originalSelector = rule.selector.trim();
 
-        const spaceIndex = originalSelector.indexOf(' ');
-        if (spaceIndex === -1) continue;
+        // Use rescopeSelector to transform the selector using postcss-selector-parser
+        const rescopedSelectorStr = rescopeSelector(originalSelector, baseSelector);
 
-        // Extract what comes before the space
-        const beforeSpace = originalSelector.substring(0, spaceIndex);
-
-        // Check if there's a trailing attribute selector (after the utility class)
-        // Same logic as the first branch above
-        let attributeSelector = '';
-        const lastEscapedBracket = beforeSpace.lastIndexOf('\\]');
-
-        if (lastEscapedBracket !== -1 && lastEscapedBracket + 2 < beforeSpace.length) {
-          const afterUtility = beforeSpace.substring(lastEscapedBracket + 2);
-          const attrStart = afterUtility.indexOf('[');
-
-          if (attrStart !== -1) {
-            attributeSelector = afterUtility.substring(attrStart);
-          }
-        }
-
-        // Extract the descendant part after the space
-        const descendantPart = originalSelector.substring(spaceIndex + 1);
-
-        // Build rescoped selector: baseSelector + attributeSelector + descendant
-        const rescopedSelector = `${baseSelector}${attributeSelector} ${descendantPart}`;
-
-        const rescopedRule = postcss.rule({ selector: rescopedSelector });
+        const rescopedRule = postcss.rule({ selector: rescopedSelectorStr });
         rule.each((child) => {
           if (child.type === 'decl') {
             rescopedRule.append(child.clone());
