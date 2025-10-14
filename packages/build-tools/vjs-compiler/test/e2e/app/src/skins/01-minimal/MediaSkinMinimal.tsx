@@ -9,10 +9,11 @@
  * - Simplest possible layout: centered button overlay
  *
  * Tailwind classes used (all basic utilities):
- * - Layout: absolute, inset-0, flex, items-center, justify-center
- * - Spacing: p-4 (padding)
+ * - Layout: relative, absolute, inset-0, flex, items-center, justify-center, pointer-events-none
+ * - Spacing: p-3 (padding)
  * - Border: rounded-full
- * - Background: bg-white/90 (opacity variant)
+ * - Background: bg-white/80 (opacity variant)
+ * - Interactivity: pointer-events-auto
  *
  * NOT included (for higher complexity levels):
  * - Hover states
@@ -39,10 +40,10 @@ type SkinProps = PropsWithChildren<{
 
 export default function MediaSkinMinimal({ children, className = '' }: SkinProps): JSX.Element {
   return (
-    <MediaContainer className={className}>
+    <MediaContainer className={`relative ${className}`}>
       {children}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <PlayButton className="p-4 rounded-full bg-white/90">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <PlayButton className="p-3 rounded-full bg-white/80 pointer-events-auto">
           <PlayIcon />
           <PauseIcon />
         </PlayButton>
