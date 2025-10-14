@@ -29,7 +29,7 @@ export const defaultBrowserNavigator: BrowserNavigator = {
  * Build a docs URL from framework, style, and guide slug components.
  */
 export function buildDocsUrl(framework: SupportedFramework, style: AnySupportedStyle, guideSlug: string): string {
-  return `/docs/framework/${framework}/style/${style}/${guideSlug}/`;
+  return `/docs/framework/${framework}/style/${style}/${guideSlug}`;
 }
 
 /**
@@ -70,7 +70,7 @@ export function getFrameworkChangeTarget(
   if (!currentGuide) {
     const firstGuide = findFirstGuide(newFramework, defaultStyle);
     return {
-      url: firstGuide ? buildDocsUrl(newFramework, defaultStyle, firstGuide) : '/docs/',
+      url: firstGuide ? buildDocsUrl(newFramework, defaultStyle, firstGuide) : '/docs',
       replaceHistory: false,
     };
   }
@@ -79,7 +79,7 @@ export function getFrameworkChangeTarget(
   if (currentGuide.frameworks && !currentGuide.frameworks.includes(newFramework)) {
     const firstGuide = findFirstGuide(newFramework, defaultStyle);
     return {
-      url: firstGuide ? buildDocsUrl(newFramework, defaultStyle, firstGuide) : '/docs/',
+      url: firstGuide ? buildDocsUrl(newFramework, defaultStyle, firstGuide) : '/docs',
       replaceHistory: false,
     };
   }
@@ -90,7 +90,7 @@ export function getFrameworkChangeTarget(
   if (validStyles.length === 0) {
     const firstGuide = findFirstGuide(newFramework, defaultStyle);
     return {
-      url: firstGuide ? buildDocsUrl(newFramework, defaultStyle, firstGuide) : '/docs/',
+      url: firstGuide ? buildDocsUrl(newFramework, defaultStyle, firstGuide) : '/docs',
       replaceHistory: false,
     };
   }
@@ -117,7 +117,7 @@ export function getStyleChangeTarget<F extends SupportedFramework>(
   if (!currentGuide) {
     const firstGuide = findFirstGuide(currentFramework, newStyle);
     return {
-      url: firstGuide ? buildDocsUrl(currentFramework, newStyle, firstGuide) : '/docs/',
+      url: firstGuide ? buildDocsUrl(currentFramework, newStyle, firstGuide) : '/docs',
       replaceHistory: false,
     };
   }
@@ -129,7 +129,7 @@ export function getStyleChangeTarget<F extends SupportedFramework>(
     // Guide doesn't support new style, go to first guide
     const firstGuide = findFirstGuide(currentFramework, newStyle);
     return {
-      url: firstGuide ? buildDocsUrl(currentFramework, newStyle, firstGuide) : '/docs/',
+      url: firstGuide ? buildDocsUrl(currentFramework, newStyle, firstGuide) : '/docs',
       replaceHistory: false,
     };
   }

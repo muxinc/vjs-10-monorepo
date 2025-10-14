@@ -19,7 +19,7 @@ function containsActivePath(item: Guide | Section): boolean {
   if (isSection(item)) {
     return item.contents.some((child) => containsActivePath(child));
   } else {
-    const itemPath = `/docs/framework/${framework}/style/${style}/${item.slug}/`;
+    const itemPath = `/docs/framework/${framework}/style/${style}/${item.slug}`;
     return itemPath === currentPath;
   }
 }
@@ -58,7 +58,7 @@ const isActive = containsActivePath(item);
         isActive ? 'text-dark-100 border-dark-100 ' : 'border-light-40',
       ]}
       style={`padding-left: calc(var(--spacing) * ${depth * 4})`}
-      href={`/docs/framework/${framework}/style/${style}/${item.slug}/`}
+      href={`/docs/framework/${framework}/style/${style}/${item.slug}`}
     >
       {item.sidebarLabel || docTitles.get(item.slug) || item.slug}
     </a>

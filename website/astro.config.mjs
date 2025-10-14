@@ -15,6 +15,7 @@ import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings.js'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://v10.videojs.org',
+  trailingSlash: 'never',
   adapter: vercel(),
   integrations: [
     mdx({ extendMarkdownConfig: true }),

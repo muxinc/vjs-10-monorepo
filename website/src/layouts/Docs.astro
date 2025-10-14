@@ -4,9 +4,7 @@ import { type CollectionEntry, getCollection } from 'astro:content';
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
 import NavBar from '@/components/NavBar/NavBar.astro';
-import { Selectors } from '@/components/docs/Selectors';
-import SidebarItem from '@/components/docs/SidebarItem.astro';
-import { filterSidebar } from '@/utils/docs/sidebar';
+import DocsSidebar from '@/components/docs/DocsSidebar.astro';
 
 import Base from './Base.astro';
 
@@ -17,7 +15,6 @@ type Props = {
 };
 
 const { doc, framework, style } = Astro.props;
-const filteredSidebar = filterSidebar(framework, style);
 
 // Fetch all docs to get their titles
 const allDocs = await getCollection('docs');
@@ -30,20 +27,13 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
     style="--lg-grid-cols: calc(var(--spacing) * 75) 1fr;grid-template-rows:auto minmax(0,1fr);"
   >
     <NavBar class="col-span-full">
-      <Fragment slot="mobile-nav">sidebar</Fragment>
+      <DocsSidebar slot="mobile-nav" framework={framework} style={style} docTitles={docTitles} />
     </NavBar>
     <aside
       class="hidden lg:block lg:border-r border-light-40 sticky overflow-y-scroll"
       style="top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
     >
-      <Selectors client:load currentFramework={framework} currentStyle={style} />
-      <nav class="p-6 text-dark-80">
-        {
-          filteredSidebar.map((item) => (
-            <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />
-          ))
-        }
-      </nav>
+      <DocsSidebar framework={framework} style={style} docTitles={docTitles} />
     </aside>
     <slot />
   </div>
