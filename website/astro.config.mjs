@@ -10,12 +10,17 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 import { generateDocsRedirects } from './src/utils/docs/staticRedirects.ts';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks.js';
+import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings.js';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://videojs.org',
   adapter: vercel(),
-  integrations: [mdx({ extendMarkdownConfig: true }), sitemap(), react()],
+  integrations: [mdx({ extendMarkdownConfig: true }), sitemap(), react({
+    babel: {
+      plugins: [['babel-plugin-react-compiler', { target: '18' }]],
+    },
+  })],
   redirects: generateDocsRedirects(),
   prefetch: true,
 
@@ -25,6 +30,7 @@ export default defineConfig({
     gfm: true,
     syntaxHighlight: 'shiki',
     shikiConfig: {},
+    remarkPlugins: [remarkConditionalHeadings],
     rehypePlugins: [rehypePrepareCodeBlocks],
   },
 

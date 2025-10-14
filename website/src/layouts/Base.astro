@@ -4,7 +4,7 @@ import { Font } from 'astro:assets';
 
 import { SITE_TITLE } from '@/consts';
 
-import '@/styles/global.css';
+import '@/styles/globals.css';
 
 interface Props {
   title: string;
@@ -55,9 +55,12 @@ const { title, description, image } = Astro.props;
     <!-- Whatever else -->
     <slot name="head" />
   </head>
+  <!-- BaseUI requires body.relative and div.root -->
   <body
-    class="bg-light-80 text-dark-100 font-sans antialiased text-pretty text-base min-w-80 [--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]"
+    class="relative bg-light-80 text-dark-100 font-sans antialiased text-pretty text-base min-w-80 [--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]"
   >
-    <slot />
+    <div class="isolate">
+      <slot />
+    </div>
   </body>
 </html>

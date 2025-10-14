@@ -2,9 +2,14 @@ import type { Sidebar } from '@/types/docs';
 
 export const sidebar: Sidebar = [
   {
-    sidebarLabel: 'Concepts',
+    sidebarLabel: 'Getting started',
     contents: [
       { slug: 'concepts/everyone' },
+    ],
+  },
+  {
+    sidebarLabel: 'Concepts',
+    contents: [
       { slug: 'concepts/react-only', frameworks: ['react'] },
       { slug: 'concepts/tailwind-only', styles: ['tailwind'] },
     ],

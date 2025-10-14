@@ -8,6 +8,8 @@ import DocsLayout from '@/layouts/Docs.astro';
 import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import { filterSidebar, getAllGuideSlugs } from '@/utils/docs/sidebar';
 import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
+import { TableOfContents } from '@/components/docs/TableOfContents';
+import H3 from '@/components/typography/H3.astro';
 
 export async function getStaticPaths() {
   const docsCollection = await getCollection('docs');
@@ -65,9 +67,46 @@ type Props = {
 };
 
 const { doc, framework, style } = Astro.props;
-const { Content, getHeadings } = await render(doc);
+const { Content, headings, remarkPluginFrontmatter } = await render(doc);
+
+// Use conditional headings from our remark plugin if available, otherwise fallback to default headings
+const conditionalHeadings = remarkPluginFrontmatter?.conditionalHeadings;
+const filteredHeadings = conditionalHeadings
+  ? conditionalHeadings.filter((h: any) => {
+      const matchesFramework = !h.frameworks || h.frameworks.includes(framework);
+      const matchesStyle = !h.styles || h.styles.includes(style);
+      return matchesFramework && matchesStyle;
+    })
+  : headings;
 ---
 
 <DocsLayout doc={doc} framework={framework} style={style}>
-  <Content components={{ ...defaultMarkdownComponents }} />
+  <main
+    class:list={[
+      'grid grid-cols-1 xl:grid-cols-(--xl-grid-cols)',
+      '[grid-template-areas:var(--grid-template-areas)] xl:[grid-template-areas:var(--xl-grid-template-areas)]',
+      '[--scroll-mt:var(--mobile-toc-h)] xl:[--scroll-mt:0px]',
+    ]}
+    style="
+      --xl-grid-cols: minmax(0, 1fr) calc(var(--spacing) * 59);
+      grid-template-rows: auto minmax(0, 1fr);
+      --grid-template-areas: 'toc' 'article';
+      --xl-grid-template-areas: 'article toc';
+      --mobile-toc-h: calc(var(--spacing) * 15);
+    "
+  >
+    <div
+      class="sticky overflow-y-auto z-40"
+      style="grid-area: toc; top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
+    >
+      <TableOfContents client:idle headings={filteredHeadings} />
+    </div>
+    <article class="px-6 pb-12 lg:px-12" style="grid-area: article;">
+      <header class="border-b border-light-40 max-w-3xl mx-auto py-8 mb-8">
+        <H3 as="h1" class="mt-0 mb-2">{doc.data.title}</H3>
+        <p class="font-medium">{doc.data.description}</p>
+      </header>
+      <Content components={{ ...defaultMarkdownComponents }} />
+    </article>
+  </main>
 </DocsLayout>

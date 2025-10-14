@@ -2,6 +2,34 @@
 
 @custom-variant intent (&:hover, &:focus-within);
 
+/* before we begin with tailwind, let's go over some global rules */
+/* dark mode should use dark chrome */
+@media (prefers-color-scheme: dark) {
+  * {
+    color-scheme: dark;
+  }
+}
+/* nested lists should have lower-alpha style */
+.list-decimal .list-decimal {
+  list-style-type: lower-alpha;
+}
+/* slightly thinner decorations */
+* {
+  text-decoration-thickness: max(0.05em, 0.05rem);
+}
+/* global text decoration offset */
+.font-sans {
+  text-underline-offset: 0.25em;
+}
+.font-mono {
+  text-underline-offset: 0.125em;
+}
+/* stuff should leave room for the nav when scroll margining */
+[id] {
+  scroll-margin-top: calc(var(--nav-h) + var(--spacing) * 5 + var(--scroll-mt, 0px));
+}
+
+/* Ok, now let's do some tailwind stuff */
 /* theme inline tells tailwind to reference the value of these properties */
 @theme inline {
   --font-*: initial;

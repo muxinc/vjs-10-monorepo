@@ -2,8 +2,8 @@
 // use only relative imports
 
 export const FRAMEWORK_STYLES = {
-  html: ['css', 'tailwind'],
   react: ['css', 'tailwind', 'styled-components'],
+  html: ['css', 'tailwind'],
 } as const;
 
 export const SUPPORTED_FRAMEWORKS = Object.keys(FRAMEWORK_STYLES) as (keyof typeof FRAMEWORK_STYLES)[];

@@ -3,13 +3,12 @@ import { type CollectionEntry, getCollection } from 'astro:content';
 
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
-import NavBar from '@/components/NavBar/Docs.astro';
+import NavBar from '@/components/NavBar/NavBar.astro';
 import { Selectors } from '@/components/docs/Selectors';
 import SidebarItem from '@/components/docs/SidebarItem.astro';
 import { filterSidebar } from '@/utils/docs/sidebar';
 
 import Base from './Base.astro';
-import H3 from '@/components/typography/H3.astro';
 
 type Props = {
   doc: CollectionEntry<'docs'>;
@@ -30,13 +29,15 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
     class="grid grid-cols-1 lg:grid-cols-(--lg-grid-cols) min-h-screen"
     style="--lg-grid-cols: calc(var(--spacing) * 75) 1fr;grid-template-rows:auto minmax(0,1fr);"
   >
-    <NavBar class="col-span-full border-b border-light-40" />
+    <NavBar class="col-span-full">
+      <Fragment slot="mobile-nav">sidebar</Fragment>
+    </NavBar>
     <aside
       class="hidden lg:block lg:border-r border-light-40 sticky overflow-y-scroll"
       style="top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
     >
       <Selectors client:load currentFramework={framework} currentStyle={style} />
-      <nav>
+      <nav class="p-6 text-dark-80">
         {
           filteredSidebar.map((item) => (
             <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />
@@ -44,14 +45,6 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
         }
       </nav>
     </aside>
-    <main>
-      <article class="px-5 pb-10">
-        <header class="border-b border-light-40 max-w-3xl mx-auto pb-10 mb-10">
-          <H3 as="h1">{doc.data.title}</H3>
-          <p>{doc.data.description}</p>
-        </header>
-        <slot />
-      </article>
-    </main>
+    <slot />
   </div>
 </Base>

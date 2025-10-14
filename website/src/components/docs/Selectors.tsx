@@ -1,6 +1,7 @@
 import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
 
 import type { BrowserNavigator } from '@/utils/docs/navigation';
+import { Select } from '@/components/Select';
 import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
 import {
   defaultBrowserNavigator,
@@ -22,10 +23,9 @@ export function Selectors({
   currentStyle,
   navigator = defaultBrowserNavigator,
 }: SelectorProps) {
-  const handleFrameworkChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const newFramework = event.target.value as SupportedFramework;
+  // TODO: use astro view transitions to preserve scroll position when switching from the same slug to the same slug
+  const handleFrameworkChange = (newFramework: SupportedFramework | null) => {
+    if (newFramework === null) return;
     const currentGuide = findGuideBySlug(getCurrentGuideSlug(navigator));
     const target = getFrameworkChangeTarget(
       currentGuide,
@@ -35,8 +35,8 @@ export function Selectors({
     navigateToUrl(target.url, target.replaceHistory, navigator);
   };
 
-  const handleStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newStyle = event.target.value as AnySupportedStyle;
+  const handleStyleChange = (newStyle: AnySupportedStyle | null) => {
+    if (newStyle === null) return;
     const currentGuide = findGuideBySlug(getCurrentGuideSlug(navigator));
     const target = getStyleChangeTarget(
       currentGuide,
@@ -48,36 +48,32 @@ export function Selectors({
 
   const availableStyles = FRAMEWORK_STYLES[currentFramework];
 
+  const frameworkOptions = SUPPORTED_FRAMEWORKS.map(fw => ({
+    value: fw,
+    label: fw,
+  }));
+
+  const styleOptions = availableStyles.map(st => ({
+    value: st,
+    label: st,
+  }));
+
   return (
-    <div>
-      <div>
-        <label htmlFor="framework-select">Framework:</label>
-        <select
-          id="framework-select"
-          value={currentFramework}
-          onChange={handleFrameworkChange}
-        >
-          {SUPPORTED_FRAMEWORKS.map(fw => (
-            <option key={fw} value={fw}>
-              {fw}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="style-select">Style:</label>
-        <select
-          id="style-select"
-          value={currentStyle}
-          onChange={handleStyleChange}
-        >
-          {availableStyles.map(st => (
-            <option key={st} value={st}>
-              {st}
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="p-6 grid gap-x-6 gap-y-2 items-center border-b border-light-40" style={{ gridTemplateColumns: 'auto minmax(0, 1fr)' }}>
+      <span>Framework</span>
+      <Select
+        value={currentFramework}
+        onChange={handleFrameworkChange}
+        options={frameworkOptions}
+        aria-label="Select framework"
+      />
+      <span>Style</span>
+      <Select
+        value={currentStyle}
+        onChange={handleStyleChange}
+        options={styleOptions}
+        aria-label="Select style"
+      />
     </div>
   );
 }

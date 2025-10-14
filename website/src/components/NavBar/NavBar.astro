@@ -1,0 +1,52 @@
+---
+import MobileNav from './MobileNav';
+
+export interface Props {
+  dark?: boolean;
+  class?: string;
+}
+
+const navLinks = [
+  { href: '/docs', label: 'Docs', matchPath: '/docs' },
+  { href: '/blog', label: 'Blog', matchPath: '/blog' },
+  { href: 'https://github.com/muxinc/vjs-10-monorepo', label: 'GitHub', matchPath: null },
+];
+
+const currentPath = Astro.url.pathname;
+const { class: className, dark = false } = Astro.props;
+---
+
+<nav
+  class:list={[
+    'pl-3 flex justify-between sticky top-0 z-40 border-b',
+    dark ? 'bg-dark-100 border-dark-100' : 'bg-light-80 border-light-40',
+    className,
+  ]}
+  style="height: var(--nav-h);"
+>
+  <!-- Logo -->
+  <a href="/" class="flex items-center px-3 text-h5">VideoJS</a>
+
+  <!-- Desktop nav links -->
+  <div class="hidden lg:flex -mb-px pr-3">
+    {
+      navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'h-full flex items-center px-3 border-b',
+            link.matchPath && currentPath.startsWith(link.matchPath)
+              ? 'border-current'
+              : 'border-transparent intent:border-current',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </div>
+
+  <!-- Mobile nav -->
+  <MobileNav client:load navLinks={navLinks} currentPath={currentPath} dark={dark}><slot name="mobile-nav" /></MobileNav
+  >
+</nav>

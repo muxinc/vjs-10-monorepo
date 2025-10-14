@@ -13,10 +13,10 @@ import { findFirstGuide } from '../../utils/docs/sidebar';
  */
 export function generateDocsRedirects(sidebarToUse?: Sidebar): Record<string, string> {
   const redirects: Record<string, string> = {};
-  const frameworks = Object.keys(FRAMEWORK_STYLES);
+  const frameworks = Object.keys(FRAMEWORK_STYLES) as (keyof typeof FRAMEWORK_STYLES)[];
 
   // 1. /docs -> /docs/framework/html/style/css/[first-guide]
-  const defaultFramework = 'html';
+  const defaultFramework = Object.keys(FRAMEWORK_STYLES)[0] as keyof typeof FRAMEWORK_STYLES;
   const defaultStyle = FRAMEWORK_STYLES[defaultFramework][0];
   const defaultFirstGuide = findFirstGuide(defaultFramework, defaultStyle, sidebarToUse);
   if (defaultFirstGuide) {

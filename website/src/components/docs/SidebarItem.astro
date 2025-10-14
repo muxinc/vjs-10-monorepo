@@ -1,30 +1,75 @@
 ---
 import type { AnySupportedStyle, Guide, Section, SupportedFramework } from '@/types/docs';
 import { isSection } from '@/types/docs';
+import CaretIcon from '../icons/CaretIcon';
 
 type Props = {
   item: Guide | Section;
   framework: SupportedFramework;
   style: AnySupportedStyle;
   docTitles: Map<string, string>;
+  depth?: number;
 };
 
-const { item, framework, style, docTitles } = Astro.props;
+const { item, framework, style, docTitles, depth = 0 } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+// Helper to check if this item or any of its children contains the active path
+function containsActivePath(item: Guide | Section): boolean {
+  if (isSection(item)) {
+    return item.contents.some((child) => containsActivePath(child));
+  } else {
+    const itemPath = `/docs/framework/${framework}/style/${style}/${item.slug}/`;
+    return itemPath === currentPath;
+  }
+}
+
+const isActive = containsActivePath(item);
 ---
 
 {
   isSection(item) ? (
-    <details open>
-      <summary>{item.sidebarLabel}</summary>
-      {item.contents.map((contentItem) => (
-        <Astro.self item={contentItem} framework={framework} style={style} docTitles={docTitles} />
-      ))}
+    <details open class="group" style={`padding-left: calc(var(--spacing) * ${depth * 4})`}>
+      <summary
+        class:list={[
+          'py-2 flex items-center gap-4 ',
+          'intent:text-dark-100 cursor-pointer',
+          depth === 0 && 'font-medium',
+          depth > 0 && 'border-l',
+          isActive ? 'text-dark-100 border-dark-100 ' : 'border-light-40',
+        ]}
+      >
+        <span class="flex-1">{item.sidebarLabel}</span>
+        <CaretIcon className="group-open:rotate-180" />
+      </summary>
+      <div>
+        {item.contents.map((contentItem) => (
+          <Astro.self item={contentItem} framework={framework} style={style} docTitles={docTitles} depth={depth + 1} />
+        ))}
+      </div>
     </details>
   ) : (
-    <div>
-      <a href={`/docs/framework/${framework}/style/${style}/${item.slug}/`}>
-        {item.sidebarLabel || docTitles.get(item.slug) || item.slug}
-      </a>
-    </div>
+    <a
+      class:list={[
+        'py-2 flex items-center gap-4 ',
+        'intent:text-dark-100 cursor-pointer',
+        depth === 0 && 'font-medium',
+        depth > 0 && 'border-l',
+        isActive ? 'text-dark-100 border-dark-100 ' : 'border-light-40',
+      ]}
+      style={`padding-left: calc(var(--spacing) * ${depth * 4})`}
+      href={`/docs/framework/${framework}/style/${style}/${item.slug}/`}
+    >
+      {item.sidebarLabel || docTitles.get(item.slug) || item.slug}
+    </a>
   )
 }
+
+<style>
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>
