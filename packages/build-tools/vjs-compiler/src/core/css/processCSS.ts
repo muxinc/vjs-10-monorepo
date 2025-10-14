@@ -167,10 +167,46 @@ ${elements.join('\n')}
 }
 
 /**
+ * Extract all Tailwind classes from styles object
+ *
+ * Splits class strings and collects unique class names for safelist.
+ * This ensures Tailwind generates CSS for all classes, including:
+ * - Responsive variants (sm:, md:, lg:)
+ * - Arbitrary values (bg-[#hex], w-[clamp(...)])
+ * - Complex variants that might not parse from HTML
+ *
+ * @param styles - Map of style keys to Tailwind class strings
+ * @returns Array of unique class names
+ */
+function extractAllClasses(styles: Record<string, string>): string[] {
+  const allClasses = new Set<string>();
+
+  for (const classString of Object.values(styles)) {
+    // Split by whitespace and filter out empty strings
+    const classes = classString.split(/\s+/).filter(Boolean);
+    for (const cls of classes) {
+      allClasses.add(cls);
+    }
+  }
+
+  return Array.from(allClasses);
+}
+
+/**
  * Process Tailwind classes through Tailwind v4
  *
  * Takes a styles object, generates HTML, processes through Tailwind,
  * and returns the raw CSS output.
+ *
+ * Strategy:
+ * 1. Build HTML with all classes (for Tailwind to scan)
+ * 2. Build safelist with all classes (ensures complex patterns generate)
+ * 3. Pass both to Tailwind config
+ *
+ * The safelist is critical for:
+ * - Responsive breakpoints (sm:p-6, md:p-8, lg:p-12)
+ * - Arbitrary values (bg-[#1da1f2], w-[clamp(...)])
+ * - Complex variants that Tailwind v4 might not parse from HTML
  *
  * @param styles - Map of style keys to Tailwind class strings
  * @returns Raw CSS from Tailwind processing
@@ -179,16 +215,23 @@ export async function processTailwindClasses(styles: Record<string, string>): Pr
   // Build HTML with all classes for scanning
   const html = buildHTMLForTailwind(styles);
 
-  // DEBUG: Log generated HTML
+  // Extract all classes for safelist (ensures responsive + arbitrary values generate)
+  const safelist = extractAllClasses(styles);
+
+  // DEBUG: Log generated HTML and safelist
   if (process.env.DEBUG_TAILWIND) {
     console.log('=== Generated HTML for Tailwind ===');
     console.log(html);
     console.log('=== End HTML ===\n');
+    console.log('=== Safelist ===');
+    console.log(safelist.slice(0, 20).join(', ') + (safelist.length > 20 ? '...' : ''));
+    console.log(`Total: ${safelist.length} classes\n`);
   }
 
-  // Build Tailwind config with content and theme
+  // Build Tailwind config with content, safelist, and theme
   const tailwindConfig: TailwindConfig = {
     content: [{ raw: html, extension: 'html' }],
+    safelist, // Explicitly tell Tailwind to generate CSS for all classes
     darkMode: 'media', // Enable dark mode with media query strategy
     corePlugins: {
       preflight: false, // Don't include reset styles
