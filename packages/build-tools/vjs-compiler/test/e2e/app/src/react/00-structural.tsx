@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { MediaProvider, Video } from '@vjs-10/react';
+import { MediaProvider, SimpleVideo } from '@vjs-10/react';
 import MediaSkinStructural from '../skins/00-structural/MediaSkinStructural';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
 
       <MediaProvider>
         <MediaSkinStructural>
-          <Video src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" />
+          <SimpleVideo src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" />
         </MediaSkinStructural>
       </MediaProvider>
 
@@ -28,6 +28,11 @@ function App() {
           <li>Play and pause icons</li>
           <li>NO className attributes anywhere</li>
           <li>Pure DOM structure only</li>
+        </ul>
+        <h3>Notes:</h3>
+        <ul>
+          <li>Uses SimpleVideo component for native MP4 support</li>
+          <li>Video may not be visible without styling (expected for structural test)</li>
         </ul>
       </div>
     </div>

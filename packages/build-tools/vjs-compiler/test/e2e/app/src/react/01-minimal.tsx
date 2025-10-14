@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { MediaProvider, Video } from '@vjs-10/react';
+import { MediaProvider, SimpleVideo } from '@vjs-10/react';
 import MediaSkinMinimal from '../skins/01-minimal/MediaSkinMinimal';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
 
       <MediaProvider>
         <MediaSkinMinimal>
-          <Video src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" />
+          <SimpleVideo src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" />
         </MediaSkinMinimal>
       </MediaProvider>
 
@@ -28,6 +28,11 @@ function App() {
           <li>White background with slight transparency</li>
           <li>Rounded (circular) button</li>
           <li>Hover effect (fully opaque on hover)</li>
+        </ul>
+        <h3>Notes:</h3>
+        <ul>
+          <li>Uses SimpleVideo component for native MP4 support</li>
+          <li>Video should load and play successfully</li>
         </ul>
       </div>
     </div>
