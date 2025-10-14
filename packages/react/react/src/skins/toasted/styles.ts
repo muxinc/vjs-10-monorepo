@@ -34,7 +34,7 @@ const styles: MediaToastedSkinStyles = {
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-0 bottom-0 flex items-center gap-3.5 z-20 px-4 pb-4 pt-10 text-white',
+    '@container/controls absolute inset-x-0 bottom-0 flex items-center gap-3.5 z-20 px-3 pb-3 pt-10 text-white',
     // Animation
     'transition ease-in-out',
     //  FIXME: Temporary hide/show logic
@@ -58,8 +58,6 @@ const styles: MediaToastedSkinStyles = {
     'aria-busy:pointer-events-none aria-busy:cursor-not-allowed',
     // Expanded state
     'aria-expanded:text-white/80',
-    // Pressed state
-    'active:scale-95',
   ),
   ButtonGroup: cn('flex items-center gap-1.5'),
   IconButton: cn(
@@ -97,12 +95,19 @@ const styles: MediaToastedSkinStyles = {
   FullscreenButton: cn(
     '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
     '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
+    '[&_path]:transition-transform ease-out',
   ),
   FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
+    'group-hover/button:[&_.arrow-1]:translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
+    'group-hover/button:[&_.arrow-2]:-translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
   FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
+    '[&_.arrow-1]:translate-x-px [&_.arrow-1]:-translate-y-px',
+    '[&_.arrow-2]:-translate-x-px [&_.arrow-2]:translate-y-px',
+    'group-hover/button:[&_.arrow-1]:translate-0',
+    'group-hover/button:[&_.arrow-2]:translate-0',
   ),
   FullscreenTooltipPopup: cn(
     '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
