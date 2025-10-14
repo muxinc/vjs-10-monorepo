@@ -19,16 +19,26 @@ console.log('🔨 Compiling E2E test skins...\n');
  */
 async function compileSingleSkin(skinName, skinFileName) {
   const skinPath = resolve(__dirname, `../src/skins/${skinName}/${skinFileName}.tsx`);
+  const stylesPath = resolve(__dirname, `../src/skins/${skinName}/styles.ts`);
   const outputPath = resolve(__dirname, `../src/compiled/${skinName}.js`);
 
   const skinSource = readFileSync(skinPath, 'utf-8');
 
+  // Try to load styles.ts if it exists
+  let stylesSource;
+  try {
+    stylesSource = readFileSync(stylesPath, 'utf-8');
+  } catch (error) {
+    // Styles file doesn't exist - use undefined
+    stylesSource = undefined;
+  }
+
   const config = {
     skinSource,
-    stylesSource: undefined, // Inline styles
+    stylesSource,
     paths: {
       skinPath,
-      stylesPath: undefined,
+      stylesPath: stylesSource ? stylesPath : undefined,
       outputPath,
       // External compilation: no sourcePackage/targetPackage needed
       packageMappings: {

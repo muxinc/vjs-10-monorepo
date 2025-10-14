@@ -5,7 +5,7 @@
  *
  * Features:
  * - Single PlayButton with play/pause icons (standard icon behavior)
- * - Inline Tailwind classes (no styles object, no imports needed)
+ * - Styles defined in separate styles.ts module (following MediaSkinDefault pattern)
  * - Simplest possible layout: centered button overlay
  *
  * Tailwind classes used (all basic utilities):
@@ -24,7 +24,7 @@
  *
  * Tests:
  * - React → WC transformation
- * - Basic Tailwind CSS compilation
+ * - Basic Tailwind CSS compilation to inline vanilla CSS
  * - Browser loading (no errors)
  * - Custom element registration
  * - Icon rendering
@@ -33,6 +33,7 @@
 import type { PropsWithChildren } from 'react';
 import { MediaContainer, PlayButton } from '@vjs-10/react';
 import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
   className?: string;
@@ -41,10 +42,10 @@ type SkinProps = PropsWithChildren<{
 export default function MediaSkinMinimal({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
-      <div className="relative">
+      <div className={styles.Wrapper}>
         {children}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <PlayButton className="p-3 rounded-full bg-white/80 pointer-events-auto">
+        <div className={styles.Overlay}>
+          <PlayButton className={styles.Button}>
             <PlayIcon />
             <PauseIcon />
           </PlayButton>
