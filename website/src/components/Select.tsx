@@ -16,6 +16,7 @@ export interface SelectProps<T = string> {
   options: SelectOption<T>[];
   className?: string;
   'aria-label'?: string;
+  'data-testid'?: string;
 }
 
 export function Select<T extends string = string>({
@@ -24,6 +25,7 @@ export function Select<T extends string = string>({
   options,
   className,
   'aria-label': ariaLabel,
+  'data-testid': dataTestId,
 }: SelectProps<T>) {
   return (
     <BaseSelect.Root
@@ -39,6 +41,7 @@ export function Select<T extends string = string>({
           className,
         )}
         aria-label={ariaLabel}
+        data-testid={dataTestId}
       >
         <BaseSelect.Value className="flex-1 min-w-0 truncate" />
         <BaseSelect.Icon>

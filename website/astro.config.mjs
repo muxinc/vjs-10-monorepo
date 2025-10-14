@@ -14,13 +14,17 @@ import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings.js'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://videojs.org',
+  site: 'https://v10.videojs.org',
   adapter: vercel(),
-  integrations: [mdx({ extendMarkdownConfig: true }), sitemap(), react({
-    babel: {
-      plugins: [['babel-plugin-react-compiler', { target: '18' }]],
-    },
-  })],
+  integrations: [
+    mdx({ extendMarkdownConfig: true }),
+    sitemap(),
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', { target: '18' }]],
+      },
+    }),
+  ],
   redirects: generateDocsRedirects(),
   prefetch: true,
 

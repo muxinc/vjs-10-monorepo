@@ -1,5 +1,6 @@
 import type { Sidebar } from '../../../types/docs';
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_FRAMEWORK, DEFAULT_STYLE } from '../../../types/docs';
 import { generateDocsRedirects } from '../staticRedirects';
 
 describe('staticRedirects', () => {
@@ -55,9 +56,9 @@ describe('staticRedirects', () => {
 
     const redirects = generateDocsRedirects(mockSidebar);
 
-    it('should redirect /docs to html+css first guide', () => {
+    it('should redirect /docs to default framework+style first guide', () => {
       expect(redirects['/docs']).toBe(
-        '/docs/framework/html/style/css/getting-started',
+        `/docs/framework/${DEFAULT_FRAMEWORK}/style/${DEFAULT_STYLE}/getting-started`,
       );
     });
 
@@ -202,7 +203,9 @@ describe('staticRedirects', () => {
 
       expect(Object.keys(realRedirects).length).toBeGreaterThan(0);
       expect(realRedirects['/docs']).toBeDefined();
-      expect(realRedirects['/docs']).toMatch(/^\/docs\/framework\/html\/style\/css\/.+/);
+      expect(realRedirects['/docs']).toMatch(
+        new RegExp(`^/docs/framework/${DEFAULT_FRAMEWORK}/style/${DEFAULT_STYLE}/.+`),
+      );
     });
   });
 });

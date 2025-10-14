@@ -27,8 +27,8 @@ describe('selectors component', () => {
       />,
     );
 
-    expect(screen.getByLabelText('Framework:')).toBeInTheDocument();
-    expect(screen.getByLabelText('Style:')).toBeInTheDocument();
+    expect(screen.getByTestId('select-framework')).toBeInTheDocument();
+    expect(screen.getByTestId('select-style')).toBeInTheDocument();
   });
 
   it('should display current framework value', () => {
@@ -40,8 +40,8 @@ describe('selectors component', () => {
       />,
     );
 
-    const frameworkSelect = screen.getByLabelText('Framework:') as HTMLSelectElement;
-    expect(frameworkSelect.value).toBe(firstFramework);
+    const frameworkSelect = screen.getByTestId('select-framework');
+    expect(frameworkSelect).toHaveTextContent(firstFramework);
   });
 
   it('should display current style value', () => {
@@ -53,11 +53,12 @@ describe('selectors component', () => {
       />,
     );
 
-    const styleSelect = screen.getByLabelText('Style:') as HTMLSelectElement;
-    expect(styleSelect.value).toBe(firstFrameworkFirstStyle);
+    const styleSelect = screen.getByTestId('select-style');
+    expect(styleSelect).toHaveTextContent(firstFrameworkFirstStyle);
   });
 
-  it('should show all supported frameworks', () => {
+  it('should show all supported frameworks', async () => {
+    const user = userEvent.setup();
     render(
       <Selectors
         currentFramework={firstFramework}
@@ -66,15 +67,23 @@ describe('selectors component', () => {
       />,
     );
 
-    const frameworkSelect = screen.getByLabelText('Framework:');
-    const options = Array.from(frameworkSelect.querySelectorAll('option')).map(
-      opt => opt.value,
-    );
+    const frameworkSelect = screen.getByTestId('select-framework');
+    await user.click(frameworkSelect);
 
-    expect(options).toEqual(frameworks);
+    // Wait for the first option to appear
+    await screen.findByRole('option', { name: frameworks[0] });
+
+    // Check that all framework options are rendered in the popup
+    const options = screen.getAllByRole('option');
+    const optionValues = options.map(opt => opt.textContent);
+
+    frameworks.forEach((framework) => {
+      expect(optionValues).toContain(framework);
+    });
   });
 
-  it('should show available styles for current framework', () => {
+  it('should show available styles for current framework', async () => {
+    const user = userEvent.setup();
     render(
       <Selectors
         currentFramework={firstFramework}
@@ -83,15 +92,23 @@ describe('selectors component', () => {
       />,
     );
 
-    const styleSelect = screen.getByLabelText('Style:');
-    const options = Array.from(styleSelect.querySelectorAll('option')).map(
-      opt => opt.value,
-    );
+    const styleSelect = screen.getByTestId('select-style');
+    await user.click(styleSelect);
 
-    expect(options).toEqual(FRAMEWORK_STYLES[firstFramework]);
+    // Wait for the first option to appear
+    await screen.findByRole('option', { name: FRAMEWORK_STYLES[firstFramework][0] });
+
+    // Check that all style options for the current framework are rendered
+    const options = screen.getAllByRole('option');
+    const optionValues = options.map(opt => opt.textContent);
+
+    FRAMEWORK_STYLES[firstFramework].forEach((style) => {
+      expect(optionValues).toContain(style);
+    });
   });
 
-  it('should show correct styles for second framework', () => {
+  it('should show correct styles for second framework', async () => {
+    const user = userEvent.setup();
     const secondFrameworkFirstStyle = FRAMEWORK_STYLES[secondFramework][0];
     render(
       <Selectors
@@ -101,12 +118,19 @@ describe('selectors component', () => {
       />,
     );
 
-    const styleSelect = screen.getByLabelText('Style:');
-    const options = Array.from(styleSelect.querySelectorAll('option')).map(
-      opt => opt.value,
-    );
+    const styleSelect = screen.getByTestId('select-style');
+    await user.click(styleSelect);
 
-    expect(options).toEqual(FRAMEWORK_STYLES[secondFramework]);
+    // Wait for the first option to appear
+    await screen.findByRole('option', { name: FRAMEWORK_STYLES[secondFramework][0] });
+
+    // Check that all style options for the second framework are rendered
+    const options = screen.getAllByRole('option');
+    const optionValues = options.map(opt => opt.textContent);
+
+    FRAMEWORK_STYLES[secondFramework].forEach((style) => {
+      expect(optionValues).toContain(style);
+    });
   });
 
   it('should call navigator when framework changes', async () => {
@@ -125,8 +149,17 @@ describe('selectors component', () => {
       />,
     );
 
-    const frameworkSelect = screen.getByLabelText('Framework:');
-    await user.selectOptions(frameworkSelect, secondFramework);
+    const frameworkSelect = screen.getByTestId('select-framework');
+    await user.click(frameworkSelect);
+
+    // Wait for options to appear and find the target option
+    await screen.findByRole('option', { name: frameworks[0] });
+    const options = screen.getAllByRole('option');
+    const targetOption = options.find(opt => opt.textContent === secondFramework);
+
+    if (targetOption) {
+      await user.click(targetOption);
+    }
 
     expect(navigate).toHaveBeenCalledWith(
       expect.stringContaining(`/docs/framework/${secondFramework}/`),
@@ -150,8 +183,17 @@ describe('selectors component', () => {
       />,
     );
 
-    const styleSelect = screen.getByLabelText('Style:');
-    await user.selectOptions(styleSelect, firstFrameworkSecondStyle);
+    const styleSelect = screen.getByTestId('select-style');
+    await user.click(styleSelect);
+
+    // Wait for options to appear and find the target option
+    await screen.findByRole('option', { name: FRAMEWORK_STYLES[firstFramework][0] });
+    const options = screen.getAllByRole('option');
+    const targetOption = options.find(opt => opt.textContent === firstFrameworkSecondStyle);
+
+    if (targetOption) {
+      await user.click(targetOption);
+    }
 
     expect(navigate).toHaveBeenCalledWith(
       expect.stringContaining(`/docs/framework/${firstFramework}/style/${firstFrameworkSecondStyle}/`),

@@ -66,6 +66,7 @@ export function Selectors({
         onChange={handleFrameworkChange}
         options={frameworkOptions}
         aria-label="Select framework"
+        data-testid="select-framework"
       />
       <span>Style</span>
       <Select
@@ -73,6 +74,7 @@ export function Selectors({
         onChange={handleStyleChange}
         options={styleOptions}
         aria-label="Select style"
+        data-testid="select-style"
       />
     </div>
   );

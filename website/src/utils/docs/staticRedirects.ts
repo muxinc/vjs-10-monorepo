@@ -1,7 +1,7 @@
 // astro.config depends on this file.
 // use only relative imports
 import type { Sidebar } from '../../types/docs';
-import { FRAMEWORK_STYLES } from '../../types/docs';
+import { DEFAULT_FRAMEWORK, DEFAULT_STYLE, FRAMEWORK_STYLES } from '../../types/docs';
 import { findFirstGuide } from '../../utils/docs/sidebar';
 
 /**
@@ -15,9 +15,9 @@ export function generateDocsRedirects(sidebarToUse?: Sidebar): Record<string, st
   const redirects: Record<string, string> = {};
   const frameworks = Object.keys(FRAMEWORK_STYLES) as (keyof typeof FRAMEWORK_STYLES)[];
 
-  // 1. /docs -> /docs/framework/html/style/css/[first-guide]
-  const defaultFramework = Object.keys(FRAMEWORK_STYLES)[0] as keyof typeof FRAMEWORK_STYLES;
-  const defaultStyle = FRAMEWORK_STYLES[defaultFramework][0];
+  // 1. /docs -> /docs/framework/[default-framework]/style/[default-style]/[first-guide]
+  const defaultFramework = DEFAULT_FRAMEWORK;
+  const defaultStyle = DEFAULT_STYLE;
   const defaultFirstGuide = findFirstGuide(defaultFramework, defaultStyle, sidebarToUse);
   if (defaultFirstGuide) {
     redirects['/docs']
