@@ -72,20 +72,46 @@ function resolveCalcExpression(value: string, theme: ThemeVariables): string {
  * Matches patterns like:
  * - var(--spacing)
  * - var(--color-white)
+ * - var(--spacing, fallback) - uses fallback if variable not found
+ *
+ * Also removes invalid var() references (undefined variables with no fallback)
+ * and cleans up redundant spaces.
+ *
+ * Returns both the resolved value and which variables were resolved
  */
-function resolveVarReference(value: string, theme: ThemeVariables): string {
-  // Pattern: var(--variable)
-  const varPattern = /var\((--[\w-]+)\)/g;
+function resolveVarReference(
+  value: string,
+  theme: ThemeVariables
+): { value: string; resolved: string[] } {
+  const resolved: string[] = [];
+  // Pattern: var(--variable, optional-fallback)
+  // Captures fallback separately to handle it properly
+  const varPattern = /var\((--[\w-]+)(?:,\s*([^)]*))?\)/g;
 
-  return value.replace(varPattern, (match, varName) => {
+  const newValue = value.replace(varPattern, (match, varName, fallback) => {
     const themeValue = theme[varName];
-    if (!themeValue) {
-      // Variable not found, keep original
-      return match;
+    if (themeValue) {
+      // Variable found, resolve it
+      resolved.push(varName);
+      return themeValue;
     }
 
-    return themeValue;
+    // Variable not found
+    if (fallback && fallback.trim()) {
+      // Use fallback if provided and non-empty
+      return fallback.trim();
+    }
+
+    // No variable and no useful fallback - remove the reference
+    // This handles cases like var(--tw-backdrop-brightness,) with empty fallback
+    return '';
   });
+
+  // Clean up multiple spaces and trim
+  return {
+    value: newValue.replace(/\s+/g, ' ').trim(),
+    resolved,
+  };
 }
 
 export interface ResolveOptions {
@@ -99,7 +125,10 @@ export interface ResolveOptions {
 /**
  * Build theme variable map from CSS
  *
- * Extracts variables from :root and :host blocks
+ * Extracts variables from:
+ * - :root and :host blocks (traditional theme definitions)
+ * - @theme blocks (Tailwind v4)
+ * - Inline definitions (Tailwind v4 utilities like transitions/transforms)
  */
 function extractThemeVariables(css: string): ThemeVariables {
   const theme: ThemeVariables = {};
@@ -127,6 +156,22 @@ function extractThemeVariables(css: string): ThemeVariables {
   root.walkAtRules('theme', (atRule) => {
     const themeContent = postcss.parse(`${atRule.params} {${atRule.nodes?.map((n) => n.toString()).join('')}}`);
     themeContent.walkDecls((decl) => {
+      if (decl.prop.startsWith('--')) {
+        theme[decl.prop] = decl.value;
+      }
+    });
+  });
+
+  // IMPORTANT: Also extract inline variable definitions from ALL rules
+  // Tailwind v4 defines variables like --tw-scale-x, --tw-duration inline
+  // within the same rule where they're used
+  root.walkRules((rule) => {
+    // Skip :root and :host since we already processed them
+    if (rule.selector === ':root' || rule.selector === ':host') {
+      return;
+    }
+
+    rule.walkDecls((decl) => {
       if (decl.prop.startsWith('--')) {
         theme[decl.prop] = decl.value;
       }
@@ -235,6 +280,53 @@ function removeUnusedDefinitions(root: postcss.Root, usedVars: Set<string>): voi
 }
 
 /**
+ * Remove inline CSS variable definitions that were resolved
+ *
+ * Tailwind v4 defines variables like --tw-scale-x inline within rules.
+ * After resolving these to concrete values, we should remove the definitions
+ * to keep the output clean and terse.
+ *
+ * Also removes ALL unused inline variable definitions (not referenced anywhere).
+ *
+ * This removes variable definitions from rules EXCEPT :host and :root
+ * (those are handled by removeUnusedDefinitions).
+ */
+function removeInlineDefinitions(root: postcss.Root, resolvedVars: Set<string>): void {
+  // First find all variables that are actually referenced
+  const referencedVars = new Set<string>();
+  root.walkDecls((decl) => {
+    if (!decl.prop.startsWith('--')) {
+      const varPattern = /var\((--[\w-]+)/g;
+      const matches = decl.value.matchAll(varPattern);
+      for (const match of matches) {
+        if (match[1]) {
+          referencedVars.add(match[1]);
+        }
+      }
+    }
+  });
+
+  root.walkRules((rule) => {
+    // Skip :host and :root - those are theme definitions we want to keep
+    if (rule.selector === ':host' || rule.selector === ':root') {
+      return;
+    }
+
+    // Remove inline variable definitions that were:
+    // 1. Resolved (no longer needed)
+    // 2. Not referenced anywhere (unused)
+    rule.walkDecls((decl) => {
+      if (decl.prop.startsWith('--')) {
+        const varName = decl.prop;
+        if (resolvedVars.has(varName) || !referencedVars.has(varName)) {
+          decl.remove();
+        }
+      }
+    });
+  });
+}
+
+/**
  * Resolve CSS variables in a stylesheet
  *
  * @param css - CSS string to process
@@ -242,11 +334,14 @@ function removeUnusedDefinitions(root: postcss.Root, usedVars: Set<string>): voi
  * @returns CSS with resolved variables
  */
 export function resolveCSSVariables(css: string, options: ResolveOptions = {}): string {
-  // First, extract theme variables from the CSS itself
+  // First, extract theme variables from the CSS itself (including inline definitions)
   const allThemeVars = extractThemeVariables(css);
 
   // Filter to only the variables we want to resolve
   const theme = filterTheme(allThemeVars, options);
+
+  // Track which variables we successfully resolved
+  const resolvedVars = new Set<string>();
 
   // Parse CSS
   const root = postcss.parse(css);
@@ -270,12 +365,24 @@ export function resolveCSSVariables(css: string, options: ResolveOptions = {}): 
     const afterCalc = resolveCalcExpression(newValue, theme);
     if (afterCalc !== newValue) {
       newValue = afterCalc;
+      // Track variables in the original value that might have been resolved
+      const varPattern = /var\((--[\w-]+)\)/g;
+      const matches = decl.value.matchAll(varPattern);
+      for (const match of matches) {
+        if (match[1] && theme[match[1]]) {
+          resolvedVars.add(match[1]);
+        }
+      }
     }
 
     // Then resolve direct var() references
-    const afterVar = resolveVarReference(newValue, theme);
-    if (afterVar !== newValue) {
-      newValue = afterVar;
+    const result = resolveVarReference(newValue, theme);
+    if (result.value !== newValue) {
+      newValue = result.value;
+      // Track which variables were resolved
+      for (const varName of result.resolved) {
+        resolvedVars.add(varName);
+      }
     }
 
     // Update if changed
@@ -284,11 +391,40 @@ export function resolveCSSVariables(css: string, options: ResolveOptions = {}): 
     }
   });
 
+  // Remove inline variable definitions that were resolved
+  // (e.g., --tw-scale-x: 100% in .button {})
+  removeInlineDefinitions(root, resolvedVars);
+
+  // Remove redundant property declarations
+  // (e.g., when same property appears twice due to variable resolution)
+  root.walkRules((rule) => {
+    const seenProps = new Map<string, postcss.Declaration[]>();
+
+    // Collect all declarations grouped by property
+    rule.walkDecls((decl) => {
+      if (!seenProps.has(decl.prop)) {
+        seenProps.set(decl.prop, []);
+      }
+      seenProps.get(decl.prop)!.push(decl);
+    });
+
+    // For properties that appear multiple times, keep only the last one
+    for (const [prop, decls] of seenProps) {
+      if (decls.length > 1) {
+        // Remove all but the last declaration
+        for (let i = 0; i < decls.length - 1; i++) {
+          decls[i].remove();
+        }
+      }
+    }
+  });
+
   // After resolution, find which variables are still being used
   // (includes any variables that weren't resolved)
   const usedVars = findAllUsedVariables(root);
 
   // Remove definitions for variables that aren't used anywhere
+  // (from :host and :root blocks)
   removeUnusedDefinitions(root, usedVars);
 
   return root.toString();
