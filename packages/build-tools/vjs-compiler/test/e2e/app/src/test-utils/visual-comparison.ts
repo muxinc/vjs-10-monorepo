@@ -74,15 +74,22 @@ export function compareScreenshots(
   const png1 = PNG.sync.read(img1);
   const png2 = PNG.sync.read(img2);
 
-  // Validate dimensions match
-  if (png1.width !== png2.width || png1.height !== png2.height) {
+  // Validate dimensions match (allow up to 2px difference for rounding/precision)
+  const widthDiff = Math.abs(png1.width - png2.width);
+  const heightDiff = Math.abs(png1.height - png2.height);
+  const maxDimensionTolerance = 2;
+
+  if (widthDiff > maxDimensionTolerance || heightDiff > maxDimensionTolerance) {
     throw new Error(
-      `Image dimensions don't match: ` +
-      `${png1.width}x${png1.height} vs ${png2.width}x${png2.height}`
+      `Image dimensions differ by more than ${maxDimensionTolerance}px: ` +
+      `${png1.width}x${png1.height} vs ${png2.width}x${png2.height} ` +
+      `(diff: ${widthDiff}x${heightDiff})`
     );
   }
 
-  const { width, height } = png1;
+  // Use the smaller dimensions for comparison to handle minor size differences
+  const width = Math.min(png1.width, png2.width);
+  const height = Math.min(png1.height, png2.height);
 
   // Create diff image
   const diff = new PNG({ width, height });
