@@ -220,17 +220,10 @@ function isIconPackage(packageSource: string): boolean {
  * @returns Default export strategy
  */
 function getDefaultExportStrategy(packageName: string): ComponentExportStrategy {
-  // VJS html and react packages use named-from-main
-  if (packageName === '@vjs-10/html' || packageName === '@vjs-10/react') {
-    return 'named-from-main';
-  }
-
-  // Icon packages use wildcard-subpath
-  if (packageName.includes('-icons')) {
-    return 'wildcard-subpath';
-  }
-
-  // Default to named-from-main
+  // VJS html, react, and icon packages all use named-from-main
+  // They export everything from their main entry point
+  // For web components, side-effect imports from the main package
+  // trigger component registration
   return 'named-from-main';
 }
 

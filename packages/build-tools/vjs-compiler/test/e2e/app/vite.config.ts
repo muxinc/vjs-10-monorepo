@@ -28,16 +28,4 @@ export default defineConfig({
     port: 5175,
     open: false,
   },
-
-  // Resolve workspace packages
-  resolve: {
-    alias: {
-      '@vjs-10/react': resolve(__dirname, '../../../../../../packages/react/react/src'),
-      '@vjs-10/react-icons': resolve(__dirname, '../../../../../../packages/react/react-icons/src'),
-      '@vjs-10/html': resolve(__dirname, '../../../../../../packages/html/html/src'),
-      '@vjs-10/html-icons': resolve(__dirname, '../../../../../../packages/html/html-icons/src'),
-      // React package internal alias (used by toasted skin)
-      '@': resolve(__dirname, '../../../../../../packages/react/react/src'),
-    },
-  },
 });
