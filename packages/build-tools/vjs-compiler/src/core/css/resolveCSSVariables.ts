@@ -34,6 +34,9 @@ const TAILWIND_DEFAULT_THEME: ThemeVariables = {
   // Spacing scale - used by p-*, m-*, gap-*, inset-*, top-*, etc.
   // Default: 0.25rem (4px) per unit
   '--spacing': '0.25rem',
+
+  // Ring utilities - used by ring-*, focus:ring-*, etc.
+  '--tw-ring-offset-width': '0px',
 };
 
 interface ParsedValue {
@@ -57,33 +60,58 @@ function parseValue(cssValue: string | undefined): ParsedValue | null {
 }
 
 /**
- * Resolve calc(var(--name) * N) expressions
+ * Resolve calc() expressions with CSS variables
  *
  * Matches patterns like:
- * - calc(var(--spacing) * 3)
- * - calc(var(--spacing) * 0.5)
- * - calc(var(--spacing) * 2.5)
+ * - calc(var(--spacing) * 3) → 0.75rem (if --spacing is 0.25rem)
+ * - calc(2px + var(--tw-ring-offset-width)) → 2px (if --tw-ring-offset-width is 0px)
+ * - calc(var(--spacing) * 0.5) → 0.125rem
  */
 function resolveCalcExpression(value: string, theme: ThemeVariables): string {
-  // Pattern: calc(var(--variable) * number)
-  const calcPattern = /calc\(var\((--[\w-]+)\)\s*\*\s*([\d.]+)\)/g;
+  // Pattern 1: calc(var(--variable) * number)
+  const multiplyPattern = /calc\(var\((--[\w-]+)\)\s*\*\s*([\d.]+)\)/g;
 
-  return value.replace(calcPattern, (match, varName, multiplier) => {
+  let result = value.replace(multiplyPattern, (match, varName, multiplier) => {
     const themeValue = theme[varName];
     if (!themeValue) {
-      // Variable not found in theme, keep original
       return match;
     }
 
     const parsed = parseValue(themeValue);
     if (!parsed) {
-      // Can't parse theme value, keep original
       return match;
     }
 
-    const result = parsed.value * Number.parseFloat(multiplier);
-    return `${result}${parsed.unit}`;
+    const resultValue = parsed.value * Number.parseFloat(multiplier);
+    return `${resultValue}${parsed.unit}`;
   });
+
+  // Pattern 2: calc(number + var(--variable)) or calc(var(--variable) + number)
+  // Simplifies when variable resolves to 0
+  const addPattern = /calc\(([\d.]+)([a-z%]*)\s*\+\s*var\((--[\w-]+)\)\)|calc\(var\((--[\w-]+)\)\s*\+\s*([\d.]+)([a-z%]*)\)/gi;
+
+  result = result.replace(addPattern, (match, num1, unit1, var1, var2, num2, unit2) => {
+    // Determine which pattern matched
+    const varName = var1 || var2;
+    const number = num1 || num2;
+    const unit = unit1 || unit2;
+
+    const themeValue = theme[varName];
+    if (!themeValue) {
+      return match;
+    }
+
+    const parsed = parseValue(themeValue);
+    if (!parsed || parsed.value !== 0) {
+      // Only simplify if variable is 0
+      return match;
+    }
+
+    // Variable is 0, so result is just the number
+    return `${number}${unit}`;
+  });
+
+  return result;
 }
 
 /**
