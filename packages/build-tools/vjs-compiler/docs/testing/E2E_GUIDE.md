@@ -422,10 +422,9 @@ A feature is **E2E validated** when ALL of these are true:
 
 ## References
 
-- **Tailwind feature status:** `docs/tailwind/SUPPORT_STATUS.md`
+- **Tailwind feature status:** `docs/tailwind/SUPPORT_STATUS.md` (includes test progression)
 - **Tailwind investigations:** `docs/tailwind/investigations/`
 - **Known limitations:** `docs/CURRENT_STATUS.md (Known Limitations section)`
-- **Test skin progression:** `docs/TEST_SKIN_PROGRESSION.md`
 - **Current status:** `docs/CURRENT_STATUS.md`
 
 ---
