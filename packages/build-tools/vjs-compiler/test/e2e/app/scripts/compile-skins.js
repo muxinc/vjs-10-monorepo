@@ -92,6 +92,7 @@ async function compileSkins() {
   await compileSingleSkin('09-has-selector', 'MediaSkinHasSelector');
   await compileSingleSkin('10-named-groups', 'MediaSkinNamedGroups');
   await compileSingleSkin('11-aria-states', 'MediaSkinAriaStates');
+  await compileSingleSkin('12-container-queries', 'MediaSkinContainerQueries');
   // Note: 07-semantic-colors is intentionally excluded (documents known limitation)
 }
 
