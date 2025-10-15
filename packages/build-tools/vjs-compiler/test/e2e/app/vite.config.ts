@@ -10,16 +10,15 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
 
   // Multi-page app configuration
+  // NOTE: Vite automatically discovers all HTML files in src/ during dev.
+  // The build.rollupOptions.input is only needed for production builds.
+  // Since we're primarily using this for dev/testing, we can rely on
+  // automatic discovery. Add specific entries here if needed for prod builds.
   build: {
     rollupOptions: {
       input: {
-        // React pages
-        'react-00-structural': resolve(__dirname, 'src/react/00-structural.html'),
-        'react-01-minimal': resolve(__dirname, 'src/react/01-minimal.html'),
-
-        // Web Component pages
-        'wc-00-structural': resolve(__dirname, 'src/wc/00-structural.html'),
-        'wc-01-minimal': resolve(__dirname, 'src/wc/01-minimal.html'),
+        // Add specific build targets here if needed
+        // All HTML files in src/ are auto-discovered during dev
       },
     },
   },
