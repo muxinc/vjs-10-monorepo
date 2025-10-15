@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown';
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
-    cli: 'src-v1/cli.ts',
+    cli: 'src/cli.ts', // V2 CLI (V1 CLI in src-v1/cli.ts preserved for reference)
   },
   platform: 'node',
   format: 'esm',

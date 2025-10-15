@@ -27,47 +27,82 @@ This document captures technical lessons from the v1 compiler to inform v2 decis
 
 ## Lessons Documented
 
-### Arbitrary Variant Selectors
+### Arbitrary Variant Selectors and Complex Tailwind Features
 
-**V1 Location:** `src-v1/tailwind-ast/index.ts`, `src-v1/tailwind-ast/candidate.ts` (~1000 lines)
+**V1 Location:**
+- `src-v1/tailwind-ast/index.ts`, `src-v1/tailwind-ast/candidate.ts` (~1000 lines - custom parser)
+- `src-v1/cssProcessing/detectUnparseableClasses.ts` (unparseable class detection)
+- `src-v1/cssProcessing/generateSupplementaryCSS.ts` (manual CSS generation workarounds)
 
 **What V1 Did:**
-Custom Tailwind AST parser that analyzed utility class strings and generated CSS rules manually. Handled `[&_selector]` variants by building selector trees.
+Hybrid approach combining custom Tailwind AST parser with manual CSS generation workarounds for classes Tailwind couldn't parse.
 
-**Why It Worked:**
+**Feature Support in V1:**
 
-- Full control over CSS generation
-- Could handle any Tailwind syntax (including arbitrary variants)
-- Generated clean, optimized CSS
-- Worked reliably for production MediaSkinDefault
+| Feature | V1 Status | How It Worked |
+|---------|-----------|---------------|
+| Named groups (`group/root`, `group-hover/root:`) | ✅ **Worked** | Custom AST parser supported compound variant syntax |
+| Simple descendant selectors (`[&_.icon]:opacity-0`) | ⚠️ **Workaround** | Detected as "unparseable", manual CSS generation |
+| Has selectors (`:has()`) | ❌ **Didn't Work** | Marked as unparseable "other" category, no workaround |
+| Pseudo-elements (`::before`, `::after`) | ❌ **Didn't Work** | Marked as unparseable "other" category, no workaround |
+| ARIA selectors (`aria-disabled:`) | ❌ **Didn't Work** | No special handling, unparseable |
+| Drop-shadow filters | ⚠️ **Buggy** | Generated malformed CSS, required regex fixes |
+
+**Why Parts Worked:**
+
+- Custom AST parser handled named groups (`group-hover/group-name` syntax)
+- Manual CSS generation provided workarounds for SOME unparseable classes
+- Pattern matching for specific selector types (descendant selectors, data attributes)
+- Full control over CSS generation when Tailwind failed
 
 **Why It Didn't Work:**
 
-- ~1000 lines of complex parsing logic
-- Required maintenance when Tailwind syntax changed
+- ~1000 lines of complex parsing logic (high maintenance burden)
+- Brittle workarounds (regex pattern matching for unparseable classes)
+- Many features still didn't work (has selectors, pseudo-elements, ARIA selectors)
+- Tailwind bugs required additional regex fixes (drop-shadow)
+- Production MediaSkinDefault uses features V1 couldn't handle
 - Difficult to test (many edge cases)
-- Tightly coupled to Tailwind v3 syntax
-- High cognitive load for maintainers
 
 **V2 Decision:**
-Attempted to use Tailwind v4 JIT directly for CSS generation. Works for simple utilities but NOT for arbitrary variants (`[&_selector]:utility`).
+Uses Tailwind v4 JIT engine directly. Works for simple utilities and descendant selectors, but missing named groups and other complex features.
+
+**Feature Support in V2:**
+
+| Feature | V2 Status | How It Works |
+|---------|-----------|--------------|
+| Named groups (`group/root`, `group-hover/root:`) | ❌ **Doesn't Work** | Not implemented |
+| Simple descendant selectors (`[&_.icon]:opacity-0`) | ✅ **Works** | Native Tailwind v4 JIT support |
+| Has selectors (`:has()`) | ❌ **Doesn't Work** | Not implemented |
+| Pseudo-elements (`::before`, `::after`) | ❌ **Doesn't Work** | Not implemented |
+| ARIA selectors (`aria-disabled:`) | ❌ **Doesn't Work** | Not implemented |
 
 **E2E Validation Status:**
 
-- ❌ CANNOT validate arbitrary variants e2e (feature doesn't work in v2)
-- ✅ CAN validate simple utilities e2e (works in both demos)
-- Gap documented in `docs/testing/E2E_GUIDE.md`
+- ✅ Simple descendant selectors validated e2e (test skins 01-06)
+- ❌ Named groups NOT validated e2e (test skin 10-named-groups fails)
+- ❌ Has selectors NOT validated e2e (test skin 09-has-selector fails)
+- ❌ Before/after NOT validated e2e (test skin 08-before-after fails)
+- ❌ ARIA selectors NOT validated e2e (test skin 11-aria-states fails)
+- ❌ **Production MediaSkinDefault cannot be compiled by either V1 or V2**
+
+**Key Insight:**
+Neither V1 nor V2 can fully compile production MediaSkinDefault. V1 had MORE workarounds but still couldn't handle has selectors, pseudo-elements, and ARIA selectors. V2 has cleaner architecture but is missing critical features for production use.
 
 **Current Status:**
-V2 blocked on arbitrary variants. Options:
+V2 blocked on multiple Tailwind features. Options:
 
-1. Port v1's AST parser (known to work, but maintenance burden)
-2. Build full HTML context before Tailwind processing (simpler, may not handle all cases)
-3. Hybrid: Use Tailwind v4 for simple utilities, custom parser for arbitrary variants only
+1. Port v1's AST parser (would add named groups back, but still missing has/before/after/ARIA)
+2. Extend Tailwind v4 JIT to handle these features (contribute upstream?)
+3. Build custom selector transformation layer (complex, maintenance burden)
+4. Simplify production skin to use only supported features (limits design flexibility)
 
-**Next Step:** Document decision in ADR and implement chosen approach. E2E validate with MediaSkinDefault icon visibility.
+**Next Step:** Prioritize which features are most critical for production use. Named groups likely highest priority (used 15+ times in MediaSkinDefault).
 
-**V2 Code Reference:** `src/core/css/transformStyles.ts`, `src/core/css/processCSS.ts`
+**V2 Code Reference:**
+- `src/core/css/transformStyles.ts` (current CSS generation)
+- `src/core/css/processCSS.ts` (Tailwind processing)
+- `docs/tailwind/SUPPORT_STATUS.md` (detailed feature status)
 
 ---
 

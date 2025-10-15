@@ -422,6 +422,45 @@ if (!customElements.get('media-skin-minimal')) {
 
 **Priority:** MEDIUM - Extract to config for broader applicability
 
+#### 4. Production Skin Compatibility
+
+**Issue:** Neither V1 nor V2 can fully compile production `MediaSkinDefault.tsx` from `@vjs-10/react`
+
+**Root Cause:** Production skin uses Tailwind features not supported by either compiler version:
+
+**V1 Limitations:**
+- ✅ Named groups (`group/root`, `group-hover/root:`) - Custom AST parser
+- ⚠️ Descendant selectors (`[&_.icon]:opacity-0`) - Manual CSS generation workaround
+- ❌ Has selectors (`:has()`) - Marked as unparseable, no workaround
+- ❌ Pseudo-elements (`::before`, `::after`) - Marked as unparseable, no workaround
+- ❌ ARIA selectors (`aria-disabled:`) - No support
+- ⚠️ Drop-shadow filters - Generated malformed CSS, required regex fixes
+
+**V2 Limitations:**
+- ❌ Named groups - Not implemented
+- ✅ Descendant selectors - Native Tailwind JIT support
+- ❌ Has selectors - Not implemented
+- ❌ Pseudo-elements - Not implemented
+- ❌ ARIA selectors - Not implemented
+
+**Impact:** CRITICAL - Cannot compile actual production skins, only simplified test skins
+
+**Current Workaround:** E2E testing uses simplified demo skins (13 test skins in `test/e2e/app/src/skins/`) that avoid unsupported features
+
+**Production Skin Requirements:**
+- 15+ uses of named groups (`group-hover/root:opacity-100`)
+- 10+ uses of has selectors (`has-[+.controls_[data-paused]]:opacity-100`)
+- 12+ uses of ARIA selectors (`aria-disabled:opacity-50`)
+- 4+ uses of pseudo-elements (`after:ring-1`, `before:absolute`)
+- 2 uses of `:fullscreen` pseudo-class
+- 2 uses of container queries
+
+**See:**
+- `docs/LESSONS_FROM_V1.md` - Detailed V1 vs V2 comparison with workarounds documented
+- `docs/tailwind/SUPPORT_STATUS.md` - Complete Tailwind feature matrix with V1 vs V2 comparison
+
+**Priority:** CRITICAL - Must implement these features for production readiness
+
 ---
 
 ## Next Steps (Prioritized)

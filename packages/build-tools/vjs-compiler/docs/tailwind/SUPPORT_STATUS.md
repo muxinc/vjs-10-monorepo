@@ -316,21 +316,39 @@ These features are part of standard Tailwind and should work, but haven't been e
 
 ## V1 vs V2 Comparison
 
-| Feature | V1 | V2 | Notes |
-|---------|----|----|-------|
-| Basic CSS utilities | ✅ | ✅ | Works in both |
-| Element selectors | ✅ | ✅ | Works in both |
-| Class selectors | ✅ | ✅ | Works in both |
-| CSS variables (Tailwind v4) | ❌ | ✅ | V2 uses modern approach |
-| Descendant selectors | ✅ | ✅ | Works in v2 |
-| Data attribute styling | ✅ | ✅ | Fixed 2025-10-08 |
-| Pseudo-classes (hover/focus) | ✅ | ✅ | Works in v2 |
-| Media queries | ✅ | ✅ | Fixed 2025-10-08 |
-| Named groups | ✅ | ❌ | V1 has custom parser |
-| Has selector | ✅ | ❌ | Blocked by Tailwind JIT |
-| Before/after pseudo-elements | ✅ | ❌ | Blocked by Tailwind JIT |
-| Import generation | ✅ | ✅ | Phase 1 complete |
-| Base template inclusion | ✅ | ✅ | Phase 1 complete |
+**Legend:**
+- ✅ **Works** - Feature compiles and generates correct CSS
+- ⚠️ **Workaround** - Feature works but requires manual intervention/hacks
+- ❌ **Doesn't Work** - Feature fails to compile or generates no CSS
+
+| Feature | V1 Status | V2 Status | Notes |
+|---------|-----------|-----------|-------|
+| **Core Features** ||||
+| Basic CSS utilities | ✅ Works | ✅ Works | Both versions handle standard Tailwind utilities |
+| Element selectors | ✅ Works | ✅ Works | Both versions |
+| Class selectors | ✅ Works | ✅ Works | Both versions |
+| CSS variables (Tailwind v4) | ❌ Doesn't Work | ✅ Works | V2 uses modern `@theme` syntax |
+| Data attribute styling | ✅ Works | ✅ Works | V2 fixed 2025-10-08 |
+| Pseudo-classes (hover/focus) | ✅ Works | ✅ Works | Both versions |
+| Media queries (responsive) | ✅ Works | ✅ Works | V2 fixed 2025-10-08 |
+| Import generation | ✅ Works | ✅ Works | Both versions |
+| Base template inclusion | ✅ Works | ✅ Works | Both versions |
+| **Complex Features** ||||
+| Descendant selectors (`[&_.icon]:opacity-0`) | ⚠️ Workaround | ✅ Works | V1 used manual CSS generation, V2 native Tailwind JIT |
+| Named groups (`group/root`, `group-hover/root:`) | ✅ Works | ❌ Doesn't Work | V1 had custom AST parser, V2 not implemented |
+| Has selector (`:has()`) | ❌ Doesn't Work | ❌ Doesn't Work | Neither version supports (Tailwind limitation) |
+| Before/after pseudo-elements (`::before`, `::after`) | ❌ Doesn't Work | ❌ Doesn't Work | Neither version supports (Tailwind limitation) |
+| ARIA selectors (`aria-disabled:`) | ❌ Doesn't Work | ❌ Doesn't Work | Neither version supports |
+| Container queries (`@container`) | ❓ Untested | ⚠️ Partial | V2: container-type works, variants don't |
+| Fullscreen pseudo-class (`[&:fullscreen]:`) | ⚠️ Workaround | ❌ Doesn't Work | V1 manual CSS, V2 silently dropped |
+| Drop-shadow filters | ⚠️ Buggy | ❓ Untested | V1 required regex fixes for malformed output |
+
+**Key Insight:** Neither V1 nor V2 can fully compile production MediaSkinDefault. V1 had more workarounds (named groups, descendant selectors) but both fail on has selectors, pseudo-elements, and ARIA selectors.
+
+**V1 Architecture:** Custom Tailwind AST parser (~1000 lines) + manual CSS generation for unparseable classes
+**V2 Architecture:** Tailwind v4 JIT engine (native support) + cleaner 3-phase pipeline
+
+**See also:** `docs/LESSONS_FROM_V1.md` for detailed architectural comparison
 
 ---
 
