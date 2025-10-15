@@ -33,8 +33,8 @@ type SkinProps = PropsWithChildren<{
 export default function MediaSkinContainerQueries({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
+      {children}
       <div className={styles.Wrapper}>
-        {children}
         <div className={styles.Overlay}>
           <div className={styles.ControlsContainer}>
             <PlayButton className={styles.Button}>

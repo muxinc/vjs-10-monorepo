@@ -29,8 +29,8 @@ export interface SkinProps {
 export default function MediaSkinNamedGroups({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
+      {children}
       <div className={styles.Wrapper}>
-        {children}
         <div className={styles.Overlay}>
           <div className={styles.ControlsContainer}>
             <MediaPlayButton className={styles.Button}>

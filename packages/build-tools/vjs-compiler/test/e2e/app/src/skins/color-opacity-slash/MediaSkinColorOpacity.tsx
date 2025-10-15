@@ -36,8 +36,8 @@ type SkinProps = PropsWithChildren<{
 export default function MediaSkinColorOpacity({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
+      {children}
       <div className={styles.Wrapper}>
-        {children}
         <div className={styles.Overlay}>
           <PlayButton className={styles.Button}>
             <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
