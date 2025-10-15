@@ -87,6 +87,11 @@ async function compileSkins() {
   await compileSingleSkin('04-arbitrary', 'MediaSkinArbitrary');
   await compileSingleSkin('05-responsive', 'MediaSkinResponsiveSimple');
   await compileSingleSkin('06-combined', 'MediaSkinCombined');
+  await compileSingleSkin('07-color-opacity', 'MediaSkinColorOpacity');
+  await compileSingleSkin('08-before-after', 'MediaSkinBeforeAfter');
+  await compileSingleSkin('09-has-selector', 'MediaSkinHasSelector');
+  await compileSingleSkin('10-named-groups', 'MediaSkinNamedGroups');
+  // Note: 07-semantic-colors is intentionally excluded (documents known limitation)
 }
 
 compileSkins().catch((error) => {
