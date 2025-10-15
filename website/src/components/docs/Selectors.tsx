@@ -1,49 +1,59 @@
-import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
+import type { AnySupportedStyle, SupportedFramework, SupportedStyle } from '@/types/docs';
 
-import type { BrowserNavigator } from '@/utils/docs/navigation';
 import { Select } from '@/components/Select';
-import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
-import {
-  defaultBrowserNavigator,
-  getCurrentGuideSlug,
-  getFrameworkChangeTarget,
-  getStyleChangeTarget,
-  navigateToUrl,
-} from '@/utils/docs/navigation';
-import { findGuideBySlug } from '@/utils/docs/sidebar';
+import { FRAMEWORK_STYLES, isValidFramework, isValidStyleForFramework, SUPPORTED_FRAMEWORKS } from '@/types/docs';
+import { resolveFrameworkChange, resolveStyleChange } from '@/utils/docs/routing';
 
-interface SelectorProps {
-  currentFramework: SupportedFramework;
-  currentStyle: AnySupportedStyle;
-  navigator?: BrowserNavigator;
+interface SelectorProps<T extends SupportedFramework> {
+  currentFramework: T;
+  currentStyle: SupportedStyle<T>;
+  currentSlug: string;
 }
 
 export function Selectors({
   currentFramework,
   currentStyle,
-  navigator = defaultBrowserNavigator,
-}: SelectorProps) {
+  currentSlug,
+}: SelectorProps<SupportedFramework>) {
   // TODO: use astro view transitions to preserve scroll position when switching from the same slug to the same slug
   const handleFrameworkChange = (newFramework: SupportedFramework | null) => {
     if (newFramework === null) return;
-    const currentGuide = findGuideBySlug(getCurrentGuideSlug(navigator));
-    const target = getFrameworkChangeTarget(
-      currentGuide,
+    if (!isValidFramework(newFramework)) return;
+
+    const { url, shouldReplace } = resolveFrameworkChange({
+      currentFramework,
       currentStyle,
+      currentSlug,
       newFramework,
-    );
-    navigateToUrl(target.url, target.replaceHistory, navigator);
+    });
+
+    if (shouldReplace) {
+      // Maintaining the current slug, navigate without pushing onto the history stack
+      window.location.replace(url);
+    } else {
+      // Changing slug, use normal navigation
+      window.location.href = url;
+    }
   };
 
   const handleStyleChange = (newStyle: AnySupportedStyle | null) => {
     if (newStyle === null) return;
-    const currentGuide = findGuideBySlug(getCurrentGuideSlug(navigator));
-    const target = getStyleChangeTarget(
-      currentGuide,
+    if (!isValidStyleForFramework(currentFramework, newStyle)) return;
+
+    const { url, shouldReplace } = resolveStyleChange({
       currentFramework,
+      currentStyle,
+      currentSlug,
       newStyle,
-    );
-    navigateToUrl(target.url, target.replaceHistory, navigator);
+    });
+
+    if (shouldReplace) {
+      // Maintaining the current slug, navigate without pushing onto the history stack
+      window.location.replace(url);
+    } else {
+      // Changing slug, use normal navigation
+      window.location.href = url;
+    }
   };
 
   const availableStyles = FRAMEWORK_STYLES[currentFramework];

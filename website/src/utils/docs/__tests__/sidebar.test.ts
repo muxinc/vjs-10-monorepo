@@ -125,16 +125,16 @@ describe('sidebar utilities', () => {
       expect(result).toBe('guide-1');
     });
 
-    it('should return null if no guide matches', () => {
-      const result = findFirstGuide('html', 'css', [mockGuide2]); // guide-2 is react-only
-
-      expect(result).toBeNull();
+    it('should throw error if no guide matches', () => {
+      expect(() => {
+        findFirstGuide('html', 'css', [mockGuide2]); // guide-2 is react-only
+      }).toThrow('No guide found for valid combination framework "html" and style "css"');
     });
 
-    it('should return null for empty sidebar', () => {
-      const result = findFirstGuide('html', 'css', []);
-
-      expect(result).toBeNull();
+    it('should throw error for empty sidebar', () => {
+      expect(() => {
+        findFirstGuide('html', 'css', []);
+      }).toThrow('No guide found for valid combination framework "html" and style "css"');
     });
   });
 
@@ -250,6 +250,65 @@ describe('sidebar utilities', () => {
       const result = getValidStylesForGuide(styledOnlyGuide, 'html');
 
       expect(result).toEqual([]);
+    });
+
+    describe('without framework parameter', () => {
+      it('should return all guide styles when guide has style restrictions', () => {
+        const result = getValidStylesForGuide(mockGuide1);
+
+        expect(result).toEqual(['css', 'tailwind']);
+      });
+
+      it('should return all possible styles when guide has no restrictions', () => {
+        const result = getValidStylesForGuide(mockGuide3);
+
+        // Should include all styles from all frameworks
+        expect(result).toEqual(expect.arrayContaining(['css', 'tailwind', 'styled-components']));
+        expect(result).toHaveLength(3);
+      });
+
+      it('should return guide-specific styles for limited support guides', () => {
+        const styledOnlyGuide: Guide = {
+          slug: 'styled-only',
+          styles: ['styled-components'],
+        };
+        const result = getValidStylesForGuide(styledOnlyGuide);
+
+        expect(result).toEqual(['styled-components']);
+      });
+    });
+  });
+
+  describe('findFirstGuide with real sidebar config', () => {
+    it('should return a guide for every valid framework/style combination', async () => {
+      // Import the real sidebar config
+      const { sidebar: realSidebar } = await import('../../../config/docs/sidebar');
+      const { ALL_FRAMEWORK_STYLE_COMBINATIONS } = await import('../../../types/docs');
+
+      // Test each valid combination
+      for (const { framework, style } of ALL_FRAMEWORK_STYLE_COMBINATIONS) {
+        const result = findFirstGuide(framework, style, realSidebar);
+        expect(result, `findFirstGuide should return a guide for ${framework}/${style}`).toBeTruthy();
+        expect(typeof result).toBe('string');
+      }
+    });
+  });
+
+  describe('sidebar config validation', () => {
+    it('should not have duplicate slugs in sidebar config', async () => {
+      // Import the real sidebar config
+      const { sidebar: realSidebar } = await import('../../../config/docs/sidebar');
+
+      const allSlugs = getAllGuideSlugs(realSidebar);
+      const uniqueSlugs = new Set(allSlugs);
+
+      expect(allSlugs.length).toBe(uniqueSlugs.size);
+
+      // Also provide helpful error message if there are duplicates
+      if (allSlugs.length !== uniqueSlugs.size) {
+        const duplicates = allSlugs.filter((slug, index) => allSlugs.indexOf(slug) !== index);
+        throw new Error(`Found duplicate slugs in sidebar config: ${[...new Set(duplicates)].join(', ')}`);
+      }
     });
   });
 });

@@ -8,7 +8,6 @@ import vercel from '@astrojs/vercel';
 
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
-import { generateDocsRedirects } from './src/utils/docs/staticRedirects.ts';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks.js';
 import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings.js';
 
@@ -26,7 +25,6 @@ export default defineConfig({
       },
     }),
   ],
-  redirects: generateDocsRedirects(),
   prefetch: true,
 
   markdown: {

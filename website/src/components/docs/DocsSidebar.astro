@@ -1,23 +1,24 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { SupportedFramework, SupportedStyle } from '@/types/docs';
 
-import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
-
+import { PreferenceUpdater } from '@/components/docs/PreferenceUpdater';
 import { Selectors } from '@/components/docs/Selectors';
 import SidebarItem from '@/components/docs/SidebarItem.astro';
 import { filterSidebar } from '@/utils/docs/sidebar';
 
-type Props = {
-  framework: SupportedFramework;
-  style: AnySupportedStyle;
+type Props<F extends SupportedFramework = SupportedFramework> = {
+  framework: F;
+  style: SupportedStyle<F>;
+  slug: string;
   docTitles: Map<string, string>;
 };
 
-const { framework, style, docTitles } = Astro.props;
+const { framework, style, slug, docTitles } = Astro.props;
 const filteredSidebar = filterSidebar(framework, style);
 ---
 
-<Selectors client:load currentFramework={framework} currentStyle={style} />
+<Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
+<PreferenceUpdater client:idle currentFramework={framework} currentStyle={style} />
 <nav class="p-6 text-dark-80">
   {filteredSidebar.map((item) => <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />)}
 </nav>

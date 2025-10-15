@@ -1,0 +1,14 @@
+---
+export const prerender = false; // since we're reading cookies
+
+import { getPreferencesServer } from '@/utils/docs/preferences';
+import { resolveIndexRedirect } from '@/utils/docs/routing';
+
+const preferences = getPreferencesServer(Astro.cookies);
+const { url } = resolveIndexRedirect({
+  preferences,
+  params: {},
+});
+
+return Astro.redirect(url, 307);
+---

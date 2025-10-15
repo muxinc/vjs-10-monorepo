@@ -1,12 +1,12 @@
 ---
-import type { AnySupportedStyle, Guide, Section, SupportedFramework } from '@/types/docs';
+import type { Guide, Section, SupportedFramework, SupportedStyle } from '@/types/docs';
 import { isSection } from '@/types/docs';
 import CaretIcon from '../icons/CaretIcon';
 
-type Props = {
+type Props<F extends SupportedFramework = SupportedFramework> = {
   item: Guide | Section;
-  framework: SupportedFramework;
-  style: AnySupportedStyle;
+  framework: F;
+  style: SupportedStyle<F>;
   docTitles: Map<string, string>;
   depth?: number;
 };

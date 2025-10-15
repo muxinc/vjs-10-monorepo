@@ -1,11 +1,11 @@
 ---
-import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
+import type { SupportedFramework, SupportedStyle } from '@/types/docs';
 import type { CollectionEntry } from 'astro:content';
 
 import { getCollection, render } from 'astro:content';
 
 import DocsLayout from '@/layouts/Docs.astro';
-import { FRAMEWORK_STYLES, SUPPORTED_FRAMEWORKS } from '@/types/docs';
+import { ALL_FRAMEWORK_STYLE_COMBINATIONS } from '@/types/docs';
 import { filterSidebar, getAllGuideSlugs } from '@/utils/docs/sidebar';
 import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
 import { TableOfContents } from '@/components/docs/TableOfContents';
@@ -15,33 +15,20 @@ export async function getStaticPaths() {
   const docsCollection = await getCollection('docs');
 
   /**
-   * Get all valid framework/style combinations.
-   */
-  type FrameworkStyleKey = `${SupportedFramework}-${AnySupportedStyle}`;
-  type AllowedSlugsMap = Map<FrameworkStyleKey, Set<string>>;
-  const allFrameworkStyleCombinations = SUPPORTED_FRAMEWORKS.flatMap((framework) => {
-    const availableStyles = FRAMEWORK_STYLES[framework];
-    return availableStyles.map((style) => ({
-      framework,
-      style,
-      key: `${framework}-${style}` as FrameworkStyleKey,
-    }));
-  });
-
-  /**
    * Build a map of allowed slugs for each framework/style combination.
    * Only docs that appear in the filtered sidebar will be allowed to generate pages.
    */
+  type AllowedSlugsMap = Map<string, Set<string>>;
   const allowedSlugsMap: AllowedSlugsMap = new Map();
 
-  for (const { framework, style, key } of allFrameworkStyleCombinations) {
-    const filteredSidebar = filterSidebar(framework, style);
-    const allowedSlugs = getAllGuideSlugs(filteredSidebar);
-    allowedSlugsMap.set(key, new Set(allowedSlugs));
+  for (const { framework, style, key } of ALL_FRAMEWORK_STYLE_COMBINATIONS) {
+    const sidebarForFrameworkAndStyle = filterSidebar(framework, style);
+    const slugsForFrameworkAndStyle = getAllGuideSlugs(sidebarForFrameworkAndStyle);
+    allowedSlugsMap.set(key, new Set(slugsForFrameworkAndStyle));
   }
 
   // Generate a path for each doc that's visible in at least one framework/style combination
-  const staticPaths = allFrameworkStyleCombinations.flatMap(({ framework, style, key }) => {
+  const staticPaths = ALL_FRAMEWORK_STYLE_COMBINATIONS.flatMap(({ framework, style, key }) => {
     const allowedSlugs = allowedSlugsMap.get(key)!;
 
     // Filter docs to only those visible in this combination's sidebar
@@ -53,20 +40,21 @@ export async function getStaticPaths() {
           style,
           slug: doc.id,
         },
-        props: { doc, framework, style },
+        props: { doc },
       }));
   });
 
   return staticPaths;
 }
 
-type Props = {
+type Props<F extends SupportedFramework = SupportedFramework> = {
   doc: CollectionEntry<'docs'>;
-  framework: SupportedFramework;
-  style: AnySupportedStyle;
+  framework: F;
+  style: SupportedStyle<F>;
 };
 
-const { doc, framework, style } = Astro.props;
+const { framework, style, slug } = Astro.params;
+const { doc } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(doc);
 
 // Use conditional headings from our remark plugin if available, otherwise fallback to default headings
@@ -80,7 +68,7 @@ const filteredHeadings = conditionalHeadings
   : headings;
 ---
 
-<DocsLayout doc={doc} framework={framework} style={style}>
+<DocsLayout doc={doc} framework={framework} style={style} slug={slug}>
   <main
     class:list={[
       'grid grid-cols-1 xl:grid-cols-(--xl-grid-cols)',
