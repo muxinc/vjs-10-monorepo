@@ -224,6 +224,281 @@ function generateWCHTML(skinDir, componentName, title, description) {
 }
 
 /**
+ * Generate index HTML with links to all skins
+ */
+function generateIndexHTML(skinDirs) {
+  const skinLinks = skinDirs.map(skinDir => {
+    const title = skinDirToTitle(skinDir);
+    const description = getSkinDescription(skinDir);
+
+    return `
+      <tr>
+        <td>
+          <strong>${title}</strong><br>
+          <small style="color: #666;">${description}</small>
+        </td>
+        <td style="text-align: center;">
+          <a href="./react/${skinDir}.html" style="color: #61dafb; text-decoration: none; font-weight: 500;">
+            React ⚛️
+          </a>
+        </td>
+        <td style="text-align: center;">
+          <a href="./wc/${skinDir}.html" style="color: #1976d2; text-decoration: none; font-weight: 500;">
+            Web Component 🧩
+          </a>
+        </td>
+      </tr>`.trim();
+  }).join('\n      ');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VJS Compiler Test Skins</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    .stats {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    main {
+      padding: 40px;
+    }
+
+    .intro {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border-left: 4px solid #667eea;
+    }
+
+    .intro p {
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e9ecef;
+      transition: background-color 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    td {
+      padding: 20px 15px;
+    }
+
+    td:first-child {
+      width: 60%;
+    }
+
+    td:not(:first-child) {
+      width: 20%;
+    }
+
+    a {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    code {
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #e83e8c;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #6c757d;
+      border-top: 1px solid #e9ecef;
+      background: #f8f9fa;
+    }
+
+    footer p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .stats {
+        gap: 20px;
+      }
+
+      .stat-number {
+        font-size: 1.5rem;
+      }
+
+      main {
+        padding: 20px;
+      }
+
+      td:first-child {
+        width: 100%;
+        display: block;
+      }
+
+      td:not(:first-child) {
+        display: inline-block;
+        width: 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>VJS Compiler Test Skins</h1>
+      <p class="subtitle">End-to-End validation of React → Web Component transformation</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number">${skinDirs.length}</span>
+          <span class="stat-label">Test Skins</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">${skinDirs.length * 2}</span>
+          <span class="stat-label">Test Pages</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">2</span>
+          <span class="stat-label">Frameworks</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="intro">
+        <p><strong>What is this?</strong> Each test skin validates a specific feature of the VJS compiler's React + Tailwind → Web Component + Vanilla CSS transformation.</p>
+        <p><strong>How to test:</strong> Click on React or Web Component links below to view each skin in both formats. They should look and behave identically.</p>
+        <p><strong>Source code:</strong> All skins are defined in <code>src/skins/</code> with React + Tailwind, then compiled to Web Components + Vanilla CSS in <code>src/compiled/</code></p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Test Skin</th>
+            <th style="text-align: center;">React Version</th>
+            <th style="text-align: center;">Web Component Version</th>
+          </tr>
+        </thead>
+        <tbody>
+      ${skinLinks}
+        </tbody>
+      </table>
+    </main>
+
+    <footer>
+      <p><strong>Auto-generated</strong> from <code>src/skins/</code> directory</p>
+      <p>Run <code>pnpm generate-entrypoints</code> to regenerate</p>
+    </footer>
+  </div>
+</body>
+</html>
+`;
+}
+
+/**
  * Main generation function
  */
 function generateEntrypoints() {
@@ -273,11 +548,16 @@ function generateEntrypoints() {
     console.log(`    ✓ wc/${skinDir}.html\n`);
   }
 
-  console.log(`\nGenerated ${skinDirs.length * 3} entrypoint files!`);
+  // Generate index page
+  const indexHTML = generateIndexHTML(skinDirs);
+  const indexPath = path.resolve(__dirname, '../src/index.html');
+  fs.writeFileSync(indexPath, indexHTML);
+  console.log(`✓ Generated index page: src/index.html\n`);
+
+  console.log(`Generated ${skinDirs.length * 3 + 1} files total!`);
   console.log(`\nNext steps:`);
   console.log(`  1. Run: pnpm dev`);
-  console.log(`  2. Open: http://localhost:5175/src/react/[skin-name].html`);
-  console.log(`  3. Open: http://localhost:5175/src/wc/[skin-name].html`);
+  console.log(`  2. Open: http://localhost:5175/src/index.html`);
 }
 
 // Run if executed directly

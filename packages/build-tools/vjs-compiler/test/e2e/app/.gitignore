@@ -5,6 +5,7 @@ src/compiled/
 src/react/*.html
 src/react/*.tsx
 src/wc/*.html
+src/index.html
 
 # Dependencies
 node_modules/
