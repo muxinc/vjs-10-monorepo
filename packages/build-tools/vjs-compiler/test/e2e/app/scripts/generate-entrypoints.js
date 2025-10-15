@@ -499,6 +499,22 @@ function generateIndexHTML(skinDirs) {
 }
 
 /**
+ * Discover the actual TSX filename in a skin directory
+ * Returns the component name (e.g., "MediaSkinHover") or null if not found
+ */
+function discoverComponentName(skinDir) {
+  const skinDirPath = path.join(SKINS_DIR, skinDir);
+  const tsxFiles = fs.readdirSync(skinDirPath).filter(f => f.endsWith('.tsx'));
+
+  if (tsxFiles.length === 0) {
+    return null;
+  }
+
+  // Component name is the TSX filename without extension
+  return tsxFiles[0].replace('.tsx', '');
+}
+
+/**
  * Main generation function
  */
 function generateEntrypoints() {
@@ -524,7 +540,12 @@ function generateEntrypoints() {
 
   // Generate entrypoints for each skin
   for (const skinDir of skinDirs) {
-    const componentName = skinDirToComponentName(skinDir);
+    const componentName = discoverComponentName(skinDir);
+    if (!componentName) {
+      console.error(`  ❌ ${skinDir}: No .tsx file found`);
+      continue;
+    }
+
     const title = skinDirToTitle(skinDir);
     const description = getSkinDescription(skinDir);
 
