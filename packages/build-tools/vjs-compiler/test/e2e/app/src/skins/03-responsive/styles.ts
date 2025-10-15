@@ -72,20 +72,26 @@ const styles = {
     // Complex arbitrary values for sizing
     'w-[clamp(3rem,10vw,5rem)]',      // Fluid width: min 3rem, preferred 10vw, max 5rem
     'h-[clamp(3rem,10vw,5rem)]',      // Fluid height: min 3rem, preferred 10vw, max 5rem
+    // Icon stacking and interactivity
+    '[&_.icon]:[grid-area:1/1]',                // Overlay all icons in same grid cell
+    '[&_.play-icon]:opacity-0',                 // Hide play icon when playing
+    '[&[data-paused]_.play-icon]:opacity-100',  // Show play icon when paused
+    '[&_.pause-icon]:opacity-100',              // Show pause icon when playing
+    '[&[data-paused]_.pause-icon]:opacity-0',   // Hide pause icon when paused
   ),
 
   Icon: cn(
-    '[grid-area:1/1]',
+    'icon',
     'transition-opacity',
     'duration-200',
   ),
 
   PlayIcon: cn(
-    'opacity-0',
+    'play-icon',
   ),
 
   PauseIcon: cn(
-    'opacity-100',
+    'pause-icon',
   ),
 };
 
