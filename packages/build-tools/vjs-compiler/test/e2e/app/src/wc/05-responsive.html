@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 5: Responsive Variants Skin (Web Component)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+    }
+    video {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Level 5: Responsive Variants Skin (Web Component)</h1>
+    <p>
+      Testing: Responsive breakpoint support (simplified, NO hover or arbitrary values)
+    </p>
+
+    <media-provider>
+      <media-skin-responsive-simple>
+        <video slot="media" src="/blue-30s-110hz.mp4"></video>
+      </media-skin-responsive-simple>
+    </media-provider>
+
+    <div class="info">
+      <h3>Expected Features:</h3>
+      <ul>
+        <li>Responsive padding: p-4 (base) → sm:p-6 → md:p-8 → lg:p-12</li>
+        <li>Responsive gap: gap-2 (base) → sm:gap-3 → md:gap-4</li>
+        <li>Container queries: @container (min-width: Xrem) wrapping</li>
+        <li>Breakpoints: sm: (24rem), md: (28rem), lg: (32rem)</li>
+      </ul>
+      <h3>Test Instructions:</h3>
+      <ul>
+        <li>Resize browser window to see padding/gap changes</li>
+        <li>Check DevTools: Look for @container rules in CSS</li>
+        <li>Verify no hover/arbitrary features (those are in other levels)</li>
+      </ul>
+      <h3>Breakpoint Reference:</h3>
+      <ul>
+        <li>Base: < 24rem (384px)</li>
+        <li>sm: ≥ 24rem (384px)</li>
+        <li>md: ≥ 28rem (448px)</li>
+        <li>lg: ≥ 32rem (512px)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import compiled web component skin
+    import '../compiled/05-responsive.js';
+
+    // Import HTML package for MediaProvider and other base components
+    import '@vjs-10/html';
+  </script>
+</body>
+</html>
