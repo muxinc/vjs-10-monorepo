@@ -10,12 +10,11 @@ Comprehensive guide to end-to-end testing for the VJS Framework Compiler: valida
 
 1. [Overview](#overview)
 2. [E2E Test Architecture](#e2e-test-architecture)
-3. [Current Capabilities](#current-capabilities)
-4. [Validation Strategy](#validation-strategy)
-5. [Manual Validation Process](#manual-validation-process)
-6. [Test Infrastructure](#test-infrastructure)
-7. [Roadmap](#roadmap)
-8. [Success Criteria](#success-criteria)
+3. [Validation Strategy](#validation-strategy)
+4. [Manual Validation Process](#manual-validation-process)
+5. [Test Infrastructure](#test-infrastructure)
+6. [Roadmap](#roadmap)
+7. [Success Criteria](#success-criteria)
 
 ---
 
@@ -35,6 +34,10 @@ The compiler transforms:
 - **Output:** Web Components + Inline Vanilla CSS
 
 E2E tests ensure the output works identically to the input in real browser environments.
+
+**For current feature support status**, see:
+- **Tailwind features**: `docs/tailwind/SUPPORT_STATUS.md`
+- **Compiler limitations**: `docs/KNOWN_LIMITATIONS.md`
 
 ---
 
@@ -75,65 +78,6 @@ Our attempt to create self-contained fixtures failed because:
 - ❌ Stubbing 25+ components defeats the purpose of integration testing
 
 **This is CORRECT** - we want integration testing, not unit testing.
-
----
-
-## Current Capabilities
-
-### ✅ What We CAN Validate E2E (Today)
-
-#### Basic Compilation Pipeline
-- **Transform:** React + Tailwind → Web Component + Vanilla CSS
-- **Test:** `pnpm test -- compile-for-e2e.test.ts`
-- **Demo:** `test/e2e/equivalence/demos/wc-demo.html`
-- **Status:** ✅ Works
-
-#### Browser Loading
-- **WC Demo:** Load compiled WC skin in browser
-- **React Demo:** Load React skin with Vite dev server
-- **Validation:** Zero console errors, custom elements register
-- **Status:** ✅ Works
-
-#### Simple Tailwind Utilities
-- **Utilities:** `p-4`, `rounded-lg`, `flex`, `gap-2`
-- **Test:** Integration tests + manual visual check
-- **Status:** ✅ Works
-
-#### Pseudo-Class Variants
-- **Variants:** `:hover`, `:focus-visible`, `:active`
-- **Test:** Conditional styles test (11/12 passing, 92%)
-- **Status:** ✅ Works
-
-#### Data Attribute Variants
-- **Variants:** `data-[state=active]:bg-blue`
-- **Test:** Conditional styles test
-- **Status:** ✅ Works
-
-#### Dark Mode (Media Queries)
-- **Variant:** `dark:bg-gray-900`
-- **Test:** Conditional styles test
-- **Status:** ✅ Works
-
-### ❌ What We CANNOT Validate E2E (Today)
-
-#### Arbitrary Variant Selectors
-- **Variants:** `[&_.child]:opacity-0`, `[&[data-x]_.child]:opacity-100`
-- **Why:** Tailwind v4 doesn't generate CSS for these (needs full HTML context)
-- **Impact:** State-based icon visibility (play/pause icons, mute states)
-- **Workaround:** Must port v1's custom Tailwind AST parser OR build full HTML context
-- **See:** `docs/tailwind/SUPPORT_STATUS.md` for details
-
-#### Container Query Variants
-- **Variants:** `@md/root:text-lg`, `@lg/controls:p-4`
-- **Why:** Tailwind CLI limitation - doesn't scan HTML with `@tailwind` directives
-- **Impact:** Responsive typography and spacing based on container size
-- **See:** `docs/tailwind/investigations/CONTAINER_QUERIES_LIMITATION.md` for deep dive
-
-#### Automated Playwright Testing
-- **What:** Automated screenshot comparison and interaction testing
-- **Why:** Requires real build environment setup (in progress)
-- **Status:** 11 Playwright tests written, infrastructure needs completion
-- **Current Workaround:** Manual side-by-side comparison using demos
 
 ---
 
@@ -453,16 +397,17 @@ A feature is **E2E validated** when ALL of these are true:
 
 ### Before Implementing a Feature
 
-1. Check "Current Capabilities" - Can I test this?
-2. Check "Validation Strategy" - How should I test this?
-3. Plan E2E validation approach BEFORE coding
-4. Ensure feature can be E2E validated (or document limitation)
+1. Check `docs/tailwind/SUPPORT_STATUS.md` - Is this Tailwind feature supported?
+2. Check `docs/KNOWN_LIMITATIONS.md` - Are there known testing limitations?
+3. Check "Validation Strategy" - How should I test this?
+4. Plan E2E validation approach BEFORE coding
+5. Ensure feature can be E2E validated (or document limitation)
 
 ### After Implementing a Feature
 
 1. Follow "Manual Validation Process" to test
-2. Update "Current Capabilities" with results
-3. Document any limitations discovered
+2. Update `docs/tailwind/SUPPORT_STATUS.md` if Tailwind-related
+3. Update `docs/KNOWN_LIMITATIONS.md` if limitation discovered
 4. Create/update automated tests when infrastructure ready
 
 ### When Tests Fail
