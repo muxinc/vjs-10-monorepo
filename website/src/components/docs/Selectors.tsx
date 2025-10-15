@@ -69,7 +69,7 @@ export function Selectors({
   }));
 
   return (
-    <div className="p-6 grid gap-x-6 gap-y-2 items-center border-b border-light-40" style={{ gridTemplateColumns: 'auto minmax(0, 1fr)' }}>
+    <div className="p-6 lg:py-2.5 xl:p-6 grid gap-x-6 gap-y-2 items-center border-b border-light-40" style={{ gridTemplateColumns: 'auto minmax(0, 1fr)' }}>
       <span>Framework</span>
       <Select
         value={currentFramework}

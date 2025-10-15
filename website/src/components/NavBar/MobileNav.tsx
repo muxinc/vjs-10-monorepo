@@ -58,7 +58,7 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
               <a
                 key={link.href}
                 href={link.href}
-                className={clsx('text-lg px-6 py-3', link.matchPath && currentPath.startsWith(link.matchPath) ? 'underline' : 'intent:underline')}
+                className={clsx('text-md px-6 py-3', link.matchPath && currentPath.startsWith(link.matchPath) ? 'underline' : 'intent:underline')}
                 aria-current={link.matchPath && currentPath.startsWith(link.matchPath) ? 'page' : undefined}
               >
                 {link.label}

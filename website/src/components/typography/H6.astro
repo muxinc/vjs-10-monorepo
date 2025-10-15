@@ -11,6 +11,9 @@ type Props<Tag extends HTMLTag = 'h6'> = Polymorphic<{ as: Tag }> & {
 const { as: Tag = 'h6', maxWidth = true, class: className, ...props } = Astro.props;
 ---
 
-<Tag class={twMerge(clsx('text-md font-medium my-5', maxWidth && 'max-w-3xl mx-auto'), className)} {...props}>
+<Tag
+  class={twMerge(clsx('text-base font-medium @lg:text-md my-5', maxWidth && 'max-w-3xl mx-auto'), className)}
+  {...props}
+>
   <slot />
 </Tag>

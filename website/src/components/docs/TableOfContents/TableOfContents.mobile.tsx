@@ -24,7 +24,7 @@ export function TableOfContentsMobile({ headings, activeId, onNavigate, classNam
 
   return (
     <div
-      className={clsx('border-b border-light-40 bg-light-80 px-5 py-2.5 h-[--h]', className)}
+      className={clsx('border-b border-light-40 bg-light-80 px-6 lg:px-12 h-(--h) flex items-center', className)}
       style={{ '--h': 'var(--mobile-toc-h)' } as React.CSSProperties}
     >
       <div className="w-full max-w-3xl mx-auto">

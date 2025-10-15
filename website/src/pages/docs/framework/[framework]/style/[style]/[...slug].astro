@@ -89,10 +89,10 @@ const filteredHeadings = conditionalHeadings
     >
       <TableOfContents client:idle headings={filteredHeadings} />
     </div>
-    <article class="px-6 pb-12 lg:px-12" style="grid-area: article;">
+    <article class="@container px-6 pb-12 lg:px-12" style="grid-area: article;">
       <header class="border-b border-light-40 max-w-3xl mx-auto py-8 mb-8">
         <H3 as="h1" class="mt-0 mb-2">{doc.data.title}</H3>
-        <p class="font-medium">{doc.data.description}</p>
+        <p class="@lg:font-medium">{doc.data.description}</p>
       </header>
       <Content components={{ ...defaultMarkdownComponents }} />
     </article>
