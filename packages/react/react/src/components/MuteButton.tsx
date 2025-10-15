@@ -15,10 +15,7 @@ export function useMuteButtonState(_props: any): {
   requestUnmute: () => void;
 } {
   const mediaStore = useMediaStore();
-
-  /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(muteButtonStateDefinition.stateTransform, shallowEqual);
-
   const methods = useMemo(() => muteButtonStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   return {
@@ -29,12 +26,11 @@ export function useMuteButtonState(_props: any): {
   } as const;
 }
 
-export type useMuteButtonState = typeof useMuteButtonState;
-export type MuteButtonState = ReturnType<useMuteButtonState>;
+export type MuteButtonState = ReturnType<typeof useMuteButtonState>;
 
-export function useMuteButtonProps(
+export function getMuteButtonProps(
   props: PropsWithChildren,
-  state: ReturnType<typeof useMuteButtonState>,
+  state: MuteButtonState,
 ): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** data attributes/props - non-boolean */
@@ -57,15 +53,14 @@ export function useMuteButtonProps(
   return baseProps;
 }
 
-export type useMuteButtonProps = typeof useMuteButtonProps;
-type MuteButtonProps = ReturnType<useMuteButtonProps>;
+export type MuteButtonProps = ReturnType<typeof getMuteButtonProps>;
 
 export function renderMuteButton(props: MuteButtonProps, state: MuteButtonState): JSX.Element {
   return (
     <button
+      type="button"
       {...props}
       onClick={() => {
-        /** @ts-ignore */
         if (props.disabled) return;
         if (state.volumeLevel === 'off') {
           state.requestUnmute();
@@ -79,11 +74,9 @@ export function renderMuteButton(props: MuteButtonProps, state: MuteButtonState)
   );
 }
 
-export type renderMuteButton = typeof renderMuteButton;
-
 export const MuteButton: ConnectedComponent<MuteButtonProps, typeof renderMuteButton> = toConnectedComponent(
   useMuteButtonState,
-  useMuteButtonProps,
+  getMuteButtonProps,
   renderMuteButton,
   'MuteButton',
 );

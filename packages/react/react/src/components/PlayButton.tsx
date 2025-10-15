@@ -14,10 +14,7 @@ export function usePlayButtonState(_props: any): {
   requestPause: () => void;
 } {
   const mediaStore = useMediaStore();
-
-  /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(playButtonStateDefinition.stateTransform, shallowEqual);
-
   const methods = useMemo(() => playButtonStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
 
   return {
@@ -27,12 +24,11 @@ export function usePlayButtonState(_props: any): {
   };
 }
 
-export type usePlayButtonState = typeof usePlayButtonState;
-export type PlayButtonState = ReturnType<usePlayButtonState>;
+export type PlayButtonState = ReturnType<typeof usePlayButtonState>;
 
-export function usePlayButtonProps(
+export function getPlayButtonProps(
   props: Record<string, unknown>,
-  state: ReturnType<typeof usePlayButtonState>,
+  state: PlayButtonState,
 ): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
@@ -53,15 +49,14 @@ export function usePlayButtonProps(
   return baseProps;
 }
 
-export type usePlayButtonProps = typeof usePlayButtonProps;
-type PlayButtonProps = ReturnType<usePlayButtonProps>;
+export type PlayButtonProps = ReturnType<typeof getPlayButtonProps>;
 
 export function renderPlayButton(props: PlayButtonProps, state: PlayButtonState): JSX.Element {
   return (
     <button
+      type="button"
       {...props}
       onClick={() => {
-        /** @ts-ignore */
         if (props.disabled) return;
         if (state.paused) {
           state.requestPlay();
@@ -75,11 +70,9 @@ export function renderPlayButton(props: PlayButtonProps, state: PlayButtonState)
   );
 }
 
-export type renderPlayButton = typeof renderPlayButton;
-
 export const PlayButton: ConnectedComponent<PlayButtonProps, typeof renderPlayButton> = toConnectedComponent(
   usePlayButtonState,
-  usePlayButtonProps,
+  getPlayButtonProps,
   renderPlayButton,
   'PlayButton',
 );

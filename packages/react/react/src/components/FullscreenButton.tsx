@@ -14,9 +14,7 @@ export function useFullscreenButtonState(_props: any): {
   requestExitFullscreen: () => void;
 } {
   const mediaStore = useMediaStore();
-  /** @TODO Fix type issues with hooks (CJP) */
   const mediaState = useMediaSelector(fullscreenButtonStateDefinition.stateTransform, shallowEqual);
-
   const methods = useMemo(
     () => fullscreenButtonStateDefinition.createRequestMethods(mediaStore.dispatch),
     [mediaStore],
@@ -29,12 +27,11 @@ export function useFullscreenButtonState(_props: any): {
   } as const;
 }
 
-export type useFullscreenButtonState = typeof useFullscreenButtonState;
-export type FullscreenButtonState = ReturnType<useFullscreenButtonState>;
+export type FullscreenButtonState = ReturnType<typeof useFullscreenButtonState>;
 
-export function useFullscreenButtonProps(
+export function getFullscreenButtonProps(
   props: PropsWithChildren,
-  state: ReturnType<typeof useFullscreenButtonState>,
+  state: FullscreenButtonState,
 ): PropsWithChildren<Record<string, unknown>> {
   const baseProps: Record<string, any> = {
     /** @TODO Need another state provider in core for i18n (CJP) */
@@ -55,15 +52,14 @@ export function useFullscreenButtonProps(
   return baseProps;
 }
 
-export type useFullscreenButtonProps = typeof useFullscreenButtonProps;
-type FullscreenButtonProps = ReturnType<useFullscreenButtonProps>;
+export type FullscreenButtonProps = ReturnType<typeof getFullscreenButtonProps>;
 
 export function renderFullscreenButton(props: FullscreenButtonProps, state: FullscreenButtonState): JSX.Element {
   return (
     <button
+      type="button"
       {...props}
       onClick={() => {
-        /** @ts-ignore */
         if (props.disabled) return;
         if (state.fullscreen) {
           state.requestExitFullscreen();
@@ -77,9 +73,7 @@ export function renderFullscreenButton(props: FullscreenButtonProps, state: Full
   );
 }
 
-export type renderFullscreenButton = typeof renderFullscreenButton;
-
 export const FullscreenButton: ConnectedComponent<FullscreenButtonProps, typeof renderFullscreenButton>
-  = toConnectedComponent(useFullscreenButtonState, useFullscreenButtonProps, renderFullscreenButton, 'FullscreenButton');
+  = toConnectedComponent(useFullscreenButtonState, getFullscreenButtonProps, renderFullscreenButton, 'FullscreenButton');
 
 export default FullscreenButton;

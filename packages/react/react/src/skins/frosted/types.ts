@@ -27,6 +27,8 @@ export interface FrostedSkinStyles {
   readonly SliderProgress: string;
   readonly SliderPointer: string;
   readonly SliderThumb: string;
+  readonly TimeSliderRoot: string;
+  readonly VolumeSliderRoot: string;
   readonly PopoverPopup: string;
   readonly TimeControls: string;
   readonly TimeDisplay: string;

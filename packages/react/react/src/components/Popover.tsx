@@ -4,6 +4,7 @@ import type { MutableRefObject, ReactNode } from 'react';
 import {
   autoUpdate,
   flip,
+  FloatingFocusManager,
   FloatingPortal,
   offset,
   safePolygon,
@@ -168,18 +169,24 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
     : {};
 
   return (
-    <div
-      className={className}
-      {...getFloatingProps()}
-      {...dataAttributes}
-      data-side={placement}
-      data-starting-style={transitionStatus === 'initial' ? '' : undefined}
-      data-open={transitionStatus === 'initial' || transitionStatus === 'open' ? '' : undefined}
-      data-ending-style={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
-      data-closed={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+    <FloatingFocusManager
+      context={context}
+      modal={false}
+      initialFocus={context.refs.reference as MutableRefObject<HTMLElement>}
     >
-      {children}
-    </div>
+      <div
+        className={className}
+        {...getFloatingProps()}
+        {...dataAttributes}
+        data-side={placement}
+        data-starting-style={transitionStatus === 'initial' ? '' : undefined}
+        data-open={transitionStatus === 'initial' || transitionStatus === 'open' ? '' : undefined}
+        data-ending-style={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+        data-closed={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+      >
+        {children}
+      </div>
+    </FloatingFocusManager>
   );
 }
 

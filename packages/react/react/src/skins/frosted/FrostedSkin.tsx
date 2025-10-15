@@ -62,7 +62,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
 
           <Tooltip.Root trackCursorAxis="x">
             <Tooltip.Trigger>
-              <TimeSlider.Root className={styles.SliderRoot}>
+              <TimeSlider.Root className={`${styles.SliderRoot} ${styles.TimeSliderRoot}`}>
                 <TimeSlider.Track className={styles.SliderTrack}>
                   <TimeSlider.Progress className={styles.SliderProgress} />
                   <TimeSlider.Pointer className={styles.SliderPointer} />
@@ -93,7 +93,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
           <Popover.Portal>
             <Popover.Positioner side="top" sideOffset={12}>
               <Popover.Popup className={styles.PopoverPopup}>
-                <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
+                <VolumeSlider.Root className={`${styles.SliderRoot} ${styles.VolumeSliderRoot}`} orientation="vertical">
                   <VolumeSlider.Track className={styles.SliderTrack}>
                     <VolumeSlider.Progress className={styles.SliderProgress} />
                   </VolumeSlider.Track>
