@@ -1229,7 +1229,7 @@ These are preserved across all framework transformations.
 
 - **Current status:** `docs/CURRENT_STATUS.md`
 - **Iteration process:** `docs/ITERATION_PROCESS.md`
-- **Known limitations:** `docs/KNOWN_LIMITATIONS.md`
+- **Known limitations:** `docs/CURRENT_STATUS.md (Known Limitations section)`
 - **E2E testing guide:** `docs/testing/E2E_GUIDE.md`
 - **Tailwind support status:** `docs/tailwind/SUPPORT_STATUS.md`
 

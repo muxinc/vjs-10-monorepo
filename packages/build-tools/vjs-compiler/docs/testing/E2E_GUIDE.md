@@ -37,7 +37,7 @@ E2E tests ensure the output works identically to the input in real browser envir
 
 **For current feature support status**, see:
 - **Tailwind features**: `docs/tailwind/SUPPORT_STATUS.md`
-- **Compiler limitations**: `docs/KNOWN_LIMITATIONS.md`
+- **Compiler limitations**: `docs/CURRENT_STATUS.md (Known Limitations section)`
 
 ---
 
@@ -398,7 +398,7 @@ A feature is **E2E validated** when ALL of these are true:
 ### Before Implementing a Feature
 
 1. Check `docs/tailwind/SUPPORT_STATUS.md` - Is this Tailwind feature supported?
-2. Check `docs/KNOWN_LIMITATIONS.md` - Are there known testing limitations?
+2. Check `docs/CURRENT_STATUS.md (Known Limitations section)` - Are there known testing limitations?
 3. Check "Validation Strategy" - How should I test this?
 4. Plan E2E validation approach BEFORE coding
 5. Ensure feature can be E2E validated (or document limitation)
@@ -407,7 +407,7 @@ A feature is **E2E validated** when ALL of these are true:
 
 1. Follow "Manual Validation Process" to test
 2. Update `docs/tailwind/SUPPORT_STATUS.md` if Tailwind-related
-3. Update `docs/KNOWN_LIMITATIONS.md` if limitation discovered
+3. Update `docs/CURRENT_STATUS.md (Known Limitations section)` if limitation discovered
 4. Create/update automated tests when infrastructure ready
 
 ### When Tests Fail
@@ -424,7 +424,7 @@ A feature is **E2E validated** when ALL of these are true:
 
 - **Tailwind feature status:** `docs/tailwind/SUPPORT_STATUS.md`
 - **Tailwind investigations:** `docs/tailwind/investigations/`
-- **Known limitations:** `docs/KNOWN_LIMITATIONS.md`
+- **Known limitations:** `docs/CURRENT_STATUS.md (Known Limitations section)`
 - **Test skin progression:** `docs/TEST_SKIN_PROGRESSION.md`
 - **Current status:** `docs/CURRENT_STATUS.md`
 

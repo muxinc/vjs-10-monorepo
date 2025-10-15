@@ -366,63 +366,77 @@ if (!customElements.get('media-skin-minimal')) {
 
 ## Known Limitations
 
-### ~~Compound Components Not Yet Supported~~ ✅ FIXED
+### Compiler-Wide Limitations
 
-**Status:** ✅ **RESOLVED** - Compound component support implemented
+#### 1. JSX Transformer Edge Cases (5 test failures)
 
-- JSX member expressions (`<TimeRange.Root>`) now transform correctly
-- Element names flattened: `TimeRange.Root` → `media-time-range-root`
-- CSS selectors use element selectors for compound components
-- Categorization layer properly handles nested component selectors
-- Supports deeply nested components (`<TimeRange.Root.Track>`)
-- 4 comprehensive integration tests added
+**3a. Boolean Attributes (1 test)**
+```tsx
+// Input: <button disabled>
+// Expected: <button disabled>
+// Actual: <button disabled="true">
+```
+**Impact:** Low - both forms work in browsers
 
-### VJS-Specific Logic Not Yet Configurable
+**3b. Template Literal className (1 test)**
+```tsx
+// Input: <div className={`${styles.Base} ${styles.Variant}`}>
+// Actual: Template literal not resolved at compile time
+```
+**Impact:** Medium - template literals won't work in className
+
+**3c. Empty className (1 test)**
+```tsx
+// Input: <div className="">
+// Expected: <div>
+// Actual: <div class="">
+```
+**Impact:** Low - empty attributes are harmless
+
+**3d. Self-Closing Elements (1 test)**
+```tsx
+// Input: <br />
+// Expected: <br />
+// Actual: <br></br>
+```
+**Impact:** Low - browsers handle both forms
+
+**3e. Browser E2E Test (1 test)**
+**Issue:** E2E test infrastructure requires real build environment (not `file://` protocol)
+**Impact:** Medium - automated E2E validation requires Vite/bundler setup
+**See:** `docs/testing/E2E_GUIDE.md` for why this is correct
+
+#### 2. Marker Classes Generate "No CSS" Comments
+
+**Issue:** Custom marker classes (not Tailwind utilities) generate `/* No CSS generated */` comments.
+
+**Examples:** `icon`, `play-icon`, `pause-icon`
+
+**Impact:** Low priority (cosmetic issue, ~13 comment blocks in output)
+
+#### 3. VJS-Specific Logic Not Yet Configurable
 
 **Issue:** Package name patterns, naming conventions hardcoded (e.g., `media-` prefix, `@vjs-10/` patterns)
+
 **Status:** Works for VJS packages but not extensible
+
 **Priority:** MEDIUM - Extract to config for broader applicability
 
 ---
 
 ## Next Steps (Prioritized)
 
-### ~~1. Add Tailwind Theme Configuration~~ ✅ COMPLETED
+### Priority 1: Tailwind Feature Support 🎯 HIGH
 
-**Status:** ✅ **DONE** - Phase 5 complete
+**See:** `docs/tailwind/SUPPORT_STATUS.md` for complete Tailwind roadmap and blocking features.
 
-- [x] Add theme configuration to Tailwind v4 processing
-- [x] Test spacing utilities (p-2, px-4, gap-2, etc.)
-- [x] Test border-radius utilities (rounded)
-- [x] Test flex utilities (flex-1)
-- [x] Test overflow utilities
-- All utilities generating correct CSS with CSS variables
+**Critical blockers:** Named groups, has selector, before/after pseudo-elements, container query variants, ARIA state selectors.
 
-### ~~1. Compound Components Support~~ ✅ COMPLETED
-
-**Status:** ✅ **DONE** - Compound components implemented
-
-- [x] Update JSX element name transformation to handle member expressions
-- [x] Add `flattenMemberExpression` function to transform JSX
-- [x] Update projection functions to add `media-` prefix
-- [x] Add tests for compound component transformation (4 tests)
-- [x] Verify nested component selector categorization works
-- All compound component patterns working correctly
-
-### ~~1. Data Attributes Support~~ ✅ COMPLETED
-
-**Status:** ✅ **DONE** - Data attributes already work
-
-- Data attributes preserved in HTML output
-- Tests added for attribute transformation
-- No special handling needed
-
-### 2. Extract Conventions to Config 🟡 MEDIUM PRIORITY
+### Priority 2: Extract Conventions to Config 🟡 MEDIUM
 
 **Goal:** Make VJS-specific logic configurable
 
 **Tasks:**
-
 - [ ] Create `NamingConvention` interface
 - [ ] Create `PackageMappingStrategy` interface
 - [ ] Pass conventions through config
@@ -430,43 +444,19 @@ if (!customElements.get('media-skin-minimal')) {
 
 **Test:** Can inject custom conventions, non-VJS projects supported
 
-### ~~3. Complete Production Skin Compilation~~ ✅ COMPLETED
+### Priority 3: JSX Edge Cases (Optional)
 
-**Status:** ✅ **DONE** - MediaSkinDefault compiles successfully
+- Fix template literal className support
+- Fix boolean attribute handling
+- Handle empty className removal
+- Improve self-closing element handling
 
-- ✅ Compound components support
-- ✅ Full theme configuration
-- ✅ Attribute transformation
-- ✅ JSX comment removal
+### Priority 4: Production Readiness
 
-### 4. E2E Equivalence Validation 🟢 CURRENT PHASE
-
-**Goal:** Validate React vs Web Component equivalence
-
-**Status:** 🔄 **IN PROGRESS** - Infrastructure and demos complete, ready for test execution
-
-**Completed:**
-
-- [x] Test strategy document (4 test dimensions)
-- [x] Element matching utilities (shadow DOM traversal)
-- [x] Style comparison utilities (computed styles with normalization)
-- [x] State simulation utilities (media states, hover, focus)
-- [x] State equivalence tests (4 test cases written)
-- [x] Style equivalence tests (7 test cases written)
-- [x] Playwright configuration
-- [x] MediaSkinDefault compiled to browser-compatible JS (14.9KB)
-- [x] Web Component demo (static HTML - `demos/wc-demo.html`)
-- [x] React demo (Vite app - `demos/react-demo/`)
-
-**Remaining:**
-
-- [ ] Install React demo dependencies (`cd react-demo && npm install`)
-- [ ] Update E2E test pages to point to demo URLs
-- [ ] Execute equivalence tests (`npm run test:e2e`)
-- [ ] Add visual regression tests (screenshot comparison)
-- [ ] Add interactive tests (button clicks, keyboard navigation)
-
-**Test:** 95%+ style match, equivalent media states across all conditions
+- Add validation for missing CSS rules
+- Improve error messages
+- Add comprehensive E2E tests with real build environment
+- Visual regression testing
 
 ---
 

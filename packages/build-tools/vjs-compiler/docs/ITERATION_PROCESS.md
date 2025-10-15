@@ -29,7 +29,7 @@
 - [ ] Read the relevant v1 code (if this area existed in v1)
   - Location: `src-v1/[corresponding-area]/`
   - Document lessons in commit message or LESSONS_FROM_V1.md
-- [ ] Check KNOWN_LIMITATIONS.md - am I fixing a known issue?
+- [ ] Check CURRENT_STATUS.md (Known Limitations section) - am I fixing a known issue?
 - [ ] Check E2E_CAPABILITIES.md - can I test this e2e?
 - [ ] Check architecture compliance - which principle applies?
   - Separation of Concerns?
@@ -97,7 +97,7 @@
 
 - [ ] Update JSDoc comments for public functions
 - [ ] Update CURRENT_STATUS.md if crossing phase boundary
-- [ ] Update KNOWN_LIMITATIONS.md if fixing a known issue
+- [ ] Update CURRENT_STATUS.md (Known Limitations section) if fixing a known issue
 - [ ] Update E2E_CAPABILITIES.md if e2e validation changes
 - [ ] Add code comments for "why" not "what"
 
@@ -217,7 +217,7 @@ pnpm test -- --coverage
 
 **If E2E validation fails or is incomplete:**
 
-- [ ] Document in KNOWN_LIMITATIONS.md
+- [ ] Document in CURRENT_STATUS.md (Known Limitations section)
 - [ ] Mark feature as "partially implemented"
 - [ ] Create GitHub issue for e2e validation gap
 - [ ] DO NOT claim feature is "complete"
@@ -232,7 +232,7 @@ pnpm test -- --coverage
 ### 4. Documentation Updates (5 min)
 
 - [ ] CURRENT_STATUS.md updated? (if phase progress made)
-- [ ] KNOWN_LIMITATIONS.md updated? (if limitation fixed or added)
+- [ ] CURRENT_STATUS.md (Known Limitations section) updated? (if limitation fixed or added)
 - [ ] E2E_CAPABILITIES.md updated? (if e2e validation coverage changed)
 - [ ] LESSONS_FROM_V1.md updated? (if v1 insight applied)
 - [ ] CHANGELOG.md updated? (if user-facing change)
