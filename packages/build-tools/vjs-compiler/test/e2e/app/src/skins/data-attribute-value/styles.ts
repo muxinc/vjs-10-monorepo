@@ -1,22 +1,7 @@
-function cn(...classes: (string | undefined)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
-
 const styles = {
-  Wrapper: 'relative',
-  Overlay: 'absolute inset-0 flex items-center justify-center pointer-events-none',
-  TestElement: cn(
-    // Base visible styles
-    'w-24 h-24',
-    'bg-white/90',
-    'rounded-lg',
-    'pointer-events-auto',
-    'flex items-center justify-center',
-    'text-sm font-medium text-gray-800',
-
-    // Test-specific: data attribute value
-    'opacity-100 [data-paused="true"_&]:opacity-50',
-  ),
+  Controls: 'p-4',
+  Button: 'p-2',
+  Icon: 'opacity-0 [data-volume-level="high"_&]:opacity-100',
 };
 
 export default styles;

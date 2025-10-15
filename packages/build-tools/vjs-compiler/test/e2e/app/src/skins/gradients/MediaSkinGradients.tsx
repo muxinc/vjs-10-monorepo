@@ -7,14 +7,8 @@ type SkinProps = PropsWithChildren<{ className?: string }>;
 export default function MediaSkinGradients({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
-      <div className={styles.Wrapper}>
-        {children}
-        <div className={styles.Overlay}>
-          <div className={styles.TestElement}>
-            GRADIENT
-          </div>
-        </div>
-      </div>
+      {children}
+      <div className={styles.Overlay} />
     </MediaContainer>
   );
 }

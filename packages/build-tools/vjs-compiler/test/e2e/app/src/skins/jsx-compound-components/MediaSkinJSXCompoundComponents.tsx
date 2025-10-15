@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer } from '@vjs-10/react';
+import { MediaContainer, TimeSlider } from '@vjs-10/react';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{ className?: string }>;
@@ -7,13 +7,15 @@ type SkinProps = PropsWithChildren<{ className?: string }>;
 export default function MediaSkinJSXCompoundComponents({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
+      {children}
       <div className={styles.Wrapper}>
-        {children}
-        <div className={styles.Overlay}>
-          <div className={styles.TestElement}>
-            COMPOUND
-          </div>
-        </div>
+        <TimeSlider.Root className={styles.SliderRoot}>
+          <TimeSlider.Track className={styles.SliderTrack}>
+            <TimeSlider.Progress className={styles.SliderProgress} />
+            <TimeSlider.Pointer className={styles.SliderPointer} />
+          </TimeSlider.Track>
+          <TimeSlider.Thumb className={styles.SliderThumb} />
+        </TimeSlider.Root>
       </div>
     </MediaContainer>
   );
