@@ -1,16 +1,16 @@
 /**
- * Level 4: Responsive Test Skin
+ * Level 6: Combined Features Test Skin
  *
- * Purpose: Test responsive design and complex arbitrary values
+ * Purpose: Test ALL Tailwind features working together
  *
- * Features:
- * - Responsive breakpoints at multiple screen sizes
- * - Complex arbitrary values (clamp, rgba, custom px values)
- * - CSS transitions and transforms
- * - Backdrop filters
- * - Hover state interactions
+ * Features (combines Levels 3, 4, 5):
+ * - Hover/focus/active pseudo-classes (Level 3)
+ * - Arbitrary values for colors, sizing, filters (Level 4)
+ * - Responsive breakpoints (Level 5)
+ * - Complex feature interactions
  *
- * Tailwind classes used (Level 4):
+ * Tailwind classes used (Level 6):
+ * - Hover: hover:bg-*, hover:scale-*
  * - Responsive: sm:, md:, lg: breakpoints
  * - Arbitrary values: [rgba(...)], [clamp(...)], [12px], [#hex]
  * - Transitions: transition-all, duration-*, ease-in-out
@@ -19,12 +19,10 @@
  * - Grid: grid, [grid-area:1/1]
  *
  * Tests:
- * - React → WC transformation of responsive utilities
- * - Media query generation
- * - Complex arbitrary value preservation
- * - Transition property combination
- * - Transform property combination
- * - Hover state CSS generation
+ * - All features compile without conflicts
+ * - Container queries + hover work together
+ * - Responsive arbitrary values work
+ * - Complex selector combinations generate correct CSS
  */
 
 import type { PropsWithChildren } from 'react';
@@ -36,7 +34,7 @@ type SkinProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export default function MediaSkinResponsive({ children, className = '' }: SkinProps): JSX.Element {
+export default function MediaSkinCombined({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
       <div className={styles.Wrapper}>

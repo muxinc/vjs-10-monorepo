@@ -1,20 +1,21 @@
 /**
- * Level 4: Responsive Test Skin - Styles
+ * Level 6: Combined Features Test Skin - Styles
  *
- * Purpose: Test responsive breakpoints and complex arbitrary values
+ * Purpose: Test ALL Tailwind features working together
  *
- * Tailwind Complexity Level 4 Features:
- * - Responsive breakpoints: sm:, md:, lg:
- * - Complex arbitrary values: calc(), clamp(), custom colors
+ * Tailwind Complexity Level 6 Features (combines 3, 4, 5):
+ * - Hover/focus/active pseudo-classes (Level 3)
+ * - Arbitrary values: calc(), clamp(), rgba(), custom colors (Level 4)
+ * - Responsive breakpoints: sm:, md:, lg: (Level 5)
  * - Transitions and transforms
  * - Backdrop filters
- * - Multiple value changes per breakpoint
+ * - Complex feature interactions
  *
  * Expected transformations:
- * - Media queries wrapping responsive utilities
+ * - Container queries wrapping responsive utilities
+ * - @media (hover: hover) wrapping hover states
  * - Arbitrary values preserved in CSS
- * - Transition properties combined correctly
- * - Transform properties work together
+ * - All features working together without conflicts
  */
 
 function cn(...classes: (string | undefined)[]): string {
