@@ -51,7 +51,7 @@ const styles = {
     'sm:p-4',     // Small: 1rem
     'md:p-6',     // Medium: 1.5rem
     'rounded-full',
-    'bg-blue-500',  // Simple color, not arbitrary
+    'bg-[#3b82f6]',  // Blue color (using arbitrary value for TW v4 compatibility)
     'pointer-events-auto',
     'grid',
     // Icon stacking and interactivity (from Level 2)

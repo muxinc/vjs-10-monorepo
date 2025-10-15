@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 8: Before/After Pseudo-Elements Skin (Web Component)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+    }
+    video {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Level 8: Before/After Pseudo-Elements Skin (Web Component)</h1>
+    <p>
+      Testing: ::before and ::after pseudo-element support with decorative effects
+    </p>
+
+    <media-provider>
+      <media-skin-before-after>
+        <video slot="media" src="/blue-30s-110hz.mp4"></video>
+      </media-skin-before-after>
+    </media-provider>
+
+    <div class="info">
+      <h3>Expected Features:</h3>
+      <ul>
+        <li>::before: Inner decorative border with white glow (before:inset-px, before:bg-[#fff]/10)</li>
+        <li>::after: Outer glow effect that expands on hover (after:blur-xl, hover:after:inset-[-8px])</li>
+        <li>Border-radius inheritance: pseudo-elements inherit parent's rounded corners</li>
+        <li>Hover animations: Button scales and outer glow intensifies</li>
+        <li>Z-index layering: Icons appear above pseudo-elements</li>
+      </ul>
+      <h3>CSS Technology:</h3>
+      <ul>
+        <li>::before creates an inner decorative border at 1px inset</li>
+        <li>::after creates an outer blur effect starting at 0% opacity</li>
+        <li>On hover: after pseudo-element becomes 50% opacity and expands outward</li>
+        <li>Content property automatically added by Tailwind: <code>content: ;</code></li>
+        <li>Inherits border-radius from parent: <code>border-radius: inherit</code></li>
+      </ul>
+      <h3>Test Instructions:</h3>
+      <ul>
+        <li>Observe subtle inner white glow on play button (::before)</li>
+        <li>Hover over play button - should see outer blue glow expand (::after)</li>
+        <li>Icons should remain visible above pseudo-elements</li>
+        <li>Border radius should be consistent across all layers</li>
+        <li>Click button - video should play/pause smoothly</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import compiled web component skin
+    import '../compiled/08-before-after.js';
+
+    // Import HTML package for MediaProvider and other base components
+    import '@vjs-10/html';
+  </script>
+</body>
+</html>

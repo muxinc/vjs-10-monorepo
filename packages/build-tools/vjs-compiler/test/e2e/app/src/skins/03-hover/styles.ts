@@ -35,10 +35,10 @@ const styles = {
   Button: cn(
     'p-3',
     'rounded-full',
-    'bg-blue-500',           // Base color
-    'hover:bg-blue-600',     // Hover state (should wrap in @media (hover: hover))
+    'bg-[#3b82f6]',           // Base color (blue-500 equivalent)
+    'hover:bg-[#2563eb]',     // Hover state (blue-600 equivalent, should wrap in @media (hover: hover))
     'focus:ring-2',          // Focus state
-    'focus:ring-blue-300',   // Focus ring color
+    'focus:ring-[#93c5fd]',   // Focus ring color (blue-300 equivalent)
     'focus:outline-none',    // Remove default outline
     'active:scale-95',       // Active state (pressed)
     'transition-all',        // Transition all properties
