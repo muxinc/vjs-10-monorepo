@@ -22,8 +22,6 @@ function cn(...classes: (string | undefined)[]): string {
 }
 
 const styles = {
-  Container: cn('relative'),
-
   Wrapper: cn(
     'relative',
     // Responsive padding: increases at each breakpoint
