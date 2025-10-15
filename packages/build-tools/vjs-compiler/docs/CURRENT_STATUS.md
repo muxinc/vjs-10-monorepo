@@ -180,7 +180,7 @@ We have successfully implemented **Phases 0-6** of the compiler rebuild with com
 - Extension points not yet clearly defined
 - **Next refactoring priority**
 
-**See:** `docs/compiler-rebuild-plan.md` "Architectural Compliance Checkpoints"
+**See:** `docs/ITERATION_PROCESS.md` for development workflow and compliance checkpoints
 
 ---
 
