@@ -517,7 +517,7 @@ if (!customElements.get('media-skin-minimal')) {
 #### Documentation
 
 - `docs/CURRENT_STATUS.md` - This file
-- `docs/compiler-rebuild-plan.md` - Implementation plan with checkpoints
+- `docs/ITERATION_PROCESS.md` - Development workflow with compliance checkpoints
 - `docs/testing/E2E_GUIDE.md` - Comprehensive E2E testing strategy
 
 ---
