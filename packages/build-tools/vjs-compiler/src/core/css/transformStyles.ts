@@ -188,9 +188,18 @@ function rescopeCSSToStyleKeys(
   root.walkRules((rule) => {
     const selector = rule.selector.trim();
 
-
     // Preserve :host rule (contains CSS variable definitions)
-    if (selector === ':host') {
+    // NOTE: :host rule is inside @layer theme, so walkRules will find it
+    if (selector === ':host' || selector === ':root, :host' || selector === ':root,:host') {
+      // Extract the :host rule from its parent @layer if needed
+      if (rule.parent?.type === 'atrule') {
+        const parentAtRule = rule.parent as postcss.AtRule;
+        if (parentAtRule.name === 'layer' && parentAtRule.params === 'theme') {
+          // Preserve the rule content without the @layer wrapper
+          hostRule = rule.toString();
+          return;
+        }
+      }
       hostRule = rule.toString();
       return;
     }

@@ -270,6 +270,10 @@ export async function processTailwindClasses(styles: Record<string, string>): Pr
           initial: '0 1 auto',
           none: 'none',
         },
+        // NOTE: Tailwind v4 does NOT support theme.extend.colors configuration!
+        // Unlike v3, colors must be defined via @theme CSS directives, not JS config.
+        // Use arbitrary values (bg-[#hex]) instead of semantic classes (bg-blue-500).
+        // See: https://tailwindcss.com/docs/v4-beta#migrating-from-v3
       },
     },
   };
@@ -277,65 +281,38 @@ export async function processTailwindClasses(styles: Record<string, string>): Pr
   // Create Tailwind plugin with config
   const tailwindPlugin = (tailwindcss as unknown as TailwindPluginFactory)({ config: tailwindConfig });
 
-  // Build input CSS with Tailwind directives (v4 syntax) + theme customization
-  // NOTE: @theme defines CSS variables, but we also need a :root rule to make them available
+  // Build input CSS with Tailwind directives (v4 syntax)
+  //
+  // LIMITATION: Tailwind v4 semantic color classes (like bg-blue-500) are NOT supported
+  // in programmatic PostCSS plugin usage.
+  //
+  // ROOT CAUSE: The @theme directive is only processed in the main entry file that
+  // Tailwind directly processes (e.g., via @import 'tailwindcss' in a CSS file).
+  // When @theme CSS is passed programmatically as a string to the PostCSS plugin,
+  // Tailwind does NOT process the @theme directive.
+  //
+  // See: https://github.com/tailwindlabs/tailwindcss/issues/18966
+  //
+  // This is a fundamental limitation of Tailwind v4's CSS-first architecture.
+  // Normal apps work because they use @import 'tailwindcss' in CSS files, which
+  // triggers Tailwind to process the @theme directives. But programmatic usage
+  // via the PostCSS plugin API doesn't have this capability.
+  //
+  // WORKAROUND: Use arbitrary color values:
+  //   bg-blue-500 → bg-[#3b82f6]     (or bg-[oklch(62.3% 0.214 259.815)])
+  //   bg-blue-600 → bg-[#2563eb]     (or bg-[oklch(54.6% 0.245 262.881)])
+  //
+  // FUTURE SOLUTION: This may require:
+  //   1. Using a different Tailwind plugin/API that supports theme processing
+  //   2. Waiting for Tailwind v4 to add programmatic theme support
+  //   3. Pre-processing CSS files through Tailwind's file-based pipeline
+  //
+  // See: TEST_SKIN_PROGRESSION.md - Level 7 (Semantic Colors) for tracking
+  //
+  // IMPORTANT: We need to include @tailwind theme to get the :host rule with CSS variables
+  // like --spacing, which are used in utility classes like p-3 → calc(var(--spacing) * 3)
   const inputCSS = `
-@theme {
-  /* Color palette */
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-700: #1d4ed8;
-  --color-blue-800: #1e40af;
-  --color-blue-900: #1e3a8a;
-  --color-gray-500: #6b7280;
-  --color-gray-900: #111827;
-  --color-white: #ffffff;
-
-  /* Spacing scale */
-  --spacing-0: 0px;
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-5: 1.25rem;
-  --spacing-6: 1.5rem;
-  --spacing-8: 2rem;
-  --spacing-10: 2.5rem;
-  --spacing-12: 3rem;
-  --spacing-16: 4rem;
-
-  /* Border radius */
-  --radius: 0.25rem;
-  --radius-sm: 0.125rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-full: 9999px;
-}
-
-/* Make theme variables available in shadow DOM */
-:host {
-  --spacing-0: 0px;
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-5: 1.25rem;
-  --spacing-6: 1.5rem;
-  --spacing-8: 2rem;
-  --spacing-10: 2.5rem;
-  --spacing-12: 3rem;
-  --spacing-16: 4rem;
-  --radius: 0.25rem;
-  --radius-sm: 0.125rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-full: 9999px;
-}
-
+@tailwind theme;
 @tailwind utilities;
 `;
 

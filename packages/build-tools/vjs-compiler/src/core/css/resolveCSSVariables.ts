@@ -16,6 +16,26 @@ export interface ThemeVariables {
   [key: string]: string | undefined;
 }
 
+/**
+ * Tailwind v4 default theme variables
+ *
+ * WORKAROUND: Tailwind v4's PostCSS plugin doesn't generate theme variables when used
+ * programmatically. The @tailwind theme directive works in file-based workflows, but not
+ * when using the PostCSS plugin API.
+ *
+ * These hardcoded defaults ensure spacing utilities like p-3, inset-0, gap-2, etc. can be
+ * resolved properly even though Tailwind doesn't emit the :host { --spacing: 0.25rem } rule.
+ *
+ * This is the same root cause as semantic colors not working (see processCSS.ts line 286-310).
+ *
+ * See: https://github.com/tailwindlabs/tailwindcss/issues/18966
+ */
+const TAILWIND_DEFAULT_THEME: ThemeVariables = {
+  // Spacing scale - used by p-*, m-*, gap-*, inset-*, top-*, etc.
+  // Default: 0.25rem (4px) per unit
+  '--spacing': '0.25rem',
+};
+
 interface ParsedValue {
   value: number;
   unit: string;
@@ -131,7 +151,8 @@ export interface ResolveOptions {
  * - Inline definitions (Tailwind v4 utilities like transitions/transforms)
  */
 function extractThemeVariables(css: string): ThemeVariables {
-  const theme: ThemeVariables = {};
+  // Start with Tailwind default theme variables (workaround for programmatic API limitation)
+  const theme: ThemeVariables = { ...TAILWIND_DEFAULT_THEME };
   const root = postcss.parse(css);
 
   // Extract from :root blocks
