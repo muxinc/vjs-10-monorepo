@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "compile-skins": "cd ../../.. && tsx test/e2e/app/scripts/compile-skins.js",
-    "predev": "pnpm compile-skins",
+    "generate-entrypoints": "node scripts/generate-entrypoints.js",
+    "predev": "pnpm generate-entrypoints && pnpm compile-skins",
     "test:e2e": "playwright test"
   },
   "dependencies": {
