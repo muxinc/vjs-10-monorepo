@@ -278,16 +278,28 @@ test/e2e/app/src/skins/
 
 ## Current Status (Updated 2025-10-14)
 
-| Level | Feature | Status | Size | Issues |
-|-------|---------|--------|------|--------|
-| 0 | Structure | ✅ Done | 826 bytes | None |
-| 1 | Basic utilities | ✅ Done | 1245 bytes | None |
-| 2 | Descendant selectors | ✅ Done | 1648 bytes | None |
-| 3 | Hover/pseudo-classes | ✅ Done | 2313 bytes | Color vars not resolved |
-| 4 | Arbitrary values | ✅ Done | 2395 bytes | None |
-| 5 | Responsive variants | ✅ Done | 2305 bytes | None |
-| 6 | Combined features | ✅ Done | 2976 bytes | None |
+| Level | Feature | E2E Status | Size | Issues |
+|-------|---------|------------|------|--------|
+| 0 | Structure | ✅ **VALIDATED** | 826 bytes | None |
+| 1 | Basic utilities | ✅ **VALIDATED** | 1245 bytes | None |
+| 2 | Descendant selectors | ✅ **VALIDATED** | 1648 bytes | None |
+| 3 | Hover/pseudo-classes | ⚠️ **BLOCKED** | 2313 bytes | 🔴 Tailwind colors broken - see CRITICAL_BLOCKER_TAILWIND_COLORS.md |
+| 4 | Arbitrary values | ✅ **VALIDATED** | 2395 bytes | None |
+| 5 | Responsive variants | ⚠️ **BLOCKED** | 2305 bytes | 🔴 Tailwind colors broken - see CRITICAL_BLOCKER_TAILWIND_COLORS.md |
+| 6 | Combined features | ✅ **VALIDATED** | 2976 bytes | None (uses arbitrary colors only) |
 | 7-12 | **Production critical** | ❌ Not started | - | See TAILWIND_ROADMAP.md |
+
+### E2E Validation Legend:
+- ✅ **VALIDATED** - Compiles, loads in browser, colors work, playback functional
+- ⚠️ **BLOCKED** - Compiles and loads, but colors don't render (empty CSS values)
+- ❌ **Not started** - Not yet implemented
+
+### 🔴 CRITICAL BLOCKER:
+**Tailwind Color Classes Not Resolving** - See `CRITICAL_BLOCKER_TAILWIND_COLORS.md`
+
+Levels 3 and 5 compile successfully but output empty `background-color:` values because Tailwind color classes (`bg-blue-500`, etc.) are not resolving to actual colors. Arbitrary color values (`bg-[#hex]`) work fine.
+
+**Workaround:** Use arbitrary colors: `bg-[#3b82f6]` instead of `bg-blue-500`
 
 ## Validation Checklist
 
