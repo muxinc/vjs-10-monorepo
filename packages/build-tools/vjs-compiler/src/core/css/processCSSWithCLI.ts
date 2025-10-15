@@ -30,7 +30,7 @@ import { tmpdir } from 'node:os';
  * @returns Processed CSS from Tailwind CLI
  */
 export async function processTailwindWithCLI(
-  styles: Record<string, string>,
+  _styles: Record<string, string>,
   html: string
 ): Promise<string> {
   // Create temp directory

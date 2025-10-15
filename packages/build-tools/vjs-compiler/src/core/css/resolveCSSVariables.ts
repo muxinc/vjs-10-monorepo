@@ -143,7 +143,7 @@ function resolveVarReference(
   // Captures fallback separately to handle it properly
   const varPattern = /var\((--[\w-]+)(?:,\s*([^)]*))?\)/g;
 
-  const newValue = value.replace(varPattern, (match, varName, fallback) => {
+  const newValue = value.replace(varPattern, (_match, varName, fallback) => {
     const themeValue = theme[varName];
     if (themeValue) {
       // Variable found, resolve it
@@ -465,11 +465,14 @@ export function resolveCSSVariables(css: string, options: ResolveOptions = {}): 
     });
 
     // For properties that appear multiple times, keep only the last one
-    for (const [prop, decls] of seenProps) {
+    for (const [_prop, decls] of seenProps) {
       if (decls.length > 1) {
         // Remove all but the last declaration
         for (let i = 0; i < decls.length - 1; i++) {
-          decls[i].remove();
+          const decl = decls[i];
+          if (decl) {
+            decl.remove();
+          }
         }
       }
     }

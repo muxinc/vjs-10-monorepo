@@ -219,7 +219,7 @@ function isIconPackage(packageSource: string): boolean {
  * @param packageName - Package name
  * @returns Default export strategy
  */
-function getDefaultExportStrategy(packageName: string): ComponentExportStrategy {
+function getDefaultExportStrategy(_packageName: string): ComponentExportStrategy {
   // VJS html, react, and icon packages all use named-from-main
   // They export everything from their main entry point
   // For web components, side-effect imports from the main package

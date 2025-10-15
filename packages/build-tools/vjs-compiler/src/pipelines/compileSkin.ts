@@ -124,9 +124,11 @@ export async function compileSkin(config: CompileSkinConfig): Promise<CompileSki
 
   // Phase 4: Projection - Transform imports and JSX
   const transformedImports = transformImports(imports, paths, output);
-  const transformedJSX = transformJSX(jsx, categorizedGraph.styleKeys, {
-    selectorStrategy: output.selectorStrategy,
-  });
+  const transformedJSX = transformJSX(
+    jsx,
+    categorizedGraph.styleKeys,
+    output.selectorStrategy ? { selectorStrategy: output.selectorStrategy } : undefined
+  );
 
   // Phase 4.5: Validation - Validate ALL imports match discovered exports
   if (output.importMode === 'package') {
@@ -161,9 +163,11 @@ export async function compileSkin(config: CompileSkinConfig): Promise<CompileSki
     const styles = extractStyles(stylesAST);
 
     if (styles) {
-      const cssResult = await transformStyles(styles, categorizedGraph.styleKeys, {
-        selectorStrategy: output.selectorStrategy,
-      });
+      const cssResult = await transformStyles(
+        styles,
+        categorizedGraph.styleKeys,
+        output.selectorStrategy ? { selectorStrategy: output.selectorStrategy } : undefined
+      );
       css = cssResult.css;
     }
   }

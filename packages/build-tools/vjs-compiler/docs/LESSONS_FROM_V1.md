@@ -4,6 +4,21 @@
 
 This document captures technical lessons from the v1 compiler to inform v2 decisions. Every time we reference v1 code, we document insights here.
 
+## V1 Code Location
+
+**V1 source code has been removed from the main branch** (as of 2025-10-15). It is preserved in two places:
+
+1. **Archive Branch:** `archive/v1-compiler` (created from commit `a4d55a5`)
+   ```bash
+   git checkout archive/v1-compiler
+   ```
+
+2. **Tailwind AST Parser:** Migrated to `src/tailwind-ast/` for potential future use
+   - See `src/tailwind-ast/README.md` for details
+   - This code handled named groups support in V1
+
+All V1 file paths referenced in this document (e.g., `src-v1/...`) can be found in the archive branch.
+
 ---
 
 ## How to Use This Document
