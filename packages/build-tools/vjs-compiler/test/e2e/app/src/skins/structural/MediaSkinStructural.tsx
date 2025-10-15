@@ -29,7 +29,7 @@
 
 import type { PropsWithChildren } from 'react';
 import { MediaContainer, PlayButton } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { PlayIcon } from '@vjs-10/react-icons';
 
 export default function MediaSkinStructural({ children }: PropsWithChildren): JSX.Element {
   return (
@@ -38,7 +38,6 @@ export default function MediaSkinStructural({ children }: PropsWithChildren): JS
       <div>
         <PlayButton>
           <PlayIcon />
-          <PauseIcon />
         </PlayButton>
       </div>
     </MediaContainer>

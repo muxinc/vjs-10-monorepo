@@ -2,7 +2,6 @@ import type { JSX } from 'react';
 import { MediaContainer } from '@vjs-10/react';
 import { MediaPlayButton } from '@vjs-10/react';
 import { MediaPlayIcon } from '@vjs-10/react-icons';
-import { MediaPauseIcon } from '@vjs-10/react-icons';
 import styles from './styles';
 
 export interface SkinProps {
@@ -36,7 +35,6 @@ export default function MediaSkinNamedGroups({ children, className = '' }: SkinP
           <div className={styles.ControlsContainer}>
             <MediaPlayButton className={styles.Button}>
               <MediaPlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
-              <MediaPauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
             </MediaPlayButton>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { MediaContainer, PlayButton } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { PlayIcon } from '@vjs-10/react-icons';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{ className?: string }>;
@@ -12,7 +12,6 @@ export default function MediaSkinJSXTemplateLiteralMixed({ children, className =
       <div className={styles.Wrapper}>
         <PlayButton className={`${styles.Button} ${styles.IconButton}`}>
           <PlayIcon />
-          <PauseIcon />
         </PlayButton>
       </div>
     </MediaContainer>
