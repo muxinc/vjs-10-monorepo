@@ -262,7 +262,7 @@ export function getTemplateHTML() {
         transform: scale(0.9);
         opacity: 0;
       }
-      
+
       media-tooltip-popup[data-ending-style] {
         transform: scale(0.9);
         opacity: 0;
@@ -307,7 +307,7 @@ export function getTemplateHTML() {
           </media-tooltip-root>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
-          
+
           <media-tooltip-root track-cursor-axis="x">
             <media-tooltip-trigger>
               <media-time-slider-root>

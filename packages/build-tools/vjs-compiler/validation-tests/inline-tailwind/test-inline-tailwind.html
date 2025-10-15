@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compiler Package - Inline Tailwind Test</title>
+</head>
+<body>
+  <div>
+    <!-- MediaContainer with all inline classes from production skin styles.MediaContainer -->
+    <div class="relative @container/root group/root overflow-clip text-[0.8125rem] [&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full after:absolute after:inset-0 after:ring-black/10 after:ring-1 dark:after:ring-black/40 after:ring-inset after:z-10 after:pointer-events-none after:rounded-[inherit] before:absolute before:inset-px before:rounded-[inherit] before:ring-white/15 before:ring-1 before:ring-inset before:z-10 before:pointer-events-none [&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto">
+      <video src="video.mp4"></video>
+
+      <!-- Overlay with styles.Overlay -->
+      <div class="opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90 has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0 has-[+.controls_[aria-expanded=&quot;true&quot;]]:opacity-100 has-[+.controls_[aria-expanded=&quot;true&quot;]]:delay-0 group-hover/root:opacity-100 group-hover/root:delay-0" aria-hidden="true"></div>
+
+      <!-- Controls with styles.Controls -->
+      <div class="controls @container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white shadow-sm shadow-black/15 bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90 transition will-change-transform origin-bottom ease-out scale-90 opacity-0 delay-500 duration-300 has-[[data-paused]]:scale-100 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0 has-[[aria-expanded=&quot;true&quot;]]:scale-100 has-[[aria-expanded=&quot;true&quot;]]:opacity-100 has-[[aria-expanded=&quot;true&quot;]]:delay-0 group-hover/root:scale-100 group-hover/root:opacity-100 group-hover/root:delay-0 after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10 reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20 contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20">
+
+        <!-- Play Button with styles.Button + styles.IconButton + styles.PlayButton -->
+        <button class="group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-full bg-transparent text-white/90 hover:no-underline hover:bg-white/10 hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 aria-disabled:grayscale aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-busy:pointer-events-none aria-busy:cursor-not-allowed aria-expanded:bg-white/10 aria-expanded:text-white active:scale-95 grid [&_.icon]:[grid-area:1/1] [&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/25 [&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0 [&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100">
+          <svg class="play-icon icon"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="pause-icon icon"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+        </button>
+
+        <!-- Time Controls with styles.TimeControls -->
+        <div class="flex-1 flex items-center gap-3 px-1.5">
+          <!-- CurrentTimeDisplay with styles.TimeDisplay -->
+          <div class="tabular-nums text-shadow-2xs/25">0:00</div>
+
+          <!-- TimeSlider.Root with styles.SliderRoot -->
+          <div class="flex items-center justify-center flex-1 group/slider relative [&[data-orientation=&quot;horizontal&quot;]]:h-5 [&[data-orientation=&quot;horizontal&quot;]]:min-w-20 [&[data-orientation=&quot;vertical&quot;]]:w-5 [&[data-orientation=&quot;vertical&quot;]]:h-20">
+            <!-- TimeSlider.Track with styles.SliderTrack -->
+            <div class="w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5 [&[data-orientation=&quot;horizontal&quot;]]:h-1 [&[data-orientation=&quot;vertical&quot;]]:w-1">
+              <!-- TimeSlider.Progress with styles.SliderProgress -->
+              <div class="bg-white rounded-[inherit]"></div>
+              <!-- TimeSlider.Pointer with styles.SliderPointer -->
+              <div class="bg-white/20 rounded-[inherit]"></div>
+            </div>
+            <!-- TimeSlider.Thumb with styles.SliderThumb -->
+            <div class="bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15 opacity-0 transition-[opacity,height,width] ease-in-out -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 group-hover/slider:opacity-100 group-focus-within/slider:opacity-100 size-2.5 active:size-3 group-active/slider:size-3 [&[data-orientation=&quot;horizontal&quot;]]:hover:cursor-ew-resize [&[data-orientation=&quot;vertical&quot;]]:hover:cursor-ns-resize"></div>
+          </div>
+
+          <!-- DurationDisplay with styles.TimeDisplay -->
+          <div class="tabular-nums text-shadow-2xs/25">0:00</div>
+        </div>
+
+        <!-- Mute Button with styles.Button + styles.IconButton + styles.MuteButton -->
+        <button class="group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-full bg-transparent text-white/90 hover:no-underline hover:bg-white/10 hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 aria-disabled:grayscale aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-busy:pointer-events-none aria-busy:cursor-not-allowed aria-expanded:bg-white/10 aria-expanded:text-white active:scale-95 grid [&_.icon]:[grid-area:1/1] [&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/25 [&_.icon]:opacity-0 [&[data-volume-level=&quot;high&quot;]_.volume-high-icon]:opacity-100 [&[data-volume-level=&quot;medium&quot;]_.volume-low-icon]:opacity-100 [&[data-volume-level=&quot;low&quot;]_.volume-low-icon]:opacity-100 [&[data-volume-level=&quot;off&quot;]_.volume-off-icon]:opacity-100">
+          <svg class="volume-high-icon icon"><path d="M9 4L5 8H1v8h4l4 4z"/></svg>
+          <svg class="volume-low-icon icon"><path d="M9 4L5 8H1v8h4l4 4z"/></svg>
+          <svg class="volume-off-icon icon"><path d="M9 4L5 8H1v8h4l4 4z"/></svg>
+        </button>
+
+        <!-- Fullscreen Button with styles.Button + styles.IconButton + styles.FullscreenButton -->
+        <button class="group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-full bg-transparent text-white/90 hover:no-underline hover:bg-white/10 hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 aria-disabled:grayscale aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-busy:pointer-events-none aria-busy:cursor-not-allowed aria-expanded:bg-white/10 aria-expanded:text-white active:scale-95 grid [&_.icon]:[grid-area:1/1] [&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/25 [&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0 [&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100 [&_path]:transition-transform ease-out">
+          <!-- FullscreenEnterIcon with styles.FullscreenEnterIcon -->
+          <svg class="fullscreen-enter-icon group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px">
+            <path class="arrow-1" d="M5 5h4v2H7v2H5z"/>
+            <path class="arrow-2" d="M19 19h-4v-2h2v-2h2z"/>
+          </svg>
+          <!-- FullscreenExitIcon with styles.FullscreenExitIcon -->
+          <svg class="fullscreen-exit-icon [&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px [&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px group-hover/button:[&_.arrow-1]:translate-0 group-hover/button:[&_.arrow-2]:translate-0">
+            <path class="arrow-1" d="M7 9H5V5h4v2H7z"/>
+            <path class="arrow-2" d="M17 15h2v4h-4v-2h2z"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
