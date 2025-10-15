@@ -19,83 +19,13 @@ We have successfully implemented **Phases 0-6** of the compiler rebuild with com
 
 ---
 
-## Demo App Skins 🆕
+## Tailwind CSS Support
 
-### Purpose
+**Status:** ~40% of production features supported (Levels 0-11 validated)
 
-Two sets of skins are now available in `examples/react-demo/src/skins/`:
+**See:** `docs/tailwind/SUPPORT_STATUS.md` for complete feature matrix and test progression.
 
-1. **Full versions** (`frosted/`, `toasted/`) - Production-quality skins with all features
-   - ❌ Include arbitrary variant selectors `[&_.child]:opacity-0`
-   - ❌ Currently **do not compile** (Tailwind v4 limitation)
-   - ✅ Used in React demo app for visual reference
-   - 📋 Target for Phase 2 (arbitrary variant support)
-
-2. **Simplified versions** (`frosted-simple/`, `toasted-simple/`) - Baseline test skins
-   - ✅ ONLY simple Tailwind utilities (no arbitrary variants)
-   - ✅ **Compile successfully** with current compiler
-   - ✅ Used for E2E validation baseline
-   - ✅ Validate package import mapping (@vjs-10/react → @vjs-10/html)
-   - 📋 See README.md in each directory for details
-
-### Why Demo Skins?
-
-Demo app skins simplify import mapping testing:
-
-**Before (package skins):**
-```typescript
-// Complex relative paths
-import { MediaSkin } from '../../../media-skin';
-import '../../../components/media-play-button';
-```
-
-**After (demo skins):**
-```typescript
-// Simple package imports
-import { MediaSkin } from '@vjs-10/html';
-import { PlayButton } from '@vjs-10/html';
-import { PlayIcon } from '@vjs-10/html-icons';
-```
-
-This sidesteps relative path complexity and makes VJS import identification clearer.
-
-### Simplified Skin Limitations
-
-Features removed from `-simple` versions:
-
-- ❌ Icon visibility (play/pause, mute states, fullscreen) - uses `[&_.icon]:opacity-0`
-- ❌ SVG child styling - uses `[&_svg]:grid-area`
-- ❌ Tooltip content visibility - uses `[&_.tooltip]:hidden`
-- ❌ Data attribute child selectors - uses `[&[data-paused]_.icon]:opacity-100`
-
-**What still works:**
-- ✅ Layout, positioning, colors, backgrounds
-- ✅ Hover/focus/disabled states (on root element)
-- ✅ Transitions and animations
-- ✅ Container queries
-- ✅ Named groups (group/button, group/slider)
-- ✅ Data attribute selectors on root ([data-orientation])
-
-### Test Coverage
-
-Simplified demo skins have dedicated compilation tests:
-
-```bash
-# Run demo skin compilation tests
-pnpm test -- compile-demo-skins.test.ts
-```
-
-**Test validation:**
-- ✅ Package imports generated correctly
-- ✅ Icon imports use subpaths (@vjs-10/html-icons/media-play-icon)
-- ✅ Base template included
-- ✅ CSS compiles (simplified utilities only)
-- ✅ No React imports in output
-- ✅ No style imports in output
-
-**Output sizes:**
-- frosted-simple: ~25KB
-- toasted-simple: ~11KB
+**Critical blockers:** Named groups, has selector, before/after pseudo-elements, container query variants, ARIA state selectors.
 
 ---
 
@@ -435,15 +365,6 @@ if (!customElements.get('media-skin-minimal')) {
 ---
 
 ## Known Limitations
-
-### ~~Some Tailwind Utilities Not Generating~~ ✅ FIXED
-
-**Status:** ✅ **RESOLVED** - Full theme configuration added in Phase 5
-
-- All spacing utilities now work (p-_, px-_, gap-\*)
-- All border-radius utilities now work (rounded\*)
-- Flex and overflow utilities working
-- Uses CSS variables for runtime customization
 
 ### ~~Compound Components Not Yet Supported~~ ✅ FIXED
 

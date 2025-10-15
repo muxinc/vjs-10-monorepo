@@ -151,24 +151,7 @@ Comments are added: `/* Tailwind classes: icon */ /* No CSS generated */`
 
 ---
 
-## Comparison: V1 vs V2
-
-| Feature | V1 | V2 | Notes |
-|---------|----|----|-------|
-| Basic CSS utilities | ✅ | ✅ | Works in both |
-| Element selectors | ✅ | ✅ | Works in both |
-| Class selectors | ✅ | ✅ | Works in both |
-| CSS variables (Tailwind v4) | ❌ | ✅ | V2 uses modern approach |
-| Template literal className | ✅ | ⚠️ | Edge case (1 test failing) |
-| Explicit closing tags | ✅ | ✅ | Works in v2 |
-| Boolean attributes | ✅ | ⚠️ | Edge case (cosmetic) |
-| Empty className removal | ✅ | ⚠️ | Edge case (cosmetic) |
-| Self-closing elements | ✅ | ⚠️ | Edge case (cosmetic) |
-| Import generation | ✅ | ✅ | **Phase 1 complete!** |
-| Base template inclusion | ✅ | ✅ | **Phase 1 complete!** |
-| Relative path calculation | ❌ | ✅ | V2 has PathContext system |
-
-**For Tailwind-specific comparisons**, see `docs/tailwind/SUPPORT_STATUS.md`.
+**For Tailwind feature comparisons**, see `docs/tailwind/SUPPORT_STATUS.md`.
 
 ---
 
@@ -181,13 +164,9 @@ Comments are added: `/* Tailwind classes: icon */ /* No CSS generated */`
 - ✅ JSX → HTML transformation
 - ✅ className → class attribute conversion
 - ✅ Explicit closing tag generation
-- ✅ Simple Tailwind utilities
 - ✅ **Import generation (Phase 1)**
 - ✅ **Base template inclusion (Phase 1)**
 - ✅ **Relative path calculation (Phase 1)**
-- ✅ Pseudo-class selectors (:hover, :focus, :active, :disabled)
-- ✅ Data attribute selectors ([data-state=active])
-- ✅ Media queries (@media (prefers-color-scheme: dark))
 - ✅ Compound components (TimeRange.Root → media-time-range-root)
 
 ### What Has Edge Cases (5 tests)
@@ -198,11 +177,7 @@ Comments are added: `/* Tailwind classes: icon */ /* No CSS generated */`
 - ⚠️ Self-closing elements (1 test)
 - ⚠️ Browser E2E infrastructure (1 test)
 
-### What Doesn't Work (9 skipped tests)
-
-- ❌ Some Tailwind arbitrary variant selectors `[&_selector]` (5 tests) - See `docs/tailwind/SUPPORT_STATUS.md`
-- ❌ Container query variants (2 tests) - See `docs/tailwind/investigations/CONTAINER_QUERIES_LIMITATION.md`
-- ❌ Complex nested variants (2 tests)
+**For Tailwind-specific features and limitations**, see `docs/tailwind/SUPPORT_STATUS.md`.
 
 ### Browser Testing
 
@@ -222,14 +197,7 @@ Comments are added: `/* Tailwind classes: icon */ /* No CSS generated */`
 
 ### Priority 2: Tailwind Feature Support
 
-**For detailed Tailwind roadmap**, see `docs/tailwind/SUPPORT_STATUS.md`.
-
-Critical Tailwind features needed for production:
-1. Named groups (`group/root`, `group-hover/root:`)
-2. Has selector (`:has()`)
-3. Before/after pseudo-elements (`::before`, `::after`)
-4. Container query variants (`@md/root:`)
-5. ARIA state selectors (`aria-disabled:`)
+**See `docs/tailwind/SUPPORT_STATUS.md` for complete Tailwind roadmap and feature status.**
 
 ### Priority 3: JSX Edge Cases (Optional)
 

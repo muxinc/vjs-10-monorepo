@@ -338,5 +338,5 @@ These features are part of standard Tailwind and should work, but haven't been e
 
 - **Implementation details:** `docs/tailwind/investigations/CSS_FIXES_APPLIED.md`
 - **Container query limitation:** `docs/tailwind/investigations/CONTAINER_QUERIES_LIMITATION.md`
-- **Test skin progression:** `docs/TEST_SKIN_PROGRESSION.md`
-- **General limitations:** `docs/KNOWN_LIMITATIONS.md`
+- **Test progression details:** `docs/tailwind/TEST_PROGRESSION.md` (detailed level-by-level breakdown)
+- **General compiler limitations:** `docs/KNOWN_LIMITATIONS.md`
