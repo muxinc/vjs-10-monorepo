@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer } from '../../components/MediaContainer';
-import MuteButton from '../../components/MuteButton';
+import { MediaContainer, MuteButton } from '@vjs-10/react';
 import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
 import styles from './styles';
 

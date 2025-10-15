@@ -1,18 +1,40 @@
 /**
  * Compile test skins from React to Web Components
  *
- * Directly uses the compiler to transform E2E test skins.
+ * Automatically discovers and compiles all skins in src/skins/
  */
 
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { compileSkin } from '@vjs-10/vjs-compiler';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const SKINS_DIR = resolve(__dirname, '../src/skins');
 
 console.log('🔨 Compiling E2E test skins...\n');
+
+/**
+ * Convert skin directory name to component name
+ * Examples:
+ *   jsx-single-style-key → MediaSkinJSXSingleStyleKey
+ *   hover-pseudo-class → MediaSkinHoverPseudoClass
+ *   production → MediaSkinProduction
+ */
+function skinDirToComponentName(dirName) {
+  // Special case: production skin
+  if (dirName === 'production') {
+    return 'MediaSkinProduction';
+  }
+
+  // Split on hyphens and capitalize each word
+  const words = dirName.split('-').map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1)
+  );
+
+  return `MediaSkin${words.join('')}`;
+}
 
 /**
  * Compile a single test skin
@@ -79,21 +101,55 @@ async function compileSingleSkin(skinName, skinFileName) {
 }
 
 async function compileSkins() {
-  // Compile all test skins in progression order
-  await compileSingleSkin('00-structural', 'MediaSkinStructural');
-  await compileSingleSkin('01-minimal', 'MediaSkinMinimal');
-  await compileSingleSkin('02-interactive', 'MediaSkinInteractive');
-  await compileSingleSkin('03-hover', 'MediaSkinHover');
-  await compileSingleSkin('04-arbitrary', 'MediaSkinArbitrary');
-  await compileSingleSkin('05-responsive', 'MediaSkinResponsiveSimple');
-  await compileSingleSkin('06-combined', 'MediaSkinCombined');
-  await compileSingleSkin('07-color-opacity', 'MediaSkinColorOpacity');
-  await compileSingleSkin('08-before-after', 'MediaSkinBeforeAfter');
-  await compileSingleSkin('09-has-selector', 'MediaSkinHasSelector');
-  await compileSingleSkin('10-named-groups', 'MediaSkinNamedGroups');
-  await compileSingleSkin('11-aria-states', 'MediaSkinAriaStates');
-  await compileSingleSkin('12-container-queries', 'MediaSkinContainerQueries');
-  // Note: 07-semantic-colors is intentionally excluded (documents known limitation)
+  // Auto-discover all skin directories
+  const skinDirs = readdirSync(SKINS_DIR)
+    .filter(name => {
+      const fullPath = resolve(SKINS_DIR, name);
+      return statSync(fullPath).isDirectory();
+    })
+    .sort();
+
+  console.log(`Found ${skinDirs.length} skins to compile\n`);
+
+  let successCount = 0;
+  let failCount = 0;
+
+  // Compile each skin
+  for (const skinDir of skinDirs) {
+    // Find the actual TSX file instead of inferring the name
+    const skinDirPath = resolve(SKINS_DIR, skinDir);
+    const tsxFiles = readdirSync(skinDirPath).filter(f => f.endsWith('.tsx'));
+
+    if (tsxFiles.length === 0) {
+      console.error(`❌ ${skinDir}: No .tsx file found`);
+      failCount++;
+      continue;
+    }
+
+    if (tsxFiles.length > 1) {
+      console.error(`❌ ${skinDir}: Multiple .tsx files found: ${tsxFiles.join(', ')}`);
+      failCount++;
+      continue;
+    }
+
+    const componentName = tsxFiles[0].replace('.tsx', '');
+
+    try {
+      await compileSingleSkin(skinDir, componentName);
+      successCount++;
+    } catch (error) {
+      console.error(`\n❌ Failed to compile ${skinDir}:`, error.message);
+      failCount++;
+      // Continue with other skins instead of failing completely
+    }
+  }
+
+  console.log('\n' + '='.repeat(60));
+  console.log(`✅ Successfully compiled: ${successCount}/${skinDirs.length} skins`);
+  if (failCount > 0) {
+    console.log(`❌ Failed: ${failCount}/${skinDirs.length} skins`);
+  }
+  console.log('='.repeat(60));
 }
 
 compileSkins().catch((error) => {

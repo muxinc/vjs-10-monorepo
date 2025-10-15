@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer } from '../../components/MediaContainer';
-import { TimeSlider } from '../../components/TimeSlider';
+import { MediaContainer, TimeSlider } from '@vjs-10/react';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{ className?: string }>;

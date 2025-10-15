@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer } from '../../components/MediaContainer';
-import PlayButton from '../../components/PlayButton';
+import { MediaContainer, PlayButton } from '@vjs-10/react';
 import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
 import styles from './styles';
 
