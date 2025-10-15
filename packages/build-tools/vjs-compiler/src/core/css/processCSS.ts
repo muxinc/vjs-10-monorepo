@@ -7,6 +7,8 @@ import postcss from 'postcss';
 
 import postcssNested from 'postcss-nested';
 
+import { processTailwindWithCLI } from './processCSSWithCLI';
+
 // Type for Tailwind plugin factory (v4)
 type TailwindPluginFactory = (options: { config: TailwindConfig }) => postcss.Plugin;
 type TailwindConfig = Record<string, unknown>;
@@ -193,6 +195,40 @@ function extractAllClasses(styles: Record<string, string>): string[] {
 }
 
 /**
+ * Detect if styles contain container query utilities
+ *
+ * Container queries (@container) require Tailwind CLI processing because
+ * the PostCSS plugin API doesn't generate @container at-rules properly.
+ *
+ * @param styles - Map of style keys to Tailwind class strings
+ * @returns true if container queries detected
+ */
+function hasContainerQueries(styles: Record<string, string>): boolean {
+  for (const classString of Object.values(styles)) {
+    // Check for @container/name definition or @size/name: queries
+    const hasLiteral = classString.includes('@container');
+    const hasPattern = /@[a-z]+\/[a-z]+:/i.test(classString);
+
+    if (process.env.DEBUG_TAILWIND_CLI) {
+      if (hasLiteral || hasPattern) {
+        console.log('[DEBUG] Container query detected in:', classString.substring(0, 100));
+        console.log('[DEBUG]   hasLiteral:', hasLiteral, 'hasPattern:', hasPattern);
+      }
+    }
+
+    if (hasLiteral || hasPattern) {
+      return true;
+    }
+  }
+
+  if (process.env.DEBUG_TAILWIND_CLI) {
+    console.log('[DEBUG] No container queries detected');
+  }
+
+  return false;
+}
+
+/**
  * Process Tailwind classes through Tailwind v4
  *
  * Takes a styles object, generates HTML, processes through Tailwind,
@@ -208,10 +244,25 @@ function extractAllClasses(styles: Record<string, string>): string[] {
  * - Arbitrary values (bg-[#1da1f2], w-[clamp(...)])
  * - Complex variants that Tailwind v4 might not parse from HTML
  *
+ * PROCESSING METHOD:
+ * - Uses PostCSS plugin API by default (fast, in-memory)
+ * - Automatically switches to CLI for container queries (slow, file-based, but fully featured)
+ * - Can force CLI mode with USE_TAILWIND_CLI=1 environment variable
+ *
  * @param styles - Map of style keys to Tailwind class strings
  * @returns Raw CSS from Tailwind processing
  */
 export async function processTailwindClasses(styles: Record<string, string>): Promise<string> {
+  // Check if we should use CLI-based processing
+  const useCLI = process.env.USE_TAILWIND_CLI === '1' || hasContainerQueries(styles);
+
+  if (useCLI) {
+    // Use file-based CLI processing for full @theme/@container support
+    const html = buildHTMLForTailwind(styles);
+    return processTailwindWithCLI(styles, html);
+  }
+
+  // Use PostCSS plugin API (default - faster, but limited features)
   // Build HTML with all classes for scanning
   const html = buildHTMLForTailwind(styles);
 
