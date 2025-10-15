@@ -1,12 +1,12 @@
 # Test Skin Progression Plan
 
-**Status:** Levels 0-9 validated! Level 10 documented as limitation. 2 more levels to reach production parity.
+**Status:** Levels 0-11 validated! Level 10 documented as limitation. 1 more level to reach production parity.
 
 **Problem:** Current Level 3 (03-responsive) combines too many features at once.
 
 **Solution:** Split into smaller, focused test skins that each validate ONE new complexity level.
 
-**✅ UPDATE (2025-10-14):** Restructuring complete! Levels 0-9 validated. Level 10 (named groups) identified as limitation.
+**✅ UPDATE (2025-10-14):** Restructuring complete! Levels 0-11 validated. Level 10 (named groups) identified as limitation.
 
 **⚠️ KNOWN LIMITATIONS:**
 - **Semantic Colors** - `bg-blue-500` classes don't work with PostCSS plugin API. Workaround: use arbitrary colors (`bg-[#hex]`)
@@ -570,16 +570,104 @@ const styles = {
 
 ---
 
-### Level 11+: Production Features ❌ NOT STARTED
+### Level 11: ARIA States ✅ DONE
+**File:** `11-aria-states/MediaSkinAriaStates.tsx`
+**Status:** Complete, 4359 bytes compiled
+**Features:**
+- ARIA disabled: `aria-disabled:opacity-50`, `aria-disabled:cursor-not-allowed`
+- ARIA busy: `aria-busy:opacity-70`, `aria-busy:animate-pulse`
+- ARIA pressed: `aria-pressed:bg-[#hex]`, `aria-pressed:ring-2`
+- Multiple ARIA states: States can be combined on same element
+- ARIA overrides hover: `aria-disabled:hover:scale-100` (disables hover effect)
+
+**Why critical:**
+- Essential for accessibility-driven styling
+- Allows disabled/busy/pressed states without JavaScript class manipulation
+- Used extensively in production for button and control states
+- Modern CSS approach to state-based styling (2021+)
+
+**Actual styles:**
+```typescript
+const styles = {
+  Button: cn(
+    'p-4',
+    'rounded-full',
+    'bg-[#3b82f6]/90',
+    'text-white',
+    'transition-all',
+    'duration-300',
+    'pointer-events-auto',
+    // ARIA disabled state
+    'aria-disabled:opacity-50',
+    'aria-disabled:cursor-not-allowed',
+    'aria-disabled:bg-[#64748b]',
+    // ARIA busy state
+    'aria-busy:opacity-70',
+    'aria-busy:animate-pulse',
+    // ARIA pressed state
+    'aria-pressed:bg-[#1e40af]',
+    'aria-pressed:ring-2',
+    'aria-pressed:ring-[#fff]/30',
+    // Normal hover (when not disabled)
+    'hover:bg-[#2563eb]',
+    'hover:scale-110',
+    // Aria-disabled overrides hover
+    'aria-disabled:hover:bg-[#64748b]',
+    'aria-disabled:hover:scale-100',
+  ),
+};
+```
+
+**Generated CSS:**
+```css
+.button[aria-disabled="true"] {
+  opacity: 50%;
+  cursor: not-allowed;
+  background-color: #64748b;
+}
+
+.button[aria-busy="true"] {
+  opacity: 70%;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.button[aria-pressed="true"] {
+  background-color: #1e40af;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+}
+
+@media (hover: hover) {
+  .button:hover {
+    background-color: #2563eb;
+    scale: 110% 110%;
+  }
+
+  .button[aria-disabled="true"]:hover {
+    background-color: #64748b;
+    scale: 100% 100%;
+  }
+}
+```
+
+**Tests:**
+- aria-disabled: attribute selector compiles ✅
+- aria-busy: attribute selector compiles ✅
+- aria-pressed: attribute selector compiles ✅
+- Multiple ARIA states work together ✅
+- aria-disabled:hover: overrides normal hover ✅
+- Attribute selectors use [aria-*="true"] format ✅
+
+---
+
+### Level 12+: Production Features ❌ NOT STARTED
 **See TAILWIND_ROADMAP.md for full details**
 
 Next levels needed for production default skin:
-- Level 11: ARIA states (`aria-disabled:`, `aria-busy:`)
 - Level 12: Named containers (`@container/root`, `@7xl/root:`)
 
 ## Implementation Status
 
-### ✅ Completed (Levels 0-10)
+### ✅ Completed (Levels 0-11)
 
 ```
 test/e2e/app/src/skins/
@@ -593,7 +681,8 @@ test/e2e/app/src/skins/
 ├── 07-color-opacity/  ✅ 3182 bytes  - Color opacity modifiers (bg-[#hex]/opacity)
 ├── 08-before-after/   ✅ 4673 bytes  - Pseudo-elements (::before, ::after)
 ├── 09-has-selector/   ✅ 3867 bytes  - Has selector (:has([data-paused]))
-└── 10-named-groups/   ✅ 4980 bytes  - Named groups (group/root, group-hover/root:)
+├── 10-named-groups/   ⚠️ 4980 bytes  - Named groups (limitation - see workaround)
+└── 11-aria-states/    ✅ 4359 bytes  - ARIA states ([aria-disabled], [aria-busy], [aria-pressed])
 ```
 
 ### ❌ Known Limitation (Not a Level)
@@ -632,8 +721,9 @@ test/e2e/app/src/skins/
 | 8 | Before/After pseudo-elements | ✅ **VALIDATED** | 4673 bytes | Decorative borders and glow effects |
 | 9 | Has selector | ✅ **VALIDATED** | 3867 bytes | Modern CSS (2023+) - parent state based on children |
 | 10 | Named groups | ⚠️ **LIMITATION** | 4980 bytes | CSS generates but marker classes missing from HTML - see workaround |
+| 11 | ARIA states | ✅ **VALIDATED** | 4359 bytes | [aria-disabled], [aria-busy], [aria-pressed] attribute selectors |
 | - | Semantic colors | ⚠️ **LIMITATION** | 2416 bytes | Not a level - documents limitation only - see processCSS.ts:286-315 |
-| 11+ | **Production critical** | ❌ Not started | - | See TAILWIND_ROADMAP.md |
+| 12+ | **Production critical** | ❌ Not started | - | See TAILWIND_ROADMAP.md |
 
 ### E2E Validation Legend:
 - ✅ **VALIDATED** - Compiles, loads in browser, colors work, playback functional
@@ -670,7 +760,7 @@ Before marking a level as "Done":
 
 ## Next Steps
 
-**Levels 0-10 are complete!** Ready to proceed with Levels 11-12 (final production features).
+**Levels 0-11 are complete!** Ready to proceed with Level 12 (final production feature).
 
 **Important:** Semantic colors limitation is documented but NOT blocking progression. Use arbitrary colors in new test skins.
 
@@ -678,10 +768,10 @@ To reach production default skin support:
 1. ✅ **Level 7 (color-opacity)** - DONE! `bg-[#hex]/opacity` works with `color-mix()`
 2. ✅ **Level 8 (before-after)** - DONE! `::before` and `::after` pseudo-elements work
 3. ✅ **Level 9 (has-selector)** - DONE! `:has([data-paused])` parent selectors work
-4. ✅ **Level 10 (named-groups)** - DONE! `group/root`, `group-hover/root:` nested groups work
-5. **Create Level 11 (aria-states)** - Accessibility: `aria-disabled:`, `aria-busy:`
+4. ⚠️ **Level 10 (named-groups)** - LIMITATION! `group/root` marker classes not in HTML (workaround: use `:has()`)
+5. ✅ **Level 11 (aria-states)** - DONE! `aria-disabled:`, `aria-busy:`, `aria-pressed:` attribute selectors work
 6. **Create Level 12 (named-containers)** - Advanced responsive: `@container/root`, `@7xl/root:`
 
 **All levels should use arbitrary colors** (e.g., `bg-[#3b82f6]`) to avoid semantic color limitation.
 
-Estimated: 4-8 hours of focused work to reach production parity (2 levels remaining).
+Estimated: 2-4 hours of focused work to reach production parity (1 level remaining).
