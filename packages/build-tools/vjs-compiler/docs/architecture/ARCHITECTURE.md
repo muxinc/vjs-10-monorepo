@@ -428,7 +428,53 @@ import styles from './styles';
 }
 ```
 
-### 5. Complete Analysis Example
+### 5. Edge Cases & Refinements
+
+#### Dynamically Determined className
+
+```tsx
+const buttonClass = isActive ? styles.ActiveButton : styles.Button;
+<PlayButton className={buttonClass} />;
+```
+
+**Analysis:**
+- `styles` used in conditional expression
+- Still identifiable as style import
+- Both `ActiveButton` and `Button` are style keys
+
+**Limitation:** Complex runtime expressions may not be fully analyzable at compile time.
+
+#### Spread Props
+
+```tsx
+const buttonProps = { className: styles.Button, disabled: true };
+<PlayButton {...buttonProps} />;
+```
+
+**Analysis:**
+- `styles.Button` used in object property
+- May require more sophisticated data flow analysis
+- Consider documenting as "best effort" pattern
+
+#### Mixed Import Usage
+
+```tsx
+import { PlayButton } from '../../components/PlayButton';
+
+// Used as component
+<PlayButton />;
+
+// Also used in logic (rare)
+const buttonType = PlayButton.displayName;
+```
+
+**Analysis:**
+- Primary usage: JSX element → component
+- Secondary usage: property access → keep as named import in output?
+
+**Decision:** For web components, primary usage (JSX) takes precedence. Non-JSX usage may need manual handling or may be unsupported.
+
+### 6. Complete Analysis Example
 
 ```tsx
 // Source: packages/react/react/src/skins/default/MediaSkinDefault.tsx
@@ -1163,6 +1209,13 @@ These are preserved across all framework transformations.
 3. **Solid:** Compile to Solid components
 4. **Lit:** Use Lit for web components instead of vanilla
 
+### Optimization Passes
+
+1. **Tree Shaking:** Remove unused CSS rules
+2. **Minification:** Compress output for production
+3. **Critical CSS:** Extract above-the-fold styles
+4. **Lazy Loading:** Split skins into separately loadable chunks
+
 ### Developer Experience
 
 1. **Source Maps:** Map compiled output back to original source
@@ -1182,7 +1235,127 @@ These are preserved across all framework transformations.
 
 ---
 
+## Appendix: Complete Example Transformation
+
+### Input: React + Tailwind
+
+**MediaSkinSimple.tsx**:
+
+```tsx
+import type { PropsWithChildren } from 'react';
+
+import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
+
+import { PlayButton } from '../../components/PlayButton';
+
+import styles from './styles';
+
+export default function MediaSkinSimple({ children }: PropsWithChildren) {
+  return (
+    <MediaContainer className={styles.Container}>
+      {children}
+      <div className={styles.Controls}>
+        <PlayButton className={styles.Button}>
+          <PlayIcon className={styles.PlayIcon} />
+          <PauseIcon className={styles.PauseIcon} />
+        </PlayButton>
+      </div>
+    </MediaContainer>
+  );
+}
+```
+
+**styles.ts**:
+
+```ts
+const styles = {
+  Container: 'relative rounded-xl overflow-clip',
+  Controls: 'absolute bottom-4 inset-x-4 flex gap-2',
+  Button: 'p-2 rounded-full hover:bg-white/10',
+  PlayIcon: 'opacity-0 [&[data-paused]]:opacity-100',
+  PauseIcon: 'opacity-100 [&[data-paused]]:opacity-0',
+};
+```
+
+### Output: Web Component + Inline CSS
+
+**media-skin-simple.ts**:
+
+```ts
+import { MediaSkin } from '../../../media-skin';
+
+import '../../../components/media-play-button';
+import '@vjs-10/html-icons';
+
+export function getTemplateHTML() {
+  return /* html */ `
+    <style>
+      media-container {
+        position: relative;
+        border-radius: 0.75rem;
+        overflow: clip;
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 1rem;
+        inset-inline: 1rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .button {
+        padding: 0.5rem;
+        border-radius: calc(infinity * 1px);
+      }
+
+      @media (hover: hover) {
+        .button:hover {
+          background-color: color-mix(in srgb, #ffffff 10%, transparent);
+        }
+      }
+
+      media-play-button media-play-icon {
+        opacity: 0%;
+      }
+
+      media-play-button[data-paused] media-play-icon {
+        opacity: 100%;
+      }
+
+      media-play-button media-pause-icon {
+        opacity: 100%;
+      }
+
+      media-play-button[data-paused] media-pause-icon {
+        opacity: 0%;
+      }
+    </style>
+
+    <media-container>
+      <slot name="media" slot="media"></slot>
+      <div class="controls">
+        <media-play-button class="button">
+          <media-play-icon></media-play-icon>
+          <media-pause-icon></media-pause-icon>
+        </media-play-button>
+      </div>
+    </media-container>
+  `;
+}
+
+export class MediaSkinSimple extends MediaSkin {
+  static getTemplateHTML = getTemplateHTML;
+}
+
+if (!customElements.get('media-skin-simple')) {
+  customElements.define('media-skin-simple', MediaSkinSimple);
+}
+```
+
+---
+
 ## Version History
 
-- **2025-10-15:** Consolidated from ARCHITECTURE.md and compiler-architecture.md
+- **2025-10-15:** Consolidated from ARCHITECTURE.md and compiler-architecture.md, added edge cases and complete example
 - **2025-10-07:** Original compiler-architecture.md created
