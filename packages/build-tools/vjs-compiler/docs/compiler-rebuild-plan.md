@@ -73,7 +73,7 @@ Visual validation, performance, production deployment.
 
 ### Pre-Commit Checklist
 
-Before each commit, verify compliance with core architectural principles from [compiler-architecture.md](./compiler-architecture.md):
+Before each commit, verify compliance with core architectural principles from [architecture/ARCHITECTURE.md](./architecture/ARCHITECTURE.md):
 
 #### ✅ **1. Separation of Concerns**
 

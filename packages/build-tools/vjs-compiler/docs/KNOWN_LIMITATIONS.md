@@ -46,7 +46,7 @@ export function getTemplateHTML() {
 - 22 tests for relative path calculation
 - 7 tests for import projection
 - Phase 2 (package mapping) deferred for now
-- See `docs/E2E_TEST_ARCHITECTURE.md` for E2E test insights
+- See `docs/testing/E2E_GUIDE.md` for E2E test insights
 
 ---
 
@@ -125,7 +125,7 @@ Template literal not resolved at compile time
 **Issue:** E2E test infrastructure requires real build environment (not simple `file://` protocol)
 
 **Impact:** Medium - automated E2E validation requires Vite/bundler setup
-**See:** `docs/E2E_TEST_ARCHITECTURE.md` for why this is correct
+**See:** `docs/testing/E2E_GUIDE.md` for why this is correct
 
 ---
 
@@ -208,7 +208,7 @@ Comments are added: `/* Tailwind classes: icon */ /* No CSS generated */`
 
 - ✅ **Demos work**: wc-demo.html and react-demo load successfully
 - ✅ **Import generation complete**: Generated code includes all imports
-- ⚠️ **Automated E2E tests**: Require Vite build environment (not `file://` protocol) - This is correct! See `docs/E2E_TEST_ARCHITECTURE.md`
+- ⚠️ **Automated E2E tests**: Require Vite build environment (not `file://` protocol) - This is correct! See `docs/testing/E2E_GUIDE.md`
 
 ---
 
@@ -251,7 +251,7 @@ Critical Tailwind features needed for production:
 
 - **Tailwind feature support:** `docs/tailwind/SUPPORT_STATUS.md`
 - **Tailwind investigations:** `docs/tailwind/investigations/`
-- **E2E test architecture:** `docs/E2E_TEST_ARCHITECTURE.md`
+- **E2E test architecture:** `docs/testing/E2E_GUIDE.md`
 - **Current status:** `docs/CURRENT_STATUS.md`
 
 ---

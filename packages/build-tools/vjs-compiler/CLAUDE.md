@@ -275,7 +275,7 @@ A change is NOT complete until:
 
 **Key Documents:**
 
-- `docs/compiler-architecture.md` - Core principles and transformation pipeline
+- `docs/architecture/ARCHITECTURE.md` - Core principles and transformation pipeline
 - `docs/compiler-rebuild-plan.md` - Phase-by-phase implementation plan with validation requirements
 - `README.md` - Package overview and CLI usage
 - `docs/CURRENT_STATUS.md` - Implementation progress tracking
@@ -502,7 +502,7 @@ Note:
 
 ## Key Contacts / Resources
 
-- **Architecture Document**: See `docs/compiler-architecture.md` for full pipeline details
+- **Architecture Document**: See `docs/architecture/ARCHITECTURE.md` for full pipeline details
 - **Phase Plan**: See `docs/compiler-rebuild-plan.md` for phase requirements
 - **V1 Reference**: See `src-v1/` for working implementation
 - **Monorepo Structure**: See `/CLAUDE.md` in repo root for VJS package organization

@@ -56,7 +56,7 @@ Attempted to use Tailwind v4 JIT directly for CSS generation. Works for simple u
 
 - ❌ CANNOT validate arbitrary variants e2e (feature doesn't work in v2)
 - ✅ CAN validate simple utilities e2e (works in both demos)
-- Gap documented in `docs/E2E_CAPABILITIES.md`
+- Gap documented in `docs/testing/E2E_GUIDE.md`
 
 **Current Status:**
 V2 blocked on arbitrary variants. Options:
@@ -151,7 +151,7 @@ Use `PathContext` to compute relative paths based on source/target package struc
 
 - ⚠️ PARTIALLY validated e2e (imports work in test fixtures with stubs)
 - ❌ CANNOT validate production deployment e2e (missing import generation)
-- Gap documented in `docs/E2E_CAPABILITIES.md`
+- Gap documented in `docs/testing/E2E_GUIDE.md`
 
 **V2 Trade-off:**
 More automatic but less explicit. Works well for VJS monorepo structure but less flexible for other use cases. Consider adding `importMappings` config override for explicit control when needed.
