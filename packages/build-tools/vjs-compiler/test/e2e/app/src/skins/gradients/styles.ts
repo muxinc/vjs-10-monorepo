@@ -1,5 +1,21 @@
+function cn(...classes: (string | undefined)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
+
 const styles = {
-  Overlay: 'absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent',
+  Wrapper: 'relative',
+  Overlay: 'absolute inset-0 flex items-center justify-center pointer-events-none',
+  TestElement: cn(
+    // Base visible styles
+    'w-24 h-24',
+    'rounded-lg',
+    'pointer-events-auto',
+    'flex items-center justify-center',
+    'text-sm font-medium text-white',
+
+    // Test-specific: gradient (replaces bg-white/90)
+    'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500',
+  ),
 };
 
 export default styles;

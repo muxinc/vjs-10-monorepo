@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer, PlayButton } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { MediaContainer } from '@vjs-10/react';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{ className?: string }>;
@@ -8,14 +7,15 @@ type SkinProps = PropsWithChildren<{ className?: string }>;
 export default function MediaSkinJSXNestedElements({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
-      {children}
-      <div className={styles.Controls}>
-        <div className={styles.LeftControls}>
-          <div className={styles.ButtonGroup}>
-            <PlayButton className={styles.Button}>
-              <PlayIcon />
-              <PauseIcon />
-            </PlayButton>
+      <div className={styles.Wrapper}>
+        {children}
+        <div className={styles.Overlay}>
+          <div className={styles.Outer}>
+            <div className={styles.Middle}>
+              <div className={styles.TestElement}>
+                NESTED
+              </div>
+            </div>
           </div>
         </div>
       </div>

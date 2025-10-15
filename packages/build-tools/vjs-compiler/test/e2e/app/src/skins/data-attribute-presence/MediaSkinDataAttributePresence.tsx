@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer, PlayButton } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { MediaContainer } from '@vjs-10/react';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{ className?: string }>;
@@ -8,12 +7,13 @@ type SkinProps = PropsWithChildren<{ className?: string }>;
 export default function MediaSkinDataAttributePresence({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
-      {children}
-      <div className={styles.Controls}>
-        <PlayButton className={styles.Button}>
-          <PlayIcon className={styles.Icon} />
-          <PauseIcon className={styles.Icon} />
-        </PlayButton>
+      <div className={styles.Wrapper}>
+        {children}
+        <div className={styles.Overlay}>
+          <div className={styles.TestElement}>
+            DATA ATTR
+          </div>
+        </div>
       </div>
     </MediaContainer>
   );

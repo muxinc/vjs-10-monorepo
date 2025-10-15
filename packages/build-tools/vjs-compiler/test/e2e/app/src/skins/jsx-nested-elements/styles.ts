@@ -1,8 +1,21 @@
+function cn(...classes: (string | undefined)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
+
 const styles = {
-  Controls: 'absolute inset-x-3 bottom-3',
-  LeftControls: 'flex items-center',
-  ButtonGroup: 'flex gap-2',
-  Button: 'p-2 rounded',
+  Wrapper: 'relative',
+  Overlay: 'absolute inset-0 flex items-center justify-center pointer-events-none',
+  Outer: 'p-2 border-2 border-white/50 rounded-xl',
+  Middle: 'p-2 border-2 border-white/30 rounded-lg',
+  TestElement: cn(
+    // Base visible styles
+    'w-20 h-20',
+    'bg-white/90',
+    'rounded',
+    'pointer-events-auto',
+    'flex items-center justify-center',
+    'text-sm font-medium text-gray-800',
+  ),
 };
 
 export default styles;

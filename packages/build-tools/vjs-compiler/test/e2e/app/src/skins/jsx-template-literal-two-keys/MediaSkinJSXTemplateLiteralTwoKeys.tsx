@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { MediaContainer, PlayButton } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { MediaContainer } from '@vjs-10/react';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{ className?: string }>;
@@ -8,12 +7,13 @@ type SkinProps = PropsWithChildren<{ className?: string }>;
 export default function MediaSkinJSXTemplateLiteralTwoKeys({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={className}>
-      {children}
       <div className={styles.Wrapper}>
-        <PlayButton className={`${styles.Button} ${styles.IconButton}`}>
-          <PlayIcon />
-          <PauseIcon />
-        </PlayButton>
+        {children}
+        <div className={styles.Overlay}>
+          <div className={`${styles.TestElement} ${styles.RoundedClass}`}>
+            TWO KEYS
+          </div>
+        </div>
       </div>
     </MediaContainer>
   );
