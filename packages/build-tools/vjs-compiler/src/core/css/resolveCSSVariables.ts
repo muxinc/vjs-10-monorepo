@@ -37,6 +37,13 @@ const TAILWIND_DEFAULT_THEME: ThemeVariables = {
 
   // Ring utilities - used by ring-*, focus:ring-*, etc.
   '--tw-ring-offset-width': '0px',
+
+  // Box shadow utilities - compound box-shadow has 3 parts
+  // These resolve to transparent/no-op values when not explicitly set
+  '--tw-ring-offset-shadow': '0 0 #0000',
+  '--tw-ring-shadow': '0 0 #0000',
+  '--tw-shadow': '0 0 #0000',
+  '--tw-shadow-colored': '0 0 #0000',
 };
 
 interface ParsedValue {
