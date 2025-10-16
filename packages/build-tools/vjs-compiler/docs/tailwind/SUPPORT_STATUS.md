@@ -367,9 +367,9 @@ These features are part of standard Tailwind and should work, but haven't been e
 
 **Answer:** CSS modules with `@apply` have **two categories of limitations** that make them impractical for the frosted skin architecture.
 
-### Category 1: Build-Time Errors ❌
+### Category 1: Build-Time Errors with @apply (But Translatable to Vanilla CSS!) ⚠️
 
-These Tailwind patterns cause literal compilation errors and cannot be used with `@apply`:
+These Tailwind patterns cause literal compilation errors when used with `@apply`:
 
 ```css
 .Container {
@@ -385,10 +385,38 @@ These Tailwind patterns cause literal compilation errors and cannot be used with
 Cannot apply unknown utility class `group/root`.
 ```
 
-**Impact:**
-- Cannot use named groups for coordinating hover/focus states
+**HOWEVER:** Named groups and named containers **CAN be translated to vanilla CSS**:
+
+**Named Containers:**
+```css
+/* Tailwind: @container/root + @7xl/root:text-sm */
+.media-container {
+  container-name: root;
+  container-type: inline-size;
+}
+
+@container root (min-width: 80rem) {
+  .tooltip { font-size: 0.875rem; }
+}
+```
+
+**Named Groups:**
+```css
+/* Tailwind: group/root + group-hover/root:opacity-100 */
+media-container:hover .controls {
+  opacity: 1;
+}
+```
+
+**Impact with @apply:**
+- Cannot use named groups/containers directly
 - Cannot use custom utilities defined in globals.css
 - Cannot use custom variants for accessibility preferences
+
+**Impact with Vanilla CSS Translation:**
+- ✅ Named groups → Descendant selectors with pseudo-classes
+- ✅ Named containers → Native CSS container queries (90%+ browser support)
+- ⚠️ Requires compiler implementation for translation
 
 ### Category 2: Class Name Dependencies ⚠️
 
@@ -438,6 +466,11 @@ The compiler uses **inline Tailwind classes** processed through Tailwind CLI:
 ### Deep Dive
 
 For complete investigation results and examples, see:
-- `validation-tests/CSS-MODULE-APPLY-FINDINGS.md`
+- `validation-tests/CSS-MODULE-APPLY-FINDINGS.md` - Original @apply investigation + NEW findings on vanilla CSS translation
+- `validation-tests/css-modules-vanilla/TRANSLATION_PATTERNS.css` - Complete vanilla CSS translation examples
+- `validation-tests/css-modules-vanilla/demo.html` - Interactive browser demo validating all translations work
+- `validation-tests/css-modules-vanilla/FROSTED_SKIN_MAPPING.md` - Complete mapping of frosted skin patterns to vanilla CSS
+
+**Latest Update (2025-10-15):** Investigation reveals Category 1 patterns (named groups/containers) ARE translatable to vanilla CSS. See validation files above for proof-of-concept.
 
 ---

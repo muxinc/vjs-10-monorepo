@@ -1,0 +1,204 @@
+/*
+ * Tailwind → Vanilla CSS Translation Patterns
+ *
+ * This file demonstrates that ALL "Category 1" limitations can be translated
+ * to vanilla CSS. Named containers and named groups are NOT hard blockers.
+ */
+
+/* ============================================================================
+ * PATTERN 1: Named Container Queries
+ * ============================================================================
+ *
+ * Tailwind Syntax:
+ *   <div class="@container/root">
+ *     <div class="@7xl/root:text-sm">Text</div>
+ *   </div>
+ */
+
+/* Define the named container */
+.media-container {
+  container-name: root;
+  container-type: inline-size;
+}
+
+/* Query the named container at breakpoint */
+@container root (min-width: 80rem) {
+  .tooltip-popup {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+/* Multiple named containers */
+.controls {
+  container-name: controls;
+  container-type: inline-size;
+}
+
+@container controls (min-width: 32rem) {
+  .button-group {
+    gap: 0.5rem;
+  }
+}
+
+/* ============================================================================
+ * PATTERN 2: Named Groups with :hover
+ * ============================================================================
+ *
+ * Tailwind Syntax:
+ *   <div class="group/root">
+ *     <div class="group-hover/root:opacity-100">Controls</div>
+ *   </div>
+ */
+
+/* Named group is just a semantic class + descendant selector */
+media-container:hover .overlay {
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+media-container:hover .controls {
+  transform: scale(1);
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+/* ============================================================================
+ * PATTERN 3: Named Groups with :focus-within
+ * ============================================================================
+ *
+ * Tailwind Syntax:
+ *   <div class="group/slider">
+ *     <div class="group-focus-within/slider:opacity-100">Thumb</div>
+ *   </div>
+ */
+
+.slider-root:focus-within .slider-thumb {
+  opacity: 1;
+}
+
+/* ============================================================================
+ * PATTERN 4: Named Groups with :active
+ * ============================================================================
+ *
+ * Tailwind Syntax:
+ *   <div class="group/slider">
+ *     <div class="group-active/slider:size-3">Thumb</div>
+ *   </div>
+ */
+
+.slider-root:active .slider-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* ============================================================================
+ * PATTERN 5: Nested Named Groups
+ * ============================================================================
+ *
+ * Tailwind Syntax:
+ *   <div class="group/root">
+ *     <button class="group/button">
+ *       <svg class="group-hover/button:[&_.arrow-1]:-translate-x-px">
+ *         <path class="arrow-1"></path>
+ *       </svg>
+ *     </button>
+ *   </div>
+ */
+
+/* Each named group scope is independent */
+.fullscreen-button:hover .arrow-1 {
+  transform: translate(-1px, -1px);
+}
+
+.fullscreen-button:hover .arrow-2 {
+  transform: translate(1px, 1px);
+}
+
+/* ============================================================================
+ * PATTERN 6: Combined Container Queries + Named Groups
+ * ============================================================================
+ *
+ * Tailwind can combine these patterns:
+ *   <div class="@container/root group/root">
+ *     <div class="@7xl/root:text-sm group-hover/root:opacity-100">
+ *   </div>
+ */
+
+/* Container definition */
+media-container {
+  container-name: root;
+  container-type: inline-size;
+}
+
+/* Container query variant */
+@container root (min-width: 80rem) {
+  .time-display {
+    font-size: 0.9375rem;
+  }
+}
+
+/* Group hover variant (independent) */
+media-container:hover .time-display {
+  opacity: 1;
+}
+
+/* ============================================================================
+ * PATTERN 7: Multiple Pseudo-Classes on Same Named Group
+ * ============================================================================
+ *
+ * Tailwind Syntax:
+ *   <div class="group/slider">
+ *     <div class="group-hover/slider:opacity-100 group-focus-within/slider:opacity-100">
+ *   </div>
+ */
+
+.slider-root:hover .slider-thumb,
+.slider-root:focus-within .slider-thumb {
+  opacity: 1;
+}
+
+/* ============================================================================
+ * KEY INSIGHTS
+ * ============================================================================
+ *
+ * 1. Named Containers → Native CSS `container-name` property
+ *    - Full browser support (90%+ in 2025)
+ *    - No polyfills needed
+ *    - Identical behavior to Tailwind
+ *
+ * 2. Named Groups → Semantic class names + descendant selectors
+ *    - "group/root" becomes semantic class "media-container"
+ *    - "group/button" becomes semantic class ".button"
+ *    - "group/slider" becomes semantic class ".slider-root"
+ *    - The "name" is just for scoping in Tailwind, becomes class in CSS
+ *
+ * 3. Translation Strategy:
+ *    - Tailwind: `@container/name` → CSS: `container-name: name`
+ *    - Tailwind: `group/name` → CSS: `.semantic-name` (apply to element)
+ *    - Tailwind: `group-hover/name:` → CSS: `.semantic-name:hover .child`
+ *
+ * 4. No Limitations:
+ *    - All patterns from frosted skin are translatable
+ *    - No loss of functionality
+ *    - Potentially better performance (native CSS vs utility classes)
+ *
+ * 5. Implementation Complexity:
+ *    - Must track group name → semantic class mapping
+ *    - Must transform selectors from utility classes to semantic selectors
+ *    - But this is POSSIBLE, not impossible
+ */
+
+/* ============================================================================
+ * BONUS: Container Query Units
+ * ============================================================================
+ *
+ * Container queries also support special units:
+ */
+
+@container root (min-width: 50rem) {
+  .responsive-text {
+    /* 1cqi = 1% of container inline size */
+    font-size: max(1.5em, 1.23em + 2cqi);
+  }
+}

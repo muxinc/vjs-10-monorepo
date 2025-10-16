@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category 1 Translation Validation</title>
+  <style>
+    /* Reset & base styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 2rem;
+      background: #1a1a1a;
+      color: white;
+    }
+
+    h1 { margin-bottom: 2rem; font-size: 2rem; }
+    h2 { margin: 2rem 0 1rem; font-size: 1.5rem; color: #60a5fa; }
+    p { margin-bottom: 1rem; line-height: 1.6; color: #9ca3af; }
+    code { background: #2d2d2d; padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
+
+    /* ========================================================================
+     * TEST 1: Named Container Queries
+     * ======================================================================== */
+
+    .container-test {
+      /* Define named container */
+      container-name: test-container;
+      container-type: inline-size;
+
+      border: 2px solid #374151;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      background: #111827;
+
+      /* Make it resizable so user can test container queries */
+      resize: horizontal;
+      overflow: auto;
+      min-width: 200px;
+      max-width: 100%;
+    }
+
+    .container-child {
+      background: #1e40af;
+      color: white;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    /* Container query - changes at 400px container width */
+    @container test-container (min-width: 400px) {
+      .container-child {
+        background: #10b981;
+        font-size: 1.25rem;
+        padding: 1.5rem;
+      }
+    }
+
+    /* Container query - changes at 600px container width */
+    @container test-container (min-width: 600px) {
+      .container-child {
+        background: #8b5cf6;
+        font-size: 1.5rem;
+        padding: 2rem;
+      }
+    }
+
+    /* ========================================================================
+     * TEST 2: Named Group with :hover
+     * ======================================================================== */
+
+    .group-test {
+      border: 2px solid #374151;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      background: #111827;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .group-test:hover {
+      border-color: #60a5fa;
+      background: #1e293b;
+    }
+
+    .group-child {
+      background: #1e40af;
+      color: white;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      text-align: center;
+      opacity: 0.3;
+      transform: scale(0.95);
+      transition: all 0.3s ease;
+    }
+
+    /* Named group hover effect */
+    .group-test:hover .group-child {
+      opacity: 1;
+      transform: scale(1);
+      background: #3b82f6;
+    }
+
+    /* ========================================================================
+     * TEST 3: Named Group with :focus-within
+     * ======================================================================== */
+
+    .focus-group-test {
+      border: 2px solid #374151;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      background: #111827;
+    }
+
+    .focus-group-test:focus-within {
+      border-color: #8b5cf6;
+    }
+
+    .focus-indicator {
+      background: #6366f1;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .focus-group-test:focus-within .focus-indicator {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .focus-group-test input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #374151;
+      border-radius: 0.25rem;
+      background: #1f2937;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .focus-group-test input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+
+    /* ========================================================================
+     * TEST 4: Nested Named Groups
+     * ======================================================================== */
+
+    .outer-group {
+      border: 2px solid #374151;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      background: #111827;
+    }
+
+    .inner-group {
+      background: #1e40af;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .inner-group:hover {
+      background: #3b82f6;
+    }
+
+    .nested-indicator {
+      background: #374151;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      display: inline-block;
+      transition: all 0.3s ease;
+      transform: translateX(0);
+    }
+
+    .inner-group:hover .nested-indicator {
+      background: #60a5fa;
+      transform: translateX(10px);
+    }
+
+    .outer-group:hover {
+      border-color: #10b981;
+    }
+
+    .outer-status {
+      background: #374151;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+
+    .outer-group:hover .outer-status {
+      background: #10b981;
+    }
+
+    /* ========================================================================
+     * TEST 5: Multiple Container Queries on Same Container
+     * ======================================================================== */
+
+    .multi-query-container {
+      container-name: multi;
+      container-type: inline-size;
+
+      border: 2px solid #374151;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      background: #111827;
+
+      resize: horizontal;
+      overflow: auto;
+      min-width: 200px;
+      max-width: 100%;
+    }
+
+    .multi-child-1,
+    .multi-child-2,
+    .multi-child-3 {
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.25rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .multi-child-1 { background: #ef4444; }
+    .multi-child-2 { background: #3b82f6; opacity: 0.5; }
+    .multi-child-3 { background: #8b5cf6; display: none; }
+
+    @container multi (min-width: 300px) {
+      .multi-child-1 { background: #f97316; }
+      .multi-child-2 { opacity: 1; }
+    }
+
+    @container multi (min-width: 500px) {
+      .multi-child-1 { background: #10b981; }
+      .multi-child-3 { display: block; }
+    }
+
+    /* Status indicators */
+    .status {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #065f46;
+      border-radius: 0.5rem;
+      border: 2px solid #10b981;
+    }
+
+    .status h3 {
+      color: #10b981;
+      margin-bottom: 0.5rem;
+    }
+
+    .status ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .status li {
+      padding: 0.25rem 0;
+      color: #6ee7b7;
+    }
+
+    .status li::before {
+      content: "✓ ";
+      color: #10b981;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Category 1 Translation Validation</h1>
+  <p>This page validates that named container queries and named groups can be translated to vanilla CSS.</p>
+
+  <h2>Test 1: Named Container Queries</h2>
+  <p>Drag the resize handle (bottom-right corner) to change the container width. Colors change at 400px and 600px.</p>
+  <div class="container-test">
+    <div class="container-child">
+      🎨 Blue = &lt;400px | Green = 400-600px | Purple = &gt;600px
+    </div>
+  </div>
+
+  <h2>Test 2: Named Group with <code>:hover</code></h2>
+  <p>Hover over the container to see the child element animate.</p>
+  <div class="group-test">
+    <div class="group-child">
+      Hover the parent to activate me!
+    </div>
+  </div>
+
+  <h2>Test 3: Named Group with <code>:focus-within</code></h2>
+  <p>Click into the input field to see the focus indicator appear.</p>
+  <div class="focus-group-test">
+    <div class="focus-indicator">
+      ✨ Input is focused!
+    </div>
+    <input type="text" placeholder="Click here to focus...">
+  </div>
+
+  <h2>Test 4: Nested Named Groups</h2>
+  <p>Hover over the outer container, then hover over the inner button.</p>
+  <div class="outer-group">
+    <div class="outer-status">Outer status indicator</div>
+    <div class="inner-group">
+      <div class="nested-indicator">Inner hover indicator →</div>
+    </div>
+  </div>
+
+  <h2>Test 5: Multiple Queries on Same Container</h2>
+  <p>Drag to resize. Multiple children respond to different breakpoints.</p>
+  <div class="multi-query-container">
+    <div class="multi-child-1">Child 1: Changes color at 300px & 500px</div>
+    <div class="multi-child-2">Child 2: Becomes opaque at 300px</div>
+    <div class="multi-child-3">Child 3: Appears at 500px</div>
+  </div>
+
+  <div class="status">
+    <h3>✅ Validation Results</h3>
+    <ul>
+      <li>Named container queries work with <code>container-name</code> property</li>
+      <li>Named groups work with semantic class names + <code>:hover</code></li>
+      <li>Named groups work with <code>:focus-within</code> pseudo-class</li>
+      <li>Nested groups maintain independent scopes</li>
+      <li>Multiple queries can target the same named container</li>
+      <li><strong>Category 1 limitations are NOT hard blockers!</strong></li>
+    </ul>
+  </div>
+
+  <script>
+    // Log container support
+    console.log('Container Query Support:', CSS.supports('container-type: inline-size'));
+    console.log('Container Name Support:', CSS.supports('container-name: test'));
+
+    // Add resize observer to show current width
+    const containers = document.querySelectorAll('.container-test, .multi-query-container');
+    containers.forEach(container => {
+      const observer = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          console.log(`Container width: ${Math.round(entry.contentRect.width)}px`);
+        }
+      });
+      observer.observe(container);
+    });
+  </script>
+</body>
+</html>

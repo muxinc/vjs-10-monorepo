@@ -923,15 +923,33 @@ media-play-button[data-paused] .play-icon {
 
 **Important Caveat: CSS Modules as Final Output**
 
-This approach uses CSS Modules as an **intermediary processing step** only. CSS Modules with `@apply` are **NOT suitable as a final output format** due to two categories of limitations:
+This approach uses CSS Modules as an **intermediary processing step** only. CSS Modules with `@apply` have **two categories of limitations** that affect their suitability as a final output format:
 
-1. **Build-Time Errors:** Named groups (`group/root`), named containers (`@container/root`), and custom utilities cannot be used with `@apply` - they cause literal compilation errors.
+**Category 1: Build-Time Errors with @apply (But Translatable to Vanilla CSS)**
 
-2. **Class Name Dependencies:** Arbitrary child selectors like `[&_.icon]:opacity-0` compile successfully but require exact class names on child elements, creating tight coupling between CSS and JSX that defeats the purpose of CSS modules.
+Named groups (`group/root`), named containers (`@container/root`), and custom utilities cannot be used with `@apply` - they cause literal compilation errors.
 
-The frosted skin uses both categories extensively, making CSS modules impractical as a final output format. Instead, we use CSS Modules only as an intermediary to leverage Tailwind's compiler, then transform the output to semantic selectors with inline styles.
+**HOWEVER:** These patterns CAN be translated to vanilla CSS:
+- Named containers → Native CSS `container-name` + `@container` queries (90%+ browser support)
+- Named groups → Descendant selectors with pseudo-classes (`.parent:hover .child`)
 
-**See:** `validation-tests/CSS-MODULE-APPLY-FINDINGS.md` for complete investigation and examples.
+**Category 2: Class Name Dependencies**
+
+Arbitrary child selectors like `[&_.icon]:opacity-0` compile successfully but require exact class names on child elements, creating tight coupling between CSS and JSX transformations.
+
+**Impact:**
+
+The frosted skin uses both categories extensively. While Category 1 patterns ARE translatable to vanilla CSS (see validation files), both categories require significant implementation complexity:
+- Category 1: Requires parsing and transforming named groups/containers
+- Category 2: Requires coordinating class names between CSS and JSX transformations
+
+**Current Decision:** Use CSS Modules only as an intermediary to leverage Tailwind's compiler, then transform the output to semantic selectors with inline styles. This avoids both categories of complexity.
+
+**Future Option:** CSS modules remain a viable final output format IF we implement the translation logic for both categories.
+
+**See:**
+- `validation-tests/CSS-MODULE-APPLY-FINDINGS.md` - Complete investigation with NEW findings (2025-10-15)
+- `validation-tests/css-modules-vanilla/` - Proof-of-concept showing Category 1 IS translatable
 
 ### Transformation Rules
 

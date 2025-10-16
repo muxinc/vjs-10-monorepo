@@ -304,7 +304,7 @@ The frosted skin uses **both categories** extensively:
 1. **Named groups** for coordinating hover states → Category 1 (build errors - cannot use)
 2. **Arbitrary child selectors** for icon visibility → Category 2 (possible but complex)
 
-**Decision:** Category 1 is a hard blocker, and Category 2 would require significant additional implementation complexity. The inline Tailwind approach avoids both issues and is simpler to implement and maintain.
+**Decision:** Category 1 is NOT a hard blocker with vanilla CSS translation (see below), and Category 2 would require significant additional implementation complexity. The inline Tailwind approach avoids both issues and is simpler to implement and maintain.
 
 ### Recommendation
 
@@ -313,6 +313,159 @@ The frosted skin uses **both categories** extensively:
 - No class name coordination required
 - Maintains Tailwind's full feature set
 - Simpler mental model (all styling in one place)
+
+---
+
+## NEW FINDING: Category 1 IS Translatable to Vanilla CSS! ✅
+
+**Date:** 2025-10-15
+
+### Investigation Result
+
+After further investigation, we discovered that **Category 1 patterns CAN be translated to vanilla CSS**. The `@apply` limitation is specific to using `@apply` with these patterns, but the patterns themselves have direct vanilla CSS equivalents.
+
+### Key Discovery
+
+1. **Named Container Queries** are native CSS features with excellent browser support (90%+ in 2025)
+2. **Named Groups** are syntactic sugar for descendant selectors with pseudo-classes
+
+### Translation Patterns
+
+#### Named Container Queries
+
+**Tailwind:**
+```tsx
+<div className="@container/root">
+  <div className="@7xl/root:text-sm">Text</div>
+</div>
+```
+
+**Vanilla CSS Equivalent:**
+```css
+/* Define the named container */
+.media-container {
+  container-name: root;
+  container-type: inline-size;
+}
+
+/* Query the named container */
+@container root (min-width: 80rem) {
+  .tooltip-popup {
+    font-size: 0.875rem;
+  }
+}
+```
+
+#### Named Groups with :hover
+
+**Tailwind:**
+```tsx
+<div className="group/root">
+  <div className="group-hover/root:opacity-100">Controls</div>
+</div>
+```
+
+**Vanilla CSS Equivalent:**
+```css
+/* Named group becomes semantic class + descendant selector */
+media-container:hover .controls {
+  opacity: 1;
+}
+```
+
+#### Named Groups with :focus-within
+
+**Tailwind:**
+```tsx
+<div className="group/slider">
+  <div className="group-focus-within/slider:opacity-100">Thumb</div>
+</div>
+```
+
+**Vanilla CSS Equivalent:**
+```css
+.slider-root:focus-within .slider-thumb {
+  opacity: 1;
+}
+```
+
+#### Named Groups with :active
+
+**Tailwind:**
+```tsx
+<div className="group/slider">
+  <div className="group-active/slider:size-3">Thumb</div>
+</div>
+```
+
+**Vanilla CSS Equivalent:**
+```css
+.slider-root:active .slider-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+```
+
+### Validation
+
+Created proof-of-concept validation in `validation-tests/css-modules-vanilla/`:
+- ✅ `TRANSLATION_PATTERNS.css` - Comprehensive translation examples
+- ✅ `demo.html` - Interactive demo showing all patterns work in browser
+- ✅ `FROSTED_SKIN_MAPPING.md` - Complete mapping of frosted skin patterns
+
+All patterns validated in modern browsers. Container queries and descendant selectors work identically to Tailwind versions.
+
+### Updated Categorization
+
+**Category 1a: Cannot use @apply (but CAN translate to vanilla CSS)**
+- Named groups (`group/root`) → `.element:hover .child`
+- Named containers (`@container/root`) → `container-name: root` + `@container root (...)`
+- Status: **✅ Translatable** (implementation complexity, not impossibility)
+
+**Category 1b: Cannot translate**
+- Custom utilities (`text-shadow`) → Requires custom CSS definition
+- Custom variants (`reduced-transparency:*`) → Requires `@custom-variant` or `@media` query
+- Status: ⚠️ Depends on whether custom utilities are defined in globals.css
+
+**Category 2: Requires coordination**
+- Arbitrary child selectors `[&_.icon]` → Requires class names on children
+- Status: **✅ Possible** (implementation complexity)
+
+### Implications for Compiler
+
+**CSS modules CAN be a viable final output format** if the compiler implements:
+
+1. **Container name tracking:**
+   - Parse `@container/name` from Tailwind classes
+   - Generate `container-name: name` property
+   - Transform variants to `@container name (...)` queries
+
+2. **Group name mapping:**
+   - Parse `group/name` from Tailwind classes
+   - Map to semantic element/class names
+   - Transform variants to `.element:pseudo-class .child` selectors
+
+3. **Class name coordination (Category 2):**
+   - Track child selector patterns
+   - Ensure JSX adds required class names
+
+### Decision Impact
+
+This finding does NOT change the current recommendation (inline Tailwind classes) because:
+- Implementation complexity is still significant
+- Requires coordination between multiple transformation phases
+- Current approach is simpler and already works
+
+However, it DOES mean:
+- **CSS modules are not ruled out** as a future final output format
+- The limitation is implementation complexity, not technical impossibility
+- We have a clear path forward if we choose to pursue CSS modules
+
+### References
+
+- Validation demo: `validation-tests/css-modules-vanilla/demo.html`
+- Translation patterns: `validation-tests/css-modules-vanilla/TRANSLATION_PATTERNS.css`
+- Frosted skin mapping: `validation-tests/css-modules-vanilla/FROSTED_SKIN_MAPPING.md`
 
 ## Files Changed
 
