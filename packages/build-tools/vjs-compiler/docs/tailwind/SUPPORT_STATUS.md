@@ -357,3 +357,87 @@ These features are part of standard Tailwind and should work, but haven't been e
 - **Implementation details:** `docs/tailwind/investigations/CSS_FIXES_APPLIED.md`
 - **Container query limitation:** `docs/tailwind/investigations/CONTAINER_QUERIES_LIMITATION.md`
 - **General compiler limitations:** `docs/CURRENT_STATUS.md (Known Limitations section)`
+- **CSS modules with @apply investigation:** `validation-tests/CSS-MODULE-APPLY-FINDINGS.md`
+
+---
+
+## CSS Strategy: Why Inline Tailwind Classes?
+
+**Question:** Why does the compiler use inline Tailwind classes instead of CSS modules with `@apply`?
+
+**Answer:** CSS modules with `@apply` have **two categories of limitations** that make them impractical for the frosted skin architecture.
+
+### Category 1: Build-Time Errors ❌
+
+These Tailwind patterns cause literal compilation errors and cannot be used with `@apply`:
+
+```css
+.Container {
+  @apply group/root;              /* ❌ Named groups */
+  @apply @container/controls;     /* ❌ Named containers */
+  @apply text-shadow;             /* ❌ Custom utilities */
+  @apply reduced-transparency:*;  /* ❌ Custom variants */
+}
+```
+
+**Error:**
+```
+Cannot apply unknown utility class `group/root`.
+```
+
+**Impact:**
+- Cannot use named groups for coordinating hover/focus states
+- Cannot use custom utilities defined in globals.css
+- Cannot use custom variants for accessibility preferences
+
+### Category 2: Class Name Dependencies ⚠️
+
+These patterns compile successfully but create tight coupling between CSS and JSX:
+
+```css
+.IconButton {
+  @apply [&_.icon]:[grid-area:1/1];           /* Requires child with class="icon" */
+  @apply [&_.pause-icon]:opacity-100;         /* Requires child with class="pause-icon" */
+  @apply [&[data-paused]_.play-icon]:hidden;  /* Requires child with class="play-icon" */
+}
+```
+
+**The Problem:**
+- CSS compiles without errors
+- BUT requires JSX to use specific class names: `<svg className="icon">`
+- Creates maintenance burden (must coordinate class names between CSS and JSX)
+- Defeats the purpose of CSS modules (breaks abstraction)
+
+### Production Impact
+
+The default frosted skin uses **both categories** extensively:
+
+| Feature | Category | Used For |
+|---------|----------|----------|
+| `group/root`, `group-hover/root:` | Category 1 (errors) | Show/hide controls on hover |
+| `@container/root`, `@7xl/root:` | Category 1 (errors) | Responsive typography |
+| `[&_.icon]:opacity-0` | Category 2 (coupling) | Icon visibility states |
+| `[&_.pause-icon]:opacity-100` | Category 2 (coupling) | Play/pause icon toggling |
+
+### Decision: Inline Tailwind Classes
+
+The compiler uses **inline Tailwind classes** processed through Tailwind CLI:
+
+**Benefits:**
+- ✅ No build errors - all Tailwind features work
+- ✅ No class name coordination required
+- ✅ Maintains Tailwind's full feature set (named groups, custom variants, etc.)
+- ✅ Simpler mental model (all styling in one place)
+- ✅ Can still generate legible CSS (via intermediary processing)
+
+**Tradeoffs:**
+- ⚠️ Requires Tailwind CLI processing step
+- ⚠️ Generated CSS is larger (more explicit selectors)
+- ✅ But output is human-readable vanilla CSS (not utility classes)
+
+### Deep Dive
+
+For complete investigation results and examples, see:
+- `validation-tests/CSS-MODULE-APPLY-FINDINGS.md`
+
+---

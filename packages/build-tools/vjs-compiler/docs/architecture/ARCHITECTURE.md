@@ -921,6 +921,18 @@ media-play-button[data-paused] .play-icon {
 - Allows further transformation/optimization of generated CSS
 - Clear separation between compilation phases
 
+**Important Caveat: CSS Modules as Final Output**
+
+This approach uses CSS Modules as an **intermediary processing step** only. CSS Modules with `@apply` are **NOT suitable as a final output format** due to two categories of limitations:
+
+1. **Build-Time Errors:** Named groups (`group/root`), named containers (`@container/root`), and custom utilities cannot be used with `@apply` - they cause literal compilation errors.
+
+2. **Class Name Dependencies:** Arbitrary child selectors like `[&_.icon]:opacity-0` compile successfully but require exact class names on child elements, creating tight coupling between CSS and JSX that defeats the purpose of CSS modules.
+
+The frosted skin uses both categories extensively, making CSS modules impractical as a final output format. Instead, we use CSS Modules only as an intermediary to leverage Tailwind's compiler, then transform the output to semantic selectors with inline styles.
+
+**See:** `validation-tests/CSS-MODULE-APPLY-FINDINGS.md` for complete investigation and examples.
+
 ### Transformation Rules
 
 #### Utility Class Expansion
