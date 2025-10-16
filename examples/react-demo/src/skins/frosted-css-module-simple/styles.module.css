@@ -90,8 +90,7 @@
 
 /* Icon stacking - all icons in same grid cell */
 .IconButton svg {
-  grid-area: 1 / 1;
-  @apply transition-opacity duration-300 ease-out opacity-0;
+  @apply [grid-area:1/1] transition-opacity duration-300 ease-out opacity-0;
 }
 
 /* Play button icon visibility */
