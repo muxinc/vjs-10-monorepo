@@ -1,76 +1,76 @@
 /*
  * Simplified CSS Module version of frosted skin styles
- * Demonstrates @apply compatibility with Tailwind v4
+ * Structurally similar to frosted-css-module but with broken @apply patterns commented out
  *
  * WHAT BREAKS @apply (verified by testing):
- * - Named group/container declarations: group/root, @container/controls
+ * - Named group/container declarations: group/root, @container/controls, group/button, group/slider
  *   Error: "Cannot apply unknown utility class `group/button`"
  *
- * WHAT WORKS WITH @apply (verified by testing):
- * - ✅ Basic utility classes: relative, overflow-clip, text-sm
- * - ✅ Standard pseudo-classes: hover:, focus-visible:, active:
- * - ✅ Standard variants: dark:
- * - ✅ Data attribute selectors: data-[paused], data-[fullscreen]
- * - ✅ Arbitrary child selectors: [&_.arrow-1], [&_svg]
- * - ✅ Arbitrary data-attribute selectors: [&[data-orientation="horizontal"]]
- * - ✅ Arbitrary values: rounded-[inherit], origin-[var(--transform-origin)]
- * - ✅ Backdrop filters: backdrop-blur-3xl, backdrop-saturate-150
- * - ✅ Gradients: bg-gradient-to-t from-black/50 via-black/20
- * - ✅ Transitions: transition-[transform,scale,opacity]
- * - ✅ Ring utilities: ring-1 ring-white/10 ring-inset
- *
- * WHAT REQUIRES REGULAR CSS:
- * - Parent-child hover coordination (e.g., .Parent:hover .Child)
- * - Named group variants (require parent group/ declaration which breaks)
+ * REPLACEMENTS:
+ * - Use :has() for parent-child coordination where possible
+ * - Use regular CSS selectors with :hover for hover coordination
+ * - Skip container query responsive typography (@7xl/root)
  */
 
 @reference "../../globals.css";
 
 .MediaContainer {
+  /* REMOVED (breaks @apply): @container/root group/root */
   @apply relative overflow-clip;
+  /* Base typography */
   @apply text-sm;
-  /* REMOVED (breaks @apply): group/root @container/root
-   * These named group/container declarations cause compilation error */
-}
-
-/* REMOVED (breaks @apply): group-hover/root:opacity-100 group-hover/root:scale-100
- * Parent-child hover coordination requires regular CSS since @apply can't handle
- * group-hover/root (which needs parent group/root declaration that breaks).
- * REPLACEMENT: Using :has() selector for parent-child coordination with @apply utilities */
-.MediaContainer:hover .Overlay,
-.MediaContainer:has([data-paused]) .Overlay {
-  @apply opacity-100 delay-0;
-}
-
-.MediaContainer:hover .Controls,
-.MediaContainer:has([data-paused]) .Controls {
-  @apply opacity-100 scale-100 delay-0;
+  /* Prevent rounded corners in fullscreen. */
+  @apply [&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full;
+  /* Fancy borders. */
+  @apply after:absolute after:inset-0 after:ring-black/10 after:ring-1 dark:after:ring-black/40 after:ring-inset after:z-10 after:pointer-events-none after:rounded-[inherit];
+  @apply before:absolute before:inset-px before:rounded-[inherit] before:ring-white/15 before:ring-1 before:ring-inset before:z-10 before:pointer-events-none;
+  /* Ensure the nested video inherits the radius. */
+  @apply [&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto;
 }
 
 .Overlay {
-  @apply opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none;
-  @apply bg-gradient-to-t from-black/50 via-black/20 to-transparent;
-  @apply transition-opacity backdrop-saturate-150 backdrop-brightness-90;
+  @apply opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90;
+  /* Hide when playing (for now). */
+  @apply has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0;
+  /* REMOVED (breaks @apply): group-hover/root:opacity-100 group-hover/root:delay-0 */
+}
+
+/* REPLACEMENT for group-hover/root on .Overlay */
+.MediaContainer:hover .Overlay {
+  @apply opacity-100 delay-0;
 }
 
 .Controls {
-  @apply absolute inset-x-3 bottom-3 rounded-full flex items-center p-1;
-  @apply ring ring-white/10 ring-inset gap-0.5 text-white;
+  /* REMOVED (breaks @apply): @container/controls */
+  /* REMOVED (breaks @apply): text-shadow (custom utility not in standard Tailwind) */
+  @apply absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white;
   @apply shadow-sm shadow-black/15;
   /* Background */
   @apply bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90;
   /* Animation */
   @apply transition will-change-transform origin-bottom ease-out;
+  /* FIXME: Temporary hide/show logic */
   @apply scale-90 opacity-0 delay-500;
+  @apply has-[[data-paused]]:scale-100 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0;
+  /* REMOVED (breaks @apply): group-hover/root:scale-100 group-hover/root:opacity-100 group-hover/root:delay-0 */
+  /* Border to enhance contrast on lighter videos */
+  @apply after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10;
+  /* REMOVED (breaks @apply): reduced-transparency:* (custom variant - requires @custom-variant) */
+  /* REMOVED (breaks @apply): contrast-more:* (custom variant - requires @custom-variant) */
+}
+
+/* REPLACEMENT for group-hover/root on .Controls */
+.MediaContainer:hover .Controls {
+  @apply scale-100 opacity-100 delay-0;
 }
 
 .Button {
+  /* REMOVED (breaks @apply): group/button */
   @apply cursor-pointer relative shrink-0 transition select-none p-2 rounded-full;
   /* Background/foreground */
   @apply bg-transparent text-white/90;
   /* Hover and focus states */
-  @apply hover:no-underline hover:bg-white/10 hover:text-white;
-  @apply focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white;
+  @apply hover:no-underline hover:bg-white/10 hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white;
   /* Focus state */
   @apply -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
   /* Disabled state */
@@ -81,147 +81,119 @@
   @apply aria-expanded:bg-white/10 aria-expanded:text-white;
   /* Pressed state */
   @apply active:scale-95;
-  /* NOTE: Cannot use group/button - named group declarations break @apply */
 }
 
 .IconButton {
-  @apply grid;
+  @apply grid [&_svg]:[grid-area:1/1];
+  @apply [&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20;
 }
 
-/* Icon stacking - all icons in same grid cell */
-.IconButton svg {
-  @apply [grid-area:1/1] transition-opacity duration-300 ease-out opacity-0;
-}
-
-/* Play button icon visibility */
-.PlayButton[data-paused] .PlayIcon,
-.PlayButton:not([data-paused]) .PauseIcon {
-  @apply opacity-100;
+.PlayButton {
+  @apply [&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0;
+  @apply [&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100;
 }
 
 .PlayIcon {
-  /* Additional icon classes if needed */
+  @apply play-icon;
 }
 
 .PauseIcon {
-  /* Additional icon classes if needed */
+  @apply pause-icon;
 }
 
 .TooltipPopup {
-  @apply whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md;
-  @apply text-white text-xs px-2 py-1;
+  /* REMOVED (breaks @apply): @7xl/root:text-sm (container query) */
+  @apply whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md text-white text-xs px-2 py-1;
   /* Background */
   @apply bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90;
   /* Animation */
-  @apply transition-[transform,scale,opacity];
-  @apply data-[ending-style]:scale-90 data-[ending-style]:opacity-0;
-  @apply data-[instant]:duration-0;
-  @apply data-[starting-style]:scale-90 data-[starting-style]:opacity-0;
+  @apply transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0;
   /* Ring */
   @apply ring-1 ring-white/10 ring-inset;
-  /* Text shadow - removed because it uses arbitrary value */
+  /* REMOVED (breaks @apply): text-shadow (custom utility not in standard Tailwind) */
+  /* Border to enhance contrast on lighter videos */
+  @apply after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none;
 }
 
-/* Tooltip text visibility based on paused state */
-.PlayTooltipPopup .PlayTooltip,
-.PlayTooltipPopup .PauseTooltip {
-  @apply hidden;
-}
-
-.PlayTooltipPopup[data-paused] .PlayTooltip,
-.PlayTooltipPopup:not([data-paused]) .PauseTooltip {
-  @apply inline;
+.PlayTooltipPopup {
+  @apply [&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden;
+  @apply [&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline;
 }
 
 .PlayTooltip {
-  /* Additional tooltip classes if needed */
+  @apply play-tooltip;
 }
 
 .PauseTooltip {
-  /* Additional tooltip classes if needed */
+  @apply pause-tooltip;
 }
 
-/* Mute button icon visibility based on volume level */
-.MuteButton svg {
-  @apply opacity-0;
-}
-
-.MuteButton[data-volume-level='high'] .VolumeHighIcon,
-.MuteButton[data-volume-level='medium'] .VolumeLowIcon,
-.MuteButton[data-volume-level='low'] .VolumeLowIcon,
-.MuteButton[data-volume-level='off'] .VolumeOffIcon {
-  @apply opacity-100;
+.MuteButton {
+  @apply [&_svg]:opacity-0;
+  @apply [&[data-volume-level="high"]_.volume-high-icon]:opacity-100;
+  @apply [&[data-volume-level="medium"]_.volume-low-icon]:opacity-100;
+  @apply [&[data-volume-level="low"]_.volume-low-icon]:opacity-100;
+  @apply [&[data-volume-level="off"]_.volume-off-icon]:opacity-100;
 }
 
 .VolumeHighIcon {
-  /* Additional icon classes if needed */
+  @apply volume-high-icon;
 }
 
 .VolumeLowIcon {
-  /* Additional icon classes if needed */
+  @apply volume-low-icon;
 }
 
 .VolumeOffIcon {
-  /* Additional icon classes if needed */
+  @apply volume-off-icon;
 }
 
-/* Fullscreen button icon visibility */
-.FullScreenButton[data-fullscreen] .FullScreenExitIcon,
-.FullScreenButton:not([data-fullscreen]) .FullScreenEnterIcon {
-  @apply opacity-100;
-}
-
-/* ADDED: Transition for arrow path animations (delight/animation enhancement) */
-.FullScreenButton path {
-  @apply transition-transform ease-out;
+.FullScreenButton {
+  @apply [&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0;
+  @apply [&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100;
+  @apply [&_path]:transition-transform [&_path]:ease-out;
 }
 
 .FullScreenEnterIcon {
-  /* REMOVED (requires parent selector): [&_.arrow-1]:translate-x-px [&_.arrow-2]:translate-x-px
-   * Arbitrary child selectors work with @apply, but hover animation requires parent selector
-   * REPLACEMENT: Using regular CSS with parent selector for hover coordination */
+  @apply fullscreen-enter-icon;
+  /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px */
+  /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px */
 }
 
-/* ADDED: Fullscreen enter icon arrows animate outward on hover (delight/animation enhancement) */
-.FullScreenButton:hover .FullScreenEnterIcon .arrow-1 {
+/* REPLACEMENT for group-hover/button on .FullScreenEnterIcon arrows */
+.Button:hover .FullScreenEnterIcon .arrow-1 {
   @apply -translate-x-px -translate-y-px;
 }
 
-.FullScreenButton:hover .FullScreenEnterIcon .arrow-2 {
+.Button:hover .FullScreenEnterIcon .arrow-2 {
   @apply translate-x-px translate-y-px;
 }
 
 .FullScreenExitIcon {
-  /* INITIALLY REMOVED: [&_.arrow-1]:-translate-x-px [&_.arrow-2]:translate-x-px
-   * VERIFICATION: Arbitrary child selectors DO work with @apply!
-   * RESTORED: Using @apply with verified working pattern */
+  @apply fullscreen-exit-icon;
   @apply [&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px;
   @apply [&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px;
+  /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-1]:translate-0 */
+  /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-2]:translate-0 */
 }
 
-/* ADDED: Fullscreen exit icon arrows reset to center on hover (requires parent selector) */
-.FullScreenButton:hover .FullScreenExitIcon .arrow-1,
-.FullScreenButton:hover .FullScreenExitIcon .arrow-2 {
+/* REPLACEMENT for group-hover/button on .FullScreenExitIcon arrows */
+.Button:hover .FullScreenExitIcon .arrow-1,
+.Button:hover .FullScreenExitIcon .arrow-2 {
   @apply translate-x-0 translate-y-0;
 }
 
-/* Fullscreen tooltip text visibility */
-.FullScreenTooltipPopup .FullScreenEnterTooltip,
-.FullScreenTooltipPopup .FullScreenExitTooltip {
-  @apply hidden;
-}
-
-.FullScreenTooltipPopup[data-fullscreen] .FullScreenExitTooltip,
-.FullScreenTooltipPopup:not([data-fullscreen]) .FullScreenEnterTooltip {
-  @apply inline;
+.FullScreenTooltipPopup {
+  @apply [&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden;
+  @apply [&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline;
 }
 
 .FullScreenEnterTooltip {
-  /* Additional tooltip classes if needed */
+  @apply fullscreen-enter-tooltip;
 }
 
 .FullScreenExitTooltip {
-  /* Additional tooltip classes if needed */
+  @apply fullscreen-exit-tooltip;
 }
 
 .TimeControls {
@@ -229,25 +201,19 @@
 }
 
 .TimeDisplay {
+  /* REMOVED (breaks @apply): text-shadow-2xs (custom utility not in standard Tailwind) */
   @apply tabular-nums;
 }
 
 .SliderRoot {
+  /* REMOVED (breaks @apply): group/slider */
   @apply flex items-center justify-center flex-1 relative;
-  /* INITIALLY REMOVED: [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20
-   * VERIFICATION: Arbitrary data-attribute selectors DO work with @apply!
-   * RESTORED: Using @apply with verified working pattern (improves slider usability) */
   @apply [&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20;
   @apply [&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20;
-  /* REMOVED (breaks @apply): group/slider
-   * Named group declarations cause compilation error */
 }
 
 .SliderTrack {
   @apply w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5;
-  /* INITIALLY REMOVED: [&[data-orientation="horizontal"]]:h-1 [&[data-orientation="vertical"]]:w-1
-   * VERIFICATION: Arbitrary data-attribute selectors DO work with @apply!
-   * RESTORED: Using @apply with verified working pattern (improves slider usability) */
   @apply [&[data-orientation="horizontal"]]:h-1;
   @apply [&[data-orientation="vertical"]]:w-1;
 }
@@ -264,21 +230,18 @@
   @apply bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15;
   @apply opacity-0 transition-[opacity,height,width] ease-in-out;
   @apply -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
+  /* REMOVED (breaks @apply): group-hover/slider:opacity-100 group-focus-within/slider:opacity-100 */
   @apply size-2.5 active:size-3 hover:cursor-ew-resize;
-  /* REMOVED (breaks @apply): group-hover/slider:opacity-100
-   * Requires parent group/slider declaration which breaks @apply
-   * REPLACEMENT: Using regular CSS with parent selector below */
+  /* REMOVED (breaks @apply): group-active/slider:size-3 */
 }
 
-/* REMOVED (breaks @apply): group-hover/slider:opacity-100 on .SliderThumb
- * REPLACEMENT: Show slider thumb on hover or focus using parent selector with @apply utilities */
+/* REPLACEMENT for group-hover/slider and group-focus-within/slider on .SliderThumb */
 .SliderRoot:hover .SliderThumb,
 .SliderRoot:focus-within .SliderThumb {
   @apply opacity-100;
 }
 
-/* ADDED: Thumb sizing when slider root is active (improves slider usability)
- * Requires parent selector so cannot use @apply */
+/* REPLACEMENT for group-active/slider on .SliderThumb */
 .SliderRoot:active .SliderThumb {
   @apply size-3;
 }
@@ -287,4 +250,13 @@
   @apply relative px-2 py-4 rounded-2xl;
   @apply bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90;
   @apply ring ring-white/10 ring-inset shadow-sm shadow-black/15;
+  /* Border to enhance contrast on lighter videos */
+  @apply after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10;
+  /* REMOVED (breaks @apply): reduced-transparency:* (custom variant - requires @custom-variant) */
+  /* REMOVED (breaks @apply): contrast-more:* (custom variant - requires @custom-variant) */
 }
+
+/*
+NOTE: Requires Tailwind custom variant:
+@custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
+*/
