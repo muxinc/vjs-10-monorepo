@@ -39,7 +39,7 @@ const jsonLdSchema = createBlogPostingSchema({
 
 <Blog title={[post.data.title, 'Blog']} description={post.data.description}>
   <JsonLd slot="head" schema={jsonLdSchema} />
-  <article class="@container px-6 pb-24 lg:px-12">
+  <article class="@container">
     <header class="border-b border-light-40 max-w-3xl mx-auto pb-10 mb-10">
       <time datetime={post.data.pubDate.toISOString()} class="font-medium md:text-md text-dark-40 flex gap-4 mb-1">
         <FormattedDate date={post.data.pubDate} />

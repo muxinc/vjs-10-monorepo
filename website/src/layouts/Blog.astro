@@ -14,7 +14,7 @@ const { title, description } = Astro.props;
 <Base title={title} description={description}>
   <slot name="head" slot="head" />
   <NavBar />
-  <main class="px-6 md:px-10 mt-10 md:mt-20">
+  <main class="px-6 md:px-10 mt-10 md:mt-20 pb-20 md:pb-30">
     <slot />
   </main>
   <Footer />
