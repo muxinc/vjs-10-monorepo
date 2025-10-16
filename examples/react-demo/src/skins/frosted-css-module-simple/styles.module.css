@@ -1,0 +1,233 @@
+/*
+ * Simplified CSS Module version of frosted skin styles
+ * Removed ALL problematic patterns to test @apply baseline compatibility
+ *
+ * REMOVED:
+ * - Named groups: group/root, group/button, group/slider
+ * - Named containers: @container/root, @container/controls
+ * - Reactions to named groups: group-hover/root, group-focus-within/slider
+ * - Container query size variants: @7xl/root
+ * - Arbitrary variants: [&:fullscreen], [&_svg], [&_.pause-icon]
+ *
+ * KEPT:
+ * - Basic utility classes
+ * - Standard pseudo-classes: hover, focus-visible, active
+ * - Standard variants: dark:
+ * - Data attribute selectors: data-[paused], data-[fullscreen]
+ */
+
+@reference "../../globals.css";
+
+.MediaContainer {
+  @apply relative overflow-clip;
+  @apply text-sm;
+}
+
+/* Make overlay and controls visible on hover using :has() selector */
+.MediaContainer:hover .Overlay,
+.MediaContainer:has([data-paused]) .Overlay {
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.MediaContainer:hover .Controls,
+.MediaContainer:has([data-paused]) .Controls {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: 0s;
+}
+
+.Overlay {
+  @apply opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none;
+  @apply bg-gradient-to-t from-black/50 via-black/20 to-transparent;
+  @apply transition-opacity backdrop-saturate-150 backdrop-brightness-90;
+}
+
+.Controls {
+  @apply absolute inset-x-3 bottom-3 rounded-full flex items-center p-1;
+  @apply ring ring-white/10 ring-inset gap-0.5 text-white;
+  @apply shadow-sm shadow-black/15;
+  /* Background */
+  @apply bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90;
+  /* Animation */
+  @apply transition will-change-transform origin-bottom ease-out;
+  @apply scale-90 opacity-0 delay-500;
+}
+
+.Button {
+  @apply cursor-pointer relative shrink-0 transition select-none p-2 rounded-full;
+  /* Background/foreground */
+  @apply bg-transparent text-white/90;
+  /* Hover and focus states */
+  @apply hover:no-underline hover:bg-white/10 hover:text-white;
+  @apply focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white;
+  /* Focus state */
+  @apply -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
+  /* Disabled state */
+  @apply aria-disabled:grayscale aria-disabled:opacity-50 aria-disabled:cursor-not-allowed;
+  /* Loading state */
+  @apply aria-busy:pointer-events-none aria-busy:cursor-not-allowed;
+  /* Expanded state */
+  @apply aria-expanded:bg-white/10 aria-expanded:text-white;
+  /* Pressed state */
+  @apply active:scale-95;
+}
+
+.IconButton {
+  @apply grid;
+}
+
+/* Icon stacking - all icons in same grid cell */
+.IconButton svg {
+  grid-area: 1 / 1;
+  transition: opacity 300ms ease-out;
+  opacity: 0;
+}
+
+/* Play button icon visibility */
+.PlayButton[data-paused] .PlayIcon,
+.PlayButton:not([data-paused]) .PauseIcon {
+  opacity: 1;
+}
+
+.PlayIcon {
+  /* Additional icon classes if needed */
+}
+
+.PauseIcon {
+  /* Additional icon classes if needed */
+}
+
+.TooltipPopup {
+  @apply whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md;
+  @apply text-white text-xs px-2 py-1;
+  /* Background */
+  @apply bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90;
+  /* Animation */
+  @apply transition-[transform,scale,opacity];
+  @apply data-[ending-style]:scale-90 data-[ending-style]:opacity-0;
+  @apply data-[instant]:duration-0;
+  @apply data-[starting-style]:scale-90 data-[starting-style]:opacity-0;
+  /* Ring */
+  @apply ring-1 ring-white/10 ring-inset;
+  /* Text shadow - removed because it uses arbitrary value */
+}
+
+/* Tooltip text visibility based on paused state */
+.PlayTooltipPopup .PlayTooltip,
+.PlayTooltipPopup .PauseTooltip {
+  display: none;
+}
+
+.PlayTooltipPopup[data-paused] .PlayTooltip,
+.PlayTooltipPopup:not([data-paused]) .PauseTooltip {
+  display: inline;
+}
+
+.PlayTooltip {
+  /* Additional tooltip classes if needed */
+}
+
+.PauseTooltip {
+  /* Additional tooltip classes if needed */
+}
+
+/* Mute button icon visibility based on volume level */
+.MuteButton svg {
+  opacity: 0;
+}
+
+.MuteButton[data-volume-level='high'] .VolumeHighIcon,
+.MuteButton[data-volume-level='medium'] .VolumeLowIcon,
+.MuteButton[data-volume-level='low'] .VolumeLowIcon,
+.MuteButton[data-volume-level='off'] .VolumeOffIcon {
+  opacity: 1;
+}
+
+.VolumeHighIcon {
+  /* Additional icon classes if needed */
+}
+
+.VolumeLowIcon {
+  /* Additional icon classes if needed */
+}
+
+.VolumeOffIcon {
+  /* Additional icon classes if needed */
+}
+
+/* Fullscreen button icon visibility */
+.FullScreenButton[data-fullscreen] .FullScreenExitIcon,
+.FullScreenButton:not([data-fullscreen]) .FullScreenEnterIcon {
+  opacity: 1;
+}
+
+.FullScreenEnterIcon {
+  /* Additional icon classes if needed */
+}
+
+.FullScreenExitIcon {
+  /* Additional icon classes if needed */
+}
+
+/* Fullscreen tooltip text visibility */
+.FullScreenTooltipPopup .FullScreenEnterTooltip,
+.FullScreenTooltipPopup .FullScreenExitTooltip {
+  display: none;
+}
+
+.FullScreenTooltipPopup[data-fullscreen] .FullScreenExitTooltip,
+.FullScreenTooltipPopup:not([data-fullscreen]) .FullScreenEnterTooltip {
+  display: inline;
+}
+
+.FullScreenEnterTooltip {
+  /* Additional tooltip classes if needed */
+}
+
+.FullScreenExitTooltip {
+  /* Additional tooltip classes if needed */
+}
+
+.TimeControls {
+  @apply flex-1 flex items-center gap-3 px-1.5;
+}
+
+.TimeDisplay {
+  @apply tabular-nums;
+}
+
+.SliderRoot {
+  @apply flex items-center justify-center flex-1 relative;
+}
+
+.SliderTrack {
+  @apply w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5;
+}
+
+.SliderProgress {
+  @apply bg-white rounded-[inherit];
+}
+
+.SliderPointer {
+  @apply rounded-[inherit];
+}
+
+.SliderThumb {
+  @apply bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15;
+  @apply opacity-0 transition-[opacity,height,width] ease-in-out;
+  @apply -outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
+  @apply size-2.5 active:size-3 hover:cursor-ew-resize;
+}
+
+/* Show slider thumb on hover or focus */
+.SliderRoot:hover .SliderThumb,
+.SliderRoot:focus-within .SliderThumb {
+  opacity: 1;
+}
+
+.PopoverPopup {
+  @apply relative px-2 py-4 rounded-2xl;
+  @apply bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90;
+  @apply ring ring-white/10 ring-inset shadow-sm shadow-black/15;
+}

@@ -5,6 +5,11 @@ import type { ChangeEventHandler } from 'react';
 import { MediaProvider, Video } from '@vjs-10/react';
 import { useCallback, useMemo, useState } from 'react';
 
+// NOTE: Broken CSS module version - fails with "Cannot apply unknown utility class `group/root`"
+// This demonstrates that @apply doesn't work with named groups/containers.
+// See: packages/build-tools/vjs-compiler/validation-tests/CSS-MODULE-APPLY-FINDINGS.md
+// import MediaSkinCssModule from './skins/frosted-css-module/MediaSkinDefault';
+import MediaSkinCssModuleSimple from './skins/frosted-css-module-simple/MediaSkinDefault';
 import MediaSkinDefault from './skins/frosted/MediaSkinDefault';
 import MediaSkinToasted from './skins/toasted/MediaSkinToasted';
 
@@ -15,6 +20,17 @@ const skins = [
     key: 'default',
     name: 'Frosted',
     component: MediaSkinDefault,
+  },
+  // NOTE: Broken CSS module version commented out - see import comment above
+  // {
+  //   key: 'css-module',
+  //   name: 'Frosted (CSS Module)',
+  //   component: MediaSkinCssModule,
+  // },
+  {
+    key: 'css-module-simple',
+    name: 'Frosted (CSS Module Simple)',
+    component: MediaSkinCssModuleSimple,
   },
   {
     key: 'toasted',
@@ -104,6 +120,9 @@ export default function App(): JSX.Element {
   const skinClassName = useMemo(() => {
     switch (skinKey) {
       case 'default':
+        return 'rounded-4xl shadow shadow-lg shadow-black/15';
+      // case 'css-module': (commented out - broken version)
+      case 'css-module-simple':
         return 'rounded-4xl shadow shadow-lg shadow-black/15';
       case 'toasted':
         return 'rounded-lg shadow shadow-lg shadow-black/15';
