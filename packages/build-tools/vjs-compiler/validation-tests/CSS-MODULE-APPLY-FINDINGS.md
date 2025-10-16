@@ -223,12 +223,13 @@ The `@apply` directive has **two categories of limitations**:
 - Named variant groups (`group/name`, `@container/name`)
 - Custom utilities/variants not defined in standard Tailwind
 
-**Category 2: Class Name Dependencies (Compile but break abstraction)**
+**Category 2: Class Name Dependencies (Compile but require coordination)**
 - Arbitrary child/descendant selectors (`[&_.class-name]`) work syntactically
-- BUT they create tight coupling between CSS and JSX
-- Require exact class names on child elements
-- Break the abstraction benefit of CSS modules
-- Defeated the purpose of using CSS modules in the first place
+- BUT they require exact class names on child elements in JSX
+- Creates coupling between CSS transformation and JSX transformation
+- COULD work if we guarantee class names are added during JSX transformation
+- Adds implementation complexity (must coordinate CSS and JSX transforms)
+- Current approach (inline classes) is simpler and avoids this coordination
 
 These patterns are fundamental to the frosted skin's architecture for:
 - Coordinating hover states across parent/child elements
@@ -266,20 +267,44 @@ These patterns compile successfully but create **tight coupling** between CSS an
 }
 ```
 
-**Impact:**
-- CSS compiles without errors
-- BUT requires JSX to use specific class names: `<svg className="icon">`, `<span className="pause-icon">`
-- Breaks CSS module abstraction (defeats the purpose)
-- Creates maintenance burden (must coordinate class names between CSS and JSX)
+**The Challenge:**
+
+CSS modules with `@apply` WOULD work if we guarantee that:
+1. CSS uses `@apply [&_.icon]:opacity-0` (compiles successfully)
+2. JSX transformation adds the exact class name to child elements
+
+**Example:**
+```tsx
+// React input
+<PlayButton className={styles.PlayButton}>
+  <PlayIcon className={styles.Icon} />
+</PlayButton>
+
+// Must transform to (note the "icon" class added):
+<media-play-button class="play-button">
+  <media-play-icon class="icon"></media-play-icon>  <!-- ✅ Must add "icon" -->
+</media-play-button>
+```
+
+**Implementation Complexity:**
+- Requires analyzing which child selector classes are referenced in parent styles
+- Must coordinate CSS transformation with JSX transformation
+- Creates coupling between two otherwise independent transformation phases
+- More complex than current approach (inline classes → semantic selectors)
+
+**Trade-off:**
+- ✅ CSS modules COULD be a viable final output format
+- ⚠️ Requires significant implementation complexity for coordination
+- ✅ Current approach (inline classes) is simpler and already works
 
 ### Why This Matters
 
 The frosted skin uses **both categories** extensively:
 
-1. **Named groups** for coordinating hover states → Category 1 (build errors)
-2. **Arbitrary child selectors** for icon visibility → Category 2 (class name dependencies)
+1. **Named groups** for coordinating hover states → Category 1 (build errors - cannot use)
+2. **Arbitrary child selectors** for icon visibility → Category 2 (possible but complex)
 
-Both limitations make CSS modules impractical for this use case.
+**Decision:** Category 1 is a hard blocker, and Category 2 would require significant additional implementation complexity. The inline Tailwind approach avoids both issues and is simpler to implement and maintain.
 
 ### Recommendation
 
