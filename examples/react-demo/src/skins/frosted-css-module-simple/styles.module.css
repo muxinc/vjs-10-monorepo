@@ -36,18 +36,15 @@
 /* REMOVED (breaks @apply): group-hover/root:opacity-100 group-hover/root:scale-100
  * Parent-child hover coordination requires regular CSS since @apply can't handle
  * group-hover/root (which needs parent group/root declaration that breaks).
- * REPLACEMENT: Using :has() selector for parent-child coordination */
+ * REPLACEMENT: Using :has() selector for parent-child coordination with @apply utilities */
 .MediaContainer:hover .Overlay,
 .MediaContainer:has([data-paused]) .Overlay {
-  opacity: 1;
-  transition-delay: 0s;
+  @apply opacity-100 delay-0;
 }
 
 .MediaContainer:hover .Controls,
 .MediaContainer:has([data-paused]) .Controls {
-  opacity: 1;
-  transform: scale(1);
-  transition-delay: 0s;
+  @apply opacity-100 scale-100 delay-0;
 }
 
 .Overlay {
@@ -94,14 +91,13 @@
 /* Icon stacking - all icons in same grid cell */
 .IconButton svg {
   grid-area: 1 / 1;
-  transition: opacity 300ms ease-out;
-  opacity: 0;
+  @apply transition-opacity duration-300 ease-out opacity-0;
 }
 
 /* Play button icon visibility */
 .PlayButton[data-paused] .PlayIcon,
 .PlayButton:not([data-paused]) .PauseIcon {
-  opacity: 1;
+  @apply opacity-100;
 }
 
 .PlayIcon {
@@ -130,12 +126,12 @@
 /* Tooltip text visibility based on paused state */
 .PlayTooltipPopup .PlayTooltip,
 .PlayTooltipPopup .PauseTooltip {
-  display: none;
+  @apply hidden;
 }
 
 .PlayTooltipPopup[data-paused] .PlayTooltip,
 .PlayTooltipPopup:not([data-paused]) .PauseTooltip {
-  display: inline;
+  @apply inline;
 }
 
 .PlayTooltip {
@@ -148,14 +144,14 @@
 
 /* Mute button icon visibility based on volume level */
 .MuteButton svg {
-  opacity: 0;
+  @apply opacity-0;
 }
 
 .MuteButton[data-volume-level='high'] .VolumeHighIcon,
 .MuteButton[data-volume-level='medium'] .VolumeLowIcon,
 .MuteButton[data-volume-level='low'] .VolumeLowIcon,
 .MuteButton[data-volume-level='off'] .VolumeOffIcon {
-  opacity: 1;
+  @apply opacity-100;
 }
 
 .VolumeHighIcon {
@@ -173,12 +169,12 @@
 /* Fullscreen button icon visibility */
 .FullScreenButton[data-fullscreen] .FullScreenExitIcon,
 .FullScreenButton:not([data-fullscreen]) .FullScreenEnterIcon {
-  opacity: 1;
+  @apply opacity-100;
 }
 
 /* ADDED: Transition for arrow path animations (delight/animation enhancement) */
 .FullScreenButton path {
-  transition: transform ease-out;
+  @apply transition-transform ease-out;
 }
 
 .FullScreenEnterIcon {
@@ -189,11 +185,11 @@
 
 /* ADDED: Fullscreen enter icon arrows animate outward on hover (delight/animation enhancement) */
 .FullScreenButton:hover .FullScreenEnterIcon .arrow-1 {
-  transform: translate(-1px, -1px);
+  @apply -translate-x-px -translate-y-px;
 }
 
 .FullScreenButton:hover .FullScreenEnterIcon .arrow-2 {
-  transform: translate(1px, 1px);
+  @apply translate-x-px translate-y-px;
 }
 
 .FullScreenExitIcon {
@@ -207,18 +203,18 @@
 /* ADDED: Fullscreen exit icon arrows reset to center on hover (requires parent selector) */
 .FullScreenButton:hover .FullScreenExitIcon .arrow-1,
 .FullScreenButton:hover .FullScreenExitIcon .arrow-2 {
-  transform: translate(0, 0);
+  @apply translate-x-0 translate-y-0;
 }
 
 /* Fullscreen tooltip text visibility */
 .FullScreenTooltipPopup .FullScreenEnterTooltip,
 .FullScreenTooltipPopup .FullScreenExitTooltip {
-  display: none;
+  @apply hidden;
 }
 
 .FullScreenTooltipPopup[data-fullscreen] .FullScreenExitTooltip,
 .FullScreenTooltipPopup:not([data-fullscreen]) .FullScreenEnterTooltip {
-  display: inline;
+  @apply inline;
 }
 
 .FullScreenEnterTooltip {
@@ -276,17 +272,16 @@
 }
 
 /* REMOVED (breaks @apply): group-hover/slider:opacity-100 on .SliderThumb
- * REPLACEMENT: Show slider thumb on hover or focus using parent selector */
+ * REPLACEMENT: Show slider thumb on hover or focus using parent selector with @apply utilities */
 .SliderRoot:hover .SliderThumb,
 .SliderRoot:focus-within .SliderThumb {
-  opacity: 1;
+  @apply opacity-100;
 }
 
 /* ADDED: Thumb sizing when slider root is active (improves slider usability)
  * Requires parent selector so cannot use @apply */
 .SliderRoot:active .SliderThumb {
-  width: 0.75rem; /* 3 * 0.25rem = 0.75rem (size-3) */
-  height: 0.75rem;
+  @apply size-3;
 }
 
 .PopoverPopup {
