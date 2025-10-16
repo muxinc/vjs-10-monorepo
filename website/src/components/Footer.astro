@@ -1,0 +1,39 @@
+---
+import { GITHUB_REPO_URL } from '@/consts';
+
+const navLinks = [
+  { href: '/docs', label: 'Docs' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: GITHUB_REPO_URL, label: 'GitHub' },
+];
+
+type Props = {
+  class?: string;
+};
+const { class: className } = Astro.props;
+---
+
+<footer class:list={['border-t border-light-40 py-6 px-3 grid gap-3', className]}>
+  <div class="flex flex-col sm:flex-row items-center gap-3">
+    <a href="/" class="text-h5 px-3">VideoJS</a>
+    <nav class="flex">
+      {
+        navLinks.map((link) => (
+          <a href={link.href} class="intent:underline px-3 py-2">
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  <p class="text-sm text-center sm:text-left text-dark-40 px-3">
+    © 2010 &ndash; present VideoJS contributors
+    <br />
+    VideoJS is a free and open source HTML5 video player framework
+    <br />
+    Sponsored by <a href="https://www.mux.com?utm_source=videojs&utm_campaign=vjs10" class="intent:underline">Mux</a>
+  </p>
+  <div class="h-20 bg-brand-red fixed -bottom-20 left-0 w-full"></div>
+</footer>

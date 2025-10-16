@@ -9,15 +9,14 @@ import { filterSidebar } from '@/utils/docs/sidebar';
 type Props<F extends SupportedFramework = SupportedFramework> = {
   framework: F;
   style: SupportedStyle<F>;
-  slug: string;
   docTitles: Map<string, string>;
 };
 
-const { framework, style, slug, docTitles } = Astro.props;
+const { framework, style, docTitles } = Astro.props;
 const filteredSidebar = filterSidebar(framework, style);
 ---
 
-<Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
+<slot />
 <PreferenceUpdater client:idle currentFramework={framework} currentStyle={style} />
 <nav class="p-6 text-dark-80">
   {filteredSidebar.map((item) => <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />)}

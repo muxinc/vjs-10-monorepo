@@ -8,7 +8,7 @@ import H4Markdown from './H4Markdown.astro';
 import H5Markdown from './H5Markdown.astro';
 import H6Markdown from './H6Markdown.astro';
 import Hr from './Hr.astro';
-import Img from './Img.astro';
+// import Img from './Img.astro';
 import Li from './Li.astro';
 import MarkdownCode from './MarkdownCode.astro';
 import Ol from './Ol.astro';
@@ -39,7 +39,7 @@ const defaultMarkdownComponents = {
   strong: Strong,
   blockquote: Blockquote,
   hr: Hr,
-  img: Img,
+  // img: Img,
   pre: Pre,
   code: MarkdownCode,
   table: Table,

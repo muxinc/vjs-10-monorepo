@@ -1,0 +1,61 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import { getCollection, getEntries } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+import BlogPostCard from '@/components/blog/BlogPostCard.astro';
+import BlogPagination from '@/components/blog/BlogPagination.astro';
+import Blog from '@/layouts/Blog.astro';
+import JsonLd from '@/components/JsonLd.astro';
+import { createBlogCollectionSchema } from '@/utils/jsonLd/schemas';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection('blog'))
+    .filter((post) => !post.data.devOnly || import.meta.env.DEV)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  // Resolve author references for all posts
+  const postsWithAuthors = await Promise.all(
+    posts.map(async (post) => ({
+      ...post,
+      authors: await getEntries(post.data.authors),
+    })),
+  );
+
+  return paginate(postsWithAuthors, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+type PostWithAuthors = CollectionEntry<'blog'> & {
+  authors: CollectionEntry<'authors'>[];
+};
+
+interface Props {
+  page: Page<PostWithAuthors>;
+}
+
+const { page } = Astro.props;
+
+// Build JSON-LD schema for CollectionPage
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const jsonLdSchema = createBlogCollectionSchema({
+  url: pageUrl,
+  posts: page.data,
+  siteUrl: Astro.site!.toString(),
+});
+---
+
+<Blog title="Blog" description="Articles, announcements, news, updates, and more">
+  <JsonLd slot="head" schema={jsonLdSchema} />
+  <div class="pb-40">
+    <header class="mb-10 md:mb-20 w-full max-w-3xl mx-auto">
+      <h1 class="text-h4 md:text-h2 mb-2">VideoJS Blog</h1>
+      <p class="text-md font-medium md:text-h5 text-dark-40">
+        {page.data.length === 0 ? 'Coming soon' : 'Articles, announcements, news, updates, and more'}
+      </p>
+    </header>
+    <div class="grid gap-10 w-full max-w-3xl mx-auto">
+      {page.data.map((post) => <BlogPostCard post={post} authors={post.authors} />)}
+    </div>
+    {page.lastPage > 1 && <BlogPagination page={page} />}
+  </div>
+</Blog>

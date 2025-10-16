@@ -60,6 +60,7 @@ const isActive = containsActivePath(item);
       style={`padding-left: calc(var(--spacing) * ${depth * 4})`}
       href={`/docs/framework/${framework}/style/${style}/${item.slug}`}
     >
+      {item.devOnly ? '[Dev only] ' : ''}
       {item.sidebarLabel || docTitles.get(item.slug) || item.slug}
     </a>
   )

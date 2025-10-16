@@ -1,0 +1,34 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import FormattedDate from '@/components/FormattedDate.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  authors: CollectionEntry<'authors'>[];
+  asLink?: boolean;
+}
+
+const { post, authors, asLink } = Astro.props;
+---
+
+<article>
+  <a href={`/blog/${post.id}`} class="group grid max-w-3xl">
+    <time datetime={post.data.pubDate.toISOString()} class="text-dark-40 mb-2">
+      <FormattedDate date={post.data.pubDate} />
+    </time>
+    <div class="mb-3">
+      <h2 class="text-md font-medium md:text-h4 group-intent:underline mb-1">{post.data.title}</h2>
+      <p class="font-medium md:text-md text-dark-40">{post.data.description}</p>
+    </div>
+    {
+      authors.length > 0 && (
+        <div class="text-dark-40">
+          {new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(
+            authors.map((author) => author.data.name),
+          )}
+        </div>
+      )
+    }
+  </a>
+</article>

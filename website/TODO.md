@@ -6,3 +6,7 @@ not comprehensive. just the things I'm worried about forgetting
 - a kick-ass 404 page
 - a11y audit. some of those colors are sus.
 - animations
+- docs features
+  - copy code blocks
+  - last updated
+- dark mode

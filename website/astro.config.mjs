@@ -32,7 +32,12 @@ export default defineConfig({
     smartypants: true,
     gfm: true,
     syntaxHighlight: 'shiki',
-    shikiConfig: {},
+    shikiConfig: {
+      themes: {
+        light: 'gruvbox-light-hard',
+      },
+      // TODO shiki transformers
+    },
     remarkPlugins: [remarkConditionalHeadings],
     rehypePlugins: [rehypePrepareCodeBlocks],
   },

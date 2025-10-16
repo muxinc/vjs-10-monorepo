@@ -1,22 +1,72 @@
 ---
+import FormattedDate from '@/components/FormattedDate.astro';
+import Blog from '@/layouts/Blog.astro';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection, getEntries, render } from 'astro:content';
-import BlogPost from '@/layouts/BlogPost.astro';
+import JsonLd from '@/components/JsonLd.astro';
+import { createBlogPostingSchema } from '@/utils/jsonLd/schemas';
+import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: post,
-  }));
+  return posts
+    .filter((post) => !post.data.devOnly || import.meta.env.DEV)
+    .map((post) => ({
+      params: { slug: post.id },
+      props: post,
+    }));
 }
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
 const { Content } = await render(post);
 const authors = await getEntries(post.data.authors);
+
+// Build JSON-LD schema for BlogPosting
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const jsonLdSchema = createBlogPostingSchema({
+  title: post.data.title,
+  description: post.data.description,
+  url: pageUrl,
+  pubDate: post.data.pubDate,
+  updatedDate: post.data.updatedDate,
+  wordCount: post.data.wordCount,
+  readingTime: post.data.readingTime,
+  authors,
+  siteUrl: Astro.site!.toString(),
+});
 ---
 
-<BlogPost {...post.data} authors={authors}>
-  <Content />
-</BlogPost>
+<Blog title={[post.data.title, 'Blog']} description={post.data.description}>
+  <JsonLd slot="head" schema={jsonLdSchema} />
+  <article class="@container px-6 pb-24 lg:px-12">
+    <header class="border-b border-light-40 max-w-3xl mx-auto pb-10 mb-10">
+      <time datetime={post.data.pubDate.toISOString()} class="font-medium md:text-md text-dark-40 flex gap-4 mb-1">
+        <FormattedDate date={post.data.pubDate} />
+        <span>&bull;</span>
+        <span>{post.data.readingTime} min read</span>
+      </time>
+      <h1 class="text-h4 md:text-h2 mb-2">{post.data.title}</h1>
+      <div class="font-medium md:text-md text-dark-40">
+        By {
+          new Intl.ListFormat('en', { style: 'long', type: 'conjunction' })
+            .formatToParts(authors.map((author) => author.data.name))
+            .map((part) =>
+              part.type === 'element' ? (
+                // inline-block removes the whitespace that prettier+astro adds around the text
+                <a
+                  href={`/blog/authors/${authors.find((a) => a.data.name === part.value)?.id}`}
+                  class="intent:underline inline-block"
+                >
+                  {part.value}
+                </a>
+              ) : (
+                part.value
+              ),
+            )
+        }
+      </div>
+    </header>
+    <Content components={{ ...defaultMarkdownComponents }} />
+  </article>
+</Blog>

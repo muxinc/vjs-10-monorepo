@@ -41,12 +41,14 @@ export interface Guide {
   sidebarLabel?: string; // defaults to guide title
   frameworks?: SupportedFramework[];
   styles?: AnySupportedStyle[];
+  devOnly?: boolean; // only visible in development mode
 }
 
 export interface Section {
   sidebarLabel: string;
   frameworks?: SupportedFramework[];
   styles?: AnySupportedStyle[];
+  devOnly?: boolean; // only visible in development mode
   contents: Array<Guide | Section>;
 }
 

@@ -1,4 +1,4 @@
-// video.js
+// videoJS
 export const PLAYBACK_ID = 'UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA';
 export const THUMB_TIME = 0;
 // player.style

@@ -16,14 +16,11 @@ const isCodeBlock = codeBlock === 'true';
 
 {
   isCodeBlock ? (
-    <Tag {...props}>
+    <Tag class={twMerge('font-mono text-code', className)} {...props}>
       <slot />
     </Tag>
   ) : (
-    <Tag
-      class={twMerge('bg-light-60 border border-light-40 px-1 rounded font-mono text-base-code', className)}
-      {...props}
-    >
+    <Tag class={twMerge('bg-light-60 border border-light-40 px-1 rounded font-mono text-code', className)} {...props}>
       <slot />
     </Tag>
   )

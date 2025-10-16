@@ -1,4 +1,5 @@
 ---
+import { GITHUB_REPO_URL } from '@/consts';
 import MobileNav from './MobileNav';
 
 export interface Props {
@@ -9,7 +10,7 @@ export interface Props {
 const navLinks = [
   { href: '/docs', label: 'Docs', matchPath: '/docs' },
   { href: '/blog', label: 'Blog', matchPath: '/blog' },
-  { href: 'https://github.com/muxinc/vjs-10-monorepo', label: 'GitHub', matchPath: null },
+  { href: GITHUB_REPO_URL, label: 'GitHub', matchPath: null },
 ];
 
 const currentPath = Astro.url.pathname;

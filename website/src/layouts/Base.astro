@@ -7,13 +7,18 @@ import { SITE_TITLE } from '@/consts';
 import '@/styles/globals.css';
 
 interface Props {
-  title: string;
+  title: string | string[];
   description: string;
   image?: ImageMetadata;
 }
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image } = Astro.props;
+const fullTitle = Array.isArray(title)
+  ? title.filter((t) => t !== SITE_TITLE).join(' | ') + ` | ${SITE_TITLE}`
+  : title === SITE_TITLE
+    ? title
+    : `${title} | ${SITE_TITLE}`;
 ---
 
 <html lang="en">
@@ -34,21 +39,21 @@ const { title, description, image } = Astro.props;
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Primary Meta Tags -->
-    <title>{title}</title>
-    <meta name="title" content={title} />
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
     <meta name="description" content={description} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     {image && <meta property="og:image" content={new URL(image.src, Astro.url)} />}
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
+    <meta property="twitter:title" content={fullTitle} />
     <meta property="twitter:description" content={description} />
     {image && <meta property="twitter:image" content={new URL(image.src, Astro.url)} />}
 
@@ -57,7 +62,12 @@ const { title, description, image } = Astro.props;
   </head>
   <!-- BaseUI requires body.relative and div.root -->
   <body
-    class="relative bg-light-80 text-dark-100 font-sans antialiased text-pretty text-base min-w-80 [--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]"
+    class="relative
+    bg-light-80 text-dark-100
+    font-sans antialiased text-pretty text-base
+    min-w-80
+    [--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]
+    selection:bg-brand-yellow selection:text-dark-100"
   >
     <div class="isolate">
       <slot />

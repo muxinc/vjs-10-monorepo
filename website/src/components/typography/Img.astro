@@ -14,7 +14,7 @@ type Props<Tag extends HTMLTag = 'img'> = Polymorphic<{ as: Tag }> & {
 
 const { as: Tag = 'img', src, alt, maxWidth = true, class: className, ...props } = Astro.props;
 
-const classes = twMerge(clsx('max-w-full h-auto my-10 rounded', maxWidth && 'max-w-3xl mx-auto'), className);
+const classes = twMerge(clsx('max-w-full h-auto my-12 rounded', maxWidth && 'max-w-3xl mx-auto'), className);
 ---
 
 {

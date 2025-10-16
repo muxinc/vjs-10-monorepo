@@ -33,6 +33,7 @@ export function TableOfContentsMobile({ headings, activeId, onNavigate, classNam
           onChange={handleChange}
           options={options}
           aria-label="Table of contents"
+          className="w-full"
         />
       </div>
     </div>

@@ -50,10 +50,10 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
           </div>
 
           {/* Children */}
-          {children ? <div className={clsx('p-3 border-b', dark ? 'border-dark-80' : 'border-light-40')}>{children}</div> : null}
+          {children ? <div className={clsx('border-b', dark ? 'border-dark-80' : 'border-light-40')}>{children}</div> : null}
 
           {/* Navigation links */}
-          <nav className="flex flex-col items-start py-3">
+          <nav className="flex flex-col py-3">
             {navLinks.map(link => (
               <a
                 key={link.href}

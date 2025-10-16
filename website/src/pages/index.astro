@@ -2,6 +2,7 @@
 import HeroVideo from '@/components/home/HeroVideo';
 
 import NavBar from '@/components/NavBar/NavBar.astro';
+import Footer from '@/components/Footer.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts';
 import Base from '@/layouts/Base.astro';
 ---
@@ -16,7 +17,7 @@ import Base from '@/layouts/Base.astro';
       >
         <h1 class="text-h4 md:text-h1 text-balance lg:text-pretty">The Open Source Player for the Web</h1>
         <p class="md:text-md text-balance max-w-100">
-          For over 15 years, Video.js has been the world’s web video player. Now rebuilt in v10 for modern development
+          For over 15 years, VideoJS has been the world’s web video player. Now rebuilt in v10 for modern development
           and performance.
         </p>
       </div>
@@ -33,4 +34,5 @@ import Base from '@/layouts/Base.astro';
   </header>
   <!-- padding corresponds to negative margin on player -->
   <main class="pt-11 md:pt-21 lg:pt-32 px-6 md:px-10 w-full max-w-7xl mx-auto min-h-64"></main>
+  <Footer />
 </Base>

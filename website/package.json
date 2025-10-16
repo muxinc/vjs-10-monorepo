@@ -29,6 +29,7 @@
     "just-throttle": "^4.2.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "schema-dts": "^1.1.5",
     "sharp": "^0.34.3",
     "simple-git": "^3.28.0",
     "tailwind-merge": "^3.3.1",

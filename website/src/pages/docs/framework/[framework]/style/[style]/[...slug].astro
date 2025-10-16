@@ -6,10 +6,15 @@ import { getCollection, render } from 'astro:content';
 
 import DocsLayout from '@/layouts/Docs.astro';
 import { ALL_FRAMEWORK_STYLE_COMBINATIONS } from '@/types/docs';
-import { filterSidebar, getAllGuideSlugs } from '@/utils/docs/sidebar';
+import { filterSidebar, getAllGuideSlugs, getAdjacentGuides } from '@/utils/docs/sidebar';
 import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
 import { TableOfContents } from '@/components/docs/TableOfContents';
 import H3 from '@/components/typography/H3.astro';
+import { Selectors } from '@/components/docs/Selectors';
+import DocsNavigation from '@/components/docs/DocsNavigation.astro';
+import EditPageButton from '@/components/docs/EditPageButton.astro';
+import JsonLd from '@/components/JsonLd.astro';
+import { createTechArticleSchema } from '@/utils/jsonLd/schemas';
 
 export async function getStaticPaths() {
   const docsCollection = await getCollection('docs');
@@ -66,35 +71,64 @@ const filteredHeadings = conditionalHeadings
       return matchesFramework && matchesStyle;
     })
   : headings;
+
+// Get adjacent guides for navigation
+const { prev, next } = getAdjacentGuides(slug, framework, style);
+
+// Fetch all docs to get their titles
+const allDocs = await getCollection('docs');
+const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
+
+// Build JSON-LD schema for TechArticle
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const jsonLdSchema = createTechArticleSchema({
+  title: doc.data.title,
+  description: doc.data.description,
+  url: pageUrl,
+  updatedDate: doc.data.updatedDate,
+  wordCount: doc.data.wordCount,
+  readingTime: doc.data.readingTime,
+});
 ---
 
 <DocsLayout doc={doc} framework={framework} style={style} slug={slug}>
+  <JsonLd slot="head" schema={jsonLdSchema} />
   <main
     class:list={[
-      'grid grid-cols-1 xl:grid-cols-(--xl-grid-cols)',
+      'flex-1',
+      'grid grid-cols-1 xl:grid-cols-(--xl-grid-cols) auto-rows-min',
       '[grid-template-areas:var(--grid-template-areas)] xl:[grid-template-areas:var(--xl-grid-template-areas)]',
       '[--scroll-mt:var(--mobile-toc-h)] xl:[--scroll-mt:0px]',
     ]}
     style="
       --xl-grid-cols: minmax(0, 1fr) calc(var(--spacing) * 59);
-      grid-template-rows: auto minmax(0, 1fr);
-      --grid-template-areas: 'toc' 'article';
+      --grid-template-areas: 'selectors' 'toc' 'article';
       --xl-grid-template-areas: 'article toc';
       --mobile-toc-h: calc(var(--spacing) * 15);
     "
   >
+    <div class="lg:hidden" style="grid-area: selectors;">
+      <Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
+    </div>
     <div
       class="sticky overflow-y-auto z-40"
       style="grid-area: toc; top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
     >
       <TableOfContents client:idle headings={filteredHeadings} />
     </div>
-    <article class="@container px-6 pb-12 lg:px-12" style="grid-area: article;">
-      <header class="border-b border-light-40 max-w-3xl mx-auto py-8 mb-8">
-        <H3 as="h1" class="mt-0 mb-2">{doc.data.title}</H3>
-        <p class="@lg:font-medium">{doc.data.description}</p>
-      </header>
-      <Content components={{ ...defaultMarkdownComponents }} />
-    </article>
+    <div class="@container px-6 lg:px-12" style="grid-area: article;">
+      <article class="mb-18">
+        <header class="border-b border-light-40 max-w-3xl mx-auto py-8 mb-8">
+          <H3 as="h1" class="mt-0 mb-2">{doc.data.title}</H3>
+          <p class="@lg:font-medium">{doc.data.description}</p>
+        </header>
+        <Content components={{ ...defaultMarkdownComponents }} />
+      </article>
+      <footer class="mb-18 grid gap-5">
+        <!-- TODO might be nice to stick these to the bottom of the viewport for shorter guides -->
+        <DocsNavigation prev={prev} next={next} framework={framework} style={style} docTitles={docTitles} />
+        <EditPageButton filePath={`website/src/content/docs/${doc.id}.mdx`} />
+      </footer>
+    </div>
   </main>
 </DocsLayout>

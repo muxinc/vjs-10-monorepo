@@ -1,10 +1,11 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntries } from 'astro:content';
 
-import FormattedDate from '@/components/FormattedDate.astro';
-import { SITE_TITLE } from '@/consts';
-import Base from '@/layouts/Base.astro';
+import BlogPostCard from '@/components/blog/BlogPostCard.astro';
+import Blog from '@/layouts/Blog.astro';
+import JsonLd from '@/components/JsonLd.astro';
+import { createProfilePageSchema } from '@/utils/jsonLd/schemas';
 
 export async function getStaticPaths() {
   const authors = await getCollection('authors');
@@ -24,75 +25,92 @@ const { author } = Astro.props;
 const allPosts = await getCollection('blog');
 const authorPosts = allPosts.filter((post) => post.data.authors.some((a) => a.id === author.id));
 const sortedPosts = authorPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Resolve author references for all posts
+const postsWithAuthors = await Promise.all(
+  sortedPosts.map(async (post) => ({
+    ...post,
+    authors: await getEntries(post.data.authors),
+  })),
+);
+
+// Build JSON-LD schema for ProfilePage
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const jsonLdSchema = createProfilePageSchema({
+  url: pageUrl,
+  author,
+  posts: authorPosts,
+  siteUrl: Astro.site!.toString(),
+});
 ---
 
-<Base title={`${author.data.name} - ${SITE_TITLE}`} description={author.data.bio || `Posts by ${author.data.name}`}>
-  <main>
-    <div>
-      <article>
-        <div>
-          {author.data.avatar && <img src={author.data.avatar} alt={author.data.name} width="150" height="150" />}
-          <div>
-            <h1>{author.data.name}</h1>
-            {author.data.bio && <p>{author.data.bio}</p>}
-            {
-              author.data.socialLinks && (
-                <ul>
-                  {author.data.socialLinks.x && (
-                    <li>
-                      <a href={author.data.socialLinks.x}>X</a>
-                    </li>
-                  )}
-                  {author.data.socialLinks.bluesky && (
-                    <li>
-                      <a href={author.data.socialLinks.bluesky}>Bluesky</a>
-                    </li>
-                  )}
-                  {author.data.socialLinks.mastodon && (
-                    <li>
-                      <a href={author.data.socialLinks.mastodon}>Mastodon</a>
-                    </li>
-                  )}
-                  {author.data.socialLinks.github && (
-                    <li>
-                      <a href={author.data.socialLinks.github}>GitHub</a>
-                    </li>
-                  )}
-                  {author.data.socialLinks.linkedin && (
-                    <li>
-                      <a href={author.data.socialLinks.linkedin}>LinkedIn</a>
-                    </li>
-                  )}
-                  {author.data.socialLinks.website && (
-                    <li>
-                      <a href={author.data.socialLinks.website}>Website</a>
-                    </li>
-                  )}
-                </ul>
-              )
-            }
-          </div>
-        </div>
-      </article>
-
-      <section>
-        <h2>Posts by {author.data.shortName}</h2>
-        <ul>
-          {
-            sortedPosts.map((post) => (
-              <li>
-                <a href={`/blog/${post.id}`}>
-                  <h3>{post.data.title}</h3>
-                  <p>{post.data.description}</p>
-                  <p>
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
-                </a>
-              </li>
-            ))
-          }
+<Blog title={[author.data.name, 'Blog']} description={`Posts by ${author.data.name} on the VideoJS blog`}>
+  <JsonLd slot="head" schema={jsonLdSchema} />
+  <header
+    class="mb-10 w-full max-w-3xl mx-auto grid gap-x-10 grid-cols-1 md:grid-cols-(--md-grid-cols)"
+    style={author.data.avatar ? '--md-grid-cols: auto minmax(0, 1fr);' : undefined}
+  >
+    {
+      author.data.avatar && (
+        <img
+          src={author.data.avatar}
+          alt={author.data.name}
+          class="w-36 h-36 rounded-full border border-light-40 row-span-3"
+        />
+      )
+    }
+    <h1 class="text-h2 mb-1">{author.data.name}</h1>
+    {author.data.bio && <p class="text-md text-dark-80 mb-4">{author.data.bio}</p>}
+    {
+      author.data.socialLinks && (
+        <ul class="flex gap-4">
+          {author.data.socialLinks.website && (
+            <li>
+              <a href={author.data.socialLinks.website} class="underline intent:no-underline">
+                Website
+              </a>
+            </li>
+          )}
+          {author.data.socialLinks.github && (
+            <li>
+              <a href={author.data.socialLinks.github} class="underline intent:no-underline">
+                GitHub
+              </a>
+            </li>
+          )}
+          {author.data.socialLinks.linkedin && (
+            <li>
+              <a href={author.data.socialLinks.linkedin} class="underline intent:no-underline">
+                LinkedIn
+              </a>
+            </li>
+          )}
+          {author.data.socialLinks.bluesky && (
+            <li>
+              <a href={author.data.socialLinks.bluesky} class="underline intent:no-underline">
+                Bluesky
+              </a>
+            </li>
+          )}
+          {author.data.socialLinks.mastodon && (
+            <li>
+              <a href={author.data.socialLinks.mastodon} class="underline intent:no-underline">
+                Mastodon
+              </a>
+            </li>
+          )}
+          {author.data.socialLinks.x && (
+            <li>
+              <a href={author.data.socialLinks.x} class="underline intent:no-underline">
+                X
+              </a>
+            </li>
+          )}
         </ul>
-      </section>
-    </div>
-  </main>
-</Base>
+      )
+    }
+  </header>
+  <section class="w-full max-w-3xl mx-auto grid gap-10">
+    {postsWithAuthors.map((post) => <BlogPostCard post={post} authors={post.authors} />)}
+  </section>
+</Blog>

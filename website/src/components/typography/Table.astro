@@ -11,6 +11,6 @@ type Props<Tag extends HTMLTag = 'table'> = Polymorphic<{ as: Tag }> & {
 const { as: Tag = 'table', maxWidth = true, class: className, ...props } = Astro.props;
 ---
 
-<Tag class={twMerge(clsx('w-full my-10 border-collapse', maxWidth && 'max-w-3xl mx-auto'), className)} {...props}>
+<Tag class={twMerge(clsx('w-full my-12 border-collapse', maxWidth && 'max-w-3xl mx-auto'), className)} {...props}>
   <slot />
 </Tag>

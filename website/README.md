@@ -187,7 +187,6 @@ Wraps Astro's `glob` loader to provide access to both transformed entry IDs and 
 - **Formats**: Markdown (`.md`) and MDX (`.mdx`)
 - **Required frontmatter**: `title`, `description`
 - **Auto-injected**: `pubDate` (from filename), `updatedDate` (from git)
-- **Optional**: `heroImage`
 
 #### Docs Collection
 
@@ -260,7 +259,7 @@ See [types/docs.ts](src/types/docs.ts) for complete type definitions.
 #### Adding a Blog Post
 
 1. Create file: `src/content/blog/YYYY-MM-DD-slug.md`
-2. Add frontmatter: `title`, `description`, optional `heroImage`
+2. Add frontmatter: `title`, `description`
 3. Write content in Markdown or MDX
 4. The `pubDate` is automatically extracted from filename
 5. The `updatedDate` is automatically pulled from git on subsequent commits

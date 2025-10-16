@@ -1,6 +1,7 @@
 import type { Sidebar } from '@/types/docs';
 
 export const sidebar: Sidebar = [
+  { sidebarLabel: 'Writing guides', slug: 'how-to/write-guides', devOnly: true },
   {
     sidebarLabel: 'Getting started',
     contents: [
@@ -16,6 +17,8 @@ export const sidebar: Sidebar = [
   },
   {
     sidebarLabel: 'How-To Guides',
-    contents: [{ slug: 'how-to/everyone' }],
+    contents: [
+      { slug: 'how-to/everyone' },
+    ],
   },
 ];
