@@ -41,8 +41,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Tooltip.Root delay={600} closeDelay={0}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-              <PlayIcon className={styles.PlayIcon}></PlayIcon>
-              <PauseIcon className={styles.PauseIcon}></PauseIcon>
+              <PlayIcon className={`${styles.Icon} ${styles.PlayIcon}`}></PlayIcon>
+              <PauseIcon className={`${styles.Icon} ${styles.PauseIcon}`}></PauseIcon>
             </PlayButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
@@ -76,9 +76,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Popover.Root openOnHover delay={200} closeDelay={100}>
           <Popover.Trigger>
             <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
-              <VolumeHighIcon className={styles.VolumeHighIcon} />
-              <VolumeLowIcon className={styles.VolumeLowIcon} />
-              <VolumeOffIcon className={styles.VolumeOffIcon} />
+              <VolumeHighIcon className={`${styles.Icon} ${styles.VolumeHighIcon}`} />
+              <VolumeLowIcon className={`${styles.Icon} ${styles.VolumeLowIcon}`} />
+              <VolumeOffIcon className={`${styles.Icon} ${styles.VolumeOffIcon}`} />
             </MuteButton>
           </Popover.Trigger>
           <Popover.Portal>
@@ -98,8 +98,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Tooltip.Root delay={600} closeDelay={0}>
           <Tooltip.Trigger>
             <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullScreenButton}`}>
-              <FullscreenEnterIcon className={styles.FullScreenEnterIcon} />
-              <FullscreenExitIcon className={styles.FullScreenExitIcon} />
+              <FullscreenEnterIcon className={`${styles.Icon} ${styles.FullScreenEnterIcon}`} />
+              <FullscreenExitIcon className={`${styles.Icon} ${styles.FullScreenExitIcon}`} />
             </FullscreenButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>

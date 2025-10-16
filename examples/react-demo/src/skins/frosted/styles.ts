@@ -49,6 +49,7 @@ const styles: MediaDefaultSkinStyles = {
     // High contrast mode
     'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20',
   ),
+  Icon: cn('icon'),
   Button: cn(
     'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-full',
     // Background/foreground
@@ -67,8 +68,8 @@ const styles: MediaDefaultSkinStyles = {
     'active:scale-95',
   ),
   IconButton: cn(
-    'grid [&_svg]:[grid-area:1/1]',
-    '[&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20',
+    'grid [&_.icon]:[grid-area:1/1]',
+    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20',
   ),
   PlayButton: cn(
     '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
@@ -96,7 +97,7 @@ const styles: MediaDefaultSkinStyles = {
   PlayTooltip: cn('play-tooltip'),
   PauseTooltip: cn('pause-tooltip'),
   MuteButton: cn(
-    '[&_svg]:opacity-0',
+    '[&_.icon]:opacity-0',
     '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
     '[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
     '[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',

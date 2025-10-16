@@ -83,9 +83,13 @@
   @apply active:scale-95;
 }
 
+.Icon {
+  @apply icon;
+}
+
 .IconButton {
-  @apply grid [&_svg]:[grid-area:1/1];
-  @apply [&_svg]:shrink-0 [&_svg]:transition-opacity [&_svg]:duration-300 [&_svg]:ease-out [&_svg]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_svg]:shadow-black/20;
+  @apply grid [&_.icon]:[grid-area:1/1];
+  @apply [&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/20;
 }
 
 .PlayButton {
@@ -129,7 +133,7 @@
 }
 
 .MuteButton {
-  @apply [&_svg]:opacity-0;
+  @apply [&_.icon]:opacity-0;
   @apply [&[data-volume-level="high"]_.volume-high-icon]:opacity-100;
   @apply [&[data-volume-level="medium"]_.volume-low-icon]:opacity-100;
   @apply [&[data-volume-level="low"]_.volume-low-icon]:opacity-100;
