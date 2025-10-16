@@ -169,25 +169,45 @@ To determine exactly which Tailwind patterns work with `@apply`, created a secon
 
 **Location:** `examples/react-demo/src/skins/frosted-css-module-simple/`
 
-### Patterns Removed
+### Patterns Removed (Build Errors)
+
+**Category 1: Named Groups/Containers - These cause literal compilation errors:**
 
 - ❌ Named groups: `group/root`, `group/button`, `group/slider`
 - ❌ Named containers: `@container/root`, `@container/controls`
 - ❌ Reactions to named groups: `group-hover/root:opacity-100`
 - ❌ Container query size variants: `@7xl/root:text-sm`
-- ❌ Arbitrary child selectors: `[&_svg]:opacity-0`, `[&_.pause-icon]:opacity-100`
+- ❌ Custom utilities: `text-shadow`, `text-shadow-2xs` (not in standard Tailwind)
+- ❌ Custom variants: `reduced-transparency:*`, `contrast-more:*` (require `@custom-variant` definition)
+
+**Error when used:**
+```
+Cannot apply unknown utility class `group/root`.
+```
 
 ### Patterns Kept (These DO work with @apply!)
 
+**Category 2: Arbitrary Child Selectors - These compile but may not work as expected:**
+
+These patterns work syntactically with `@apply`, but have a critical limitation: **they require exact class names on descendant elements**. When you use `@apply [&_.pause-icon]:opacity-100`, the CSS expects child elements to have the exact class `pause-icon`. This creates a tight coupling between CSS and JSX that breaks the abstraction of CSS modules.
+
+Examples that work syntactically but create class name dependencies:
+- ⚠️ `[&_.icon]:[grid-area:1/1]` - Requires children with class `icon`
+- ⚠️ `[&_.pause-icon]:opacity-100` - Requires children with class `pause-icon`
+- ⚠️ `[&[data-paused]_.play-icon]:opacity-0` - Requires children with class `play-icon`
+
+**Working patterns (no class name dependencies):**
 - ✅ Basic utility classes: `relative`, `overflow-clip`, `text-sm`
 - ✅ Standard pseudo-classes: `hover:`, `focus-visible:`, `active:`
 - ✅ Standard variants: `dark:`
-- ✅ Data attribute selectors: `data-[paused]`, `data-[fullscreen]`
+- ✅ Data attribute selectors on self: `data-[paused]`, `data-[fullscreen]`
 - ✅ Arbitrary values: `rounded-[inherit]`, `origin-[var(--transform-origin)]`
+- ✅ Arbitrary properties: `[grid-area:1/1]`
 - ✅ Backdrop filters: `backdrop-blur-3xl`, `backdrop-saturate-150`
 - ✅ Gradients: `bg-gradient-to-t from-black/50 via-black/20`
 - ✅ Transitions: `transition-[transform,scale,opacity]`
 - ✅ Ring utilities: `ring-1 ring-white/10 ring-inset`
+- ✅ Pseudo-elements: `before:`, `after:` with arbitrary values
 
 ### Result
 
@@ -195,16 +215,79 @@ To determine exactly which Tailwind patterns work with `@apply`, created a secon
 
 The simplified CSS module version compiles without errors when using `@reference "../../globals.css"` and removing all named group/container patterns.
 
-### Key Insight
+### Key Insights
 
-The `@apply` directive works with **most** Tailwind utilities EXCEPT:
-1. Named variant groups (`group/name`, `@container/name`)
-2. Arbitrary child/descendant selectors (`[&_element]`, `[&_.class]`)
+The `@apply` directive has **two categories of limitations**:
+
+**Category 1: Build Errors (Cannot use at all)**
+- Named variant groups (`group/name`, `@container/name`)
+- Custom utilities/variants not defined in standard Tailwind
+
+**Category 2: Class Name Dependencies (Compile but break abstraction)**
+- Arbitrary child/descendant selectors (`[&_.class-name]`) work syntactically
+- BUT they create tight coupling between CSS and JSX
+- Require exact class names on child elements
+- Break the abstraction benefit of CSS modules
+- Defeated the purpose of using CSS modules in the first place
 
 These patterns are fundamental to the frosted skin's architecture for:
 - Coordinating hover states across parent/child elements
 - Responsive typography via container queries
 - Icon visibility toggling via descendant selectors
+
+## Summary: Two Categories of @apply Limitations
+
+### Category 1: Build-Time Errors ❌
+
+These patterns cause **literal compilation errors** and cannot be used with `@apply`:
+
+```css
+/* ❌ ERROR: Cannot apply unknown utility class */
+.Container {
+  @apply group/root;              /* Named groups */
+  @apply @container/controls;     /* Named containers */
+  @apply text-shadow;             /* Custom utilities */
+  @apply reduced-transparency:*;  /* Custom variants */
+}
+```
+
+**Impact:** Build fails immediately. Must be removed or replaced with vanilla CSS.
+
+### Category 2: Class Name Dependencies ⚠️
+
+These patterns compile successfully but create **tight coupling** between CSS and JSX:
+
+```css
+/* ⚠️ COMPILES but requires exact class names on children */
+.IconButton {
+  @apply [&_.icon]:[grid-area:1/1];           /* Expects child with class="icon" */
+  @apply [&_.pause-icon]:opacity-100;         /* Expects child with class="pause-icon" */
+  @apply [&[data-paused]_.play-icon]:hidden;  /* Expects child with class="play-icon" */
+}
+```
+
+**Impact:**
+- CSS compiles without errors
+- BUT requires JSX to use specific class names: `<svg className="icon">`, `<span className="pause-icon">`
+- Breaks CSS module abstraction (defeats the purpose)
+- Creates maintenance burden (must coordinate class names between CSS and JSX)
+
+### Why This Matters
+
+The frosted skin uses **both categories** extensively:
+
+1. **Named groups** for coordinating hover states → Category 1 (build errors)
+2. **Arbitrary child selectors** for icon visibility → Category 2 (class name dependencies)
+
+Both limitations make CSS modules impractical for this use case.
+
+### Recommendation
+
+**Use inline Tailwind classes** (current approach) instead of CSS modules with `@apply`:
+- Avoids both categories of limitations
+- No class name coordination required
+- Maintains Tailwind's full feature set
+- Simpler mental model (all styling in one place)
 
 ## Files Changed
 
@@ -220,5 +303,5 @@ These patterns are fundamental to the frosted skin's architecture for:
 - `examples/react-demo/src/App.tsx` (updated to register both CSS module skins)
 
 **Status:** Both test versions remain in place:
-- Full version demonstrates the limitation with named groups
-- Simplified version demonstrates what DOES work with @apply
+- Full version demonstrates Category 1 limitations (build errors)
+- Simplified version demonstrates Category 2 limitations (class name dependencies)
