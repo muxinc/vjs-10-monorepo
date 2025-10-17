@@ -1,8 +1,8 @@
 ---
 import { GITHUB_REPO_URL } from '@/consts';
-import FooterEasterEgg from './FooterEasterEgg';
 
 const navLinks = [
+  { href: '/', label: 'Home' },
   { href: '/docs', label: 'Docs' },
   { href: '/blog', label: 'Blog' },
   { href: '/privacy', label: 'Privacy' },
@@ -16,21 +16,18 @@ const { class: className } = Astro.props;
 ---
 
 <footer class:list={['border-t border-light-40 py-6 px-3 grid gap-3', className]}>
-  <div class="flex flex-col sm:flex-row items-center gap-3">
-    <a href="/" class="text-h5 px-3">VideoJS</a>
-    <nav class="flex">
-      {
-        navLinks.map((link) => (
-          <a href={link.href} class="intent:underline px-3 py-2">
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
-  </div>
+  <nav class="text-center sm:text-left">
+    {
+      navLinks.map((link) => (
+        <a href={link.href} class="intent:underline px-3 py-2 inline-block">
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
 
   <p class="text-sm text-center sm:text-left text-dark-40 px-3">
-    © 2010 &ndash; present VideoJS contributors
+    © 2010&ndash;{new Date().getFullYear()}, VideoJS contributors
     <br />
     VideoJS is a free and open source HTML5 video player framework
     <br />

@@ -5,6 +5,7 @@ import { Font } from 'astro:assets';
 import { SITE_TITLE } from '@/consts';
 
 import '@/styles/globals.css';
+import FooterEasterEgg from '@/components/FooterEasterEgg.astro';
 
 interface Props {
   title: string | string[];
@@ -60,17 +61,20 @@ const fullTitle = Array.isArray(title)
     <!-- Whatever else -->
     <slot name="head" />
   </head>
-  <!-- BaseUI requires body.relative and div.root -->
+  <!-- BaseUI requires body.relative and div.isolate -->
   <body
-    class="relative
-    bg-light-80 text-dark-100
-    font-sans antialiased text-pretty text-base
-    min-w-80
-    [--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]
-    selection:bg-yellow selection:text-dark-100"
+    class:list={[
+      'relative',
+      'bg-light-80 text-dark-100',
+      'font-sans antialiased text-pretty text-base',
+      'min-w-80',
+      '[--nav-h:calc(var(--spacing)*13)] lg:[--nav-h:calc(var(--spacing)*14)]',
+      'selection:bg-yellow selection:text-dark-100',
+    ]}
   >
     <div class="isolate">
       <slot />
+      <FooterEasterEgg />
     </div>
   </body>
 </html>
