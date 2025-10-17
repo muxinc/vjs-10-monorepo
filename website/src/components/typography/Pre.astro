@@ -15,40 +15,8 @@ const { as: Tag = 'pre', maxWidth = true, class: className, style, ...props } = 
   <Tag
     class={twMerge('rounded-lg p-6 overflow-x-auto border border-light-40', className)}
     style={`${style};background-color:var(--color-light-100);`}
-    {...props}><slot /></Tag
+    {...props}
   >
+    <slot />
+  </Tag>
 </div>
-
-<script>
-  function setupCopyButtons() {
-    const buttons = document.querySelectorAll('[data-copy-button]');
-
-    buttons.forEach((button) => {
-      if (button.hasAttribute('data-listener-attached')) return;
-      button.setAttribute('data-listener-attached', 'true');
-
-      button.addEventListener('click', async () => {
-        const pre = button.parentElement?.querySelector('pre');
-        const code = pre?.querySelector('code');
-        const text = code?.textContent || pre?.textContent || '';
-
-        try {
-          await navigator.clipboard.writeText(text);
-          const originalText = button.textContent;
-          button.textContent = 'Copied!';
-          setTimeout(() => {
-            button.textContent = originalText;
-          }, 2000);
-        } catch (err) {
-          console.error('Failed to copy code:', err);
-        }
-      });
-    });
-  }
-
-  // Run on initial load
-  setupCopyButtons();
-
-  // Re-run after view transitions (for Astro's client-side navigation)
-  document.addEventListener('astro:page-load', setupCopyButtons);
-</script>
