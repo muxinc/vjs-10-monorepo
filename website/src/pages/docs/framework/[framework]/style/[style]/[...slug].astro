@@ -96,13 +96,15 @@ const jsonLdSchema = createTechArticleSchema({
   <main
     class:list={[
       'flex-1',
-      'grid grid-cols-1 xl:grid-cols-(--xl-grid-cols) auto-rows-min',
+      'grid grid-cols-1 xl:grid-cols-(--xl-grid-cols)',
       '[grid-template-areas:var(--grid-template-areas)] xl:[grid-template-areas:var(--xl-grid-template-areas)]',
+      'grid-rows-(--grid-rows) xl:grid-rows-1',
       '[--scroll-mt:var(--mobile-toc-h)] xl:[--scroll-mt:0px]',
     ]}
     style="
       --xl-grid-cols: minmax(0, 1fr) calc(var(--spacing) * 59);
       --grid-template-areas: 'selectors' 'toc' 'article';
+      --grid-rows: min-content min-content minmax(0, 1fr);
       --xl-grid-template-areas: 'article toc';
       --mobile-toc-h: calc(var(--spacing) * 15);
     "
@@ -111,13 +113,13 @@ const jsonLdSchema = createTechArticleSchema({
       <Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
     </div>
     <div
-      class="sticky overflow-y-auto z-40"
+      class="sticky overflow-y-auto z-30"
       style="grid-area: toc; top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
     >
       <TableOfContents client:idle headings={filteredHeadings} />
     </div>
-    <div class="@container px-6 lg:px-12" style="grid-area: article;">
-      <article class="mb-18">
+    <div class="@container px-6 lg:px-12 flex flex-col" style="grid-area: article;">
+      <article class="mb-18 flex-1">
         <header class="border-b border-light-40 max-w-3xl mx-auto py-8 mb-8">
           <H3 as="h1" class="mt-0 mb-2">{doc.data.title}</H3>
           <p class="@lg:font-medium">{doc.data.description}</p>
@@ -125,7 +127,6 @@ const jsonLdSchema = createTechArticleSchema({
         <Content components={{ ...defaultMarkdownComponents }} />
       </article>
       <footer class="mb-18 grid gap-5">
-        <!-- TODO might be nice to stick these to the bottom of the viewport for shorter guides -->
         <DocsNavigation prev={prev} next={next} framework={framework} style={style} docTitles={docTitles} />
         <EditPageButton filePath={`website/src/content/docs/${doc.id}.mdx`} />
       </footer>

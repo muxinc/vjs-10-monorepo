@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 
-@custom-variant intent (&:hover, &:focus-within);
-
 /* before we begin with tailwind, let's go over some global rules */
 /* dark mode should use dark chrome */
 @media (prefers-color-scheme: dark) {
@@ -29,6 +27,13 @@
   scroll-margin-top: calc(var(--nav-h) + var(--spacing) * 5 + var(--scroll-mt, 0px));
 }
 /* Ok, now let's do some tailwind stuff */
+@custom-variant intent (&:hover, &:focus-within);
+@custom-variant supports-container {
+  @supports (container: size) {
+    @slot;
+  }
+}
+
 /* theme inline tells tailwind to reference the value of these properties */
 @theme inline {
   --font-*: initial;
@@ -52,10 +57,10 @@
   --color-light-60: #d8d2b2;
   --color-light-40: #c7c2a4;
 
-  --color-brand-yellow: #fcb116;
-  --color-brand-orange: #f26222;
-  --color-brand-red: #ea3837;
-  --color-brand-purple: #a83b71;
+  --color-yellow: #fcb116;
+  --color-orange: #f26222;
+  --color-red: #ea3837;
+  --color-purple: #a83b71;
 
   /* --color-code-green: #3f895a; */
   /* --color-code-blue: #436590; */
