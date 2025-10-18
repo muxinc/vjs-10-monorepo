@@ -1,2 +1,2 @@
-export * from './default';
-export * from './toasted';
+export * from './frosted';
+export * from './minimal';

@@ -1,4 +1,4 @@
-export interface MediaDefaultSkinStyles {
+export interface FrostedSkinStyles {
   readonly MediaContainer: string;
   readonly Overlay: string;
   readonly Controls: string;
