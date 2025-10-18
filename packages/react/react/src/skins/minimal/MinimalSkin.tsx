@@ -27,7 +27,7 @@ type SkinProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
+export default function MinimalSkin({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}

@@ -1,4 +1,4 @@
-import type { MediaDefaultSkinStyles } from './types';
+import type { FrostedSkinStyles } from './types';
 
 // NOTE: Removing import to sidestep for compiler complexity (CJP)
 // import { cn } from '../../utils/cn';
@@ -9,7 +9,7 @@ function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-const styles: MediaDefaultSkinStyles = {
+const styles: FrostedSkinStyles = {
   MediaContainer: cn(
     'relative @container/root group/root overflow-clip',
     // Base typography
