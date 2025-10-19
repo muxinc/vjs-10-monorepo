@@ -181,6 +181,19 @@ export function getTemplateHTML() {
       media-popover-popup {
         background: rgb(20 20 30 / .7);
         padding: 14px 0;
+        --transition: .15s ease-in-out;
+        transition: transform var(--transition), scale var(--transition), opacity var(--transition);
+      }
+
+      media-popover-popup[data-starting-style] {
+        transition-duration: 0s;
+        transform: scale(0.9) translateY(8px);
+        opacity: 0;
+      }
+      
+      media-popover-popup[data-ending-style] {
+        transform: scale(0.9) translateY(8px);
+        opacity: 0;
       }
 
       /* VolumeSlider Component Styles */

@@ -183,7 +183,7 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
   );
 }
 
-function PopoverPortal({ children, root, rootId }: PopoverPortalProps): JSX.Element {
+function PopoverPortal({ children, root, rootId = '@default_portal_id' }: PopoverPortalProps): JSX.Element {
   return (
     <FloatingPortal root={root as HTMLElement} id={rootId as string}>
       {children}

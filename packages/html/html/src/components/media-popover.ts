@@ -8,6 +8,7 @@ export class MediaPopoverRoot extends HTMLElement {
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
+  #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
 
   constructor() {
     super();
@@ -22,6 +23,9 @@ export class MediaPopoverRoot extends HTMLElement {
   disconnectedCallback(): void {
     this.#clearHoverTimeout();
     this.#cleanup?.();
+
+    this.#transitionStatus = 'unmounted';
+    this.#updateVisibility();
   }
 
   static get observedAttributes(): string[] {
@@ -60,6 +64,17 @@ export class MediaPopoverRoot extends HTMLElement {
     if (this.#open === open) return;
 
     this.#open = open;
+
+    if (open) {
+      this.#transitionStatus = 'initial';
+      requestAnimationFrame(() => {
+        this.#transitionStatus = 'open';
+        this.#updateVisibility();
+      });
+    } else {
+      this.#transitionStatus = 'close';
+    }
+
     this.#updateVisibility();
 
     if (open) {
@@ -71,11 +86,22 @@ export class MediaPopoverRoot extends HTMLElement {
   }
 
   #updateVisibility(): void {
-    this.toggleAttribute('data-open', this.#open);
     this.style.display = 'contents';
 
     if (this.#popupElement) {
-      this.#popupElement.style.display = this.#open ? 'block' : 'none';
+      const placement = this.#positionerElement?.side ?? 'top';
+      this.#popupElement.setAttribute('data-side', placement);
+
+      this.#popupElement.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
+      this.#popupElement.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
+      this.#popupElement.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+      this.#popupElement.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+    }
+
+    const triggerElement = this.#triggerElement?.firstElementChild as HTMLElement;
+    if (triggerElement) {
+      triggerElement.setAttribute('aria-expanded', this.#open.toString());
+      triggerElement.toggleAttribute('data-popup-open', this.#open);
     }
   }
 
@@ -140,6 +166,43 @@ export class MediaPopoverTrigger extends HTMLElement {
     if (triggerElement) {
       triggerElement.setAttribute('aria-haspopup', 'true');
       triggerElement.setAttribute('aria-expanded', 'false');
+
+      const mutationObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes') {
+            const rootElement = this.closest('media-popover-root') as MediaPopoverRoot;
+            let popupElement = rootElement.querySelector('media-popover-popup') as MediaPopoverPopup;
+
+            if (!popupElement) {
+              const portalElement = rootElement.querySelector('media-popover-portal') as MediaPopoverPortal;
+              if (!portalElement) {
+                return;
+              }
+
+              popupElement = portalElement.querySelector('media-popover-popup') as MediaPopoverPopup;
+              if (!popupElement) {
+                return;
+              }
+            }
+
+            const attributeName = mutation.attributeName;
+            if (!attributeName || !attributeName.startsWith('data-')) {
+              return;
+            }
+
+            const attributeValue = triggerElement.getAttribute(attributeName);
+            if (attributeValue !== null) {
+              popupElement.setAttribute(attributeName, attributeValue);
+            } else {
+              popupElement.removeAttribute(attributeName);
+            }
+          }
+        });
+      });
+
+      mutationObserver.observe(triggerElement, {
+        attributes: true,
+      });
     }
   }
 }
