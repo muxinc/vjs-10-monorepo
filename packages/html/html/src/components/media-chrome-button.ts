@@ -43,7 +43,26 @@ export class MediaChromeButton extends HTMLElement {
     }
 
     this.addEventListener('click', this);
+    this.addEventListener('keydown', this);
   }
 
-  handleEvent(_event: Event): void {}
+  handleEvent(event: Event): void {
+    const { type } = event;
+    if (type === 'keydown') {
+      this.#handleKeyDown(event as KeyboardEvent);
+    }
+  }
+
+  #handleKeyDown = (event: KeyboardEvent): void => {
+    const { metaKey, altKey, key } = event;
+    if (metaKey || altKey || !['Enter', ' '].includes(key)) {
+      this.removeEventListener('keyup', this.#handleKeyUp);
+      return;
+    }
+    this.addEventListener('keyup', this.#handleKeyUp, { once: true });
+  };
+
+  #handleKeyUp = (_event: KeyboardEvent): void => {
+    this.handleEvent({ type: 'click' } as Event);
+  };
 }

@@ -1,4 +1,4 @@
-import type { Placement } from '@floating-ui/react';
+import type { OpenChangeReason, Placement } from '@floating-ui/react';
 import type { MutableRefObject, ReactNode } from 'react';
 
 import {
@@ -32,6 +32,7 @@ import {
 interface PopoverContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
+  openReason: OpenChangeReason | null;
   refs: ReturnType<typeof useFloating>['refs'];
   floatingStyles: ReturnType<typeof useFloating>['floatingStyles'];
   getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
@@ -83,10 +84,14 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>('top');
   const [sideOffset, setSideOffset] = useState(5);
+  const [openReason, setOpenReason] = useState<OpenChangeReason | null>(null);
 
   const { refs, floatingStyles, context } = useFloating({
     open,
-    onOpenChange: setOpen,
+    onOpenChange: (open, _event, reason) => {
+      setOpen(open);
+      setOpenReason(reason || null);
+    },
     placement,
     middleware: [offset(sideOffset), flip(), shift()],
     whileElementsMounted: autoUpdate,
@@ -96,6 +101,7 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
 
   const hover = useHover(context, {
     enabled: openOnHover,
+    mouseOnly: true,
     delay: {
       open: delay,
       close: closeDelay,
@@ -116,6 +122,7 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
   const value: PopoverContextType = useMemo(() => ({
     open,
     setOpen,
+    openReason,
     refs,
     floatingStyles,
     getReferenceProps,
@@ -123,7 +130,7 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
     context,
     updatePositioning,
     transitionStatus,
-  }), [open, refs, floatingStyles, getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus]);
+  }), [open, openReason, refs, floatingStyles, getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus]);
 
   return <PopoverContext.Provider value={value}>{children}</PopoverContext.Provider>;
 }
@@ -155,7 +162,7 @@ function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPo
 }
 
 function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
-  const { getFloatingProps, context, transitionStatus } = usePopoverContext();
+  const { getFloatingProps, context, openReason, transitionStatus } = usePopoverContext();
   const { refs, placement } = context;
   const triggerElement = refs.reference.current as HTMLElement | null;
 
@@ -170,6 +177,7 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
 
   return (
     <FloatingFocusManager
+      disabled={openReason === 'hover'}
       context={context}
       modal={false}
       initialFocus={context.refs.reference as MutableRefObject<HTMLElement>}

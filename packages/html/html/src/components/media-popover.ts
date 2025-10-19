@@ -1,8 +1,9 @@
 import type { Placement } from '@floating-ui/dom';
-
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 
-import { uniqueId } from '../utils/element-utils';
+import { tabbable } from 'tabbable';
+
+import { getActiveElement, getDocument, uniqueId } from '../utils/element-utils';
 
 export class MediaPopoverRoot extends HTMLElement {
   #open = false;
@@ -14,6 +15,8 @@ export class MediaPopoverRoot extends HTMLElement {
     super();
     this.addEventListener('mouseenter', this.#handleMouseEnter.bind(this));
     this.addEventListener('mouseleave', this.#handleMouseLeave.bind(this));
+    this.addEventListener('focusin', this.#handleFocusIn.bind(this));
+    this.addEventListener('focusout', this.#handleFocusOut.bind(this));
   }
 
   connectedCallback(): void {
@@ -156,6 +159,23 @@ export class MediaPopoverRoot extends HTMLElement {
       this.#setOpen(false);
     }, this.closeDelay);
   }
+
+  #handleFocusIn(_event: FocusEvent): void {
+    this.#setOpen(true);
+    addPreviouslyFocusedElement(getActiveElement(getDocument(this)));
+  }
+
+  #handleFocusOut = (event: FocusEvent): void => {
+    if (getPreviouslyFocusedElement() === this.#triggerElement?.firstElementChild) {
+      const popup = this.#popupElement?.firstElementChild as HTMLElement;
+      if (popup) {
+        addPreviouslyFocusedElement(event.relatedTarget as Element | null);
+        popup.focus();
+      }
+    } else {
+      this.#setOpen(false);
+    }
+  };
 }
 
 export class MediaPopoverTrigger extends HTMLElement {
@@ -209,6 +229,8 @@ export class MediaPopoverTrigger extends HTMLElement {
 
 export class MediaPopoverPortal extends HTMLElement {
   #portal: HTMLElement | null = null;
+  #childrenRefs: HTMLElement[] = [];
+  #tabbableChildren: Element[] = [];
 
   connectedCallback(): void {
     this.style.display = 'contents';
@@ -246,9 +268,33 @@ export class MediaPopoverPortal extends HTMLElement {
     this.#portal = document.createElement('div');
     this.#portal.slot = 'portal';
     this.#portal.id = uniqueId();
+
+    const beforeGuard = createFocusGuard();
+    beforeGuard.addEventListener('focusin', (_event: FocusEvent) => {
+
+    });
+
+    const afterGuard = createFocusGuard();
+    afterGuard.addEventListener('focusin', (_event: FocusEvent) => {
+
+    });
+
+    this.#childrenRefs = Array.from(this.children) as HTMLElement[];
+
+    this.#portal.append(beforeGuard, ...this.children, afterGuard);
     portalContainer.append(this.#portal);
 
-    this.#portal.append(...this.children);
+    // console.log(this.#childrenRefs);
+    this.#childrenRefs.forEach((child) => {
+      const tabbableElements = tabbable(child, {
+        includeContainer: true,
+      });
+      // console.log(tabbableElements);
+      tabbableElements.forEach((element: Element) => {
+        element.setAttribute('tabindex', '-1');
+        this.#tabbableChildren.push(element);
+      });
+    });
   }
 
   #cleanupPortal(): void {
@@ -259,6 +305,35 @@ export class MediaPopoverPortal extends HTMLElement {
     this.#portal.remove();
     this.#portal = null;
   }
+}
+
+function createFocusGuard(): HTMLElement {
+  const focusGuard = document.createElement('span');
+  focusGuard.setAttribute('tabindex', '-1');
+  focusGuard.setAttribute('data-focus-guard', '');
+  return focusGuard;
+}
+
+const LIST_LIMIT = 20;
+let previouslyFocusedElements: Element[] = [];
+
+function clearDisconnectedPreviouslyFocusedElements() {
+  previouslyFocusedElements = previouslyFocusedElements.filter(el => el.isConnected);
+}
+
+function addPreviouslyFocusedElement(element: Element | null): void {
+  clearDisconnectedPreviouslyFocusedElements();
+  if (element && element.localName !== 'body') {
+    previouslyFocusedElements.push(element);
+    if (previouslyFocusedElements.length > LIST_LIMIT) {
+      previouslyFocusedElements = previouslyFocusedElements.slice(-LIST_LIMIT);
+    }
+  }
+}
+
+function getPreviouslyFocusedElement(): Element | undefined {
+  clearDisconnectedPreviouslyFocusedElements();
+  return previouslyFocusedElements[previouslyFocusedElements.length - 1];
 }
 
 export class MediaPopoverPositioner extends HTMLElement {

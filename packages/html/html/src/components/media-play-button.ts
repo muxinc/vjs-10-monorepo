@@ -4,16 +4,15 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 import { playButtonStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
+import { setAttributes } from '../utils/element-utils';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class PlayButtonBase extends MediaChromeButton {
   _state: { paused: boolean; requestPlay: () => void; requestPause: () => void } | undefined;
 
-  constructor() {
-    super();
-  }
-
   handleEvent(event: Event): void {
+    super.handleEvent(event);
+
     const { type } = event;
     const state = this._state;
     if (state && type === 'click') {
@@ -32,15 +31,11 @@ export class PlayButtonBase extends MediaChromeButton {
   _update(props: any, state: any, _mediaStore?: any): void {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
-    // Make generic
-    this.toggleAttribute('data-paused', props['data-paused']);
-    this.setAttribute('role', props.role);
-    this.setAttribute('aria-label', props['aria-label']);
-    this.setAttribute('data-tooltip', props['data-tooltip']);
+    setAttributes(this, props);
   }
 }
 
-export const usePlayButtonState: StateHook<{ paused: boolean }> = {
+export const getPlayButtonState: StateHook<{ paused: boolean }> = {
   keys: playButtonStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
     ...playButtonStateDefinition.stateTransform(rawState),
@@ -48,13 +43,14 @@ export const usePlayButtonState: StateHook<{ paused: boolean }> = {
   }),
 };
 
-export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (state, _element) => {
+export const getPlayButtonProps: PropsHook<{ paused: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     'data-paused': state.paused,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
     role: 'button',
+    tabindex: '0',
     'aria-label': state.paused ? 'play' : 'pause',
     /** tooltip */
     'data-tooltip': state.paused ? 'Play' : 'Pause',
@@ -68,14 +64,13 @@ export const usePlayButtonProps: PropsHook<{ paused: boolean }> = (state, _eleme
 
 export const PlayButton: ConnectedComponentConstructor<PlayButtonState> = toConnectedHTMLComponent(
   PlayButtonBase,
-  usePlayButtonState,
-  usePlayButtonProps,
+  getPlayButtonState,
+  getPlayButtonProps,
   'PlayButton',
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
 if (!globalThis.customElements.get('media-play-button')) {
-  // @ts-ignore - Custom element constructor compatibility
   globalThis.customElements.define('media-play-button', PlayButton);
 }
 

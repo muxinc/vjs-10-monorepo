@@ -203,6 +203,9 @@ importers:
       '@vjs-10/media-store':
         specifier: workspace:*
         version: link:../../core/media-store
+      tabbable:
+        specifier: ^6.2.0
+        version: 6.2.0
     devDependencies:
       tsdown:
         specifier: ^0.15.4

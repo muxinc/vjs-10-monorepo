@@ -92,6 +92,7 @@ export class VolumeSliderRootBase extends HTMLElement {
     this.style.setProperty('--slider-pointer', `${coreState._pointerWidth.toFixed(3)}%`);
 
     this.setAttribute('role', 'slider');
+    this.setAttribute('tabindex', '0');
     this.setAttribute('aria-label', props['aria-label'] || 'Volume');
     this.setAttribute('aria-valuemin', '0');
     this.setAttribute('aria-valuemax', '100');

@@ -90,10 +90,11 @@ export class TimeSliderRootBase extends HTMLElement {
     this.style.setProperty('--slider-pointer', `${Math.round(coreState._pointerWidth)}%`);
 
     this.setAttribute('role', 'slider');
+    this.setAttribute('tabindex', '0');
     this.setAttribute('aria-label', props['aria-label'] || 'Seek');
     this.setAttribute('aria-valuemin', '0');
-    this.setAttribute('aria-valuemax', '100');
-    this.setAttribute('aria-valuenow', coreState._fillWidth.toString());
+    this.setAttribute('aria-valuemax', Math.round(state.duration).toString());
+    this.setAttribute('aria-valuenow', Math.round(state.currentTime).toString());
     this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
     this.setAttribute('aria-orientation', props['aria-orientation']);
 
