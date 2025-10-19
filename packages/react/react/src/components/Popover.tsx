@@ -14,6 +14,7 @@ import {
   useHover,
   useInteractions,
   useRole,
+  useTransitionStatus,
 } from '@floating-ui/react';
 
 import {
@@ -36,6 +37,7 @@ interface PopoverContextType {
   getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
   context: ReturnType<typeof useFloating>['context'];
   updatePositioning: (placement: Placement, sideOffset: number) => void;
+  transitionStatus: ReturnType<typeof useTransitionStatus>['status'];
 }
 
 interface PopoverRootProps {
@@ -89,6 +91,8 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
     whileElementsMounted: autoUpdate,
   });
 
+  const { status: transitionStatus } = useTransitionStatus(context);
+
   const hover = useHover(context, {
     enabled: openOnHover,
     delay: {
@@ -117,32 +121,30 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
     getFloatingProps,
     context,
     updatePositioning,
-  }), [open, refs, floatingStyles, getReferenceProps, getFloatingProps, context, updatePositioning]);
+    transitionStatus,
+  }), [open, refs, floatingStyles, getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus]);
 
   return <PopoverContext.Provider value={value}>{children}</PopoverContext.Provider>;
 }
 
 function PopoverTrigger({ children }: PopoverTriggerProps): JSX.Element {
-  const { refs, getReferenceProps } = usePopoverContext();
+  const { refs, getReferenceProps, open } = usePopoverContext();
 
   // eslint-disable-next-line react/no-clone-element, react/no-children-only
   return cloneElement(Children.only(children) as JSX.Element, {
     ref: refs.setReference,
     ...getReferenceProps(),
+    'data-popup-open': open ? '' : undefined,
   });
 }
 
 function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPositionerProps): JSX.Element | null {
-  const { open, refs, floatingStyles, updatePositioning } = usePopoverContext();
+  const { refs, floatingStyles, updatePositioning } = usePopoverContext();
 
   // Update positioning when props change
   useEffect(() => {
     updatePositioning(side, sideOffset);
   }, [side, sideOffset, updatePositioning]);
-
-  if (!open) {
-    return null;
-  }
 
   return (
     <div ref={refs.setFloating} style={floatingStyles}>
@@ -152,10 +154,30 @@ function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPo
 }
 
 function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
-  const { getFloatingProps } = usePopoverContext();
+  const { getFloatingProps, context, transitionStatus } = usePopoverContext();
+  const { refs, placement } = context;
+  const triggerElement = refs.reference.current as HTMLElement | null;
+
+  // Copy data attributes from trigger element
+  const dataAttributes = triggerElement?.attributes
+    ? Object.fromEntries(
+        Array.from(triggerElement.attributes)
+          .filter(attr => attr.name.startsWith('data-'))
+          .map(attr => [attr.name, attr.value]),
+      )
+    : {};
 
   return (
-    <div className={className} {...getFloatingProps()}>
+    <div
+      className={className}
+      {...getFloatingProps()}
+      {...dataAttributes}
+      data-side={placement}
+      data-starting-style={transitionStatus === 'initial' ? '' : undefined}
+      data-open={transitionStatus === 'initial' || transitionStatus === 'open' ? '' : undefined}
+      data-ending-style={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+      data-closed={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+    >
       {children}
     </div>
   );
