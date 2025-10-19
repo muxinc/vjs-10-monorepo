@@ -157,6 +157,8 @@ const styles: FrostedSkinStyles = {
     'relative px-1.5 py-3.5 rounded-full',
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
+    // Animation
+    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
     // Reduced transparency for users with preference
