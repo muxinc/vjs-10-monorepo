@@ -6,6 +6,7 @@ import { SITE_TITLE } from '@/consts';
 
 import '@/styles/globals.css';
 import FooterEasterEgg from '@/components/FooterEasterEgg.astro';
+import Posthog from '@/components/Posthog.astro';
 
 interface Props {
   title: string | string[];
@@ -63,6 +64,9 @@ const fullTitle = Array.isArray(title)
 
     {/* Whatever else */}
     <slot name="head" />
+
+    {/* Analytics */}
+    <Posthog />
   </head>
   <body
     class:list={[

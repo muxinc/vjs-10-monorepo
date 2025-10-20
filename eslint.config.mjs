@@ -26,6 +26,7 @@ export default antfu(
       '**/.vercel/',
       '**/dist/',
       '**/styles/vjs.css',
+      'website/src/components/Posthog.astro',
     ],
     plugins: {
       'jsx-a11y': jsxA11y,
