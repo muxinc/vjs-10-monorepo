@@ -1,26 +1,39 @@
 export const FRAMEWORK_STYLES = {
+  react: ['css', 'tailwind'],
   html: ['css', 'tailwind'],
-  react: ['css', 'tailwind', 'styled-components'],
 } as const;
-
-export const SUPPORTED_FRAMEWORKS = Object.keys(FRAMEWORK_STYLES) as (keyof typeof FRAMEWORK_STYLES)[];
 
 export type SupportedFramework = keyof typeof FRAMEWORK_STYLES;
 export type SupportedStyle<F extends SupportedFramework> = (typeof FRAMEWORK_STYLES)[F][number];
 export type AnySupportedStyle = SupportedStyle<SupportedFramework>;
 
-/**
- * Get the available styles for a given framework
- */
-export function getAvailableStyles<F extends SupportedFramework>(framework: F): readonly SupportedStyle<F>[] {
-  return FRAMEWORK_STYLES[framework];
-}
+export const SUPPORTED_FRAMEWORKS = Object.keys(FRAMEWORK_STYLES) as (keyof typeof FRAMEWORK_STYLES)[];
+export const DEFAULT_FRAMEWORK = Object.keys(FRAMEWORK_STYLES)[0] as SupportedFramework;
 
-/**
- * Get the default style for a given framework (first available style)
- */
+export const ALL_FRAMEWORK_STYLE_COMBINATIONS = SUPPORTED_FRAMEWORKS.flatMap((framework) => {
+  const availableStyles = FRAMEWORK_STYLES[framework];
+  return availableStyles.map(style => ({
+    framework,
+    style,
+    key: `${framework}-${style}`,
+  }));
+});
+
 export function getDefaultStyle<F extends SupportedFramework>(framework: F): SupportedStyle<F> {
   return FRAMEWORK_STYLES[framework][0];
+}
+
+export function isValidFramework(value: string | undefined | null): value is SupportedFramework {
+  if (!value) return false;
+  return SUPPORTED_FRAMEWORKS.includes(value as SupportedFramework);
+}
+
+export function isValidStyleForFramework(
+  framework: SupportedFramework,
+  style: string | undefined | null,
+): style is AnySupportedStyle {
+  if (!style) return false;
+  return FRAMEWORK_STYLES[framework].includes(style as any);
 }
 
 export interface Guide {
@@ -28,12 +41,14 @@ export interface Guide {
   sidebarLabel?: string; // defaults to guide title
   frameworks?: SupportedFramework[];
   styles?: AnySupportedStyle[];
+  devOnly?: boolean; // only visible in development mode
 }
 
 export interface Section {
   sidebarLabel: string;
   frameworks?: SupportedFramework[];
   styles?: AnySupportedStyle[];
+  devOnly?: boolean; // only visible in development mode
   contents: Array<Guide | Section>;
 }
 

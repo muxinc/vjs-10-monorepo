@@ -1,0 +1,22 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+type Props<Tag extends HTMLTag = 'pre'> = Polymorphic<{ as: Tag }> & {
+  maxWidth?: boolean;
+  class?: string;
+};
+
+const { as: Tag = 'pre', maxWidth = true, class: className, style, ...props } = Astro.props;
+---
+
+<div class={twMerge(clsx('relative my-6 group', maxWidth && 'max-w-3xl mx-auto'))}>
+  <Tag
+    class={twMerge('rounded-lg p-6 overflow-x-auto overflow-y-scroll max-h-96 border border-light-40', className)}
+    style={`${style};background-color:var(--color-light-100);`}
+    {...props}
+  >
+    <slot />
+  </Tag>
+</div>

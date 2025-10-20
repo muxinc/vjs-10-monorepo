@@ -1,5 +1,3 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
-
 export const SITE_TITLE = 'Video.js 10';
-export const SITE_DESCRIPTION = 'Modern video player framework with multi-platform support';
+export const SITE_DESCRIPTION = `For over 15 years, Video.js has been the world's web video player. Now rebuilt in v10 for modern development and performance.`;
+export const GITHUB_REPO_URL = 'https://github.com/muxinc/vjs-10-monorepo/';

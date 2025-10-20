@@ -1,104 +1,74 @@
 ---
-import { type CollectionEntry, getCollection, getEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, getEntries } from 'astro:content';
 
-import FormattedDate from '@/components/FormattedDate.astro';
-import { SITE_TITLE } from '@/consts';
-import Base from '@/layouts/Base.astro';
+import BlogPostCard from '@/components/blog/BlogPostCard.astro';
+import Blog from '@/layouts/Blog.astro';
+import JsonLd from '@/components/JsonLd.astro';
+import { createProfilePageSchema } from '@/utils/jsonLd/schemas';
+import { AuthorSocialLinks } from '@/components/blog/AuthorSocialLinks';
 
 export async function getStaticPaths() {
-	const authors = await getCollection('authors');
-	return authors.map((author) => ({
-		params: { author: author.id },
-		props: { author },
-	}));
+  const authors = await getCollection('authors');
+  return authors.map((author) => ({
+    params: { author: author.id },
+    props: { author },
+  }));
 }
 
 type Props = {
-	author: CollectionEntry<'authors'>;
+  author: CollectionEntry<'authors'>;
 };
 
 const { author } = Astro.props;
 
 // Get all blog posts by this author
 const allPosts = await getCollection('blog');
-const authorPosts = allPosts.filter((post) =>
-	post.data.authors.some((a) => a.id === author.id),
+const authorPosts = allPosts.filter((post) => post.data.authors.some((a) => a.id === author.id));
+const sortedPosts = authorPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Resolve author references for all posts
+const postsWithAuthors = await Promise.all(
+  sortedPosts.map(async (post) => ({
+    ...post,
+    authors: await getEntries(post.data.authors),
+  })),
 );
-const sortedPosts = authorPosts.sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+
+// Build JSON-LD schema for ProfilePage
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const jsonLdSchema = createProfilePageSchema({
+  url: pageUrl,
+  author,
+  posts: authorPosts,
+  siteUrl: Astro.site!.toString(),
+});
 ---
 
-<Base
-	title={`${author.data.name} - ${SITE_TITLE}`}
-	description={author.data.bio || `Posts by ${author.data.name}`}
->
-	<main class="py-8">
-		<div class="max-w-4xl mx-auto">
-			<article class="mb-12">
-				<div class="flex items-start gap-6 mb-6">
-					{author.data.avatar && <img src={author.data.avatar} alt={author.data.name} width="150" height="150" class="rounded" />}
-					<div>
-						<h1 class="text-3xl font-bold mb-2">{author.data.name}</h1>
-						{author.data.bio && <p class="text-gray-600 mb-4">{author.data.bio}</p>}
-						{
-							author.data.socialLinks && (
-								<ul class="flex gap-4 flex-wrap">
-									{author.data.socialLinks.x && (
-										<li>
-											<a href={author.data.socialLinks.x} class="hover:underline">X</a>
-										</li>
-									)}
-									{author.data.socialLinks.bluesky && (
-										<li>
-											<a href={author.data.socialLinks.bluesky} class="hover:underline">Bluesky</a>
-										</li>
-									)}
-									{author.data.socialLinks.mastodon && (
-										<li>
-											<a href={author.data.socialLinks.mastodon} class="hover:underline">Mastodon</a>
-										</li>
-									)}
-									{author.data.socialLinks.github && (
-										<li>
-											<a href={author.data.socialLinks.github} class="hover:underline">GitHub</a>
-										</li>
-									)}
-									{author.data.socialLinks.linkedin && (
-										<li>
-											<a href={author.data.socialLinks.linkedin} class="hover:underline">LinkedIn</a>
-										</li>
-									)}
-									{author.data.socialLinks.website && (
-										<li>
-											<a href={author.data.socialLinks.website} class="hover:underline">Website</a>
-										</li>
-									)}
-								</ul>
-							)
-						}
-					</div>
-				</div>
-			</article>
-
-			<section>
-				<h2 class="text-2xl font-bold mb-6">Posts by {author.data.shortName}</h2>
-				<ul class="space-y-6">
-					{
-						sortedPosts.map((post) => (
-							<li class="border-b pb-6 last:border-b-0">
-								<a href={`/blog/${post.id}`} class="block hover:opacity-80">
-									<h3 class="text-xl font-semibold mb-2">{post.data.title}</h3>
-									<p class="text-gray-600 mb-2">{post.data.description}</p>
-									<p class="text-sm text-gray-500">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</div>
-	</main>
-</Base>
+<Blog title={[author.data.name, 'Blog']} description={`Posts by ${author.data.name} on the Video.js blog`}>
+  <JsonLd slot="head" schema={jsonLdSchema} />
+  <header
+    class="mb-10 w-full max-w-3xl mx-auto grid gap-y-5 gap-x-10 grid-cols-1 md:grid-cols-(--md-grid-cols)"
+    style={author.data.avatar ? '--md-grid-cols: auto minmax(0, 1fr);' : undefined}
+  >
+    {
+      author.data.avatar && (
+        <img
+          src={author.data.avatar}
+          alt={author.data.name}
+          class="w-24 h-24 md:w-36 md:h-36 rounded-full border border-light-40 bg-light-100 row-span-3"
+        />
+      )
+    }
+    <h1 class="text-h2 mb-1">{author.data.name}</h1>
+    {author.data.bio && <p class="text-md text-dark-80 mb-4">{author.data.bio}</p>}
+    {
+      author.data.socialLinks && (
+        <AuthorSocialLinks client:idle socialLinks={author.data.socialLinks} className="flex gap-2" />
+      )
+    }
+  </header>
+  <section class="w-full max-w-3xl mx-auto grid gap-10">
+    {postsWithAuthors.map((post) => <BlogPostCard post={post} authors={post.authors} />)}
+  </section>
+</Blog>

@@ -5,22 +5,28 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 export default antfu(
   {
     react: true,
+    astro: true,
     typescript: true,
     formatters: {
       css: true,
       html: true,
+      astro: 'prettier',
       markdown: 'prettier',
       svg: 'prettier',
     },
     stylistic: {
       semi: true,
-      spacedComment: true,
       indent: 2,
       quotes: 'single',
     },
     // Many are ignored by default.
     // https://github.com/antfu/eslint-config/blob/main/src/globs.ts#L56
-    ignores: ['**/.astro/'],
+    ignores: [
+      '**/.astro/',
+      '**/.vercel/',
+      '**/dist/',
+      '**/styles/vjs.css',
+    ],
     plugins: {
       'jsx-a11y': jsxA11y,
     },

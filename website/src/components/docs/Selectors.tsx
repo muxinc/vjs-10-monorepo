@@ -1,142 +1,92 @@
-import type { AnySupportedStyle, SupportedFramework } from '@/types/docs';
+import type { AnySupportedStyle, SupportedFramework, SupportedStyle } from '@/types/docs';
 
-import { navigate } from 'astro:transitions/client';
+import { Select } from '@/components/Select';
+import { FRAMEWORK_STYLES, isValidFramework, isValidStyleForFramework, SUPPORTED_FRAMEWORKS } from '@/types/docs';
+import { resolveFrameworkChange, resolveStyleChange } from '@/utils/docs/routing';
 
-import { getAvailableStyles, getDefaultStyle, SUPPORTED_FRAMEWORKS } from '@/types/docs';
-import { findFirstGuide, findGuideBySlug, getValidStylesForGuide } from '@/utils/docs/sidebar';
-
-interface SelectorProps {
-  currentFramework: SupportedFramework;
-  currentStyle: AnySupportedStyle;
+interface SelectorProps<T extends SupportedFramework> {
+  currentFramework: T;
+  currentStyle: SupportedStyle<T>;
+  currentSlug: string;
 }
 
-/**
- * Extract the current guide slug from the docs URL.
- * URL format: /docs/framework/{framework}/style/{style}/{slug}/
- * @returns The guide slug (everything after the style parameter)
- */
-function getCurrentGuideSlug(): string {
-  const pathParts = window.location.pathname.split('/').filter(Boolean);
-  const styleIndex = pathParts.indexOf('style');
-  const slugParts = pathParts.slice(styleIndex + 2); // Everything after the style value
-  return slugParts.join('/');
-}
+export function Selectors({
+  currentFramework,
+  currentStyle,
+  currentSlug,
+}: SelectorProps<SupportedFramework>) {
+  // TODO: use astro view transitions to preserve scroll position when switching from the same slug to the same slug
+  const handleFrameworkChange = (newFramework: SupportedFramework | null) => {
+    if (newFramework === null) return;
+    if (!isValidFramework(newFramework)) return;
 
-export function Selectors({ currentFramework, currentStyle }: SelectorProps) {
-  const handleFrameworkChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newFramework = event.target.value as SupportedFramework;
+    const { url, shouldReplace } = resolveFrameworkChange({
+      currentFramework,
+      currentStyle,
+      currentSlug,
+      newFramework,
+    });
 
-    // Get current guide slug from URL
-    const currentGuideSlug = getCurrentGuideSlug();
-
-    // Find the current guide in the sidebar
-    const currentGuide = findGuideBySlug(currentGuideSlug);
-
-    if (!currentGuide) {
-      // No current guide found, redirect to first guide of new framework
-      const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
-      if (firstGuide) {
-        navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      } else {
-        navigate('/docs/');
-      }
-      return;
+    if (shouldReplace) {
+      // Maintaining the current slug, navigate without pushing onto the history stack
+      window.location.replace(url);
+    } else {
+      // Changing slug, use normal navigation
+      window.location.href = url;
     }
-
-    // Check if guide is available for the new framework
-    if (currentGuide.frameworks && !currentGuide.frameworks.includes(newFramework)) {
-      // Guide not available in new framework, redirect to first guide
-      const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
-      if (firstGuide) {
-        navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      } else {
-        navigate('/docs/');
-      }
-      return;
-    }
-
-    // Get valid styles for this guide in the new framework
-    const validStyles = getValidStylesForGuide(currentGuide, newFramework);
-
-    if (validStyles.length === 0) {
-      // Guide not available in new framework, go to first guide
-      const firstGuide = findFirstGuide(newFramework, getDefaultStyle(newFramework));
-      if (firstGuide) {
-        navigate(`/docs/framework/${newFramework}/style/${getDefaultStyle(newFramework)}/${firstGuide}/`);
-      } else {
-        navigate('/docs/');
-      }
-      return;
-    }
-
-    // Pick best style: current if still valid, otherwise first valid
-    const newStyle = validStyles.includes(currentStyle) ? currentStyle : validStyles[0];
-
-    // Navigate to same guide with adjusted framework/style
-    navigate(`/docs/framework/${newFramework}/style/${newStyle}/${currentGuideSlug}/`);
   };
 
-  const handleStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newStyle = event.target.value as AnySupportedStyle;
+  const handleStyleChange = (newStyle: AnySupportedStyle | null) => {
+    if (newStyle === null) return;
+    if (!isValidStyleForFramework(currentFramework, newStyle)) return;
 
-    // Get current guide slug from URL
-    const currentGuideSlug = getCurrentGuideSlug();
+    const { url, shouldReplace } = resolveStyleChange({
+      currentFramework,
+      currentStyle,
+      currentSlug,
+      newStyle,
+    });
 
-    // Find the current guide in the sidebar
-    const currentGuide = findGuideBySlug(currentGuideSlug);
-
-    if (!currentGuide) {
-      // No current guide found, redirect to first guide of new style
-      const firstGuide = findFirstGuide(currentFramework, newStyle);
-      if (firstGuide) {
-        navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${firstGuide}/`);
-      } else {
-        navigate('/docs/');
-      }
-      return;
+    if (shouldReplace) {
+      // Maintaining the current slug, navigate without pushing onto the history stack
+      window.location.replace(url);
+    } else {
+      // Changing slug, use normal navigation
+      window.location.href = url;
     }
-
-    // Check if guide is valid for current framework and new style
-    const validStyles = getValidStylesForGuide(currentGuide, currentFramework);
-
-    if (!validStyles.includes(newStyle)) {
-      // Guide not available for new style, go to first guide
-      const firstGuide = findFirstGuide(currentFramework, newStyle);
-      if (firstGuide) {
-        navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${firstGuide}/`);
-      } else {
-        navigate('/docs/');
-      }
-      return;
-    }
-
-    // Guide supports the new style, navigate to it
-    navigate(`/docs/framework/${currentFramework}/style/${newStyle}/${currentGuideSlug}/`);
   };
 
-  const availableStyles = getAvailableStyles(currentFramework);
+  const availableStyles = FRAMEWORK_STYLES[currentFramework];
+
+  const frameworkOptions = SUPPORTED_FRAMEWORKS.map(fw => ({
+    value: fw,
+    label: fw,
+  }));
+
+  const styleOptions = availableStyles.map(st => ({
+    value: st,
+    label: st,
+  }));
 
   return (
-    <div className="mb-4">
-      <div>
-        <label htmlFor="framework-select">Framework:</label>
-        <select id="framework-select" value={currentFramework} onChange={handleFrameworkChange}>
-          {SUPPORTED_FRAMEWORKS.map(fw => (
-            <option key={fw} value={fw}>
-              {fw}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="style-select">Style:</label>
-        <select id="style-select" value={currentStyle} onChange={handleStyleChange}>
-          {availableStyles.map(st => (
-            <option key={st} value={st}>
-              {st}
-            </option>
-          ))}
-        </select>
+    <div className="p-6 lg:py-2.5 xl:p-6 border-b border-light-40">
+      <div className="max-w-3xl mx-auto w-full grid gap-x-6 gap-y-2 items-center" style={{ gridTemplateColumns: 'auto minmax(0, 1fr)' }}>
+        <span>Framework</span>
+        <Select
+          value={currentFramework}
+          onChange={handleFrameworkChange}
+          options={frameworkOptions}
+          aria-label="Select framework"
+          data-testid="select-framework"
+        />
+        <span>Style</span>
+        <Select
+          value={currentStyle}
+          onChange={handleStyleChange}
+          options={styleOptions}
+          aria-label="Select style"
+          data-testid="select-style"
+        />
       </div>
     </div>
   );

@@ -1,0 +1,40 @@
+---
+import { GITHUB_REPO_URL } from '@/consts';
+import { ArrowUpRight } from 'lucide-react';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: GITHUB_REPO_URL, label: 'GitHub', external: true },
+];
+
+type Props = {
+  class?: string;
+};
+const { class: className } = Astro.props;
+---
+
+<footer class:list={['border-t border-light-40 py-6 px-3 grid gap-3', className]}>
+  <nav class="text-center sm:text-left">
+    {
+      navLinks.map((link) => (
+        <a href={link.href} class="intent:underline px-3 py-2 inline-flex gap-1 items-center">
+          {link.label} {link.external ? <ArrowUpRight size="1em" /> : null}
+        </a>
+      ))
+    }
+  </nav>
+
+  <p class="text-sm text-center sm:text-left text-dark-40 px-3">
+    © 2010&ndash;{new Date().getFullYear()}, Video.js contributors
+    <br />
+    Video.js is a free and open source HTML5 video player framework
+    <br />
+    Sponsored by <a
+      href="https://www.mux.com?utm_source=videojs&utm_campaign=vjs10"
+      class="underline intent:decoration-wavy">Mux</a
+    >
+  </p>
+</footer>

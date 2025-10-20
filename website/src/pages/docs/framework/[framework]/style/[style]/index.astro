@@ -1,28 +1,29 @@
 ---
-import {
-	SUPPORTED_FRAMEWORKS,
-	type SupportedFramework,
-	type AnySupportedStyle,
-	getAvailableStyles,
-} from '@/types/docs';
-import { getDocsRedirectUrl } from '@/utils/docs/redirects';
+export const prerender = false; // since we're reading cookies
 
-export function getStaticPaths() {
-	const paths = [];
-	for (const framework of SUPPORTED_FRAMEWORKS) {
-		const availableStyles = getAvailableStyles(framework);
-		for (const style of availableStyles) {
-			paths.push({ params: { framework, style } });
-		}
-	}
+import { isValidFramework, isValidStyleForFramework } from '@/types/docs';
+import { getPreferencesServer } from '@/utils/docs/preferences';
+import { resolveIndexRedirect } from '@/utils/docs/routing';
 
-	return paths;
+const { framework, style } = Astro.params;
+
+if (!isValidFramework(framework)) {
+  return new Response('Not Found', { status: 404 });
 }
 
-const { framework, style } = Astro.params as {
-	framework: SupportedFramework;
-	style: AnySupportedStyle;
-};
+if (!style) {
+  return Astro.redirect(`/docs/framework/${framework}`, 307);
+}
 
-return Astro.redirect(getDocsRedirectUrl(framework, style));
+if (!isValidStyleForFramework(framework, style)) {
+  return new Response('Not Found', { status: 404 });
+}
+
+const preferences = getPreferencesServer(Astro.cookies);
+const { url } = resolveIndexRedirect({
+  preferences,
+  params: { framework, style },
+});
+
+return Astro.redirect(url, 307);
 ---

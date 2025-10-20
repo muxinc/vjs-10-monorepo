@@ -1,0 +1,28 @@
+---
+import NavBar from '@/components/NavBar/NavBar.astro';
+import Footer from '@/components/Footer.astro';
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+}
+
+const { title, subtitle, description } = Astro.props;
+---
+
+<Base title={subtitle ? [title, subtitle] : title} description={description}>
+  <slot name="head" slot="head" />
+  <NavBar />
+  <main class="px-6 md:px-10 mt-10 md:mt-20 pb-24">
+    <article class="@container">
+      <header class="border-b border-light-40 max-w-3xl mx-auto pb-10 mb-10">
+        <h1 class="text-h4 md:text-h2 mb-2">{title}</h1>
+        <div class="font-medium md:text-md text-dark-40">{description}</div>
+      </header>
+      <slot />
+    </article>
+  </main>
+  <Footer />
+</Base>

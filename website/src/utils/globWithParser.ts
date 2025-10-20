@@ -26,10 +26,10 @@ type GlobWithParserOptions = Parameters<typeof glob>[0] & {
  * ```ts
  * loader: globWithParser({
  *   base: './src/content/blog',
- *   pattern: '**\/*.md',
+ *   pattern: '**\/*.mdx',
  *   generateId: ({ entry }) => entry.replace(/^\d{4}-\d{2}-\d{2}-/, ''),
  *   parser: async (entry, originalEntry) => {
- *     // entry.id = "my-post", originalEntry = "2024-01-01-my-post.md"
+ *     // entry.id = "my-post", originalEntry = "2024-01-01-my-post.mdx"
  *     const date = extractDateFromFilename(originalEntry);
  *     entry.data.pubDate = date;
  *     return entry;

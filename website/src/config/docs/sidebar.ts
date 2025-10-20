@@ -1,16 +1,25 @@
 import type { Sidebar } from '@/types/docs';
 
 export const sidebar: Sidebar = [
-  {
-    sidebarLabel: 'Concepts',
-    contents: [
-      { slug: 'concepts/everyone' },
-      { slug: 'concepts/react-only', frameworks: ['react'] },
-      { slug: 'concepts/tailwind-only', styles: ['tailwind'] },
-    ],
-  },
-  {
-    sidebarLabel: 'How-To Guides',
-    contents: [{ slug: 'how-to/everyone' }],
-  },
+  { sidebarLabel: 'Writing guides', slug: 'how-to/write-guides', devOnly: true },
+  { slug: 'concepts/coming-soon' },
+  // {
+  //   sidebarLabel: 'Getting started',
+  //   contents: [
+  //     { slug: 'concepts/everyone' },
+  //   ],
+  // },
+  // {
+  //   sidebarLabel: 'Concepts',
+  //   contents: [
+  //     { slug: 'concepts/react-only', frameworks: ['react'] },
+  //     { slug: 'concepts/tailwind-only', styles: ['tailwind'] },
+  //   ],
+  // },
+  // {
+  //   sidebarLabel: 'How-To Guides',
+  //   contents: [
+  //     { slug: 'how-to/everyone' },
+  //   ],
+  // },
 ];

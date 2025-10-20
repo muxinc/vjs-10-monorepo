@@ -1,0 +1,8 @@
+---
+import H5 from './H5.astro';
+const props = Astro.props;
+---
+
+<H5 as="h3" {...props}>
+  <slot />
+</H5>

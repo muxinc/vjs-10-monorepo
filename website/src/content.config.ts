@@ -1,48 +1,30 @@
 import { file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
-import { simpleGit } from 'simple-git';
-
+import { defaultGitService } from './utils/gitService';
 import { globWithParser } from './utils/globWithParser';
 
-const git = simpleGit();
-
 /**
- * Extract date from filename in format: YYYY-MM-DD-slug.{md,mdx}
+ * Extract date from filename in format: YYYY-MM-DD-slug.mdx
  * Throws an error if the filename doesn't match the expected pattern
  */
-function extractDateFromFilename(id: string): Date {
+export function extractDateFromFilename(id: string): Date {
   const match = id.match(/^(\d{4})-(\d{2})-(\d{2})-/);
   if (!match) {
-    throw new Error(`Filename "${id}" must follow format: YYYY-MM-DD-slug.{md,mdx}`);
+    throw new Error(`Filename "${id}" must follow format: YYYY-MM-DD-slug.mdx`);
   }
 
   const [, year, month, day] = match;
   return new Date(`${year}-${month}-${day}`);
 }
 
-/**
- * Get the last modified date of a file from git history
- * Returns null if git command fails or file is not in git history
- */
-async function getGitLastModifiedDate(filePath: string): Promise<Date | null> {
-  try {
-    const log = await git.log({ file: filePath, maxCount: 1 });
-    if (!log.latest) return null;
-
-    return new Date(log.latest.date);
-  } catch {
-    return null;
-  }
-}
-
 const blog = defineCollection({
-  // Load Markdown and MDX files in the `src/content/blog/` directory.
+  // Load MDX files in the `src/content/blog/` directory.
   loader: globWithParser({
     base: './src/content/blog',
-    pattern: '**/*.{md,mdx}',
+    pattern: '**/*.mdx',
     generateId: ({ entry }) => {
-      // Remove date prefix and extension from slug (e.g., "2022-07-08-first-post.md" -> "first-post")
-      return entry.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.mdx?$/, '');
+      // Remove date prefix and extension from slug (e.g., "2022-07-08-first-post.mdx" -> "first-post")
+      return entry.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.mdx$/, '');
     },
     parser: async (entry, originalEntry) => {
       // Extract pubDate from original filename (before date prefix was removed)
@@ -50,7 +32,7 @@ const blog = defineCollection({
 
       // Get updatedDate from git history (last modification date)
       const filePath = `website/src/content/blog/${originalEntry}`;
-      const updatedDate = await getGitLastModifiedDate(filePath);
+      const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
       // Return transformed entry with added fields
       return {
@@ -64,25 +46,25 @@ const blog = defineCollection({
     },
   }),
   // Type-check frontmatter using a schema
-  schema: ({ image }) =>
+  schema: () =>
     z.object({
       title: z.string(),
       description: z.string(),
       pubDate: z.date(),
       updatedDate: z.coerce.date().optional(),
-      heroImage: image().optional(),
       authors: z.array(reference('authors')),
+      devOnly: z.boolean().optional(), // only visible in development mode
     }),
 });
 
 const docs = defineCollection({
   loader: globWithParser({
     base: './src/content/docs',
-    pattern: '**/*.{md,mdx}',
+    pattern: '**/*.mdx',
     parser: async (entry, originalEntry) => {
       // Get updatedDate from git history
       const filePath = `website/src/content/docs/${originalEntry}`;
-      const updatedDate = await getGitLastModifiedDate(filePath);
+      const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
       // Return transformed entry with added field if updatedDate exists
       return {

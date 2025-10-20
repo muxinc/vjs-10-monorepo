@@ -1,0 +1,28 @@
+---
+import { isValidFramework, isValidStyleForFramework } from '@/types/docs';
+import { resolveDocsLinkUrl } from '@/utils/docs/routing';
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'href'> {
+  slug: string;
+}
+const { slug, ...rest } = Astro.props;
+
+const { framework: paramFramework, style: paramStyle } = Astro.params;
+if (!paramFramework || !isValidFramework(paramFramework)) {
+  throw new Error(`Invalid or missing framework param "${paramFramework ?? 'undefined'}".`);
+}
+if (!paramStyle || !isValidStyleForFramework(paramFramework, paramStyle)) {
+  throw new Error(`Invalid style param "${paramStyle}" for framework "${paramFramework}".`);
+}
+
+const { url: href } = resolveDocsLinkUrl({
+  targetSlug: slug,
+  contextFramework: paramFramework,
+  contextStyle: paramStyle,
+});
+---
+
+<a href={href} {...rest}>
+  <slot />
+</a>

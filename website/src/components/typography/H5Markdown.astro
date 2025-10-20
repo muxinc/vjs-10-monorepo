@@ -1,0 +1,8 @@
+---
+import P from './P.astro';
+const props = Astro.props;
+---
+
+<P as="h5" class="text-sm font-medium" {...props}>
+  <slot />
+</P>

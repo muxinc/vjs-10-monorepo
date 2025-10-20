@@ -1,7 +1,13 @@
 # build output
 dist/
+.vercel/
+
 # generated types
 .astro/
+
+# generated styles
+src/styles/vjs.css
+src/styles/vjs-temp.css
 
 # dependencies
 node_modules/

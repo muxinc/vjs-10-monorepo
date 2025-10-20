@@ -5,10 +5,10 @@ Inside of your Astro project, you'll see the following folders and files:
 ```text
 ├── public/
 ├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
+│  ├── components/
+│  ├── content/
+│  ├── layouts/
+│  └── pages/
 ├── astro.config.mjs
 ├── README.md
 ├── package.json
@@ -94,7 +94,7 @@ See [content.config.ts](src/content.config.ts) for the blog collection definitio
 The most sophisticated part of the website is the documentation system, which adapts content based on:
 
 - **Framework** (HTML, React)
-- **Styling approach** (CSS, Tailwind, Styled-Components)
+- **Styling approach** (CSS, Tailwind)
 
 ##### URL Structure
 
@@ -106,10 +106,10 @@ Example: `/docs/framework/react/style/tailwind/concepts/state-management/`
 
 ##### Framework/Style Matrix
 
-| Framework | Available Styles                 |
-| --------- | -------------------------------- |
-| HTML      | css, tailwind                    |
-| React     | css, tailwind, styled-components |
+| Framework | Available Styles |
+| --------- | ---------------- |
+| HTML      | css, tailwind    |
+| React     | css, tailwind    |
 
 ##### Content Filtering
 
@@ -118,17 +118,17 @@ Documentation pages can be restricted to specific frameworks or styles:
 **In sidebar config** ([config/docs/sidebar.ts](src/config/docs/sidebar.ts)):
 
 ```ts
-{
+const sidebar = {
   title: 'React Concepts',
   guides: [
-    { slug: 'concepts/hooks' },  // Available to all
+    { slug: 'concepts/hooks' }, // Available to all
     {
       slug: 'concepts/styling',
-      frameworks: ['react'],      // Only for React
+      frameworks: ['react'], // Only for React
       styles: ['styled-components'] // Only for styled-components
     }
   ]
-}
+};
 ```
 
 **Within MDX content** (using conditional components):
@@ -187,7 +187,6 @@ Wraps Astro's `glob` loader to provide access to both transformed entry IDs and 
 - **Formats**: Markdown (`.md`) and MDX (`.mdx`)
 - **Required frontmatter**: `title`, `description`
 - **Auto-injected**: `pubDate` (from filename), `updatedDate` (from git)
-- **Optional**: `heroImage`
 
 #### Docs Collection
 
@@ -260,7 +259,7 @@ See [types/docs.ts](src/types/docs.ts) for complete type definitions.
 #### Adding a Blog Post
 
 1. Create file: `src/content/blog/YYYY-MM-DD-slug.md`
-2. Add frontmatter: `title`, `description`, optional `heroImage`
+2. Add frontmatter: `title`, `description`
 3. Write content in Markdown or MDX
 4. The `pubDate` is automatically extracted from filename
 5. The `updatedDate` is automatically pulled from git on subsequent commits
@@ -272,7 +271,7 @@ See [types/docs.ts](src/types/docs.ts) for complete type definitions.
 3. Add to sidebar in `src/config/docs/sidebar.ts`:
 
    ```ts
-   {
+   const sidebar = {
      title: 'Category',
      guides: [
        {
@@ -281,7 +280,7 @@ See [types/docs.ts](src/types/docs.ts) for complete type definitions.
          styles: ['tailwind', 'css'] // optional
        }
      ]
-   }
+   };
    ```
 
 4. Use conditional components for framework/style-specific content

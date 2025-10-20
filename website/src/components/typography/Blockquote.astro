@@ -1,0 +1,19 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+type Props<Tag extends HTMLTag = 'blockquote'> = Polymorphic<{ as: Tag }> & {
+  maxWidth?: boolean;
+  class?: string;
+};
+
+const { as: Tag = 'blockquote', maxWidth = true, class: className, ...props } = Astro.props;
+---
+
+<Tag
+  class={twMerge(clsx('border-l border-light-40 pl-5 my-10', maxWidth && 'max-w-3xl mx-auto'), className)}
+  {...props}
+>
+  <slot />
+</Tag>

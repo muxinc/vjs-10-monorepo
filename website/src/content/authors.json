@@ -19,7 +19,9 @@
     "socialLinks": {
       "github": "https://github.com/janesmith",
       "linkedin": "https://linkedin.com/in/janesmith",
-      "website": "https://janesmith.dev"
+      "website": "https://janesmith.dev",
+      "x": "https://x.com/janesmith",
+      "bluesky": "https://bsky.app/profile/janesmith"
     }
   },
   {

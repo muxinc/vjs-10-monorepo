@@ -1,0 +1,9 @@
+---
+import MarkdownLayout from '@/layouts/Markdown.astro';
+import PrivacyMdx, { frontmatter } from '@/content/pages/privacy.mdx';
+import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
+---
+
+<MarkdownLayout title={frontmatter.title} description={frontmatter.description}>
+  <PrivacyMdx components={{ ...defaultMarkdownComponents }} />
+</MarkdownLayout>
