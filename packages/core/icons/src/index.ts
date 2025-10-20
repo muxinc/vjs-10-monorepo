@@ -1,13 +1,8 @@
+import fullscreenEnterAlt from '../assets/fullscreen-enter-alt.svg';
 // Import SVG files as strings
 import fullscreenEnter from '../assets/fullscreen-enter.svg';
+import fullscreenExitAlt from '../assets/fullscreen-exit-alt.svg';
 import fullscreenExit from '../assets/fullscreen-exit.svg';
-import microFullscreenEnter from '../assets/micro-fullscreen-enter.svg';
-import microFullscreenExit from '../assets/micro-fullscreen-exit.svg';
-import microPause from '../assets/micro-pause.svg';
-import microPlay from '../assets/micro-play.svg';
-import microVolumeHigh from '../assets/micro-volume-high.svg';
-import microVolumeLow from '../assets/micro-volume-low.svg';
-import microVolumeOff from '../assets/micro-volume-off.svg';
 import pause from '../assets/pause.svg';
 import play from '../assets/play.svg';
 import volumeHigh from '../assets/volume-high.svg';
@@ -22,13 +17,8 @@ export const SVG_ICONS: Record<string, string> = {
   volumeOff,
   fullscreenEnter,
   fullscreenExit,
-  microPlay,
-  microPause,
-  microVolumeHigh,
-  microVolumeLow,
-  microVolumeOff,
-  microFullscreenEnter,
-  microFullscreenExit,
+  fullscreenEnterAlt,
+  fullscreenExitAlt,
 };
 
 // TODO: Check if we need below? It seems to be unused now.

@@ -10,11 +10,14 @@ export class MediaTooltipRoot extends HTMLElement {
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
   #arrowElement: HTMLElement | null = null;
+  #mousePosition = { x: 0, y: 0 };
+  #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
 
   constructor() {
     super();
     this.addEventListener('mouseenter', this);
     this.addEventListener('mouseleave', this);
+    this.addEventListener('mousemove', this);
   }
 
   handleEvent(event: Event): void {
@@ -22,6 +25,8 @@ export class MediaTooltipRoot extends HTMLElement {
       this.#handleMouseEnter();
     } else if (event.type === 'mouseleave') {
       this.#handleMouseLeave();
+    } else if (event.type === 'mousemove') {
+      this.#handleMouseMove(event as MouseEvent);
     }
   }
 
@@ -32,18 +37,26 @@ export class MediaTooltipRoot extends HTMLElement {
   disconnectedCallback(): void {
     this.#clearHoverTimeout();
     this.#cleanup?.();
+
+    this.#transitionStatus = 'unmounted';
+    this.#updateVisibility();
   }
 
   static get observedAttributes(): string[] {
-    return ['delay', 'close-delay'];
+    return ['delay', 'close-delay', 'track-cursor-axis'];
   }
 
   get delay(): number {
-    return Number.parseInt(this.getAttribute('delay') ?? '600', 10);
+    return Number.parseInt(this.getAttribute('delay') ?? '0', 10);
   }
 
   get closeDelay(): number {
     return Number.parseInt(this.getAttribute('close-delay') ?? '0', 10);
+  }
+
+  get trackCursorAxis(): 'x' | 'y' | 'both' | undefined {
+    const value = this.getAttribute('track-cursor-axis');
+    return value === 'x' || value === 'y' || value === 'both' ? value : undefined;
   }
 
   get #triggerElement(): MediaTooltipTrigger | null {
@@ -66,6 +79,17 @@ export class MediaTooltipRoot extends HTMLElement {
     if (this.#open === open) return;
 
     this.#open = open;
+
+    if (open) {
+      this.#transitionStatus = 'initial';
+      requestAnimationFrame(() => {
+        this.#transitionStatus = 'open';
+        this.#updateVisibility();
+      });
+    } else {
+      this.#transitionStatus = 'close';
+    }
+
     this.#updateVisibility();
 
     if (open) {
@@ -77,17 +101,22 @@ export class MediaTooltipRoot extends HTMLElement {
   }
 
   #updateVisibility(): void {
-    this.toggleAttribute('data-open', this.#open);
     this.style.display = 'contents';
 
     if (this.#popupElement) {
-      this.#popupElement.style.display = this.#open ? 'block' : 'none';
+      const placement = this.#positionerElement?.side ?? 'top';
+      this.#popupElement.setAttribute('data-side', placement);
+
+      this.#popupElement.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
+      this.#popupElement.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
+      this.#popupElement.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+      this.#popupElement.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
     }
 
-    // Update trigger aria-expanded
     const triggerElement = this.#triggerElement?.firstElementChild as HTMLElement;
     if (triggerElement) {
       triggerElement.setAttribute('aria-expanded', this.#open.toString());
+      triggerElement.toggleAttribute('data-popup-open', this.#open);
     }
   }
 
@@ -116,21 +145,65 @@ export class MediaTooltipRoot extends HTMLElement {
         }),
       ];
 
-      // Add arrow middleware if arrow element exists
       if (this.#arrowElement) {
         middleware.push(arrow({ element: this.#arrowElement }));
       }
 
-      computePosition(trigger, popup, {
+      const referenceElement = this.trackCursorAxis
+        ? {
+            getBoundingClientRect: () => {
+              const triggerRect = trigger.getBoundingClientRect();
+
+              if (this.trackCursorAxis === 'x') {
+                return {
+                  width: 0,
+                  height: 0,
+                  top: triggerRect.top,
+                  right: this.#mousePosition.x,
+                  bottom: triggerRect.bottom,
+                  left: this.#mousePosition.x,
+                  x: this.#mousePosition.x,
+                  y: triggerRect.top,
+                };
+              } else if (this.trackCursorAxis === 'y') {
+                return {
+                  width: 0,
+                  height: 0,
+                  top: this.#mousePosition.y,
+                  right: triggerRect.right,
+                  bottom: this.#mousePosition.y,
+                  left: triggerRect.left,
+                  x: triggerRect.left,
+                  y: this.#mousePosition.y,
+                };
+              } else {
+                // Track both axes (trackCursorAxis === 'both')
+                return {
+                  width: 0,
+                  height: 0,
+                  top: this.#mousePosition.y,
+                  right: this.#mousePosition.x,
+                  bottom: this.#mousePosition.y,
+                  left: this.#mousePosition.x,
+                  x: this.#mousePosition.x,
+                  y: this.#mousePosition.y,
+                };
+              }
+            },
+          }
+        : trigger;
+
+      computePosition(referenceElement, popup, {
         placement,
         middleware,
-      }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
+      }).then(({ x, y, middlewareData, placement: computedPlacement }: { x: number; y: number; middlewareData: any; placement: Placement }) => {
         Object.assign(popup.style, {
           left: `${x}px`,
           top: `${y}px`,
         });
 
-        // Position arrow if it exists
+        popup.setAttribute('data-side', computedPlacement);
+
         if (this.#arrowElement && middlewareData.arrow) {
           const { x: arrowX, y: arrowY } = middlewareData.arrow;
           Object.assign(this.#arrowElement.style, {
@@ -142,7 +215,16 @@ export class MediaTooltipRoot extends HTMLElement {
     };
 
     updatePosition();
-    this.#cleanup = autoUpdate(trigger, popup, updatePosition);
+
+    if (!this.trackCursorAxis) {
+      this.#cleanup = autoUpdate(trigger, popup, updatePosition);
+    }
+  }
+
+  #updatePosition(): void {
+    if (this.#open && this.trackCursorAxis) {
+      this.#setupFloating();
+    }
   }
 
   #clearHoverTimeout(): void {
@@ -164,6 +246,16 @@ export class MediaTooltipRoot extends HTMLElement {
     this.#hoverTimeout = globalThis.setTimeout(() => {
       this.#setOpen(false);
     }, this.closeDelay);
+  }
+
+  #handleMouseMove(event: MouseEvent): void {
+    if (this.trackCursorAxis) {
+      this.#mousePosition = { x: event.clientX, y: event.clientY };
+
+      if (this.#open) {
+        this.#updatePosition();
+      }
+    }
   }
 }
 
@@ -195,7 +287,7 @@ export class MediaTooltipTrigger extends HTMLElement {
             }
 
             const attributeName = mutation.attributeName;
-            if (!attributeName) {
+            if (!attributeName || !attributeName.startsWith('data-')) {
               return;
             }
 
@@ -296,7 +388,6 @@ export class MediaTooltipPositioner extends HTMLElement {
 export class MediaTooltipPopup extends HTMLElement {
   connectedCallback(): void {
     this.setAttribute('role', 'tooltip');
-    this.style.display = 'none';
   }
 }
 

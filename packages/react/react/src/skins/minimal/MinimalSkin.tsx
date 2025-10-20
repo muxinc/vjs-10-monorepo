@@ -1,13 +1,13 @@
 import type { PropsWithChildren } from 'react';
 
 import {
-  MicroFullscreenEnterIcon,
-  MicroFullscreenExitIcon,
-  MicroPauseIcon,
-  MicroPlayIcon,
-  MicroVolumeHighIcon,
-  MicroVolumeLowIcon,
-  MicroVolumeOffIcon,
+  FullscreenEnterAltIcon,
+  FullscreenExitAltIcon,
+  PauseIcon,
+  PlayIcon,
+  VolumeHighIcon,
+  VolumeLowIcon,
+  VolumeOffIcon,
 } from '@vjs-10/react-icons';
 
 import Popover from '@/components/Popover';
@@ -27,7 +27,7 @@ type SkinProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export default function MediaSkinDefault({ children, className = '' }: SkinProps): JSX.Element {
+export default function MinimalSkin({ children, className = '' }: SkinProps): JSX.Element {
   return (
     <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
@@ -38,8 +38,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
         <Tooltip.Root delay={500} closeDelay={0}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-              <MicroPlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
-              <MicroPauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
+              <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
+              <PauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
             </PlayButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
@@ -77,9 +77,9 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <Popover.Root openOnHover delay={200} closeDelay={300}>
             <Popover.Trigger>
               <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
-                <MicroVolumeHighIcon className={`${styles.VolumeHighIcon} ${styles.Icon}`} />
-                <MicroVolumeLowIcon className={`${styles.VolumeLowIcon} ${styles.Icon}`} />
-                <MicroVolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
+                <VolumeHighIcon className={`${styles.VolumeHighIcon} ${styles.Icon}`} />
+                <VolumeLowIcon className={`${styles.VolumeLowIcon} ${styles.Icon}`} />
+                <VolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
               </MuteButton>
             </Popover.Trigger>
             <Popover.Portal>
@@ -99,8 +99,8 @@ export default function MediaSkinDefault({ children, className = '' }: SkinProps
           <Tooltip.Root delay={500} closeDelay={0}>
             <Tooltip.Trigger>
               <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
-                <MicroFullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
-                <MicroFullscreenExitIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
+                <FullscreenEnterAltIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
+                <FullscreenExitAltIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
               </FullscreenButton>
             </Tooltip.Trigger>
             <Tooltip.Portal>

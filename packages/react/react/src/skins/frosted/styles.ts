@@ -1,4 +1,4 @@
-import type { MediaDefaultSkinStyles } from './types';
+import type { FrostedSkinStyles } from './types';
 
 // NOTE: Removing import to sidestep for compiler complexity (CJP)
 // import { cn } from '../../utils/cn';
@@ -9,16 +9,16 @@ function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-const styles: MediaDefaultSkinStyles = {
+const styles: FrostedSkinStyles = {
   MediaContainer: cn(
-    'relative @container/root group/root overflow-clip',
+    'relative isolate @container/root group/root overflow-clip',
     // Base typography
     'text-[0.8125rem]', // 13px
     // Prevent rounded corners in fullscreen.
     '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
-    'after:absolute after:inset-0 after:ring-black/10 after:ring-1 dark:after:ring-black/40 after:ring-inset after:z-10 after:pointer-events-none after:rounded-[inherit]',
-    'before:absolute before:inset-px before:rounded-[inherit] before:ring-white/15 before:ring-1 before:ring-inset before:z-10 before:pointer-events-none',
+    'after:absolute after:inset-0 after:ring-black/10 after:ring-1 dark:after:ring-white/10 after:ring-inset after:z-10 after:pointer-events-none after:rounded-[inherit]',
+    'before:absolute before:inset-px before:rounded-[inherit] before:ring-white/15 before:ring-1 before:ring-inset before:z-10 before:pointer-events-none dark:before:ring-0',
     // Ensure the nested video inherits the radius.
     '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto',
   ),
@@ -157,6 +157,8 @@ const styles: MediaDefaultSkinStyles = {
     'relative px-1.5 py-3.5 rounded-full',
     'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
     'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
+    // Animation
+    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
     // Border to enhance contrast on lighter videos
     'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
     // Reduced transparency for users with preference

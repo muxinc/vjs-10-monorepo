@@ -8,6 +8,7 @@ import '../components/media-time-slider';
 import '../components/media-fullscreen-button';
 import '../components/media-duration-display';
 import '../components/media-current-time-display';
+import '../components/media-preview-time-display';
 import '../components/media-popover';
 import '../components/media-tooltip';
 import '@vjs-10/html-icons';
@@ -180,6 +181,19 @@ export function getTemplateHTML() {
       media-popover-popup {
         background: rgb(20 20 30 / .7);
         padding: 14px 0;
+        --transition: .15s ease-in-out;
+        transition: transform var(--transition), scale var(--transition), opacity var(--transition);
+      }
+
+      media-popover-popup[data-starting-style] {
+        transition-duration: 0s;
+        transform: scale(0.9) translateY(8px);
+        opacity: 0;
+      }
+      
+      media-popover-popup[data-ending-style] {
+        transform: scale(0.9) translateY(8px);
+        opacity: 0;
       }
 
       /* VolumeSlider Component Styles */
@@ -252,6 +266,19 @@ export function getTemplateHTML() {
         font-size: 13px;
         font-family: system-ui, -apple-system, sans-serif;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: .15s ease-in-out;
+        transition: transform var(--transition), scale var(--transition), opacity var(--transition);
+      }
+
+      media-tooltip-popup[data-starting-style] {
+        transition-duration: 0s;
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      
+      media-tooltip-popup[data-ending-style] {
+        transform: scale(0.9);
+        opacity: 0;
       }
 
       .tooltip {
@@ -293,13 +320,26 @@ export function getTemplateHTML() {
           </media-tooltip-root>
           <!-- Use the show-remaining attribute to show count down/remaining time -->
           <media-current-time-display show-remaining></media-current-time-display>
-          <media-time-slider-root>
-            <media-time-slider-track>
-              <media-time-slider-progress></media-time-slider-progress>
-              <media-time-slider-pointer></media-time-slider-pointer>
-            </media-time-slider-track>
-            <media-time-slider-thumb></media-time-slider-thumb>
-          </media-time-slider-root>
+          
+          <media-tooltip-root track-cursor-axis="x">
+            <media-tooltip-trigger>
+              <media-time-slider-root>
+                <media-time-slider-track>
+                  <media-time-slider-progress></media-time-slider-progress>
+                  <media-time-slider-pointer></media-time-slider-pointer>
+                </media-time-slider-track>
+                <media-time-slider-thumb></media-time-slider-thumb>
+              </media-time-slider-root>
+            </media-tooltip-trigger>
+            <media-tooltip-portal>
+              <media-tooltip-positioner side="top" side-offset="18" collision-padding="12">
+                <media-tooltip-popup>
+                  <preview-time-display></preview-time-display>
+                </media-tooltip-popup>
+              </media-tooltip-positioner>
+            </media-tooltip-portal>
+          </media-tooltip-root>
+
           <media-duration-display></media-duration-display>
           <media-popover-root open-on-hover delay="200" close-delay="100">
             <media-popover-trigger>
@@ -310,7 +350,7 @@ export function getTemplateHTML() {
               </media-mute-button>
             </media-popover-trigger>
             <media-popover-portal>
-              <media-popover-positioner side="top" side-offset="0">
+              <media-popover-positioner side="top">
                 <media-popover-popup>
                   <media-volume-slider-root orientation="vertical">
                     <media-volume-slider-track>

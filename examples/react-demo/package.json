@@ -12,8 +12,10 @@
   "dependencies": {
     "@vjs-10/react": "workspace:*",
     "@vjs-10/react-icons": "workspace:*",
+    "clsx": "^2.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "screenfull": "^6.0.2",
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
