@@ -1,18 +1,24 @@
-import { MediaProvider, MediaSkinDefault, Video } from '@vjs-10/react';
+import { useStore } from '@nanostores/react';
+import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@vjs-10/react';
+import { skin } from '@/stores/homePageDemos';
 import { PLAYBACK_ID } from './config';
 import '@/styles/vjs.css';
 
 export default function HeroVideo({ className, poster }: { className?: string; poster: string }) {
+  // Subscribe to skin store for future skin switching functionality
+  const $skin = useStore(skin);
+  const SkinComponent = $skin === 'frosted' ? FrostedSkin : MinimalSkin;
+
   return (
     <MediaProvider>
-      <MediaSkinDefault className={className}>
+      <SkinComponent className={className}>
         <Video
           // @ts-expect-error -- types are incorrect
           src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`}
           poster={poster}
           playsInline
         />
-      </MediaSkinDefault>
+      </SkinComponent>
     </MediaProvider>
   );
 }

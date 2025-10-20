@@ -23,8 +23,8 @@ export function createTechArticleSchema(params: {
   description: string;
   url: string;
   updatedDate?: Date;
-  wordCount: number;
-  readingTime: number;
+  wordCount?: number;
+  readingTime?: number;
 }): WithContext<TechArticle> {
   return {
     '@context': 'https://schema.org',
@@ -33,8 +33,8 @@ export function createTechArticleSchema(params: {
     description: params.description,
     url: params.url,
     ...(params.updatedDate && { dateModified: params.updatedDate.toISOString() }),
-    wordCount: params.wordCount,
-    timeRequired: `PT${params.readingTime}M`,
+    ...(params.wordCount && { wordCount: params.wordCount }),
+    ...(params.readingTime && { timeRequired: `PT${params.readingTime}M` }),
     author: {
       '@type': 'Organization',
       name: 'Video.js',
@@ -58,8 +58,8 @@ export function createBlogPostingSchema(params: {
   url: string;
   pubDate: Date;
   updatedDate?: Date;
-  wordCount: number;
-  readingTime: number;
+  wordCount?: number;
+  readingTime?: number;
   authors: CollectionEntry<'authors'>[];
   siteUrl: string;
 }): WithContext<BlogPosting> {
@@ -71,8 +71,8 @@ export function createBlogPostingSchema(params: {
     url: params.url,
     datePublished: params.pubDate.toISOString(),
     ...(params.updatedDate && { dateModified: params.updatedDate.toISOString() }),
-    wordCount: params.wordCount,
-    timeRequired: `PT${params.readingTime}M`,
+    ...(params.wordCount && { wordCount: params.wordCount }),
+    ...(params.readingTime && { timeRequired: `PT${params.readingTime}M` }),
     author: params.authors.map(
       (author): Person => ({
         '@type': 'Person',

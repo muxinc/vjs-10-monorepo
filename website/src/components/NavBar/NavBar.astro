@@ -1,6 +1,7 @@
 ---
 import { GITHUB_REPO_URL } from '@/consts';
 import MobileNav from './MobileNav';
+import { ArrowUpRight } from 'lucide-react';
 
 export interface Props {
   dark?: boolean;
@@ -10,7 +11,7 @@ export interface Props {
 const navLinks = [
   { href: '/docs', label: 'Docs', matchPath: '/docs' },
   { href: '/blog', label: 'Blog', matchPath: '/blog' },
-  { href: GITHUB_REPO_URL, label: 'GitHub', matchPath: null },
+  { href: GITHUB_REPO_URL, label: 'GitHub', matchPath: null, external: true },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -35,13 +36,13 @@ const { class: className, dark = false } = Astro.props;
         <a
           href={link.href}
           class:list={[
-            'h-full flex items-center px-3 border-b',
+            'h-full flex items-center px-3 border-b gap-1',
             link.matchPath && currentPath.startsWith(link.matchPath)
               ? 'border-current'
               : 'border-transparent intent:border-current',
           ]}
         >
-          {link.label}
+          {link.label} {link.external ? <ArrowUpRight size="1em" /> : null}
         </a>
       ))
     }

@@ -1,7 +1,6 @@
 import type { ReactElement, ReactNode } from 'react';
 import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip';
 import clsx from 'clsx';
-import { cloneElement } from 'react';
 
 export interface TooltipProviderProps {
   children: ReactNode;
@@ -34,7 +33,7 @@ export function Tooltip({
 }: TooltipProps) {
   return (
     <BaseTooltip.Root>
-      <BaseTooltip.Trigger render={props => cloneElement(children, props)} />
+      <BaseTooltip.Trigger>{children}</BaseTooltip.Trigger>
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner side={side} sideOffset={sideOffset}>
           <BaseTooltip.Popup

@@ -1,12 +1,13 @@
 ---
 import { GITHUB_REPO_URL } from '@/consts';
+import { ArrowUpRight } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/docs', label: 'Docs' },
   { href: '/blog', label: 'Blog' },
   { href: '/privacy', label: 'Privacy' },
-  { href: GITHUB_REPO_URL, label: 'GitHub' },
+  { href: GITHUB_REPO_URL, label: 'GitHub', external: true },
 ];
 
 type Props = {
@@ -19,8 +20,8 @@ const { class: className } = Astro.props;
   <nav class="text-center sm:text-left">
     {
       navLinks.map((link) => (
-        <a href={link.href} class="intent:underline px-3 py-2 inline-block">
-          {link.label}
+        <a href={link.href} class="intent:underline px-3 py-2 inline-flex gap-1 items-center">
+          {link.label} {link.external ? <ArrowUpRight size="1em" /> : null}
         </a>
       ))
     }

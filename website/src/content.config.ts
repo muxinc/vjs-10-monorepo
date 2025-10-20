@@ -1,6 +1,5 @@
 import { file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
-import { calculateContentStats } from './utils/contentStats';
 import { defaultGitService } from './utils/gitService';
 import { globWithParser } from './utils/globWithParser';
 
@@ -35,17 +34,12 @@ const blog = defineCollection({
       const filePath = `website/src/content/blog/${originalEntry}`;
       const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
-      // Calculate word count and reading time from content body
-      const { wordCount, readingTime } = calculateContentStats(entry.body);
-
       // Return transformed entry with added fields
       return {
         ...entry,
         data: {
           ...entry.data,
           pubDate,
-          wordCount,
-          readingTime,
           ...(updatedDate && updatedDate.getTime() !== pubDate.getTime() ? { updatedDate } : {}),
         },
       };
@@ -59,8 +53,6 @@ const blog = defineCollection({
       pubDate: z.date(),
       updatedDate: z.coerce.date().optional(),
       authors: z.array(reference('authors')),
-      wordCount: z.number(),
-      readingTime: z.number(),
       devOnly: z.boolean().optional(), // only visible in development mode
     }),
 });
@@ -74,16 +66,11 @@ const docs = defineCollection({
       const filePath = `website/src/content/docs/${originalEntry}`;
       const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
-      // Calculate word count and reading time from content body
-      const { wordCount, readingTime } = calculateContentStats(entry.body);
-
       // Return transformed entry with added field if updatedDate exists
       return {
         ...entry,
         data: {
           ...entry.data,
-          wordCount,
-          readingTime,
           ...(updatedDate ? { updatedDate } : {}),
         },
       };
@@ -93,8 +80,6 @@ const docs = defineCollection({
     title: z.string(),
     description: z.string(),
     updatedDate: z.coerce.date().optional(),
-    wordCount: z.number(),
-    readingTime: z.number(),
   }),
 });
 

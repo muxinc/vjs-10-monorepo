@@ -6,7 +6,9 @@ import NavBar from '@/components/NavBar/NavBar.astro';
 import Footer from '@/components/Footer.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts';
 import Base from '@/layouts/Base.astro';
-import HomePageDemos from '@/components/HomePageDemos';
+import HomePageBaseDemo from '@/components/HomePageBaseDemo';
+import HomePageEjectDemo from '@/components/HomePageEjectDemo';
+import HomePageControls from '@/components/home/HomePageControls';
 import { PLAYBACK_ID } from '@/components/home/config';
 import { CircleCheck, Clock } from 'lucide-react';
 
@@ -41,7 +43,25 @@ const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
   </header>
   <!-- padding corresponds to negative margin on player -->
   <main class="@container pt-11 pb-36 md:pt-21 lg:pt-32 px-6 md:px-10 w-full max-w-7xl mx-auto min-h-64">
-    <HomePageDemos client:idle className="my-24 lg:my-32" />
+    <section class="col-span-full flex flex-col sm:flex-row sm:gap-20 items-center justify-center mt-10 mb-20">
+      <HomePageControls client:idle />
+    </section>
+    <section class="grid gap-x-9 gap-y-6 lg:grid-cols-2 mb-6 lg:mb-30">
+      <section class="grid grid-rows-subgrid row-span-2 mb-6">
+        <header class="max-w-3xl">
+          <h2 class="text-h5 font-semibold lg:text-h4 mb-1">Assemble your player</h2>
+          <p>Feel at home with your framework, skin, and media source</p>
+        </header>
+        <HomePageBaseDemo client:idle className="lg:h-88" />
+      </section>
+      <section class="grid grid-rows-subgrid row-span-2 mb-6">
+        <header class="max-w-3xl">
+          <h2 class="text-h5 font-semibold lg:text-h4 mb-1">Take full control</h2>
+          <p>Make your player truly your own with fully-editable components</p>
+        </header>
+        <HomePageEjectDemo client:idle className="lg:h-88" />
+      </section>
+    </section>
     <section class="rounded-3xl">
       <header class="max-w-3xl mb-3">
         <h2 class="text-h5 font-semibold lg:text-h4">Under construction</h2>

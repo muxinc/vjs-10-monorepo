@@ -1,4 +1,6 @@
-import type { Framework, Media, Skin } from './HomePageDemos';
+import type { Media, Skin } from '@/stores/homePageDemos';
+import { useStore } from '@nanostores/react';
+import { framework, media, skin } from '@/stores/homePageDemos';
 import ClientCode from './ClientCode';
 
 function generateHTMLCode(skin: Skin, media: Media): string {
@@ -34,22 +36,18 @@ export const VideoPlayer = () => {
 }
 
 interface Props {
-  framework: Framework;
-  skin: Skin;
-  media: Media;
   className?: string;
 }
-export default function HomePageBaseDemo({
-  framework,
-  skin,
-  media,
-  className,
-}: Props) {
-  const code = framework === 'html'
-    ? generateHTMLCode(skin, media)
-    : generateReactCode(skin, media);
+export default function HomePageBaseDemo({ className }: Props) {
+  const $framework = useStore(framework);
+  const $skin = useStore(skin);
+  const $media = useStore(media);
 
-  const lang = framework === 'html' ? 'html' : 'tsx';
+  const code = $framework === 'html'
+    ? generateHTMLCode($skin, $media)
+    : generateReactCode($skin, $media);
+
+  const lang = $framework === 'html' ? 'html' : 'tsx';
 
   return (
     <ClientCode code={code} lang={lang} className={className} />

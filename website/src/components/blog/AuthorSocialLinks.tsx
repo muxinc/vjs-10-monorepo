@@ -1,4 +1,5 @@
-import { AtSign, Cloud, Github, Globe, Linkedin, Twitter } from 'lucide-react';
+import { AtSign, Github, Globe, Linkedin, Twitter } from 'lucide-react';
+import { Fragment } from 'react';
 import { Tooltip, TooltipProvider } from '../Tooltip';
 
 interface SocialLinks {
@@ -29,7 +30,7 @@ const SOCIAL_CONFIGS = {
     label: 'LinkedIn',
   },
   bluesky: {
-    icon: Cloud,
+    icon: AtSign,
     label: 'Bluesky',
   },
   mastodon: {
@@ -38,7 +39,7 @@ const SOCIAL_CONFIGS = {
   },
   x: {
     icon: Twitter,
-    label: 'X (Twitter)',
+    label: 'X',
   },
 } as const;
 
@@ -46,7 +47,7 @@ export function AuthorSocialLinks({ socialLinks, className }: AuthorSocialLinksP
   const links = Object.entries(socialLinks).filter(([_, url]) => url) as Array<[keyof SocialLinks, string]>;
 
   if (links.length === 0) {
-    return null;
+    return <></>;
   }
 
   return (
@@ -54,7 +55,7 @@ export function AuthorSocialLinks({ socialLinks, className }: AuthorSocialLinksP
       <ul className={className}>
         {links.map(([platform, url]) => {
           const config = SOCIAL_CONFIGS[platform];
-          if (!config) return null;
+          if (!config) return <Fragment key={platform} />;
 
           const Icon = config.icon;
 

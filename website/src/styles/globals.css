@@ -22,6 +22,10 @@
 .font-mono {
   text-underline-offset: 0.125em;
 }
+/* ligatures */
+.font-mono {
+  font-variant-ligatures: none;
+}
 /* stuff should leave room for the nav when scroll margining */
 [id] {
   scroll-margin-top: calc(var(--nav-h) + var(--spacing) * 5 + var(--scroll-mt, 0px));

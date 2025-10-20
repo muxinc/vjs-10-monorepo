@@ -86,8 +86,7 @@ const jsonLdSchema = createTechArticleSchema({
   description: doc.data.description,
   url: pageUrl,
   updatedDate: doc.data.updatedDate,
-  wordCount: doc.data.wordCount,
-  readingTime: doc.data.readingTime,
+  readingTime: remarkPluginFrontmatter.readingTimeMinutes,
 });
 ---
 

@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content, remarkPluginFrontmatter } = await render(post);
 const authors = await getEntries(post.data.authors);
 
 // Build JSON-LD schema for BlogPosting
@@ -30,8 +30,7 @@ const jsonLdSchema = createBlogPostingSchema({
   url: pageUrl,
   pubDate: post.data.pubDate,
   updatedDate: post.data.updatedDate,
-  wordCount: post.data.wordCount,
-  readingTime: post.data.readingTime,
+  readingTime: remarkPluginFrontmatter.readingTimeMinutes,
   authors,
   siteUrl: Astro.site!.toString(),
 });
@@ -44,7 +43,7 @@ const jsonLdSchema = createBlogPostingSchema({
       <time datetime={post.data.pubDate.toISOString()} class="font-medium md:text-md text-dark-40 flex gap-4 mb-1">
         <FormattedDate date={post.data.pubDate} />
         <span>&bull;</span>
-        <span>{post.data.readingTime} min read</span>
+        <span>{remarkPluginFrontmatter.minutesRead}</span>
       </time>
       <h1 class="text-h4 md:text-h2 mb-2">{post.data.title}</h1>
       <div class="font-medium md:text-md text-dark-40">

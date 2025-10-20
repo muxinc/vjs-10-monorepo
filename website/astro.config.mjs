@@ -10,6 +10,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks.js';
 import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings.js';
+import { remarkReadingTime } from './src/utils/remarkReadingTime.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -38,7 +39,7 @@ export default defineConfig({
       },
       // TODO shiki transformers
     },
-    remarkPlugins: [remarkConditionalHeadings],
+    remarkPlugins: [remarkConditionalHeadings, remarkReadingTime],
     rehypePlugins: [rehypePrepareCodeBlocks],
   },
 
