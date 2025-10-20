@@ -41,16 +41,14 @@ export default function ClientCode({ code, lang, className }: ClientCodeProps) {
   }
 
   const html = hastToHtml(hast);
-  const { class: preClassName, style: _preStyle, ...restPreProps } = preProps;
-  const { class: codeClassName, style: _codeStyle, ...restCodeProps } = codeProps;
+  const { class: preClassName } = preProps;
+  const { class: codeClassName } = codeProps;
 
   return (
     <pre
-      {...restPreProps}
       className={clsx('rounded-lg p-6 overflow-x-auto overflow-y-scroll max-h-96 border border-light-40 bg-light-100', preClassName, className)}
     >
       <code
-        {...restCodeProps}
         className={clsx('font-mono text-code', codeClassName)}
         // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
         dangerouslySetInnerHTML={{ __html: html }}

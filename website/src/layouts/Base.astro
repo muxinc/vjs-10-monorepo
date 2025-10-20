@@ -24,7 +24,7 @@ const fullTitle = Array.isArray(title)
 
 <html lang="en">
   <head>
-    <!-- Global Metadata -->
+    {/* Global Metadata */}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -32,39 +32,38 @@ const fullTitle = Array.isArray(title)
     <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL('rss.xml', Astro.site)} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Important stuff -->
+    {/* Important stuff */}
     <slot name="priority-head" />
 
-    <!-- Font preloads -->
+    {/* Font preloads */}
     <Font cssVariable="--font-instrument-sans" preload />
     <Font cssVariable="--font-ibm-plex-mono" preload />
 
-    <!-- Canonical URL -->
+    {/* Canonical URL */}
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Primary Meta Tags -->
+    {/* Primary Meta Tags */}
     <title>{fullTitle}</title>
     <meta name="title" content={fullTitle} />
     <meta name="description" content={description} />
 
-    <!-- Open Graph / Facebook -->
+    {/* Open Graph / Facebook */}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     {image && <meta property="og:image" content={new URL(image.src, Astro.url)} />}
 
-    <!-- Twitter -->
+    {/* Twitter */}
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={Astro.url} />
     <meta property="twitter:title" content={fullTitle} />
     <meta property="twitter:description" content={description} />
     {image && <meta property="twitter:image" content={new URL(image.src, Astro.url)} />}
 
-    <!-- Whatever else -->
+    {/* Whatever else */}
     <slot name="head" />
   </head>
-  <!-- BaseUI requires body.relative and div.isolate -->
   <body
     class:list={[
       'relative',
@@ -75,6 +74,7 @@ const fullTitle = Array.isArray(title)
       'selection:bg-yellow selection:text-dark-100',
     ]}
   >
+    {/* BaseUI requires body.relative and div.isolate */}
     <div class="isolate">
       <slot />
       <FooterEasterEgg />
