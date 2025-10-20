@@ -229,7 +229,7 @@ describe('sidebar utilities', () => {
     it('should return all framework styles if guide has no restrictions', () => {
       const result = getValidStylesForGuide(mockGuide3, 'react');
 
-      expect(result).toEqual(['css', 'tailwind', 'styled-components']);
+      expect(result).toEqual(['css', 'tailwind']);
     });
 
     it('should handle guide with limited style support', () => {
@@ -243,11 +243,13 @@ describe('sidebar utilities', () => {
     });
 
     it('should return empty array if guide does not support any framework styles', () => {
-      const styledOnlyGuide: Guide = {
-        slug: 'styled-only',
-        styles: ['styled-components'],
+      // Guide that only supports html framework, but we check with react
+      const cssOnlyGuide: Guide = {
+        slug: 'css-only-test',
+        styles: ['css'],
+        frameworks: ['html'],
       };
-      const result = getValidStylesForGuide(styledOnlyGuide, 'html');
+      const result = getValidStylesForGuide(cssOnlyGuide, 'react');
 
       expect(result).toEqual([]);
     });
@@ -262,19 +264,19 @@ describe('sidebar utilities', () => {
       it('should return all possible styles when guide has no restrictions', () => {
         const result = getValidStylesForGuide(mockGuide3);
 
-        // Should include all styles from all frameworks
-        expect(result).toEqual(expect.arrayContaining(['css', 'tailwind', 'styled-components']));
-        expect(result).toHaveLength(3);
+        // Should include all styles from all frameworks (css and tailwind for both react and html)
+        expect(result).toEqual(expect.arrayContaining(['css', 'tailwind']));
+        expect(result).toHaveLength(2);
       });
 
       it('should return guide-specific styles for limited support guides', () => {
-        const styledOnlyGuide: Guide = {
-          slug: 'styled-only',
-          styles: ['styled-components'],
+        const tailwindOnlyGuide: Guide = {
+          slug: 'tailwind-only',
+          styles: ['tailwind'],
         };
-        const result = getValidStylesForGuide(styledOnlyGuide);
+        const result = getValidStylesForGuide(tailwindOnlyGuide);
 
-        expect(result).toEqual(['styled-components']);
+        expect(result).toEqual(['tailwind']);
       });
     });
   });

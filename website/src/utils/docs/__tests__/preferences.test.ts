@@ -4,6 +4,11 @@ import { ALL_FRAMEWORK_STYLE_COMBINATIONS } from '@/types/docs';
 import { FRAMEWORK_COOKIE, getPreferencesServer, setPreferenceClient, STYLE_COOKIE } from '../preferences';
 
 describe('preferences utilities', () => {
+  // Derive test values from actual configuration to stay independent of supported languages
+  const firstCombo = ALL_FRAMEWORK_STYLE_COMBINATIONS[0];
+  const firstFramework = firstCombo.framework;
+  const firstStyle = firstCombo.style;
+
   describe('getPreferencesServer', () => {
     it('should return null preferences when no cookies are set', () => {
       const mockCookies = {
@@ -21,7 +26,7 @@ describe('preferences utilities', () => {
         has: vi.fn((name: string) => name === FRAMEWORK_COOKIE),
         get: vi.fn((name: string) => {
           if (name === FRAMEWORK_COOKIE) {
-            return { value: 'react' };
+            return { value: firstFramework };
           }
           return null;
         }),
@@ -29,7 +34,7 @@ describe('preferences utilities', () => {
 
       const result = getPreferencesServer(mockCookies);
 
-      expect(result).toEqual({ framework: 'react', style: null });
+      expect(result).toEqual({ framework: firstFramework, style: null });
     });
 
     it('should return both preferences when both cookies are set with valid values', () => {
@@ -37,10 +42,10 @@ describe('preferences utilities', () => {
         has: vi.fn().mockReturnValue(true),
         get: vi.fn((name: string) => {
           if (name === FRAMEWORK_COOKIE) {
-            return { value: 'react' };
+            return { value: firstFramework };
           }
           if (name === STYLE_COOKIE) {
-            return { value: 'tailwind' };
+            return { value: firstStyle };
           }
           return null;
         }),
@@ -48,7 +53,7 @@ describe('preferences utilities', () => {
 
       const result = getPreferencesServer(mockCookies);
 
-      expect(result).toEqual({ framework: 'react', style: 'tailwind' });
+      expect(result).toEqual({ framework: firstFramework, style: firstStyle });
     });
 
     it('should ignore invalid framework cookie', () => {
@@ -59,7 +64,7 @@ describe('preferences utilities', () => {
             return { value: 'invalid-framework' };
           }
           if (name === STYLE_COOKIE) {
-            return { value: 'css' };
+            return { value: firstStyle };
           }
           return null;
         }),
@@ -75,7 +80,7 @@ describe('preferences utilities', () => {
         has: vi.fn((name: string) => name === STYLE_COOKIE),
         get: vi.fn((name: string) => {
           if (name === STYLE_COOKIE) {
-            return { value: 'css' };
+            return { value: firstStyle };
           }
           return null;
         }),
@@ -91,10 +96,10 @@ describe('preferences utilities', () => {
         has: vi.fn().mockReturnValue(true),
         get: vi.fn((name: string) => {
           if (name === FRAMEWORK_COOKIE) {
-            return { value: 'html' };
+            return { value: firstFramework };
           }
           if (name === STYLE_COOKIE) {
-            return { value: 'styled-components' }; // Not valid for HTML
+            return { value: 'invalid-style' }; // Not valid for any framework
           }
           return null;
         }),
@@ -102,7 +107,7 @@ describe('preferences utilities', () => {
 
       const result = getPreferencesServer(mockCookies);
 
-      expect(result).toEqual({ framework: 'html', style: null });
+      expect(result).toEqual({ framework: firstFramework, style: null });
     });
 
     it('should accept valid framework/style combinations', () => {
@@ -141,14 +146,14 @@ describe('preferences utilities', () => {
         configurable: true,
       });
 
-      setPreferenceClient('react', 'tailwind');
+      setPreferenceClient(firstFramework, firstStyle);
 
       expect(cookies).toHaveLength(2);
-      expect(cookies[0]).toContain('vjs_docs_framework=react');
+      expect(cookies[0]).toContain(`vjs_docs_framework=${firstFramework}`);
       expect(cookies[0]).toContain('max-age=31536000');
       expect(cookies[0]).toContain('path=/');
       expect(cookies[0]).toContain('samesite=lax');
-      expect(cookies[1]).toContain('vjs_docs_style=tailwind');
+      expect(cookies[1]).toContain(`vjs_docs_style=${firstStyle}`);
     });
 
     it('should throw error for invalid framework', () => {
@@ -161,18 +166,12 @@ describe('preferences utilities', () => {
     it('should throw error for invalid style for framework', () => {
       expect(() => {
         // @ts-expect-error Testing invalid input
-        setPreferenceClient('html', 'styled-components');
-      }).toThrow('Invalid style "styled-components" for framework "html"');
+        setPreferenceClient(firstFramework, 'invalid-style');
+      }).toThrow(`Invalid style "invalid-style" for framework "${firstFramework}"`);
     });
 
     it('should accept all valid framework/style combinations', () => {
-      const testCases: Array<{ framework: 'react' | 'html'; style: any }> = [
-        { framework: 'react', style: 'css' },
-        { framework: 'react', style: 'tailwind' },
-        { framework: 'react', style: 'styled-components' },
-        { framework: 'html', style: 'css' },
-        { framework: 'html', style: 'tailwind' },
-      ];
+      const testCases = ALL_FRAMEWORK_STYLE_COMBINATIONS;
 
       for (const { framework, style } of testCases) {
         // Mock document.cookie
@@ -197,7 +196,7 @@ describe('preferences utilities', () => {
       globalThis.document = undefined;
 
       expect(() => {
-        setPreferenceClient('react', 'css');
+        setPreferenceClient(firstFramework, firstStyle);
       }).not.toThrow();
 
       globalThis.document = originalDocument;
