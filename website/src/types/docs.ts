@@ -1,5 +1,5 @@
 export const FRAMEWORK_STYLES = {
-  react: ['css', 'tailwind', 'styled-components'],
+  react: ['css', 'tailwind'],
   html: ['css', 'tailwind'],
 } as const;
 

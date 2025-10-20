@@ -1,15 +1,22 @@
 ---
 import HeroVideo from '@/components/home/HeroVideo';
 
+import construction from '@/assets/construction.svg?raw';
 import NavBar from '@/components/NavBar/NavBar.astro';
 import Footer from '@/components/Footer.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts';
 import Base from '@/layouts/Base.astro';
+import HomePageDemos from '@/components/HomePageDemos';
+import { PLAYBACK_ID } from '@/components/home/config';
+import { CircleCheck, Clock } from 'lucide-react';
+
+const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <link rel="preload" href={poster} as="image" type="image/webp" fetchpriority="high" slot="priority-head" />
+  <NavBar dark />
   <header class="relative bg-dark-100 text-light-80 flex flex-col">
-    <NavBar dark />
     <div class="w-full max-w-7xl mx-auto px-6 md:px-10 mt-20 md:mt-30">
       <div
         class="gap-5 lg:gap-12 grid lg:grid-cols-(--lg-grid-cols) items-center mb-10"
@@ -17,12 +24,12 @@ import Base from '@/layouts/Base.astro';
       >
         <h1 class="text-h4 md:text-h1 text-balance lg:text-pretty">The Open Source Player for the Web</h1>
         <p class="md:text-md text-balance max-w-100">
-          For over 15 years, VideoJS has been the world’s web video player. Now rebuilt in v10 for modern development
+          For over 15 years, Video.js has been the world’s web video player. Now rebuilt in v10 for modern development
           and performance.
         </p>
       </div>
       <div class="vjs relative z-10 w-full -mb-11 md:-mb-21 lg:-mb-32 grid grid-cols-1 grid-rows-1">
-        <HeroVideo client:load className="aspect-video rounded-3xl bg-dark-80 shadow-2xl" />
+        <HeroVideo client:load className="aspect-video rounded-3xl bg-dark-80 shadow-2xl" poster={poster} />
       </div>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-28 md:h-67 grid grid-rows-4">
@@ -33,6 +40,63 @@ import Base from '@/layouts/Base.astro';
     </div>
   </header>
   <!-- padding corresponds to negative margin on player -->
-  <main class="pt-11 md:pt-21 lg:pt-32 px-6 md:px-10 w-full max-w-7xl mx-auto min-h-64"></main>
+  <main class="@container pt-11 pb-36 md:pt-21 lg:pt-32 px-6 md:px-10 w-full max-w-7xl mx-auto min-h-64">
+    <HomePageDemos client:idle className="my-24 lg:my-32" />
+    <section class="rounded-3xl">
+      <header class="max-w-3xl mb-3">
+        <h2 class="text-h5 font-semibold lg:text-h4">Under construction</h2>
+        <p class="mb-3">Join us on our journey to build the next generation of web video!</p>
+      </header>
+      <div class="relative h-3 w-full bg-yellow rounded-full overflow-hidden mb-6">
+        <div
+          style={`width:200%;background-image:url('data:image/svg+xml,${encodeURIComponent(construction)}');`}
+          class="bg-repeat-x absolute top-0 bottom-0 left-0 animate-marquee motion-reduce:animate-none"
+        >
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+          <CircleCheck size={24} className="flex-shrink-0" />
+          <div>
+            <h3 class="font-semibold text-md">Preview</h3>
+            <p class="font-medium mb-3">October 28, 2025</p>
+            <p class="max-w-3xl">First public look, with limited features. Not production ready.</p>
+          </div>
+        </section>
+        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+          <div>
+            <Clock size={24} className="flex-shrink-0" />
+          </div>
+          <div>
+            <h3 class="font-semibold text-md">Beta</h3>
+            <p class="font-medium mb-3">December 2025</p>
+            <p class="max-w-3xl">Core features, like basic controls and adaptive streaming. Bugs likely.</p>
+          </div>
+        </section>
+        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+          <div>
+            <Clock size={24} className="flex-shrink-0" />
+          </div>
+          <div>
+            <h3 class="font-semibold text-md">Release</h3>
+            <p class="font-medium mb-3">January 2026</p>
+            <p class="max-w-3xl">Stable release. Fundamental v8 feature parity.</p>
+          </div>
+        </section>
+        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+          <div>
+            <Clock size={24} className="flex-shrink-0" />
+          </div>
+          <div>
+            <h3 class="font-semibold text-md">Beyond</h3>
+            <p class="font-medium mb-3">2026</p>
+            <p class="max-w-3xl">
+              Collaborate with the community, migrate critical plugins, develop new streaming engines
+            </p>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
   <Footer />
 </Base>

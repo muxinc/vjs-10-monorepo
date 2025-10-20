@@ -1,7 +1,6 @@
 import { Dialog } from '@base-ui-components/react/dialog';
 import clsx from 'clsx';
-import CloseIcon from '../icons/CloseIcon';
-import MenuIcon from '../icons/MenuIcon';
+import { Menu, X } from 'lucide-react';
 
 interface NavLink {
   href: string;
@@ -24,14 +23,11 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
         className={clsx('lg:hidden flex items-center justify-center p-3 h-full aspect-square', dark ? 'bg-light-80 text-dark-100 intent:bg-light-40' : 'bg-dark-100 text-light-80 intent:bg-dark-80')}
         aria-label="Open navigation menu"
       >
-        <MenuIcon />
+        <Menu size={24} />
       </Dialog.Trigger>
 
       {/* Portal renders outside DOM hierarchy */}
       <Dialog.Portal>
-        {/* Backdrop overlay */}
-        <Dialog.Backdrop className="fixed inset-0 bg-black/50 z-50" />
-
         {/* Popup container */}
         <Dialog.Popup className={clsx('fixed inset-0 z-50 flex flex-col', dark ? 'bg-dark-100 text-light-80' : 'bg-light-80 text-dark-100')}>
           {/* Header with close button */}
@@ -43,9 +39,9 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
             style={{ height: 'var(--nav-h)' }}
           >
             <Dialog.Title className="sr-only">Navigation</Dialog.Title>
-            <p className="text-h5 px-3">VideoJS</p>
+            <p className="text-h5 px-3">Video.js</p>
             <Dialog.Close className={clsx('flex items-center justify-center p-3 h-full aspect-square', dark ? 'bg-light-80 text-dark-100 intent:bg-light-40' : 'bg-dark-100 text-light-80 intent:bg-dark-80')} aria-label="Close navigation menu">
-              <CloseIcon />
+              <X size={24} />
             </Dialog.Close>
           </div>
 

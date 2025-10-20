@@ -1,8 +1,7 @@
 import { Select as BaseSelect } from '@base-ui-components/react/select';
 import clsx from 'clsx';
+import { Check, ChevronDown } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
-import CaretIcon from './icons/CaretIcon';
-import CheckIcon from './icons/CheckIcon';
 
 export interface SelectOption<T = string> {
   value: T | null;
@@ -45,7 +44,7 @@ export function Select<T extends string = string>({
       >
         <BaseSelect.Value className="flex-1 min-w-0 truncate" />
         <BaseSelect.Icon>
-          <CaretIcon />
+          <ChevronDown size={12} />
         </BaseSelect.Icon>
       </BaseSelect.Trigger>
 
@@ -85,7 +84,7 @@ export function Select<T extends string = string>({
                 >
                   <BaseSelect.ItemText>{option.label}</BaseSelect.ItemText>
                   <BaseSelect.ItemIndicator className="ml-auto inline-flex items-center">
-                    <CheckIcon />
+                    <Check size={16} />
                   </BaseSelect.ItemIndicator>
                 </BaseSelect.Item>
               ))}

@@ -32,6 +32,9 @@ const fullTitle = Array.isArray(title)
     <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL('rss.xml', Astro.site)} />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Important stuff -->
+    <slot name="priority-head" />
+
     <!-- Font preloads -->
     <Font cssVariable="--font-instrument-sans" preload />
     <Font cssVariable="--font-ibm-plex-mono" preload />

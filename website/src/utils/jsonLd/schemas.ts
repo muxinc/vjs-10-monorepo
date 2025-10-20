@@ -37,12 +37,12 @@ export function createTechArticleSchema(params: {
     timeRequired: `PT${params.readingTime}M`,
     author: {
       '@type': 'Organization',
-      name: 'VideoJS',
+      name: 'Video.js',
       url: 'https://v10.videojs.org',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'VideoJS',
+      name: 'Video.js',
       url: 'https://v10.videojs.org',
     },
     inLanguage: 'en-US',
@@ -94,7 +94,7 @@ export function createBlogPostingSchema(params: {
     ),
     publisher: {
       '@type': 'Organization',
-      name: 'VideoJS',
+      name: 'Video.js',
       url: 'https://v10.videojs.org',
     },
     inLanguage: 'en-US',
@@ -116,7 +116,7 @@ export function createBlogCollectionSchema(params: {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'VideoJS Blog',
+    name: 'Video.js Blog',
     description: 'Articles, announcements, news, updates, and more',
     url: params.url,
     mainEntity: {
@@ -130,7 +130,7 @@ export function createBlogCollectionSchema(params: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'VideoJS',
+      name: 'Video.js',
       url: 'https://v10.videojs.org',
     },
     inLanguage: 'en-US',
@@ -149,7 +149,7 @@ export function createAuthorCollectionSchema(params: {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Authors',
-    description: 'Folks who write sick content for the VideoJS blog',
+    description: 'Folks who write sick content for the Video.js blog',
     url: params.url,
     mainEntity: {
       '@type': 'ItemList',
@@ -178,7 +178,7 @@ export function createAuthorCollectionSchema(params: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'VideoJS',
+      name: 'Video.js',
       url: 'https://v10.videojs.org',
     },
     inLanguage: 'en-US',
@@ -225,12 +225,12 @@ export function createProfilePageSchema(params: {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
     name: `${params.author.data.name} - Author Profile`,
-    description: `Posts by ${params.author.data.name} on the VideoJS blog`,
+    description: `Posts by ${params.author.data.name} on the Video.js blog`,
     url: params.url,
     mainEntity: personSchema,
     publisher: {
       '@type': 'Organization',
-      name: 'VideoJS',
+      name: 'Video.js',
       url: 'https://v10.videojs.org',
     },
     inLanguage: 'en-US',

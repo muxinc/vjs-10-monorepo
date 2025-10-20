@@ -1,6 +1,6 @@
 ---
 import type { Guide, SupportedFramework, SupportedStyle } from '@/types/docs';
-import CaretIcon from '../icons/CaretIcon';
+import { ChevronDown } from 'lucide-react';
 
 type Props<F extends SupportedFramework = SupportedFramework> = {
   prev: Guide | null;
@@ -32,7 +32,7 @@ function getGuideUrl<F extends SupportedFramework>(framework: F, style: Supporte
           {prev.sidebarLabel || docTitles.get(prev.slug)}
         </div>
         <div style="grid-area: icon">
-          <CaretIcon className="rotate-90" />
+          <ChevronDown size={12} className="rotate-90" />
         </div>
       </a>
     ) : (
@@ -53,7 +53,7 @@ function getGuideUrl<F extends SupportedFramework>(framework: F, style: Supporte
           {next.sidebarLabel || docTitles.get(next.slug)}
         </div>
         <div style="grid-area: icon">
-          <CaretIcon className="-rotate-90" />
+          <ChevronDown size={12} className="-rotate-90" />
         </div>
       </a>
     ) : (

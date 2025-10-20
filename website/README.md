@@ -94,7 +94,7 @@ See [content.config.ts](src/content.config.ts) for the blog collection definitio
 The most sophisticated part of the website is the documentation system, which adapts content based on:
 
 - **Framework** (HTML, React)
-- **Styling approach** (CSS, Tailwind, Styled-Components)
+- **Styling approach** (CSS, Tailwind)
 
 ##### URL Structure
 
@@ -106,10 +106,10 @@ Example: `/docs/framework/react/style/tailwind/concepts/state-management/`
 
 ##### Framework/Style Matrix
 
-| Framework | Available Styles                 |
-| --------- | -------------------------------- |
-| HTML      | css, tailwind                    |
-| React     | css, tailwind, styled-components |
+| Framework | Available Styles |
+| --------- | ---------------- |
+| HTML      | css, tailwind    |
+| React     | css, tailwind    |
 
 ##### Content Filtering
 

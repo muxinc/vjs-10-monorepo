@@ -1,7 +1,7 @@
 ---
 import type { Guide, Section, SupportedFramework, SupportedStyle } from '@/types/docs';
 import { isSection } from '@/types/docs';
-import CaretIcon from '../icons/CaretIcon';
+import { ChevronDown } from 'lucide-react';
 
 type Props<F extends SupportedFramework = SupportedFramework> = {
   item: Guide | Section;
@@ -40,7 +40,7 @@ const isActive = containsActivePath(item);
         ]}
       >
         <span class="flex-1">{item.sidebarLabel}</span>
-        <CaretIcon className="group-open:rotate-180" />
+        <ChevronDown size={12} className="group-open:rotate-180" />
       </summary>
       <div>
         {item.contents.map((contentItem) => (

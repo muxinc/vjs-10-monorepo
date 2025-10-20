@@ -62,11 +62,6 @@
   --color-red: #ea3837;
   --color-purple: #a83b71;
 
-  /* --color-code-green: #3f895a; */
-  /* --color-code-blue: #436590; */
-  /* --color-code-red: #a74342; */
-  /* --color-code-orange: #c67614; */
-
   /* Typography */
   --tracking-*: initial;
   --tracking-tighter: -0.04em;
@@ -108,11 +103,23 @@
   --text-sm--line-height: calc(20 / 14);
   --text-sm--letter-spacing: -0.02em;
 
-  --text-base-code: 0.875rem;
-  --text-base-code--line-height: calc(28 / 16);
-  --text-base-code--letter-spacing: -0.02em;
   /* Notice the use of em, so that code scales with, say, headers */
   --text-code: 0.875em;
   --text-code--line-height: calc(28 / 16);
   --text-code--letter-spacing: -0.02em;
+  /* if you don't want this scaling, use text-base-code */
+  --text-base-code: 0.875rem;
+  --text-base-code--line-height: calc(28 / 16);
+  --text-base-code--letter-spacing: -0.02em;
+
+  /* animations */
+  --animate-marquee: marquee 40s linear infinite;
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
 }

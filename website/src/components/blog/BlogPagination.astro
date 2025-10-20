@@ -1,6 +1,6 @@
 ---
 import type { Page } from 'astro';
-import CaretIcon from '@/components/icons/CaretIcon';
+import { ChevronDown } from 'lucide-react';
 
 interface Props {
   page: Page;
@@ -20,7 +20,7 @@ const { page } = Astro.props;
         aria-label={`Go to page ${page.currentPage - 1}`}
         class="grid items-center p-2 border border-light-40 rounded-lg intent:border-dark-40"
       >
-        <CaretIcon className="rotate-90" />
+        <ChevronDown size={12} className="rotate-90" />
       </a>
     ) : (
       <button
@@ -28,7 +28,7 @@ const { page } = Astro.props;
         aria-label="Previous page (unavailable)"
         class="grid items-center p-2 border border-light-40 rounded-lg opacity-40"
       >
-        <CaretIcon className="rotate-90" />
+        <ChevronDown size={12} className="rotate-90" />
       </button>
     )
   }
@@ -42,7 +42,7 @@ const { page } = Astro.props;
         aria-label={`Go to page ${page.currentPage + 1}`}
         class="grid items-center p-2 border border-light-40 rounded-lg intent:border-dark-40"
       >
-        <CaretIcon className="-rotate-90" />
+        <ChevronDown size={12} className="-rotate-90" />
       </a>
     ) : (
       <button
@@ -50,7 +50,7 @@ const { page } = Astro.props;
         aria-label="Next page (unavailable)"
         class="grid items-center p-2 border border-light-40 rounded-lg opacity-40"
       >
-        <CaretIcon className="-rotate-90" />
+        <ChevronDown size={12} className="-rotate-90" />
       </button>
     )
   }
