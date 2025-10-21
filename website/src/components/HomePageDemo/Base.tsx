@@ -1,7 +1,7 @@
 import type { Media, Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
 import { framework, media, skin } from '@/stores/homePageDemos';
-import ClientCode from './ClientCode';
+import ClientCode from '../ClientCode';
 
 function generateHTMLCode(skin: Skin, media: Media): string {
   const skinTag = `${skin}-skin`;
@@ -38,7 +38,7 @@ export const VideoPlayer = () => {
 interface Props {
   className?: string;
 }
-export default function HomePageEjectDemo({ className }: Props) {
+export default function BaseDemo({ className }: Props) {
   const $framework = useStore(framework);
   const $skin = useStore(skin);
   const $media = useStore(media);
