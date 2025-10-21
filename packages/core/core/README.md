@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/core` provides runtime-agnostic core components and utilities shared across Video.js packages. These are foundational building blocks used by platform-specific implementations (HTML, React, React Native) to create consistent media player experiences.

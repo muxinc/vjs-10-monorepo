@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/playback-engine` provides an abstraction layer for media playback engines, enabling support for various streaming protocols (HLS, DASH, etc.) through a unified interface. This package handles the complexity of adaptive streaming while presenting a consistent API.

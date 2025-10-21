@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/icons` is a curated collection of SVG icons designed specifically for media player interfaces. This package serves as the single source of truth for all Video.js icons, providing raw SVG assets that platform-specific packages transform into their respective component formats.

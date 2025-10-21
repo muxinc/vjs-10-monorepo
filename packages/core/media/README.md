@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/media` provides contracts, utilities, and integration helpers for working with HTMLMediaElement and playback engines. It bridges the gap between native media elements and advanced streaming capabilities, offering a consistent interface for media playback across different scenarios.

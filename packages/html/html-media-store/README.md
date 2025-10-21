@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/html-media-store` provides DOM-specific integration between `@vjs-10/media-store` and HTML media elements. It handles bi-directional synchronization between media element state and the reactive store, enabling automatic UI updates across all connected components.

@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/html-media-elements` provides Web Component implementations of media elements, offering enhanced functionality beyond native `<video>` and `<audio>` elements. These components integrate with the Video.js state management system and support advanced streaming protocols.

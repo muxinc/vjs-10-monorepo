@@ -6,6 +6,17 @@
 
 **Status:** Early Development
 
+> **⚠️ PROTOTYPE - SUBJECT TO CHANGE**
+>
+> This package is in early prototype phase. Expect significant changes including:
+>
+> - Package restructuring and naming
+> - Breaking API changes
+> - Major architectural updates
+> - Incomplete or experimental features
+>
+> Not recommended for production use.
+
 ## Overview
 
 `@vjs-10/media-store` provides a lightweight, reactive state management system for media players built on [nanostores](https://github.com/nanostores/nanostores). It's designed to be runtime-agnostic, making it suitable for use across web, React, React Native, and other JavaScript environments.
