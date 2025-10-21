@@ -1,11 +1,13 @@
 import { Dialog } from '@base-ui-components/react/dialog';
 import clsx from 'clsx';
-import { Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { DISCORD_INVITE_URL, GITHUB_REPO_URL } from '@/consts';
 
 interface NavLink {
   href: string;
   label: string;
   matchPath: string | null;
+  external?: boolean;
 }
 
 export interface MobileNavProps {
@@ -58,8 +60,26 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
                 aria-current={link.matchPath && currentPath.startsWith(link.matchPath) ? 'page' : undefined}
               >
                 {link.label}
+                {' '}
+                {link.external ? <ArrowUpRight size="1em" /> : null}
               </a>
             ))}
+            <a
+              href={GITHUB_REPO_URL}
+              className="text-md px-6 py-3 inline-flex items-center gap-1 intent:underline"
+            >
+              GitHub
+              {' '}
+              <ArrowUpRight size="1em" />
+            </a>
+            <a
+              href={DISCORD_INVITE_URL}
+              className="text-md px-6 py-3 inline-flex items-center gap-1 intent:underline"
+            >
+              Discord
+              {' '}
+              <ArrowUpRight size="1em" />
+            </a>
           </nav>
         </Dialog.Popup>
       </Dialog.Portal>

@@ -1,17 +1,24 @@
 ---
-import { GITHUB_REPO_URL } from '@/consts';
+import { DISCORD_INVITE_URL, GITHUB_REPO_URL } from '@/consts';
 import MobileNav from './MobileNav';
 import { ArrowUpRight } from 'lucide-react';
+import Discord from '@/components/icons/Discord';
+import GitHub from '@/components/icons/GitHub';
 
 export interface Props {
   dark?: boolean;
   class?: string;
 }
 
-const navLinks = [
+type NavLink = {
+  href: string;
+  label: string;
+  matchPath: string | null;
+  external?: boolean;
+};
+const navLinks: NavLink[] = [
   { href: '/docs', label: 'Docs', matchPath: '/docs' },
   { href: '/blog', label: 'Blog', matchPath: '/blog' },
-  { href: GITHUB_REPO_URL, label: 'GitHub', matchPath: null, external: true },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -41,14 +48,34 @@ const { class: className, dark = false } = Astro.props;
               ? 'border-current'
               : 'border-transparent intent:border-current',
           ]}
+          aria-current={link.matchPath && currentPath.startsWith(link.matchPath) ? 'page' : undefined}
         >
           {link.label} {link.external ? <ArrowUpRight size="1em" /> : null}
         </a>
       ))
     }
+    <a
+      href={GITHUB_REPO_URL}
+      class="h-full flex items-center px-3 border-b border-transparent intent:border-current"
+      aria-label="GitHub"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <GitHub size="1.1em" strokeWidth="0.0625em" />
+    </a>
+    <a
+      href={DISCORD_INVITE_URL}
+      class="h-full flex items-center px-3 border-b border-transparent intent:border-current"
+      aria-label="Discord"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Discord size="1.1em" strokeWidth="0.0625em" />
+    </a>
   </div>
 
   <!-- Mobile nav -->
-  <MobileNav client:load navLinks={navLinks} currentPath={currentPath} dark={dark}><slot name="mobile-nav" /></MobileNav
-  >
+  <MobileNav client:load navLinks={navLinks} currentPath={currentPath} dark={dark}>
+    <slot name="mobile-nav" />
+  </MobileNav>
 </nav>
