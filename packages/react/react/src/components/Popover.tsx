@@ -149,7 +149,6 @@ function PopoverTrigger({ children }: PopoverTriggerProps): JSX.Element {
 function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPositionerProps): JSX.Element | null {
   const { refs, floatingStyles, updatePositioning } = usePopoverContext();
 
-  // Update positioning when props change
   useEffect(() => {
     updatePositioning(side, sideOffset);
   }, [side, sideOffset, updatePositioning]);
@@ -206,7 +205,6 @@ function PopoverPortal({ children, root, rootId = '@default_portal_id' }: Popove
   );
 }
 
-// Export compound component
 // eslint-disable-next-line react-refresh/only-export-components
 export const Popover: {
   Root: typeof PopoverRoot;

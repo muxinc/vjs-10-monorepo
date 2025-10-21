@@ -4,6 +4,7 @@ import { VolumeSlider as CoreVolumeSlider } from '@vjs-10/core';
 import { volumeSliderStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
+import { setAttributes } from '../utils/element-utils';
 
 /**
  * VolumeSlider Root props hook - equivalent to React's useVolumeSliderRootProps
@@ -19,12 +20,14 @@ export const getVolumeSliderRootProps: PropsHook<{
   const volumeText = `${Math.round(state.muted ? 0 : state.volume * 100)}%`;
 
   const baseProps: Record<string, any> = {
-    /** data attributes/props */
+    role: 'slider',
+    tabindex: element.getAttribute('tabindex') ?? '0',
     'data-muted': state.muted.toString(),
     'data-volume-level': state.volumeLevel,
     'data-orientation': (element as any).orientation || 'horizontal',
-    /** aria attributes/props */
     'aria-label': 'Volume',
+    'aria-valuemin': '0',
+    'aria-valuemax': '100',
     'aria-valuetext': volumeText,
     'aria-orientation': (element as any).orientation || 'horizontal',
   };
@@ -91,18 +94,9 @@ export class VolumeSliderRootBase extends HTMLElement {
     this.style.setProperty('--slider-fill', `${coreState._fillWidth.toFixed(3)}%`);
     this.style.setProperty('--slider-pointer', `${coreState._pointerWidth.toFixed(3)}%`);
 
-    this.setAttribute('role', 'slider');
-    this.setAttribute('tabindex', '0');
-    this.setAttribute('aria-label', props['aria-label'] || 'Volume');
-    this.setAttribute('aria-valuemin', '0');
-    this.setAttribute('aria-valuemax', '100');
-    this.setAttribute('aria-valuenow', coreState._fillWidth.toString());
-    this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
-    this.setAttribute('aria-orientation', props['aria-orientation']);
+    props['aria-valuenow'] = coreState._fillWidth.toString();
 
-    this.setAttribute('data-muted', state.muted.toString());
-    this.setAttribute('data-volume-level', state.volumeLevel);
-    this.setAttribute('data-orientation', props['data-orientation']);
+    setAttributes(this, props);
   }
 }
 
@@ -123,11 +117,9 @@ export class VolumeSliderTrackBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
-    // Set appropriate dimensions based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.width = '100%';
       this.style.removeProperty('height');
     } else {
@@ -149,11 +141,9 @@ export class VolumeSliderProgressBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
-    // Set appropriate dimensions based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.width = 'var(--slider-fill, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
@@ -177,11 +167,10 @@ export class VolumeSliderThumbBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
     // Set appropriate positioning based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.left = 'var(--slider-fill, 0%)';
       this.style.top = '50%';
       this.style.transform = 'translate(-50%, -50%)';

@@ -1,9 +1,7 @@
 import type { Placement } from '@floating-ui/dom';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 
-import { tabbable } from 'tabbable';
-
-import { getActiveElement, getDocument, uniqueId } from '../utils/element-utils';
+import { getNextTabbable, getPreviousTabbable, isOutsideEvent, uniqueId } from '../utils/element-utils';
 
 export class MediaPopoverRoot extends HTMLElement {
   #open = false;
@@ -63,10 +61,19 @@ export class MediaPopoverRoot extends HTMLElement {
     return this.#portalElement?.querySelector('media-popover-popup') as MediaPopoverPopup | null;
   }
 
-  #setOpen(open: boolean): void {
+  setOpen(open: boolean): void {
     if (this.#open === open) return;
 
     this.#open = open;
+
+    if (open) {
+      this.#setupFloating();
+      this.#portalElement?.renderGuards();
+    } else {
+      this.#portalElement?.removeGuards();
+      this.#cleanup?.();
+      this.#cleanup = null;
+    }
 
     if (open) {
       this.#transitionStatus = 'initial';
@@ -79,13 +86,6 @@ export class MediaPopoverRoot extends HTMLElement {
     }
 
     this.#updateVisibility();
-
-    if (open) {
-      this.#setupFloating();
-    } else {
-      this.#cleanup?.();
-      this.#cleanup = null;
-    }
   }
 
   #updateVisibility(): void {
@@ -105,6 +105,10 @@ export class MediaPopoverRoot extends HTMLElement {
     if (triggerElement) {
       triggerElement.setAttribute('aria-expanded', this.#open.toString());
       triggerElement.toggleAttribute('data-popup-open', this.#open);
+
+      if (this.#popupElement?.id) {
+        triggerElement.setAttribute('aria-controls', this.#popupElement?.id);
+      }
     }
   }
 
@@ -147,34 +151,30 @@ export class MediaPopoverRoot extends HTMLElement {
 
     this.#clearHoverTimeout();
     this.#hoverTimeout = globalThis.setTimeout(() => {
-      this.#setOpen(true);
+      this.setOpen(true);
     }, this.delay);
   }
 
-  #handleMouseLeave(): void {
+  #handleMouseLeave(event: MouseEvent): void {
     if (!this.openOnHover) return;
+
+    if (event.relatedTarget && this.#popupElement?.contains(event.relatedTarget as Node)) return;
 
     this.#clearHoverTimeout();
     this.#hoverTimeout = globalThis.setTimeout(() => {
-      this.#setOpen(false);
+      this.setOpen(false);
     }, this.closeDelay);
   }
 
   #handleFocusIn(_event: FocusEvent): void {
-    this.#setOpen(true);
-    addPreviouslyFocusedElement(getActiveElement(getDocument(this)));
+    this.setOpen(true);
   }
 
-  #handleFocusOut = (event: FocusEvent): void => {
-    if (getPreviouslyFocusedElement() === this.#triggerElement?.firstElementChild) {
-      const popup = this.#popupElement?.firstElementChild as HTMLElement;
-      if (popup) {
-        addPreviouslyFocusedElement(event.relatedTarget as Element | null);
-        popup.focus();
-      }
-    } else {
-      this.#setOpen(false);
-    }
+  #handleFocusOut(event: FocusEvent): void {
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (relatedTarget && relatedTarget.hasAttribute('data-focus-guard')) return;
+
+    this.setOpen(false);
   };
 }
 
@@ -229,8 +229,8 @@ export class MediaPopoverTrigger extends HTMLElement {
 
 export class MediaPopoverPortal extends HTMLElement {
   #portal: HTMLElement | null = null;
-  #childrenRefs: HTMLElement[] = [];
-  #tabbableChildren: Element[] = [];
+  #childrenArray: Element[] = [];
+  #guards: HTMLElement[] = [];
 
   connectedCallback(): void {
     this.style.display = 'contents';
@@ -242,7 +242,11 @@ export class MediaPopoverPortal extends HTMLElement {
   }
 
   querySelector(selector: string): HTMLElement | null {
-    return this.#portal?.querySelector(selector) ?? null;
+    return this.#portal!.querySelector(selector);
+  }
+
+  querySelectorAll(selector: string): NodeListOf<Element> {
+    return this.#portal!.querySelectorAll(selector);
   }
 
   handleEvent(event: Event): void {
@@ -269,71 +273,86 @@ export class MediaPopoverPortal extends HTMLElement {
     this.#portal.slot = 'portal';
     this.#portal.id = uniqueId();
 
-    const beforeGuard = createFocusGuard();
-    beforeGuard.addEventListener('focusin', (_event: FocusEvent) => {
-
-    });
-
-    const afterGuard = createFocusGuard();
-    afterGuard.addEventListener('focusin', (_event: FocusEvent) => {
-
-    });
-
-    this.#childrenRefs = Array.from(this.children) as HTMLElement[];
-
-    this.#portal.append(beforeGuard, ...this.children, afterGuard);
+    this.#childrenArray = Array.from(this.children);
+    this.#portal.append(...this.#childrenArray);
     portalContainer.append(this.#portal);
-
-    // console.log(this.#childrenRefs);
-    this.#childrenRefs.forEach((child) => {
-      const tabbableElements = tabbable(child, {
-        includeContainer: true,
-      });
-      // console.log(tabbableElements);
-      tabbableElements.forEach((element: Element) => {
-        element.setAttribute('tabindex', '-1');
-        this.#tabbableChildren.push(element);
-      });
-    });
   }
 
   #cleanupPortal(): void {
     if (!this.#portal) return;
 
-    // Move children back to the portal element
-    this.append(...this.#portal.children);
+    this.removeGuards();
+
+    this.append(...this.#childrenArray);
     this.#portal.remove();
     this.#portal = null;
+    this.#childrenArray = [];
+  }
+
+  renderGuards(): void {
+    if (!this.#portal) return;
+
+    if (this.#guards.length === 0) {
+      const beforeInsideGuard = createFocusGuard();
+      const afterInsideGuard = createFocusGuard();
+      const beforeOutsideGuard = createFocusGuard();
+      const afterOutsideGuard = createFocusGuard();
+
+      beforeOutsideGuard.addEventListener('focus', (event: FocusEvent) => {
+        if (this.#portal && isOutsideEvent(event, this.#portal)) {
+          beforeInsideGuard.focus();
+        } else {
+          getPreviousTabbable(this)?.focus();
+        }
+      });
+
+      afterOutsideGuard.addEventListener('focus', (event: FocusEvent) => {
+        if (this.#portal && isOutsideEvent(event, this.#portal)) {
+          afterInsideGuard.focus();
+        } else {
+          getNextTabbable(this)?.focus();
+        }
+      });
+
+      beforeInsideGuard.addEventListener('focus', (event: FocusEvent) => {
+        if (this.#portal && isOutsideEvent(event, this.#portal)) {
+          getNextTabbable(this.#portal)?.focus();
+        } else {
+          beforeOutsideGuard.focus();
+        }
+      });
+
+      afterInsideGuard.addEventListener('focus', (event: FocusEvent) => {
+        if (this.#portal && isOutsideEvent(event, this.#portal)) {
+          getPreviousTabbable(this.#portal)?.focus();
+        } else {
+          afterOutsideGuard.focus();
+        }
+      });
+
+      // Add guards to portal element (outside guards)
+      this.prepend(beforeOutsideGuard);
+      this.append(afterOutsideGuard);
+
+      // Add guards to portal container (inside guards)
+      this.#portal.prepend(beforeInsideGuard);
+      this.#portal.append(afterInsideGuard);
+
+      this.#guards = [beforeOutsideGuard, afterOutsideGuard, beforeInsideGuard, afterInsideGuard];
+    }
+  }
+
+  removeGuards(): void {
+    this.#guards.forEach(guard => guard.remove());
+    this.#guards = [];
   }
 }
 
 function createFocusGuard(): HTMLElement {
   const focusGuard = document.createElement('span');
-  focusGuard.setAttribute('tabindex', '-1');
+  focusGuard.setAttribute('tabindex', '0');
   focusGuard.setAttribute('data-focus-guard', '');
   return focusGuard;
-}
-
-const LIST_LIMIT = 20;
-let previouslyFocusedElements: Element[] = [];
-
-function clearDisconnectedPreviouslyFocusedElements() {
-  previouslyFocusedElements = previouslyFocusedElements.filter(el => el.isConnected);
-}
-
-function addPreviouslyFocusedElement(element: Element | null): void {
-  clearDisconnectedPreviouslyFocusedElements();
-  if (element && element.localName !== 'body') {
-    previouslyFocusedElements.push(element);
-    if (previouslyFocusedElements.length > LIST_LIMIT) {
-      previouslyFocusedElements = previouslyFocusedElements.slice(-LIST_LIMIT);
-    }
-  }
-}
-
-function getPreviouslyFocusedElement(): Element | undefined {
-  clearDisconnectedPreviouslyFocusedElements();
-  return previouslyFocusedElements[previouslyFocusedElements.length - 1];
 }
 
 export class MediaPopoverPositioner extends HTMLElement {
@@ -363,6 +382,7 @@ export class MediaPopoverPopup extends HTMLElement {
   connectedCallback(): void {
     this.setAttribute('role', 'dialog');
     this.setAttribute('aria-modal', 'false');
+    this.id = uniqueId();
   }
 }
 

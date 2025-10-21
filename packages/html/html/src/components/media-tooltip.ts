@@ -115,7 +115,6 @@ export class MediaTooltipRoot extends HTMLElement {
 
     const triggerElement = this.#triggerElement?.firstElementChild as HTMLElement;
     if (triggerElement) {
-      triggerElement.setAttribute('aria-expanded', this.#open.toString());
       triggerElement.toggleAttribute('data-popup-open', this.#open);
     }
   }
@@ -265,9 +264,6 @@ export class MediaTooltipTrigger extends HTMLElement {
 
     const triggerElement = this.firstElementChild as HTMLElement;
     if (triggerElement) {
-      triggerElement.setAttribute('aria-describedby', 'tooltip');
-      triggerElement.setAttribute('aria-expanded', 'false');
-
       const mutationObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.type === 'attributes') {

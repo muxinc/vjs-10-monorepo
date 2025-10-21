@@ -4,6 +4,7 @@ import { TimeSlider as CoreTimeSlider } from '@vjs-10/core';
 import { timeSliderStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
+import { setAttributes } from '../utils/element-utils';
 
 interface TimeSliderRootState {
   currentTime: number;
@@ -32,12 +33,15 @@ export const getTimeSliderRootProps: PropsHook<{
   const durationText = formatTime(state.duration);
 
   const baseProps: Record<string, any> = {
-    /** data attributes/props */
+    role: 'slider',
+    tabindex: element.getAttribute('tabindex') ?? '0',
     'data-current-time': state.currentTime.toString(),
     'data-duration': state.duration.toString(),
     'data-orientation': (element as any).orientation || 'horizontal',
-    /** aria attributes/props */
     'aria-label': 'Seek',
+    'aria-valuemin': '0',
+    'aria-valuemax': Math.round(state.duration).toString(),
+    'aria-valuenow': Math.round(state.currentTime).toString(),
     'aria-valuetext': `${currentTimeText} of ${durationText}`,
     'aria-orientation': (element as any).orientation || 'horizontal',
   };
@@ -89,18 +93,7 @@ export class TimeSliderRootBase extends HTMLElement {
     this.style.setProperty('--slider-fill', `${Math.round(coreState._fillWidth)}%`);
     this.style.setProperty('--slider-pointer', `${Math.round(coreState._pointerWidth)}%`);
 
-    this.setAttribute('role', 'slider');
-    this.setAttribute('tabindex', '0');
-    this.setAttribute('aria-label', props['aria-label'] || 'Seek');
-    this.setAttribute('aria-valuemin', '0');
-    this.setAttribute('aria-valuemax', Math.round(state.duration).toString());
-    this.setAttribute('aria-valuenow', Math.round(state.currentTime).toString());
-    this.setAttribute('aria-valuetext', props['aria-valuetext'] || '');
-    this.setAttribute('aria-orientation', props['aria-orientation']);
-
-    this.setAttribute('data-current-time', state.currentTime.toString());
-    this.setAttribute('data-duration', state.duration.toString());
-    this.setAttribute('data-orientation', props['data-orientation']);
+    setAttributes(this, props);
   }
 }
 
@@ -118,11 +111,9 @@ export class TimeSliderTrackBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
-    // Set appropriate dimensions based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.width = '100%';
       this.style.removeProperty('height');
     } else {
@@ -141,11 +132,9 @@ export class TimeSliderProgressBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
-    // Set appropriate dimensions based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.width = 'var(--slider-fill, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
@@ -168,11 +157,9 @@ export class TimeSliderPointerBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
-    // Set appropriate dimensions based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.width = 'var(--slider-pointer, 0%)';
       this.style.height = '100%';
       this.style.top = '0';
@@ -193,11 +180,10 @@ export class TimeSliderThumbBase extends HTMLElement {
   }
 
   _update(props: any, _state: any): void {
-    const orientation = props['data-orientation'] || 'horizontal';
-    this.setAttribute('data-orientation', orientation);
+    setAttributes(this, props);
 
     // Set appropriate positioning based on orientation
-    if (orientation === 'horizontal') {
+    if (props['data-orientation'] === 'horizontal') {
       this.style.left = 'var(--slider-fill, 0%)';
       this.style.top = '50%';
       this.style.transform = 'translate(-50%, -50%)';
@@ -307,7 +293,6 @@ export const TimeSlider = Object.assign(
   Thumb: typeof TimeSliderThumb;
 };
 
-// Register custom elements
 if (!globalThis.customElements.get('media-time-slider-root')) {
   globalThis.customElements.define('media-time-slider-root', TimeSliderRoot);
 }
