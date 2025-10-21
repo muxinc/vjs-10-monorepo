@@ -22,7 +22,7 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
     <Dialog.Root modal>
       {/* Trigger button - hamburger menu */}
       <Dialog.Trigger
-        className={clsx('lg:hidden flex items-center justify-center p-3 h-full aspect-square', dark ? 'bg-light-80 text-dark-100 intent:bg-light-40' : 'bg-dark-100 text-light-80 intent:bg-dark-80')}
+        className={clsx('sm:hidden flex items-center justify-center p-3 h-full aspect-square', dark ? 'bg-light-80 text-dark-100 intent:bg-light-40' : 'bg-dark-100 text-light-80 intent:bg-dark-80')}
         aria-label="Open navigation menu"
       >
         <Menu size={24} />
