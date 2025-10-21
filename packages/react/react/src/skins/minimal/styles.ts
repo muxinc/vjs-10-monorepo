@@ -139,7 +139,11 @@ const styles: MinimalSkinStyles = {
     '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
-  PopoverPopup: cn('py-2'),
+  PopoverPopup: cn(
+    'py-2',
+    // Animation
+    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
+  ),
 };
 
 export default styles;

@@ -210,7 +210,6 @@ export const useTimeSliderRootState: StateHook<{
 };
 
 export const getTimeSliderTrackProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
@@ -218,7 +217,6 @@ export const getTimeSliderTrackProps: PropsHook<Record<string, never>> = (_state
 };
 
 export const getTimeSliderProgressProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
@@ -226,7 +224,6 @@ export const getTimeSliderProgressProps: PropsHook<Record<string, never>> = (_st
 };
 
 export const getTimeSliderPointerProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
@@ -234,7 +231,6 @@ export const getTimeSliderPointerProps: PropsHook<Record<string, never>> = (_sta
 };
 
 export const getTimeSliderThumbProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-time-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',

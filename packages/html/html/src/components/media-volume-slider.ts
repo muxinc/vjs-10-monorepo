@@ -205,7 +205,6 @@ export const useVolumeSliderRootState: StateHook<{
  * VolumeSlider Track props hook
  */
 export const getVolumeSliderTrackProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-volume-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
@@ -216,7 +215,6 @@ export const getVolumeSliderTrackProps: PropsHook<Record<string, never>> = (_sta
  * VolumeSlider Progress props hook
  */
 export const getVolumeSliderProgressProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-volume-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
@@ -227,7 +225,6 @@ export const getVolumeSliderProgressProps: PropsHook<Record<string, never>> = (_
  * VolumeSlider Thumb props hook
  */
 export const getVolumeSliderThumbProps: PropsHook<Record<string, never>> = (_state, element) => {
-  // Get orientation from parent root element if not provided in state
   const rootElement = element.closest('media-volume-slider-root') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
@@ -293,7 +290,6 @@ export const VolumeSlider = Object.assign(
   Thumb: typeof VolumeSliderThumb;
 };
 
-// Register custom elements
 if (!globalThis.customElements.get('media-volume-slider-root')) {
   globalThis.customElements.define('media-volume-slider-root', VolumeSliderRoot);
 }
