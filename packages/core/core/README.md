@@ -87,45 +87,47 @@ Both `TimeSlider` and `VolumeSlider` share a common API:
 
 ```typescript
 interface SliderOptions {
-  min?: number;        // Minimum value (default: 0)
-  max?: number;        // Maximum value (default: 100)
-  value?: number;      // Initial value (default: 0)
-  step?: number;       // Step increment (default: 1)
+  min?: number; // Minimum value (default: 0)
+  max?: number; // Maximum value (default: 100)
+  value?: number; // Initial value (default: 0)
+  step?: number; // Step increment (default: 1)
 }
 ```
 
 ### Methods
 
 ```typescript
-// Set slider value
-slider.setValue(newValue: number): void
+interface SliderMethods {
+  // Set slider value
+  setValue(newValue: number): void
 
-// Get current value
-slider.getValue(): number
+  // Get current value
+  getValue(): number
 
-// Get complete slider state
-slider.getState(): SliderState
+  // Get complete slider state
+  getState(): SliderState
 
-// Reset to initial value
-slider.reset(): void
+  // Reset to initial value
+  reset(): void
 
-// Destroy slider instance
-slider.destroy(): void
+  // Destroy slider instance
+  destroy(): void
+}
 ```
 
 ### State Properties
 
 ```typescript
 interface SliderState {
-  min: number;          // Minimum value
-  max: number;          // Maximum value
-  value: number;        // Current value
-  step: number;         // Step increment
-  percentage: number;   // Value as percentage (0-100)
+  min: number; // Minimum value
+  max: number; // Maximum value
+  value: number; // Current value
+  step: number; // Step increment
+  percentage: number; // Value as percentage (0-100)
 }
 
 // Access state atoms directly
-slider.value.get();      // Current value
+slider.value.get(); // Current value
 slider.percentage.get(); // Percentage representation
 ```
 
@@ -212,6 +214,7 @@ This package provides the **logical core** that platform implementations build u
 ```
 
 Platform packages add:
+
 - UI rendering (DOM elements, React components, etc.)
 - Event handling (mouse, touch, keyboard)
 - Styling and theming
@@ -228,7 +231,7 @@ import { formatTimeRange, parseTimeRange } from '@vjs-10/core';
 formatTimeRange(0, 100); // "0:00 - 1:40"
 
 // Parse time range strings
-parseTimeRange("0:00 - 1:40"); // { start: 0, end: 100 }
+parseTimeRange('0:00 - 1:40'); // { start: 0, end: 100 }
 ```
 
 ## Package Dependencies

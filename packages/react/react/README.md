@@ -28,6 +28,7 @@ npm install @vjs-10/react
 ```
 
 **Peer Dependencies:**
+
 - `react` >=16.8.0
 
 ## Quick Start
@@ -69,14 +70,14 @@ function StreamingPlayer() {
 
 ```tsx
 import {
-  MediaContainer,
-  Video,
-  PlayButton,
-  TimeSlider,
   CurrentTimeDisplay,
   DurationDisplay,
-  VolumeSlider,
   FullscreenButton,
+  MediaContainer,
+  PlayButton,
+  TimeSlider,
+  Video,
+  VolumeSlider,
 } from '@vjs-10/react';
 
 function CustomPlayer() {
@@ -132,7 +133,7 @@ import { VideoPlayer } from '@vjs-10/react';
 
   // Configuration
   hlsConfig={{ debug: false }}
-/>
+/>;
 ```
 
 ### MediaContainer
@@ -147,7 +148,7 @@ import { MediaContainer } from '@vjs-10/react';
   {/* All children share the same media store */}
   <CustomControls />
   <CustomOverlay />
-</MediaContainer>
+</MediaContainer>;
 ```
 
 ### Video
@@ -162,7 +163,7 @@ import { Video } from '@vjs-10/react';
   poster="poster.jpg"
   controls
   className="video-element"
-/>
+/>;
 ```
 
 ### Control Components
@@ -181,21 +182,27 @@ import {
   PreviewTimeDisplay,
 } from '@vjs-10/react';
 
-// Playback controls
-<PlayButton />        {/* Play/pause toggle */}
+function ControlComponents() {
+  return (
+    <>
+      {/* Playback controls */}
+      <PlayButton />        {/* Play/pause toggle */}
 
-// Time controls
-<TimeSlider />        {/* Seek bar */}
-<CurrentTimeDisplay /> {/* Current time */}
-<DurationDisplay />   {/* Total duration */}
-<PreviewTimeDisplay /> {/* Time on hover */}
+      {/* Time controls */}
+      <TimeSlider />        {/* Seek bar */}
+      <CurrentTimeDisplay /> {/* Current time */}
+      <DurationDisplay />   {/* Total duration */}
+      <PreviewTimeDisplay /> {/* Time on hover */}
 
-// Volume controls
-<MuteButton />        {/* Mute toggle */}
-<VolumeSlider />      {/* Volume control */}
+      {/* Volume controls */}
+      <MuteButton />        {/* Mute toggle */}
+      <VolumeSlider />      {/* Volume control */}
 
-// Screen controls
-<FullscreenButton />  {/* Fullscreen toggle */}
+      {/* Screen controls */}
+      <FullscreenButton />  {/* Fullscreen toggle */}
+    </>
+  );
+}
 ```
 
 ### UI Components
@@ -205,16 +212,22 @@ Utility components for enhanced UX:
 ```tsx
 import { Tooltip, Popover } from '@vjs-10/react';
 
-// Tooltip
-<Tooltip content="Play video">
-  <PlayButton />
-</Tooltip>
+function UIComponentsExample() {
+  return (
+    <>
+      {/* Tooltip */}
+      <Tooltip content="Play video">
+        <PlayButton />
+      </Tooltip>
 
-// Popover
-<Popover
-  trigger={<button>Settings</button>}
-  content={<SettingsMenu />}
-/>
+      {/* Popover */}
+      <Popover
+        trigger={<button>Settings</button>}
+        content={<SettingsMenu />}
+      />
+    </>
+  );
+}
 ```
 
 ## Hooks
@@ -246,10 +259,18 @@ Subscribe to specific state values:
 import { useMediaState } from '@vjs-10/react';
 
 function TimeInfo() {
-  const currentTime = useMediaState((store) => store.currentTime);
-  const duration = useMediaState((store) => store.duration);
+  const currentTime = useMediaState(store => store.currentTime);
+  const duration = useMediaState(store => store.duration);
 
-  return <div>{currentTime} / {duration}</div>;
+  return (
+    <div>
+      {currentTime}
+      {' '}
+      /
+      {' '}
+      {duration}
+    </div>
+  );
 }
 ```
 
@@ -264,7 +285,7 @@ function CustomOverlay() {
   const containerRef = useMediaContainerRef();
 
   // Access container element for measurements, fullscreen, etc.
-  return (/* ... */);
+  return <div>{/* ... */}</div>;
 }
 ```
 
@@ -329,8 +350,8 @@ function CustomStyledPlayer() {
 ### Styled Components
 
 ```tsx
-import styled from 'styled-components';
 import { PlayButton as BasePlayButton } from '@vjs-10/react';
+import styled from 'styled-components';
 
 const PlayButton = styled(BasePlayButton)`
   background: #007bff;
@@ -389,7 +410,7 @@ function ControlledPlayer() {
 
 ```tsx
 import { useMediaStore, useMediaValue } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 
 function CustomPlayButton() {
   const store = useMediaStore();
@@ -423,7 +444,7 @@ function PlaylistPlayer() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleEnded = () => {
-    setCurrentIndex((i) => (i + 1) % playlist.length);
+    setCurrentIndex(i => (i + 1) % playlist.length);
   };
 
   return (
@@ -475,7 +496,9 @@ function PiPPlayer() {
     <div>
       <VideoPlayer ref={videoRef} src="video.mp4" controls />
       <button onClick={togglePiP}>
-        {isPiP ? 'Exit' : 'Enter'} Picture-in-Picture
+        {isPiP ? 'Exit' : 'Enter'}
+        {' '}
+        Picture-in-Picture
       </button>
     </div>
   );
@@ -548,7 +571,7 @@ export default function Home() {
 import dynamic from 'next/dynamic';
 
 const VideoPlayer = dynamic(
-  () => import('@vjs-10/react').then((mod) => mod.VideoPlayer),
+  () => import('@vjs-10/react').then(mod => mod.VideoPlayer),
   { ssr: false }
 );
 ```
@@ -559,10 +582,10 @@ Full TypeScript definitions:
 
 ```tsx
 import type {
-  VideoPlayerProps,
   MediaContainerProps,
   PlayButtonProps,
   TimeSliderProps,
+  VideoPlayerProps,
 } from '@vjs-10/react';
 
 const props: VideoPlayerProps = {

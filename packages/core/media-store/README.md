@@ -79,6 +79,7 @@ const volumeSliderState = createVolumeSliderState(store);
 ```
 
 Available component state definitions:
+
 - `createPlayButtonState` - Play/pause button state
 - `createMuteButtonState` - Mute/unmute button state
 - `createFullscreenButtonState` - Fullscreen toggle state
@@ -157,9 +158,11 @@ pnpm clean
 ## API Overview
 
 ### Store Creation
+
 - `createMediaStore()` - Creates a new media store instance
 
 ### Component State Definitions
+
 - `createPlayButtonState(store)` - Play/pause button state
 - `createMuteButtonState(store)` - Mute button state
 - `createFullscreenButtonState(store)` - Fullscreen button state
@@ -170,11 +173,13 @@ pnpm clean
 - `createPreviewTimeDisplayState(store)` - Preview time display state
 
 ### State Mediators
+
 - `createPlayableMediator(store, element)` - Manages playback state
 - `createAudibleMediator(store, element)` - Manages audio state
 - `createTemporalMediator(store, element)` - Manages time-based state
 
 ### Utilities
+
 - `formatTime(seconds)` - Format seconds to time string
 - `parseTime(timeString)` - Parse time string to seconds
 

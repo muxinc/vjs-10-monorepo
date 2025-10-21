@@ -27,6 +27,7 @@ npm install @vjs-10/icons
 ## Icon Catalog
 
 ### Playback Controls
+
 - `play.svg` - Play button
 - `pause.svg` - Pause button
 - `replay.svg` - Replay/restart button
@@ -34,12 +35,14 @@ npm install @vjs-10/icons
 - `backward.svg` - Skip backward
 
 ### Volume Controls
+
 - `volume-high.svg` - High volume indicator
 - `volume-medium.svg` - Medium volume indicator
 - `volume-low.svg` - Low volume indicator
 - `volume-off.svg` / `mute.svg` - Muted state
 
 ### Playback Features
+
 - `fullscreen.svg` - Enter fullscreen
 - `fullscreen-exit.svg` - Exit fullscreen
 - `settings.svg` - Settings menu
@@ -47,6 +50,7 @@ npm install @vjs-10/icons
 - `picture-in-picture.svg` - PiP mode
 
 ### Additional Controls
+
 - `airplay.svg` - AirPlay casting
 - `chromecast.svg` - Chromecast
 - `download.svg` - Download media
@@ -72,16 +76,19 @@ const playSvg = readFileSync(playIconPath, 'utf-8');
 ### With Platform Packages
 
 **For Web Components:**
+
 ```bash
 npm install @vjs-10/html-icons
 ```
 
 **For React:**
+
 ```bash
 npm install @vjs-10/react-icons
 ```
 
 **For React Native:**
+
 ```bash
 npm install @vjs-10/react-native-icons
 ```
@@ -108,6 +115,7 @@ All icons in this package follow these guidelines:
 ```
 
 This package serves as:
+
 - **Single source of truth** for all icon designs
 - **Asset library** consumed by platform-specific generators
 - **Design system foundation** ensuring visual consistency
@@ -126,6 +134,7 @@ This package serves as:
    - Avoid abbreviations
 
 3. **Process:**
+
    ```bash
    # Add SVG to assets directory
    cp new-icon.svg packages/core/icons/assets/
@@ -159,20 +168,27 @@ pnpm clean
 ## Platform Integration
 
 ### HTML Icons
+
 Generates Web Component icon elements from SVG sources.
+
 ```bash
 npm install @vjs-10/html-icons
 ```
 
 ### React Icons
+
 Generates React components with SVGR from SVG sources.
+
 ```bash
 npm install @vjs-10/react-icons
 ```
+
 See **[@vjs-10/react-icons](../../../react/react-icons)** for detailed usage.
 
 ### React Native Icons
+
 Generates React Native SVG components from SVG sources.
+
 ```bash
 npm install @vjs-10/react-native-icons
 ```

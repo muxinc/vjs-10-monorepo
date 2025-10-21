@@ -60,8 +60,7 @@ video.addEventListener('play', () => {
 
 ```html
 <!-- HLS source automatically uses playback engine -->
-<vjs-video src="https://example.com/stream.m3u8" controls>
-</vjs-video>
+<vjs-video src="https://example.com/stream.m3u8" controls> </vjs-video>
 ```
 
 ## Components
@@ -71,18 +70,11 @@ video.addEventListener('play', () => {
 Enhanced video element with streaming support:
 
 ```html
-<vjs-video
-  src="video.mp4"
-  poster="poster.jpg"
-  controls
-  autoplay
-  muted
-  loop
-  preload="metadata">
-</vjs-video>
+<vjs-video src="video.mp4" poster="poster.jpg" controls autoplay muted loop preload="metadata"> </vjs-video>
 ```
 
 **Attributes:**
+
 - All standard `<video>` attributes
 - `src` - Media source (supports HLS .m3u8 files)
 - `poster` - Poster image URL
@@ -97,11 +89,7 @@ Enhanced video element with streaming support:
 Enhanced audio element:
 
 ```html
-<vjs-audio
-  src="audio.mp3"
-  controls
-  preload="auto">
-</vjs-audio>
+<vjs-audio src="audio.mp3" controls preload="auto"> </vjs-audio>
 ```
 
 ## State Integration
@@ -268,28 +256,32 @@ interface VideoElement extends HTMLElement {
 ### Methods
 
 ```typescript
-// Playback
-play(): Promise<void>
-pause(): void
-load(): void
+interface VideoElementMethods {
+  // Playback
+  play(): Promise<void>
+  pause(): void
+  load(): void
 
-// Seeking
-fastSeek(time: number): void
+  // Seeking
+  fastSeek(time: number): void
 
-// Fullscreen
-requestFullscreen(): Promise<void>
-exitFullscreen(): Promise<void>
+  // Fullscreen
+  requestFullscreen(): Promise<void>
+  exitFullscreen(): Promise<void>
+}
 ```
 
 ## Browser Compatibility
 
 Web Components support:
+
 - Chrome 54+
 - Firefox 63+
 - Safari 10.1+
 - Edge 79+
 
 HLS streaming support:
+
 - All modern browsers via HLS.js
 
 ## Package Dependencies

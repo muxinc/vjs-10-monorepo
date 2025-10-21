@@ -26,6 +26,7 @@ npm install @vjs-10/react-media-elements
 ```
 
 **Peer Dependencies:**
+
 - `react` >=16.8.0
 
 ## Quick Start
@@ -68,8 +69,8 @@ function StreamingPlayer() {
 ### With Ref
 
 ```tsx
+import { MediaElementVideo, Video } from '@vjs-10/react-media-elements';
 import { useRef } from 'react';
-import { Video, MediaElementVideo } from '@vjs-10/react-media-elements';
 
 function ControlledPlayer() {
   const videoRef = useRef<MediaElementVideo>(null);
@@ -123,12 +124,12 @@ import { Video } from '@vjs-10/react-media-elements';
   // Events
   onPlay={() => console.log('Playing')}
   onPause={() => console.log('Paused')}
-  onTimeUpdate={(e) => console.log('Time:', e.currentTarget.currentTime)}
+  onTimeUpdate={e => console.log('Time:', e.currentTarget.currentTime)}
   onEnded={() => console.log('Ended')}
 
   // Ref
   ref={videoRef}
-/>
+/>;
 ```
 
 ### Audio
@@ -143,7 +144,7 @@ import { Audio } from '@vjs-10/react-media-elements';
   controls
   autoPlay={false}
   onPlay={() => console.log('Playing')}
-/>
+/>;
 ```
 
 ## Hooks
@@ -153,8 +154,8 @@ import { Audio } from '@vjs-10/react-media-elements';
 Hook for controlling media elements:
 
 ```tsx
+import { useMediaElement, Video } from '@vjs-10/react-media-elements';
 import { useRef } from 'react';
-import { Video, useMediaElement } from '@vjs-10/react-media-elements';
 
 function Player() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -170,9 +171,15 @@ function Player() {
       <button onClick={() => media.setVolume(0.5)}>50% Volume</button>
 
       <div>
-        Current Time: {media.currentTime}
-        Duration: {media.duration}
-        Paused: {media.paused ? 'Yes' : 'No'}
+        Current Time:
+        {' '}
+        {media.currentTime}
+        Duration:
+        {' '}
+        {media.duration}
+        Paused:
+        {' '}
+        {media.paused ? 'Yes' : 'No'}
       </div>
     </div>
   );
@@ -184,8 +191,8 @@ function Player() {
 Hook for reactive video state:
 
 ```tsx
+import { useVideoState, Video } from '@vjs-10/react-media-elements';
 import { useRef } from 'react';
-import { Video, useVideoState } from '@vjs-10/react-media-elements';
 
 function Player() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -196,11 +203,29 @@ function Player() {
       <Video ref={videoRef} src="video.mp4" />
 
       <div>
-        <p>Current Time: {state.currentTime.toFixed(2)}s</p>
-        <p>Duration: {state.duration.toFixed(2)}s</p>
-        <p>Volume: {(state.volume * 100).toFixed(0)}%</p>
-        <p>Status: {state.paused ? 'Paused' : 'Playing'}</p>
-        <p>Muted: {state.muted ? 'Yes' : 'No'}</p>
+        <p>
+          Current Time:
+          {state.currentTime.toFixed(2)}
+          s
+        </p>
+        <p>
+          Duration:
+          {state.duration.toFixed(2)}
+          s
+        </p>
+        <p>
+          Volume:
+          {(state.volume * 100).toFixed(0)}
+          %
+        </p>
+        <p>
+          Status:
+          {state.paused ? 'Paused' : 'Playing'}
+        </p>
+        <p>
+          Muted:
+          {state.muted ? 'Yes' : 'No'}
+        </p>
       </div>
     </div>
   );
@@ -212,8 +237,8 @@ function Player() {
 Hook for controlling HLS/DASH engines:
 
 ```tsx
-import { useRef, useEffect } from 'react';
-import { Video, usePlaybackEngine } from '@vjs-10/react-media-elements';
+import { usePlaybackEngine, Video } from '@vjs-10/react-media-elements';
+import { useEffect, useRef } from 'react';
 
 function StreamingPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -236,8 +261,8 @@ function StreamingPlayer() {
 ### Programmatic Control
 
 ```tsx
+import { MediaElementVideo, Video } from '@vjs-10/react-media-elements';
 import { useRef } from 'react';
-import { Video, MediaElementVideo } from '@vjs-10/react-media-elements';
 
 function AdvancedPlayer() {
   const videoRef = useRef<MediaElementVideo>(null);
@@ -302,11 +327,14 @@ function EventPlayer() {
         onPlay={() => setStatus('Playing')}
         onPause={() => setStatus('Paused')}
         onEnded={() => setStatus('Ended')}
-        onError={(e) => setStatus(`Error: ${e.message}`)}
+        onError={e => setStatus(`Error: ${e.message}`)}
         onWaiting={() => setStatus('Buffering...')}
         onStalled={() => setStatus('Stalled')}
       />
-      <div>Status: {status}</div>
+      <div>
+        Status:
+        {status}
+      </div>
     </div>
   );
 }
@@ -374,11 +402,11 @@ Full TypeScript definitions included:
 
 ```tsx
 import type {
-  MediaElementVideo,
-  MediaElementAudio,
-  VideoProps,
   AudioProps,
+  MediaElementAudio,
   MediaElementState,
+  MediaElementVideo,
+  VideoProps,
 } from '@vjs-10/react-media-elements';
 
 // Component props

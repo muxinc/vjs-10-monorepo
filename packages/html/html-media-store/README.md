@@ -69,10 +69,10 @@ const connection = connectMediaStore(store, video, {
 
 // Returns connection object
 interface Connection {
-  disconnect(): void;  // Clean up listeners
-  reconnect(): void;   // Re-establish connection
-  pause(): void;       // Pause sync temporarily
-  resume(): void;      // Resume sync
+  disconnect: () => void; // Clean up listeners
+  reconnect: () => void; // Re-establish connection
+  pause: () => void; // Pause sync temporarily
+  resume: () => void; // Resume sync
 }
 ```
 
@@ -82,8 +82,8 @@ Pre-configured mediators handle complex state coordination:
 
 ```typescript
 import {
-  setupPlayableMediator,
   setupAudibleMediator,
+  setupPlayableMediator,
   setupTemporalMediator,
 } from '@vjs-10/html-media-store';
 import { createMediaStore } from '@vjs-10/media-store';
@@ -113,19 +113,23 @@ temporalMediator.disconnect();
 The connection automatically syncs these properties:
 
 **Playback State:**
+
 - `paused` ↔ `video.paused`
 - `ended` ↔ `video.ended`
 - `seeking` ↔ `video.seeking`
 
 **Time:**
+
 - `currentTime` ↔ `video.currentTime`
 - `duration` ↔ `video.duration`
 
 **Volume:**
+
 - `volume` ↔ `video.volume`
 - `muted` ↔ `video.muted`
 
 **Loading:**
+
 - `buffered` ↔ `video.buffered`
 - `readyState` ↔ `video.readyState`
 
@@ -155,17 +159,17 @@ import { connectMediaStore } from '@vjs-10/html-media-store';
 
 const connection = connectMediaStore(store, video, {
   // Sync configuration
-  syncInterval: 100,      // Update frequency (ms)
-  syncOnSeek: true,       // Sync immediately on seek
-  syncOnPlay: true,       // Sync immediately on play
+  syncInterval: 100, // Update frequency (ms)
+  syncOnSeek: true, // Sync immediately on seek
+  syncOnPlay: true, // Sync immediately on play
 
   // Event configuration
-  useCapture: false,      // Event capture phase
-  passive: true,          // Passive event listeners
+  useCapture: false, // Event capture phase
+  passive: true, // Passive event listeners
 
   // State configuration
-  persistVolume: true,    // Remember volume in localStorage
-  persistMuted: true,     // Remember muted state
+  persistVolume: true, // Remember volume in localStorage
+  persistMuted: true, // Remember muted state
 });
 ```
 
@@ -280,12 +284,12 @@ store.currentTime.subscribe((time) => {
 // Restore state
 const savedVolume = localStorage.getItem('player-volume');
 if (savedVolume) {
-  store.volume.set(parseFloat(savedVolume));
+  store.volume.set(Number.parseFloat(savedVolume));
 }
 
 const savedPosition = localStorage.getItem('player-position');
 if (savedPosition) {
-  store.currentTime.set(parseFloat(savedPosition));
+  store.currentTime.set(Number.parseFloat(savedPosition));
 }
 ```
 
@@ -295,16 +299,16 @@ if (savedPosition) {
 
 ```typescript
 // Main connection function
-connectMediaStore(
+function connectMediaStore(
   store: MediaStore,
   element: HTMLMediaElement,
   options?: ConnectionOptions
 ): Connection
 
 // Mediator setup functions
-setupPlayableMediator(store: MediaStore, element: HTMLMediaElement): Mediator
-setupAudibleMediator(store: MediaStore, element: HTMLMediaElement): Mediator
-setupTemporalMediator(store: MediaStore, element: HTMLMediaElement): Mediator
+function setupPlayableMediator(store: MediaStore, element: HTMLMediaElement): Mediator
+function setupAudibleMediator(store: MediaStore, element: HTMLMediaElement): Mediator
+function setupTemporalMediator(store: MediaStore, element: HTMLMediaElement): Mediator
 ```
 
 ### Types
@@ -321,16 +325,16 @@ interface ConnectionOptions {
 }
 
 interface Connection {
-  disconnect(): void;
-  reconnect(): void;
-  pause(): void;
-  resume(): void;
+  disconnect: () => void;
+  reconnect: () => void;
+  pause: () => void;
+  resume: () => void;
 }
 
 interface Mediator {
-  disconnect(): void;
-  pause(): void;
-  resume(): void;
+  disconnect: () => void;
+  pause: () => void;
+  resume: () => void;
 }
 ```
 

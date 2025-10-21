@@ -52,7 +52,7 @@ import '@vjs-10/html-icons/pause';
 ### With JavaScript
 
 ```typescript
-import { PlayIcon, PauseIcon, VolumeHighIcon } from '@vjs-10/html-icons';
+import { PauseIcon, PlayIcon, VolumeHighIcon } from '@vjs-10/html-icons';
 
 // Create icon element
 const playIcon = new PlayIcon();
@@ -104,16 +104,19 @@ vjs-icon-play:hover {
 ## Available Icons
 
 ### Playback Controls
+
 - `<vjs-icon-play>` - Play button
 - `<vjs-icon-pause>` - Pause button
 - `<vjs-icon-spinner>` - Loading spinner
 
 ### Volume Controls
+
 - `<vjs-icon-volume-high>` - High volume
 - `<vjs-icon-volume-low>` - Low volume
 - `<vjs-icon-volume-off>` - Muted
 
 ### Screen Controls
+
 - `<vjs-icon-fullscreen-enter>` - Enter fullscreen
 - `<vjs-icon-fullscreen-exit>` - Exit fullscreen
 - `<vjs-icon-fullscreen-enter-alt>` - Alternative fullscreen enter
@@ -146,7 +149,7 @@ vjs-icon-play:hover {
 ### Toggle Icon State
 
 ```typescript
-import { PlayIcon, PauseIcon } from '@vjs-10/html-icons';
+import { PauseIcon, PlayIcon } from '@vjs-10/html-icons';
 
 const button = document.querySelector('.play-pause-button');
 let isPlaying = false;
@@ -206,10 +209,7 @@ All icon components include:
 
 ```html
 <!-- Automatically includes accessibility attributes -->
-<vjs-icon-play
-  role="img"
-  aria-label="Play">
-</vjs-icon-play>
+<vjs-icon-play role="img" aria-label="Play"> </vjs-icon-play>
 ```
 
 ## Architecture
@@ -223,6 +223,7 @@ All icon components include:
 ```
 
 This package:
+
 - Transforms SVG sources into Web Components
 - Registers custom elements in the browser
 - Provides a DOM-native icon system
@@ -276,6 +277,7 @@ pnpm clean
 ## Browser Support
 
 Web Components require:
+
 - Chrome 54+
 - Firefox 63+
 - Safari 10.1+

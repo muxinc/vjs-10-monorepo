@@ -154,16 +154,16 @@ controller.on('sourcechange', (src) => {});
 
 ```typescript
 // Setup media element with configuration
-setupMedia(
+function setupMedia(
   element: HTMLMediaElement,
   options: MediaOptions
 ): MediaController
 
 // Detect media type from URL
-detectMediaType(src: string): 'hls' | 'dash' | 'native'
+function detectMediaType(src: string): 'hls' | 'dash' | 'native'
 
 // Check if source requires playback engine
-requiresEngine(src: string): boolean
+function requiresEngine(src: string): boolean
 ```
 
 ### Types
@@ -179,12 +179,12 @@ interface MediaOptions {
 }
 
 interface MediaController {
-  load(): void;
-  destroy(): void;
-  setSrc(src: string): void;
-  getSrc(): string;
-  on(event: string, handler: Function): void;
-  off(event: string, handler: Function): void;
+  load: () => void;
+  destroy: () => void;
+  setSrc: (src: string) => void;
+  getSrc: () => string;
+  on: (event: string, handler: Function) => void;
+  off: (event: string, handler: Function) => void;
 }
 ```
 
@@ -193,7 +193,7 @@ interface MediaController {
 ### Progressive vs. Adaptive Streaming
 
 ```typescript
-import { setupMedia, detectMediaType } from '@vjs-10/media';
+import { detectMediaType, setupMedia } from '@vjs-10/media';
 
 const src = getUserSelectedSource();
 const type = detectMediaType(src);
@@ -245,6 +245,7 @@ This package serves as the bridge between:
 - **Platform integrations** (React, Web Components, etc.)
 
 It provides the core logic for:
+
 - Source type detection
 - Engine selection and lifecycle management
 - Unified API across playback methods

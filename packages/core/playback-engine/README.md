@@ -87,26 +87,30 @@ The package implements a playback engine abstraction that:
 ### Constructor
 
 ```typescript
-new HlsJSPlaybackEngine(config?: HlsConfig)
+class HlsJSPlaybackEngine {
+  constructor(config?: HlsConfig)
+}
 ```
 
 ### Methods
 
 ```typescript
-// Attach engine to media element
-engine.attach(mediaElement: HTMLMediaElement): void
+interface HlsJSPlaybackEngineMethods {
+  // Attach engine to media element
+  attach(mediaElement: HTMLMediaElement): void
 
-// Detach engine from media element
-engine.detach(): void
+  // Detach engine from media element
+  detach(): void
 
-// Load media source
-engine.load(src: string): void
+  // Load media source
+  load(src: string): void
 
-// Destroy engine instance
-engine.destroy(): void
+  // Destroy engine instance
+  destroy(): void
+}
 
-// Check if HLS is supported
-HlsJSPlaybackEngine.isSupported(): boolean
+// Static method
+function isSupported(): boolean
 ```
 
 ### Events
@@ -173,11 +177,11 @@ The architecture supports creating custom playback engines:
 
 ```typescript
 interface PlaybackEngine {
-  attach(element: HTMLMediaElement): void;
-  detach(): void;
-  load(src: string): void;
-  destroy(): void;
-  on(event: string, handler: Function): void;
+  attach: (element: HTMLMediaElement) => void;
+  detach: () => void;
+  load: (src: string) => void;
+  destroy: () => void;
+  on: (event: string, handler: Function) => void;
 }
 
 // Implement for DASH, Shaka, or custom protocols

@@ -26,6 +26,7 @@ npm install @vjs-10/react-media-store
 ```
 
 **Peer Dependencies:**
+
 - `react` >=16.8.0
 
 ## Quick Start
@@ -95,7 +96,7 @@ function Component() {
   const handlePlay = () => store.paused.set(false);
   const handleSeek = (time: number) => store.currentTime.set(time);
 
-  return (/* JSX */);
+  return <div>{/* JSX */}</div>;
 }
 ```
 
@@ -107,12 +108,15 @@ Subscribe to specific state values:
 import { useMediaState } from '@vjs-10/react-media-store';
 
 function CurrentTimeDisplay() {
-  const currentTime = useMediaState((store) => store.currentTime);
-  const duration = useMediaState((store) => store.duration);
+  const currentTime = useMediaState(store => store.currentTime);
+  const duration = useMediaState(store => store.duration);
 
   return (
     <div>
-      {formatTime(currentTime)} / {formatTime(duration)}
+      {formatTime(currentTime)}
+      {' '}
+      /
+      {formatTime(duration)}
     </div>
   );
 }
@@ -136,7 +140,7 @@ function VolumeControl() {
       max="1"
       step="0.01"
       value={volume}
-      onChange={(e) => store.volume.set(parseFloat(e.target.value))}
+      onChange={e => store.volume.set(Number.parseFloat(e.target.value))}
     />
   );
 }
@@ -173,7 +177,13 @@ function TimeInfo() {
   return (
     <div>
       <div className="progress-bar" style={{ width: `${progress}%` }} />
-      <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+      <span>
+        {formatTime(currentTime)}
+        {' '}
+        /
+        {' '}
+        {formatTime(duration)}
+      </span>
     </div>
   );
 }
@@ -197,7 +207,7 @@ function VolumeControls() {
       <input
         type="range"
         value={muted ? 0 : volume}
-        onChange={(e) => setVolume(parseFloat(e.target.value))}
+        onChange={e => setVolume(Number.parseFloat(e.target.value))}
       />
     </div>
   );
@@ -228,7 +238,7 @@ function App() {
 ### With Custom Store
 
 ```tsx
-import { MediaStoreProvider, createMediaStore } from '@vjs-10/react-media-store';
+import { createMediaStore, MediaStoreProvider } from '@vjs-10/react-media-store';
 import { useMemo } from 'react';
 
 function App() {
@@ -275,8 +285,8 @@ function MultiPlayerApp() {
 ### Custom Play Button
 
 ```tsx
+import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
 import { useMediaStore, useMediaValue } from '@vjs-10/react-media-store';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
 
 function PlayButton() {
   const store = useMediaStore();
@@ -298,7 +308,7 @@ function PlayButton() {
 
 ```tsx
 import { useMediaStore, useMediaValue } from '@vjs-10/react-media-store';
-import { useRef, MouseEvent } from 'react';
+import { MouseEvent, useRef } from 'react';
 
 function ProgressBar() {
   const store = useMediaStore();
@@ -365,8 +375,8 @@ function TimeDisplay() {
 ### Volume Slider
 
 ```tsx
-import { useVolumeState } from '@vjs-10/react-media-store';
 import { VolumeHighIcon, VolumeOffIcon } from '@vjs-10/react-icons';
+import { useVolumeState } from '@vjs-10/react-media-store';
 
 function VolumeSlider() {
   const { volume, muted, setVolume, toggleMute } = useVolumeState();
@@ -383,7 +393,7 @@ function VolumeSlider() {
         step="0.01"
         value={muted ? 0 : volume}
         onChange={(e) => {
-          const newVolume = parseFloat(e.target.value);
+          const newVolume = Number.parseFloat(e.target.value);
           setVolume(newVolume);
           if (muted && newVolume > 0) {
             toggleMute(); // Unmute when adjusting volume
@@ -398,12 +408,12 @@ function VolumeSlider() {
 ### Fullscreen Button
 
 ```tsx
-import { useMediaState, useMediaStore } from '@vjs-10/react-media-store';
 import { FullscreenEnterIcon, FullscreenExitIcon } from '@vjs-10/react-icons';
+import { useMediaState, useMediaStore } from '@vjs-10/react-media-store';
 
 function FullscreenButton() {
   const store = useMediaStore();
-  const fullscreen = useMediaState((store) => store.fullscreen);
+  const fullscreen = useMediaState(store => store.fullscreen);
 
   const handleClick = () => {
     store.fullscreen.set(!fullscreen);
@@ -420,8 +430,8 @@ function FullscreenButton() {
 ### State Persistence
 
 ```tsx
-import { MediaStoreProvider, createMediaStore } from '@vjs-10/react-media-store';
-import { useMemo, useEffect } from 'react';
+import { createMediaStore, MediaStoreProvider } from '@vjs-10/react-media-store';
+import { useEffect, useMemo } from 'react';
 
 function App() {
   const store = useMemo(() => {
@@ -430,7 +440,7 @@ function App() {
     // Restore from localStorage
     const savedVolume = localStorage.getItem('player-volume');
     if (savedVolume) {
-      store.volume.set(parseFloat(savedVolume));
+      store.volume.set(Number.parseFloat(savedVolume));
     }
 
     return store;
