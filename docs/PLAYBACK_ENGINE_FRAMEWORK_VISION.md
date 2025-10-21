@@ -1,4 +1,4 @@
-# Composable Playback Engine Architecture (Vision)
+# Composable Playback Engine Framework Architecture (Vision)
 
 _A Guide to Building Modular, Performance-Optimized Video Playback Systems_
 
