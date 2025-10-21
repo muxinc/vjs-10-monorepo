@@ -43,9 +43,7 @@ const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
   </header>
   <!-- padding corresponds to negative margin on player -->
   <main class="@container pt-11 pb-36 md:pt-21 lg:pt-32 px-6 md:px-10 w-full max-w-7xl mx-auto min-h-64">
-    <section class="col-span-full flex flex-col sm:flex-row sm:gap-20 items-center justify-center mt-10 mb-20">
-      <HomePageControls client:idle />
-    </section>
+    <HomePageControls client:idle className="col-span-full my-10 sm:mb-20" />
     <section class="grid gap-x-9 gap-y-6 lg:grid-cols-2 mb-6 lg:mb-30">
       <section class="grid grid-rows-subgrid row-span-2 mb-6">
         <header class="max-w-3xl">
