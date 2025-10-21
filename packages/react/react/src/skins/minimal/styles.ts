@@ -119,9 +119,11 @@ const styles: MinimalSkinStyles = {
   TimeDisplay: cn('tabular-nums text-shadow-2xs/20'),
   DurationDisplay: cn('text-white/50 contents'),
   SliderRoot: cn(
-    'flex items-center justify-center flex-1 group/slider relative',
+    'flex items-center justify-center flex-1 group/slider relative rounded-sm',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
     '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-18',
+    // Focus state
+    '-outline-offset-8 focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white',
   ),
   SliderTrack: cn(
     'relative select-none rounded-full bg-white/10 transition-[height,width] ease-in-out',

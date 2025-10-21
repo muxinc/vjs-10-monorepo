@@ -4,6 +4,7 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 import { muteButtonStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
+import { setAttributes } from '../utils/element-utils';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class MuteButtonBase extends MediaChromeButton {
@@ -17,6 +18,8 @@ export class MuteButtonBase extends MediaChromeButton {
     | undefined;
 
   handleEvent(event: Event): void {
+    super.handleEvent(event);
+
     const { type } = event;
     const state = this._state;
 
@@ -42,16 +45,11 @@ export class MuteButtonBase extends MediaChromeButton {
   _update(props: any, state: any): void {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
-    // Make generic
-    this.toggleAttribute('data-muted', props['data-muted']);
-    this.setAttribute('data-volume-level', props['data-volume-level']);
-    this.setAttribute('role', props.role);
-    this.setAttribute('aria-label', props['aria-label']);
-    this.setAttribute('data-tooltip', props['data-tooltip']);
+    setAttributes(this, props);
   }
 }
 
-export const useMuteButtonState: StateHook<{
+export const getMuteButtonState: StateHook<{
   muted: boolean;
   volumeLevel: string;
 }> = {
@@ -62,7 +60,7 @@ export const useMuteButtonState: StateHook<{
   }),
 };
 
-export const useMuteButtonProps: PropsHook<{
+export const getMuteButtonProps: PropsHook<{
   muted: boolean;
   volumeLevel: string;
 }> = (state, _element) => {
@@ -73,6 +71,7 @@ export const useMuteButtonProps: PropsHook<{
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
     role: 'button',
+    tabindex: '0',
     'aria-label': state.muted ? 'unmute' : 'mute',
     /** tooltip */
     'data-tooltip': state.muted ? 'Unmute' : 'Mute',
@@ -86,14 +85,13 @@ export const useMuteButtonProps: PropsHook<{
 
 export const MuteButton: ConnectedComponentConstructor<MuteButtonState> = toConnectedHTMLComponent(
   MuteButtonBase,
-  useMuteButtonState,
-  useMuteButtonProps,
+  getMuteButtonState,
+  getMuteButtonProps,
   'MuteButton',
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
 if (!globalThis.customElements.get('media-mute-button')) {
-  // @ts-ignore - Custom element constructor compatibility
   globalThis.customElements.define('media-mute-button', MuteButton);
 }
 

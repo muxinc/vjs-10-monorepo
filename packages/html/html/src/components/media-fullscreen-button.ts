@@ -4,6 +4,7 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
+import { setAttributes } from '../utils/element-utils';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class FullscreenButtonBase extends MediaChromeButton {
@@ -16,6 +17,8 @@ export class FullscreenButtonBase extends MediaChromeButton {
     | undefined;
 
   handleEvent(event: Event): void {
+    super.handleEvent(event);
+
     const { type } = event;
     const state = this._state;
     if (state && type === 'click') {
@@ -34,11 +37,7 @@ export class FullscreenButtonBase extends MediaChromeButton {
   _update(props: any, state: any, _mediaStore?: any): void {
     this._state = state;
     /** @TODO Follow up with React vs. W.C. data-* attributes discrepancies (CJP)  */
-    // Make generic
-    this.toggleAttribute('data-fullscreen', props['data-fullscreen']);
-    this.setAttribute('role', props.role);
-    this.setAttribute('aria-label', props['aria-label']);
-    this.setAttribute('data-tooltip', props['data-tooltip']);
+    setAttributes(this, props);
   }
 }
 
@@ -46,7 +45,7 @@ export class FullscreenButtonBase extends MediaChromeButton {
  * FullscreenButton state hook - equivalent to React's useFullscreenButtonState
  * Handles media store state subscription and transformation
  */
-export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
+export const getFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
   keys: fullscreenButtonStateDefinition.keys,
   transform: (rawState, mediaStore) => ({
     ...fullscreenButtonStateDefinition.stateTransform(rawState),
@@ -54,13 +53,14 @@ export const useFullscreenButtonState: StateHook<{ fullscreen: boolean }> = {
   }),
 };
 
-export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (state, _element) => {
+export const getFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (state, _element) => {
   const baseProps: Record<string, any> = {
     /** data attributes/props */
     'data-fullscreen': state.fullscreen,
     /** @TODO Need another state provider in core for i18n (CJP) */
     /** aria attributes/props */
     role: 'button',
+    tabindex: '0',
     'aria-label': state.fullscreen ? 'exit fullscreen' : 'enter fullscreen',
     /** tooltip */
     'data-tooltip': state.fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen',
@@ -74,14 +74,13 @@ export const useFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (sta
 
 export const FullscreenButton: ConnectedComponentConstructor<FullscreenButtonState> = toConnectedHTMLComponent(
   FullscreenButtonBase,
-  useFullscreenButtonState,
-  useFullscreenButtonProps,
+  getFullscreenButtonState,
+  getFullscreenButtonProps,
   'FullscreenButton',
 );
 
 // NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
 if (!globalThis.customElements.get('media-fullscreen-button')) {
-  // @ts-ignore - Custom element constructor compatibility
   globalThis.customElements.define('media-fullscreen-button', FullscreenButton);
 }
 

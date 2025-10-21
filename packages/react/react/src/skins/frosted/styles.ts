@@ -132,9 +132,11 @@ const styles: FrostedSkinStyles = {
   TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
   TimeDisplay: cn('tabular-nums text-shadow-2xs/25'),
   SliderRoot: cn(
-    'flex items-center justify-center flex-1 group/slider relative',
+    'flex items-center justify-center flex-1 group/slider relative rounded-full',
     '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
     '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
+    // Focus state
+    'focus-visible:outline-2 focus-visible:outline-blue-500',
   ),
   SliderTrack: cn(
     'w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5',
@@ -152,6 +154,14 @@ const styles: FrostedSkinStyles = {
     'size-2.5 active:size-3 group-active/slider:size-3',
     '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
+  ),
+  TimeSliderRoot: cn(
+    // Focus state
+    '-outline-offset-8 focus-visible:outline-offset-8',
+  ),
+  VolumeSliderRoot: cn(
+    // Focus state
+    '-outline-offset-4 focus-visible:outline-offset-4',
   ),
   PopoverPopup: cn(
     'relative px-1.5 py-3.5 rounded-full',

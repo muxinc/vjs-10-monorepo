@@ -37,7 +37,8 @@
     "@vjs-10/html-icons": "workspace:*",
     "@vjs-10/html-media-elements": "workspace:*",
     "@vjs-10/html-media-store": "workspace:*",
-    "@vjs-10/media-store": "workspace:*"
+    "@vjs-10/media-store": "workspace:*",
+    "tabbable": "^6.2.0"
   },
   "devDependencies": {
     "tsdown": "^0.15.4",
