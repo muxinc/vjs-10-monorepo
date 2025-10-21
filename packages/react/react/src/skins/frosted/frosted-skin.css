@@ -1,0 +1,4 @@
+@import 'tailwindcss' prefix(vjs);
+
+/* Custom variants used by the frosted skin */
+@custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);
