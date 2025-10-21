@@ -293,10 +293,10 @@ export class MediaPopoverPortal extends HTMLElement {
     if (!this.#portal) return;
 
     if (this.#guards.length === 0) {
-      const beforeInsideGuard = createFocusGuard();
-      const afterInsideGuard = createFocusGuard();
-      const beforeOutsideGuard = createFocusGuard();
-      const afterOutsideGuard = createFocusGuard();
+      const beforeInsideGuard = createFocusGuard('inside');
+      const afterInsideGuard = createFocusGuard('inside');
+      const beforeOutsideGuard = createFocusGuard('outside');
+      const afterOutsideGuard = createFocusGuard('outside');
 
       beforeOutsideGuard.addEventListener('focus', (event: FocusEvent) => {
         if (this.#portal && isOutsideEvent(event, this.#portal)) {
@@ -348,10 +348,11 @@ export class MediaPopoverPortal extends HTMLElement {
   }
 }
 
-function createFocusGuard(): HTMLElement {
+function createFocusGuard(dataType: 'inside' | 'outside'): HTMLElement {
   const focusGuard = document.createElement('span');
+  focusGuard.setAttribute('data-type', dataType);
   focusGuard.setAttribute('tabindex', '0');
-  focusGuard.setAttribute('data-focus-guard', '');
+  focusGuard.toggleAttribute('data-focus-guard', true);
   return focusGuard;
 }
 
