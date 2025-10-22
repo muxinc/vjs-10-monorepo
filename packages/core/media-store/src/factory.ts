@@ -1,9 +1,6 @@
-import { getKey, map, subscribeKeys } from 'nanostores';
+import type { StateOwners } from './types';
 
-export interface StateOwners {
-  media?: any;
-  container?: any;
-}
+import { getKey, map, subscribeKeys } from 'nanostores';
 
 export interface EventOrAction<D = undefined> {
   type: string;
