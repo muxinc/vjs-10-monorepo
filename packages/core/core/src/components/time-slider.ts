@@ -41,13 +41,14 @@ export class TimeSlider extends Slider {
     return { ...state, _fillWidth, _currentTimeText, _durationText };
   }
 
-  setState(state: Partial<TimeSliderState>): void {
+  setState(newState: Partial<TimeSliderState>): void {
+    const state = this.getState();
     // When not dragging or keying, set pointer ratio to current time / duration.
-    if (!state._dragging && !state._keying && state.currentTime && state.duration) {
-      super.setState({ ...state, _pointerRatio: state.currentTime / state.duration });
+    if (!state._dragging && !state._keying && newState.currentTime && newState.duration) {
+      super.setState({ ...newState, _pointerRatio: newState.currentTime / newState.duration });
       return;
     }
-    super.setState(state);
+    super.setState(newState);
   }
 
   handleEvent(event: Event): void {

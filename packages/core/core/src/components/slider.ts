@@ -109,7 +109,6 @@ export class Slider {
   }
 
   #handlePointerDown(event: PointerEvent) {
-    event.preventDefault();
     this.#element?.setPointerCapture(event.pointerId);
 
     this.setState({ _pointerRatio: this.getPointerRatio(event), _dragging: true });
