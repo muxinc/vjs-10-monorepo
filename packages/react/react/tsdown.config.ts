@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsdown';
-import buildStyles from './hooks/build-styles.ts';
+import buildStyles from './build/build-styles.ts';
 
 export default defineConfig({
   entry: 'src/index.ts',
