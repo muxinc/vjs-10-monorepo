@@ -31,7 +31,7 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
       {/* Portal renders outside DOM hierarchy */}
       <Dialog.Portal>
         {/* Popup container */}
-        <Dialog.Popup className={clsx('fixed inset-0 z-50 flex flex-col', dark ? 'bg-dark-100 text-light-80' : 'bg-light-80 dark:bg-dark-100 text-dark-100 dark:text-light-80')}>
+        <Dialog.Popup className={clsx('fixed inset-0 z-50 flex flex-col', dark ? 'bg-dark-100 text-light-100' : 'bg-light-80 dark:bg-dark-100 text-dark-100 dark:text-light-100')}>
           {/* Header with close button */}
           <div
             className={clsx(
