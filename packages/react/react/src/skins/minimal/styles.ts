@@ -11,6 +11,7 @@ function cn(...classes: (string | undefined)[]): string {
 
 const styles: MinimalSkinStyles = {
   MediaContainer: cn(
+    'vjs', // scope preflight
     'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px

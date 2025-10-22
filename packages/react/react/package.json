@@ -26,9 +26,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown && pnpm build:skins",
-    "build:skins": "mkdir -p dist/skins && ./node_modules/.bin/tailwindcss -i src/skins/frosted/frosted-skin.css -o dist/skins/frosted.css --minify && ./node_modules/.bin/tailwindcss -i src/skins/minimal/minimal-skin.css -o dist/skins/minimal.css --minify",
-    "build:watch": "tsdown --watch --silent",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch ./src --silent",
     "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
@@ -48,6 +47,8 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.0",
     "@types/react": "^18.0.0",
+    "postcss": "^8.4.49",
+    "postcss-prefix-selector": "^1.16.1",
     "react": "^18.0.0",
     "tailwindcss": "^4.1.13",
     "tsdown": "^0.15.9",

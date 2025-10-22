@@ -11,6 +11,7 @@ function cn(...classes: (string | undefined)[]): string {
 
 const styles: FrostedSkinStyles = {
   MediaContainer: cn(
+    'vjs', // scope preflight
     'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px
