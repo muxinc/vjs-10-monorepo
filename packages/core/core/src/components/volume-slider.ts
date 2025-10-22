@@ -19,7 +19,7 @@ export class VolumeSlider extends Slider {
   getState(): VolumeSliderState {
     const state = super.getState() as VolumeSliderState;
 
-    // When dragging, use pointer position for immediate feedback;
+    // When dragging or keying, use pointer position for immediate feedback;
     // Otherwise, use current volume;
     let _fillWidth = 0;
     if (state._dragging || state._keying) {
@@ -31,6 +31,15 @@ export class VolumeSlider extends Slider {
     const _volumeText = formatVolume(state.muted ? 0 : state.volume || 0);
 
     return { ...state, _fillWidth, _volumeText };
+  }
+
+  setState(state: Partial<VolumeSliderState>): void {
+    // When not dragging or keying, set pointer ratio to current volume.
+    if (!state._dragging && !state._keying && state.volume) {
+      super.setState({ ...state, _pointerRatio: state.volume });
+      return;
+    }
+    super.setState(state);
   }
 
   handleEvent(event: Event): void {

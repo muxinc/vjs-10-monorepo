@@ -170,7 +170,7 @@ export class Slider {
   }
 
   setStepSize(stepSize: number): void {
-    this.setState({ _stepSize: Math.max(0, Math.min(1, stepSize)) });
+    this.setState({ _stepSize: Math.max(0.001, Math.min(1, stepSize)) });
   }
 }
 
