@@ -3,9 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "compile-vjs-styles": "node scripts/compile-vjs-styles.js",
-    "dev": "npm run compile-vjs-styles && astro dev",
-    "build": "npm run compile-vjs-styles && astro build",
+    "dev": " astro dev",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
@@ -43,7 +42,6 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.14",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -54,9 +52,6 @@
     "@vitest/ui": "^3.2.4",
     "babel-plugin-react-compiler": "1.0.0",
     "jsdom": "^27.0.0",
-    "postcss": "^8.4.49",
-    "postcss-nested": "^7.0.2",
-    "postcss-prefix-selector": "^1.16.1",
     "vitest": "^3.2.4"
   }
 }
