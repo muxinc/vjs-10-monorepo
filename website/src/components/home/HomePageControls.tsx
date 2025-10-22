@@ -9,9 +9,10 @@ export default function HomePageControls({ className }: { className?: string }) 
   const $media = useStore(media);
 
   return (
-    <section className={clsx('flex flex-col sm:flex-row sm:gap-20 items-center justify-center', className)}>
+    <section className={clsx('flex flex-col sm:flex-row gap-2 sm:gap-20 items-center justify-center', className)}>
       <ToggleGroup
         className="mx-auto sm:mx-0 col-span-full grid grid-cols-2 justify-center sm:flex"
+        toggleClassName="py-1 sm:py-3"
         value={$skin}
         onChange={value => skin.set(value)}
         options={[
@@ -23,6 +24,7 @@ export default function HomePageControls({ className }: { className?: string }) 
 
       <ToggleGroup
         className="mx-auto sm:mx-0 col-span-full grid grid-cols-2 justify-center sm:flex"
+        toggleClassName="py-1 sm:py-3"
         value={$framework}
         onChange={value => framework.set(value)}
         options={[
@@ -34,6 +36,7 @@ export default function HomePageControls({ className }: { className?: string }) 
 
       <ToggleGroup
         className="mx-auto sm:mx-0 col-span-full grid grid-cols-2 justify-center sm:flex"
+        toggleClassName="py-1 sm:py-3"
         value={$media}
         onChange={value => media.set(value)}
         options={[

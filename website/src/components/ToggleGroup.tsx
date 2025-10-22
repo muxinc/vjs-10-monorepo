@@ -14,6 +14,7 @@ export interface ToggleGroupProps<T = string> {
   onChange: (value: T) => void;
   options: ToggleOption<T>[];
   className?: string;
+  toggleClassName?: string;
   'aria-label'?: string;
 }
 
@@ -22,6 +23,7 @@ export default function ToggleGroup<T extends string = string>({
   onChange,
   options,
   className,
+  toggleClassName,
   'aria-label': ariaLabel,
 }: ToggleGroupProps<T>) {
   const handleChange = (newValue: string[]) => {
@@ -48,11 +50,11 @@ export default function ToggleGroup<T extends string = string>({
           key={option.value}
           value={option.value}
           disabled={option.disabled}
-          className={clsx(
+          className={twMerge(clsx(
             'text-dark-40 dark:text-light-40 data-[pressed]:text-current',
             'py-3 border-b border-transparent',
             option.disabled ? 'opacity-50 cursor-not-allowed' : 'intent:border-dark-40 dark:intent:border-light-40 data-[pressed]:border-current cursor-pointer',
-          )}
+          ), toggleClassName)}
         >
           {option.label}
         </Toggle>
