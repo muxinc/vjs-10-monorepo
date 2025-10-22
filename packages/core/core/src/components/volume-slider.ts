@@ -11,13 +11,18 @@ export interface VolumeSliderState extends SliderState {
 }
 
 export class VolumeSlider extends Slider {
+  constructor() {
+    super();
+    this.setStepSize(0.1);
+  }
+
   getState(): VolumeSliderState {
     const state = super.getState() as VolumeSliderState;
 
-    // When dragging, use pointer position for immediate feedback;
+    // When dragging or keying, use pointer position for immediate feedback;
     // Otherwise, use current volume;
     let _fillWidth = 0;
-    if (state._dragging) {
+    if (state._dragging || state._keying) {
       _fillWidth = state._pointerRatio * 100;
     } else {
       _fillWidth = state.muted ? 0 : (state.volume || 0) * 100;
@@ -26,6 +31,15 @@ export class VolumeSlider extends Slider {
     const _volumeText = formatVolume(state.muted ? 0 : state.volume || 0);
 
     return { ...state, _fillWidth, _volumeText };
+  }
+
+  setState(state: Partial<VolumeSliderState>): void {
+    // When not dragging or keying, set pointer ratio to current volume.
+    if (!state._dragging && !state._keying && state.volume) {
+      super.setState({ ...state, _pointerRatio: state.volume });
+      return;
+    }
+    super.setState(state);
   }
 
   handleEvent(event: Event): void {
@@ -39,6 +53,9 @@ export class VolumeSlider extends Slider {
         break;
       case 'pointerup':
         this.#handlePointerUp(event as PointerEvent);
+        break;
+      case 'keydown':
+        this.#handleKeyDown(event as KeyboardEvent);
         break;
       default:
         super.handleEvent(event);
@@ -71,6 +88,13 @@ export class VolumeSlider extends Slider {
     }
 
     super.handleEvent(event);
+  }
+
+  #handleKeyDown(event: KeyboardEvent) {
+    super.handleEvent(event);
+
+    const { _pointerRatio, requestVolumeChange } = super.getState() as VolumeSliderState;
+    requestVolumeChange(_pointerRatio);
   }
 }
 

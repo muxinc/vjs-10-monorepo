@@ -102,6 +102,7 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
   const hover = useHover(context, {
     enabled: openOnHover,
     mouseOnly: true,
+    move: false,
     delay: {
       open: delay,
       close: closeDelay,
@@ -161,7 +162,7 @@ function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPo
 }
 
 function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
-  const { getFloatingProps, context, openReason, transitionStatus } = usePopoverContext();
+  const { getFloatingProps, context, transitionStatus } = usePopoverContext();
   const { refs, placement } = context;
   const triggerElement = refs.reference.current as HTMLElement | null;
 
@@ -176,10 +177,10 @@ function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
 
   return (
     <FloatingFocusManager
-      disabled={openReason === 'hover'}
       context={context}
       modal={false}
-      initialFocus={context.refs.reference as MutableRefObject<HTMLElement>}
+      initialFocus={-1}
+      returnFocus={false}
     >
       <div
         className={className}

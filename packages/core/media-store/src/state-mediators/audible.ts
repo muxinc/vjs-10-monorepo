@@ -1,10 +1,12 @@
+import type { StateOwners } from '../types';
+
 export const audible = {
   muted: {
-    get(stateOwners: any): boolean {
+    get(stateOwners: StateOwners): boolean {
       const { media } = stateOwners;
       return media?.muted ?? false;
     },
-    set(value: boolean, stateOwners: any): void {
+    set(value: boolean, stateOwners: StateOwners): void {
       const { media } = stateOwners;
       if (!media) return;
       media.muted = value;
@@ -13,7 +15,7 @@ export const audible = {
       }
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: boolean) => void, stateOwners: any): (() => void) | void => {
+      (handler: (value?: boolean) => void, stateOwners: StateOwners): (() => void) | void => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -30,22 +32,22 @@ export const audible = {
     },
   },
   volume: {
-    get(stateOwners: any): number {
+    get(stateOwners: StateOwners): number {
       const { media } = stateOwners;
       return media?.volume ?? 1.0;
     },
-    set(value: number, stateOwners: any): void {
+    set(value: number, stateOwners: StateOwners): void {
       const { media } = stateOwners;
       if (!media) return;
       const numericValue = +value;
       if (!Number.isFinite(numericValue)) return;
       media.volume = numericValue;
       if (numericValue > 0) {
-        media.mute = false;
+        media.muted = false;
       }
     },
     stateOwnersUpdateHandlers: [
-      (handler: (value?: number) => void, stateOwners: any): (() => void) | void => {
+      (handler: (value?: number) => void, stateOwners: StateOwners): (() => void) | void => {
         const { media } = stateOwners;
         if (!media) return;
 
@@ -62,7 +64,7 @@ export const audible = {
   },
   // NOTE: This could be (re)implemented as "derived state" in some manner (e.g. selectors but also other patterns/conventions) if preferred. (CJP)
   volumeLevel: {
-    get(stateOwners: any): 'high' | 'medium' | 'low' | 'off' {
+    get(stateOwners: StateOwners): 'high' | 'medium' | 'low' | 'off' {
       const { media } = stateOwners;
       if (typeof media?.volume == 'undefined') return 'high';
       if (media.muted || media.volume === 0) return 'off';

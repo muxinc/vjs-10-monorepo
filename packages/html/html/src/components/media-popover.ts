@@ -1,24 +1,27 @@
 import type { Placement } from '@floating-ui/dom';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 
-import { getNextTabbable, getPreviousTabbable, isOutsideEvent, uniqueId } from '../utils/element-utils';
+import { getDocument, getNextTabbable, getPreviousTabbable, isOutsideEvent, uniqueId } from '../utils/element-utils';
 
 export class MediaPopoverRoot extends HTMLElement {
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
-
-  constructor() {
-    super();
-    this.addEventListener('mouseenter', this.#handleMouseEnter.bind(this));
-    this.addEventListener('mouseleave', this.#handleMouseLeave.bind(this));
-    this.addEventListener('focusin', this.#handleFocusIn.bind(this));
-    this.addEventListener('focusout', this.#handleFocusOut.bind(this));
-  }
+  #abortController: AbortController | null = null;
 
   connectedCallback(): void {
     this.#updateVisibility();
+
+    this.#abortController ??= new AbortController();
+    const { signal } = this.#abortController;
+
+    this.addEventListener('mouseenter', this, { signal });
+    this.addEventListener('mouseleave', this, { signal });
+    this.addEventListener('focusin', this, { signal });
+    this.addEventListener('focusout', this, { signal });
+
+    getDocument(this).documentElement.addEventListener('mouseleave', this, { signal });
   }
 
   disconnectedCallback(): void {
@@ -27,6 +30,28 @@ export class MediaPopoverRoot extends HTMLElement {
 
     this.#transitionStatus = 'unmounted';
     this.#updateVisibility();
+
+    this.#abortController?.abort();
+    this.#abortController = null;
+  }
+
+  handleEvent(event: Event): void {
+    switch (event.type) {
+      case 'mouseenter':
+        this.#handleMouseEnter();
+        break;
+      case 'mouseleave':
+        this.#handleMouseLeave(event as MouseEvent);
+        break;
+      case 'focusin':
+        this.#handleFocusIn(event as FocusEvent);
+        break;
+      case 'focusout':
+        this.#handleFocusOut(event as FocusEvent);
+        break;
+      default:
+        break;
+    }
   }
 
   static get observedAttributes(): string[] {
@@ -99,6 +124,10 @@ export class MediaPopoverRoot extends HTMLElement {
       this.#popupElement.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
       this.#popupElement.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
       this.#popupElement.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+
+      this.#abortController ??= new AbortController();
+      const { signal } = this.#abortController;
+      this.#popupElement.addEventListener('mouseleave', this, { signal });
     }
 
     const triggerElement = this.#triggerElement?.firstElementChild as HTMLElement;

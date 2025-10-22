@@ -18,11 +18,11 @@ export class TimeSlider extends Slider {
   getState(): TimeSliderState {
     const state = super.getState() as TimeSliderState;
 
-    // When dragging, use pointer position for immediate feedback;
+    // When dragging or keying, use pointer position for immediate feedback;
     // While seeking, use seeking time so it doesn't jump back to the current time;
     // Otherwise, use current time;
     let _fillWidth = 0;
-    if (state._dragging) {
+    if (state._dragging || state._keying) {
       _fillWidth = state._pointerRatio * 100;
     } else if (state.duration > 0) {
       if (this.#seekingTime !== null && this.#oldCurrentTime === state.currentTime) {
@@ -41,6 +41,15 @@ export class TimeSlider extends Slider {
     return { ...state, _fillWidth, _currentTimeText, _durationText };
   }
 
+  setState(state: Partial<TimeSliderState>): void {
+    // When not dragging or keying, set pointer ratio to current time / duration.
+    if (!state._dragging && !state._keying && state.currentTime && state.duration) {
+      super.setState({ ...state, _pointerRatio: state.currentTime / state.duration });
+      return;
+    }
+    super.setState(state);
+  }
+
   handleEvent(event: Event): void {
     const { type } = event;
     switch (type) {
@@ -52,6 +61,9 @@ export class TimeSlider extends Slider {
         break;
       case 'pointerup':
         this.#handlePointerUp(event as PointerEvent);
+        break;
+      case 'keydown':
+        this.#handleKeyDown(event as KeyboardEvent);
         break;
       default:
         super.handleEvent(event);
@@ -91,6 +103,15 @@ export class TimeSlider extends Slider {
     }
 
     super.handleEvent(event);
+  }
+
+  #handleKeyDown(event: KeyboardEvent) {
+    super.handleEvent(event);
+
+    const { _pointerRatio, duration, requestSeek } = super.getState() as TimeSliderState;
+
+    this.#seekingTime = _pointerRatio * duration;
+    requestSeek(this.#seekingTime);
   }
 }
 
