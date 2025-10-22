@@ -22,7 +22,7 @@ export class TimeSlider extends Slider {
     // While seeking, use seeking time so it doesn't jump back to the current time;
     // Otherwise, use current time;
     let _fillWidth = 0;
-    if (state._dragging) {
+    if (state._dragging || state._keying) {
       _fillWidth = state._pointerRatio * 100;
     } else if (state.duration > 0) {
       if (this.#seekingTime !== null && this.#oldCurrentTime === state.currentTime) {
@@ -52,6 +52,9 @@ export class TimeSlider extends Slider {
         break;
       case 'pointerup':
         this.#handlePointerUp(event as PointerEvent);
+        break;
+      case 'keydown':
+        this.#handleKeyDown(event as KeyboardEvent);
         break;
       default:
         super.handleEvent(event);
@@ -91,6 +94,15 @@ export class TimeSlider extends Slider {
     }
 
     super.handleEvent(event);
+  }
+
+  #handleKeyDown(event: KeyboardEvent) {
+    super.handleEvent(event);
+
+    const { _pointerRatio, duration, requestSeek } = super.getState() as TimeSliderState;
+
+    this.#seekingTime = _pointerRatio * duration;
+    requestSeek(this.#seekingTime);
   }
 }
 

@@ -7,8 +7,10 @@ export interface SliderState {
   _pointerRatio: number;
   _hovering: boolean;
   _dragging: boolean;
+  _keying: boolean;
   _fillWidth: number;
   _pointerWidth: number;
+  _stepSize: number;
 }
 
 export class Slider {
@@ -19,8 +21,10 @@ export class Slider {
     _pointerRatio: 0,
     _hovering: false,
     _dragging: false,
+    _keying: false,
     _fillWidth: 0,
     _pointerWidth: 0,
+    _stepSize: 0.01,
   });
 
   attach(target: HTMLElement): void {
@@ -34,6 +38,8 @@ export class Slider {
     this.#element.addEventListener('pointerup', this, { signal });
     this.#element.addEventListener('pointerenter', this, { signal });
     this.#element.addEventListener('pointerleave', this, { signal });
+    this.#element.addEventListener('keydown', this, { signal });
+    this.#element.addEventListener('keyup', this, { signal });
   }
 
   detach(): void {
@@ -80,6 +86,12 @@ export class Slider {
       case 'pointerleave':
         this.#handlePointerLeave(event as PointerEvent);
         break;
+      case 'keydown':
+        this.#handleKeyDown(event as KeyboardEvent);
+        break;
+      case 'keyup':
+        this.#handleKeyUp(event as KeyboardEvent);
+        break;
     }
   }
 
@@ -119,6 +131,46 @@ export class Slider {
 
   #handlePointerLeave(_event: PointerEvent) {
     this.setState({ _hovering: false });
+  }
+
+  #handleKeyDown(event: KeyboardEvent) {
+    const { key } = event;
+    const { _pointerRatio, _stepSize } = this.#state.get();
+
+    let newRatio = _pointerRatio;
+
+    switch (key) {
+      case 'ArrowLeft':
+      case 'ArrowDown':
+        event.preventDefault();
+        newRatio = Math.max(0, _pointerRatio - _stepSize);
+        break;
+      case 'ArrowRight':
+      case 'ArrowUp':
+        event.preventDefault();
+        newRatio = Math.min(1, _pointerRatio + _stepSize);
+        break;
+      case 'Home':
+        event.preventDefault();
+        newRatio = 0;
+        break;
+      case 'End':
+        event.preventDefault();
+        newRatio = 1;
+        break;
+      default:
+        return; // Don't update state for other keys
+    }
+
+    this.setState({ _pointerRatio: newRatio, _keying: true });
+  }
+
+  #handleKeyUp(_event: KeyboardEvent) {
+    this.setState({ _keying: false });
+  }
+
+  setStepSize(stepSize: number): void {
+    this.setState({ _stepSize: Math.max(0, Math.min(1, stepSize)) });
   }
 }
 
