@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { createHighlighter, hastToHtml } from 'shiki';
 import html from 'shiki/langs/html.mjs';
 import tsx from 'shiki/langs/tsx.mjs';
+import gruvboxDarkSoft from 'shiki/themes/gruvbox-dark-soft.mjs';
 import gruvboxLightHard from 'shiki/themes/gruvbox-light-hard.mjs';
 
 // If you try importing more than one island with ClientCode in it,
@@ -12,7 +13,7 @@ import gruvboxLightHard from 'shiki/themes/gruvbox-light-hard.mjs';
 
 // eslint-disable-next-line antfu/no-top-level-await
 const highlighter: Highlighter = await createHighlighter({
-  themes: [gruvboxLightHard],
+  themes: [gruvboxLightHard, gruvboxDarkSoft],
   langs: [html, tsx],
 });
 
@@ -25,7 +26,10 @@ export interface ClientCodeProps {
 export default function ClientCode({ code, lang, className }: ClientCodeProps) {
   const hast = highlighter.codeToHast(code, {
     lang,
-    theme: 'gruvbox-light-hard',
+    themes: {
+      light: 'gruvbox-light-hard',
+      dark: 'gruvbox-dark-soft',
+    },
   });
 
   // shiki gives us a root > pre > code > text structure
@@ -51,7 +55,7 @@ export default function ClientCode({ code, lang, className }: ClientCodeProps) {
 
   return (
     <pre
-      className={clsx('rounded-lg p-6 overflow-x-auto overflow-y-scroll max-h-96 border border-light-40 bg-light-100', preClassName, className)}
+      className={clsx('rounded-lg p-6 overflow-x-auto overflow-y-scroll max-h-96 border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110', preClassName, className)}
     >
       <code
         className={clsx('font-mono text-code', codeClassName)}

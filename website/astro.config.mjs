@@ -36,6 +36,7 @@ export default defineConfig({
     shikiConfig: {
       themes: {
         light: 'gruvbox-light-hard',
+        dark: 'gruvbox-dark-medium',
       },
       // TODO shiki transformers
     },

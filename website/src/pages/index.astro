@@ -30,7 +30,11 @@ const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
         </p>
       </div>
       <div class="vjs relative z-10 w-full -mb-11 md:-mb-21 lg:-mb-32 grid grid-cols-1 grid-rows-1">
-        <HeroVideo client:load className="aspect-video rounded-3xl bg-dark-80 shadow-2xl" poster={poster} />
+        <HeroVideo
+          client:load
+          className="aspect-video rounded-3xl bg-dark-80 dark:bg-dark-40 shadow-2xl"
+          poster={poster}
+        />
       </div>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-28 md:h-67 grid grid-rows-4">
@@ -57,7 +61,7 @@ const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+        <section class="flex gap-3 rounded-xl border border-light-40 dark:border-dark-80 p-6">
           <CircleCheck size={24} className="flex-shrink-0" />
           <div>
             <h3 class="font-semibold text-md">Preview</h3>
@@ -65,17 +69,17 @@ const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
             <p class="max-w-3xl">First public look, with limited features. Not production ready.</p>
           </div>
         </section>
-        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+        <section class="flex gap-3 rounded-xl border border-light-40 dark:border-dark-80 p-6">
           <div>
             <Clock size={24} className="flex-shrink-0" />
           </div>
           <div>
             <h3 class="font-semibold text-md">Beta</h3>
-            <p class="font-medium mb-3">December 2025</p>
+            <p class="font-medium mb-3">February 2025</p>
             <p class="max-w-3xl">Core features, like basic controls and adaptive streaming. Bugs likely.</p>
           </div>
         </section>
-        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+        <section class="flex gap-3 rounded-xl border border-light-40 dark:border-dark-80 p-6">
           <div>
             <Clock size={24} className="flex-shrink-0" />
           </div>
@@ -85,7 +89,7 @@ const poster = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
             <p class="max-w-3xl">Stable release. Fundamental v8 feature parity.</p>
           </div>
         </section>
-        <section class="flex gap-3 rounded-xl border border-light-40 p-6">
+        <section class="flex gap-3 rounded-xl border border-light-40 dark:border-dark-80 p-6">
           <div>
             <Clock size={24} className="flex-shrink-0" />
           </div>

@@ -67,9 +67,9 @@ export function AuthorSocialLinks({ socialLinks, className }: AuthorSocialLinksP
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${config.label} profile`}
-                  className="inline-flex items-center justify-center p-2 rounded-lg intent:text-dark-40 transition-colors"
+                  className="inline-flex items-center justify-center p-2 rounded-lg intent:text-dark-40 dark:text-light-40"
                 >
-                  <Icon size={20} />
+                  <Icon size={20} strokeWidth={1.5} />
                 </a>
               </Tooltip>
             </li>

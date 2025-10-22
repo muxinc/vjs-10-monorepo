@@ -56,12 +56,12 @@ const jsonLdSchema = createProfilePageSchema({
         <img
           src={author.data.avatar}
           alt={author.data.name}
-          class="w-24 h-24 md:w-36 md:h-36 rounded-full border border-light-40 bg-light-100 row-span-3"
+          class="w-24 h-24 md:w-36 md:h-36 rounded-full border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110 row-span-3"
         />
       )
     }
     <h1 class="text-h2 mb-1">{author.data.name}</h1>
-    {author.data.bio && <p class="text-md text-dark-80 mb-4">{author.data.bio}</p>}
+    {author.data.bio && <p class="text-md text-dark-80 dark:text-light-80 mb-4">{author.data.bio}</p>}
     {
       author.data.socialLinks && (
         <AuthorSocialLinks client:idle socialLinks={author.data.socialLinks} className="flex gap-2" />

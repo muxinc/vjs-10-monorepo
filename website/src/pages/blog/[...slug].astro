@@ -39,14 +39,17 @@ const jsonLdSchema = createBlogPostingSchema({
 <Blog title={[post.data.title, 'Blog']} description={post.data.description}>
   <JsonLd slot="head" schema={jsonLdSchema} />
   <article class="@container">
-    <header class="border-b border-light-40 max-w-3xl mx-auto pb-10 mb-10">
-      <time datetime={post.data.pubDate.toISOString()} class="font-medium md:text-md text-dark-40 flex gap-4 mb-1">
+    <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto pb-10 mb-10">
+      <time
+        datetime={post.data.pubDate.toISOString()}
+        class="font-medium md:text-md text-dark-40 dark:text-light-40 flex gap-4 mb-1"
+      >
         <FormattedDate date={post.data.pubDate} />
         <span>&bull;</span>
         <span>{remarkPluginFrontmatter.minutesRead}</span>
       </time>
       <h1 class="text-h4 md:text-h2 mb-2">{post.data.title}</h1>
-      <div class="font-medium md:text-md text-dark-40">
+      <div class="font-medium md:text-md text-dark-40 dark:text-light-40">
         By {
           new Intl.ListFormat('en', { style: 'long', type: 'conjunction' })
             .formatToParts(authors.map((author) => author.data.name))

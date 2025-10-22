@@ -8,5 +8,4 @@ not comprehensive. just the things I'm worried about forgetting
 - animations
 - docs features
   - copy code blocks
-- dark mode
 - search

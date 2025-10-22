@@ -49,9 +49,9 @@ export default function ToggleGroup<T extends string = string>({
           value={option.value}
           disabled={option.disabled}
           className={clsx(
-            'text-dark-40 data-[pressed]:text-current',
+            'text-dark-40 dark:text-light-40 data-[pressed]:text-current',
             'py-3 border-b border-transparent',
-            option.disabled ? 'opacity-50 cursor-not-allowed' : 'intent:border-dark-40 data-[pressed]:border-current cursor-pointer',
+            option.disabled ? 'opacity-50 cursor-not-allowed' : 'intent:border-dark-40 dark:intent:border-light-40 data-[pressed]:border-current cursor-pointer',
           )}
         >
           {option.label}

@@ -1,12 +1,6 @@
 @import 'tailwindcss';
 
 /* before we begin with tailwind, let's go over some global rules */
-/* dark mode should use dark chrome */
-@media (prefers-color-scheme: dark) {
-  * {
-    color-scheme: dark;
-  }
-}
 /* nested lists should have lower-alpha style */
 .list-decimal .list-decimal {
   list-style-type: lower-alpha;
@@ -37,6 +31,16 @@
     @slot;
   }
 }
+@custom-variant dark (&:where(.dark, .dark *));
+.dark * {
+  color-scheme: dark;
+}
+.dark .shiki,
+.dark .shiki span,
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+}
 
 /* theme inline tells tailwind to reference the value of these properties */
 @theme inline {
@@ -52,7 +56,9 @@
   --color-white: white;
   --color-black: black;
 
+  --color-dark-110: #2a2928;
   --color-dark-100: #393836;
+  --color-dark-90: #494741;
   --color-dark-80: #5a5850;
   --color-dark-40: #7d796a;
 
@@ -108,11 +114,11 @@
   --text-sm--letter-spacing: -0.02em;
 
   /* Notice the use of em, so that code scales with, say, headers */
-  --text-code: 0.875em;
+  --text-code: 0.9375em;
   --text-code--line-height: calc(28 / 16);
   --text-code--letter-spacing: -0.02em;
   /* if you don't want this scaling, use text-base-code */
-  --text-base-code: 0.875rem;
+  --text-base-code: 0.9375rem;
   --text-base-code--line-height: calc(28 / 16);
   --text-base-code--letter-spacing: -0.02em;
 

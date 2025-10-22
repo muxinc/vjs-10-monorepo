@@ -35,7 +35,7 @@ export function Select<T extends string = string>({
       <BaseSelect.Trigger
         className={twMerge(
           clsx(
-            'inline-flex items-center gap-2 bg-light-60 border border-light-40 rounded-lg text-sm p-2',
+            'inline-flex items-center gap-2 bg-light-60 dark:bg-dark-90 dark:text-light-100 border border-light-40 dark:border-dark-80 rounded-lg text-sm p-2',
           ),
           className,
         )}
@@ -55,7 +55,7 @@ export function Select<T extends string = string>({
         >
           <BaseSelect.Popup
             className={clsx(
-              'border border-light-40 rounded-lg bg-light-60 shadow-xl text-sm',
+              'border border-light-40 dark:border-dark-80 rounded-lg bg-light-60 dark:bg-dark-80 shadow-xl text-sm',
               'overflow-hidden',
             )}
             style={{
@@ -77,9 +77,9 @@ export function Select<T extends string = string>({
                   disabled={option.disabled}
                   className={clsx(
                     'flex items-center gap-2 p-2',
-                    'cursor-pointer intent:bg-light-80',
+                    'cursor-pointer intent:bg-light-80 dark:intent:bg-dark-100',
                     option.disabled && 'opacity-50 cursor-not-allowed',
-                    option.value === value && 'bg-light-80',
+                    option.value === value && 'bg-light-80 dark:bg-dark-100',
                   )}
                 >
                   <BaseSelect.ItemText>{option.label}</BaseSelect.ItemText>

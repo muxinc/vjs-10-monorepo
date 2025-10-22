@@ -2,7 +2,6 @@
 import type { SupportedFramework, SupportedStyle } from '@/types/docs';
 
 import { PreferenceUpdater } from '@/components/docs/PreferenceUpdater';
-import { Selectors } from '@/components/docs/Selectors';
 import SidebarItem from '@/components/docs/SidebarItem.astro';
 import { filterSidebar } from '@/utils/docs/sidebar';
 
@@ -18,6 +17,6 @@ const filteredSidebar = filterSidebar(framework, style);
 
 <slot />
 <PreferenceUpdater client:idle currentFramework={framework} currentStyle={style} />
-<nav class="p-6 text-dark-80">
+<nav class="p-6 text-dark-80 dark:text-light-40">
   {filteredSidebar.map((item) => <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />)}
 </nav>

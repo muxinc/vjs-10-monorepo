@@ -69,7 +69,7 @@ export function Selectors({
   }));
 
   return (
-    <div className="p-6 lg:py-2.5 xl:p-6 border-b border-light-40">
+    <div className="p-6 lg:py-2.5 xl:p-6 border-b border-light-40 dark:border-dark-80">
       <div className="max-w-3xl mx-auto w-full grid gap-x-6 gap-y-2 items-center" style={{ gridTemplateColumns: 'auto minmax(0, 1fr)' }}>
         <span>Framework</span>
         <Select

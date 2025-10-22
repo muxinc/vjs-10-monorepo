@@ -34,7 +34,7 @@ const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
       <DocsSidebar slot="mobile-nav" framework={framework} style={style} docTitles={docTitles} />
     </NavBar>
     <aside
-      class="hidden lg:block lg:border-r border-light-40 sticky overflow-y-scroll"
+      class="hidden lg:block lg:border-r border-light-40 dark:border-dark-80 sticky overflow-y-scroll"
       style="top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
     >
       <DocsSidebar framework={framework} style={style} docTitles={docTitles}>

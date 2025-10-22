@@ -1,12 +1,15 @@
 ---
 import type { ImageMetadata } from 'astro';
+
 import { Font } from 'astro:assets';
 
 import { SITE_TITLE } from '@/consts';
 
 import '@/styles/globals.css';
+
 import FooterEasterEgg from '@/components/FooterEasterEgg.astro';
 import Posthog from '@/components/Posthog.astro';
+import ThemeInit from '@/components/ThemeInit.astro';
 
 interface Props {
   title: string | string[];
@@ -69,11 +72,13 @@ const fullTitle = Array.isArray(title)
 
     {/* Analytics */}
     <Posthog />
+
+    <ThemeInit />
   </head>
   <body
     class:list={[
       'relative',
-      'bg-light-80 text-dark-100',
+      'bg-light-80 dark:bg-dark-100 text-dark-100 dark:text-light-80',
       'font-sans antialiased text-pretty text-base',
       'min-w-80',
       '[--nav-h:calc(var(--spacing)*13)] sm:[--nav-h:calc(var(--spacing)*14)]',

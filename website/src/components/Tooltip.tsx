@@ -38,13 +38,13 @@ export function Tooltip({
         <BaseTooltip.Positioner side={side} sideOffset={sideOffset}>
           <BaseTooltip.Popup
             className={clsx(
-              'bg-dark-100 text-light-80 text-sm px-3 py-2 rounded-lg shadow-lg',
+              'bg-dark-100 dark:bg-dark-90 text-light-80 dark:text-light-100 text-sm px-3 py-2 rounded-lg shadow-lg',
               'z-50 max-w-xs',
               className,
             )}
           >
             {content}
-            <BaseTooltip.Arrow className="fill-dark-100" />
+            <BaseTooltip.Arrow className="fill-dark-100 dark:fill-dark-90" />
           </BaseTooltip.Popup>
         </BaseTooltip.Positioner>
       </BaseTooltip.Portal>
