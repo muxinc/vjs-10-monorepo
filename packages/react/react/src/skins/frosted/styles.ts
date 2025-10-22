@@ -11,171 +11,172 @@ function cn(...classes: (string | undefined)[]): string {
 
 const styles: FrostedSkinStyles = {
   MediaContainer: cn(
-    'relative isolate @container/root group/root overflow-clip',
+    'vjs', // scope preflight
+    'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip',
     // Base typography
-    'text-[0.8125rem]', // 13px
+    'vjs:text-[0.8125rem]', // 13px
     // Prevent rounded corners in fullscreen.
-    '[&:fullscreen]:rounded-none [&:fullscreen]:[&_video]:h-full [&:fullscreen]:[&_video]:w-full',
+    'vjs:[&:fullscreen]:rounded-none vjs:[&:fullscreen]:[&_video]:h-full vjs:[&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
-    'after:absolute after:inset-0 after:ring-black/10 after:ring-1 dark:after:ring-white/10 after:ring-inset after:z-10 after:pointer-events-none after:rounded-[inherit]',
-    'before:absolute before:inset-px before:rounded-[inherit] before:ring-white/15 before:ring-1 before:ring-inset before:z-10 before:pointer-events-none dark:before:ring-0',
+    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring-black/10 vjs:after:ring-1 vjs:dark:after:ring-white/10 vjs:after:ring-inset vjs:after:z-10 vjs:after:pointer-events-none vjs:after:rounded-[inherit]',
+    'vjs:before:absolute vjs:before:inset-px vjs:before:rounded-[inherit] vjs:before:ring-white/15 vjs:before:ring-1 vjs:before:ring-inset vjs:before:z-10 vjs:before:pointer-events-none vjs:dark:before:ring-0',
     // Ensure the nested video inherits the radius.
-    '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto',
+    'vjs:[&_video]:rounded-[inherit] vjs:[&_video]:w-full vjs:[&_video]:h-auto',
   ),
   Overlay: cn(
-    'opacity-0 delay-500 rounded-[inherit] absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-black/20 to-transparent transition-opacity backdrop-saturate-150 backdrop-brightness-90',
+    'vjs:opacity-0 vjs:delay-500 vjs:rounded-[inherit] vjs:absolute vjs:inset-0 vjs:pointer-events-none vjs:bg-gradient-to-t vjs:from-black/50 vjs:via-black/20 vjs:to-transparent vjs:transition-opacity vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
     // Hide when playing (for now).
-    //  FIXME: This is crude temporary logic, we’ll improve it later I guess with a [data-show-controls] attribute or something?
-    'has-[+.controls_[data-paused]]:opacity-100 has-[+.controls_[data-paused]]:delay-0',
-    'has-[+.controls_[aria-expanded="true"]]:opacity-100 has-[+.controls_[aria-expanded="true"]]:delay-0',
-    'group-hover/root:opacity-100 group-hover/root:delay-0',
+    //  FIXME: This is crude temporary logic, we'll improve it later I guess with a [data-show-controls] attribute or something?
+    'vjs:has-[+.controls_[data-paused]]:opacity-100 vjs:has-[+.controls_[data-paused]]:delay-0',
+    'vjs:has-[+.controls_[aria-expanded="true"]]:opacity-100 vjs:has-[+.controls_[aria-expanded="true"]]:delay-0',
+    'vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
   ),
   Controls: cn(
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    '@container/controls absolute inset-x-3 bottom-3 rounded-full flex items-center p-1 ring ring-white/10 ring-inset gap-0.5 text-white',
-    'shadow-sm shadow-black/15',
+    'vjs:@container/controls vjs:absolute vjs:inset-x-3 vjs:bottom-3 vjs:rounded-full vjs:flex vjs:items-center vjs:p-1 vjs:ring vjs:ring-white/10 vjs:ring-inset vjs:gap-0.5 vjs:text-white',
+    'vjs:shadow-sm vjs:shadow-black/15',
     // Background
-    'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
+    'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
     // Animation
-    'transition will-change-transform origin-bottom ease-out',
+    'vjs:transition vjs:will-change-transform vjs:origin-bottom vjs:ease-out',
     //  FIXME: Temporary hide/show logic
-    'scale-90 opacity-0 delay-500 duration-300',
-    'has-[[data-paused]]:scale-100 has-[[data-paused]]:opacity-100 has-[[data-paused]]:delay-0',
-    'has-[[aria-expanded="true"]]:scale-100 has-[[aria-expanded="true"]]:opacity-100 has-[[aria-expanded="true"]]:delay-0',
-    'group-hover/root:scale-100 group-hover/root:opacity-100 group-hover/root:delay-0',
+    'vjs:scale-90 vjs:opacity-0 vjs:delay-500 vjs:duration-300',
+    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:delay-0',
+    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:delay-0',
+    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
     // Border to enhance contrast on lighter videos
-    'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
+    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring vjs:after:rounded-[inherit] vjs:after:ring-black/15 vjs:after:pointer-events-none vjs:after:z-10',
     // Reduced transparency for users with preference
     // XXX: This requires a Tailwind custom variant (see 1 below)
-    'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
+    'vjs:reduced-transparency:bg-black/70 vjs:reduced-transparency:ring-black vjs:reduced-transparency:after:ring-white/20',
     // High contrast mode
-    'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20',
+    'vjs:contrast-more:bg-black/90 vjs:contrast-more:ring-black vjs:contrast-more:after:ring-white/20',
   ),
   Icon: cn('icon'),
   Button: cn(
-    'group/button cursor-pointer relative shrink-0 transition select-none p-2 rounded-full',
+    'vjs:group/button vjs:cursor-pointer vjs:relative vjs:shrink-0 vjs:transition vjs:select-none vjs:p-2 vjs:rounded-full',
     // Background/foreground
-    'bg-transparent text-white/90',
+    'vjs:bg-transparent vjs:text-white/90',
     // Hover and focus states
-    'hover:no-underline hover:bg-white/10 hover:text-white focus-visible:no-underline focus-visible:bg-white/10 focus-visible:text-white',
+    'vjs:hover:no-underline vjs:hover:bg-white/10 vjs:hover:text-white vjs:focus-visible:no-underline vjs:focus-visible:bg-white/10 vjs:focus-visible:text-white',
     // Focus state
-    '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
+    'vjs:-outline-offset-2 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-2 vjs:focus-visible:outline-blue-500',
     // Disabled state
-    'aria-disabled:grayscale aria-disabled:opacity-50 aria-disabled:cursor-not-allowed',
+    'vjs:aria-disabled:grayscale vjs:aria-disabled:opacity-50 vjs:aria-disabled:cursor-not-allowed',
     // Loading state
-    'aria-busy:pointer-events-none aria-busy:cursor-not-allowed',
+    'vjs:aria-busy:pointer-events-none vjs:aria-busy:cursor-not-allowed',
     // Expanded state
-    'aria-expanded:bg-white/10 aria-expanded:text-white',
+    'vjs:aria-expanded:bg-white/10 vjs:aria-expanded:text-white',
     // Pressed state
-    'active:scale-95',
+    'vjs:active:scale-95',
   ),
   IconButton: cn(
-    'grid [&_.icon]:[grid-area:1/1]',
-    '[&_.icon]:shrink-0 [&_.icon]:transition-opacity [&_.icon]:duration-300 [&_.icon]:ease-out [&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] [&_.icon]:shadow-black/25',
+    'vjs:grid vjs:[&_.icon]:[grid-area:1/1]',
+    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-opacity vjs:[&_.icon]:duration-300 vjs:[&_.icon]:ease-out vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/25',
   ),
   PlayButton: cn(
-    '[&_.pause-icon]:opacity-100 [&[data-paused]_.pause-icon]:opacity-0',
-    '[&_.play-icon]:opacity-0 [&[data-paused]_.play-icon]:opacity-100',
+    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0',
+    'vjs:[&_.play-icon]:opacity-0 vjs:[&[data-paused]_.play-icon]:opacity-100',
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
   TooltipPopup: cn(
-    'whitespace-nowrap flex origin-[var(--transform-origin)] flex-col rounded-md text-white text-xs @7xl/root:text-sm px-2 py-1',
+    'vjs:whitespace-nowrap vjs:flex vjs:origin-[var(--transform-origin)] vjs:flex-col vjs:rounded-md vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2 vjs:py-1',
     // Background
-    'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
+    'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
     // Animation
-    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
+    'vjs:transition-[transform,scale,opacity] vjs:data-[ending-style]:scale-90 vjs:data-[ending-style]:opacity-0 vjs:data-[instant]:duration-0 vjs:data-[starting-style]:scale-90 vjs:data-[starting-style]:opacity-0',
     // Ring
-    'ring-1 ring-white/10 ring-inset',
+    'vjs:ring-1 vjs:ring-white/10 vjs:ring-inset',
     // Border to enhance contrast on lighter videos
-    'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none',
+    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring vjs:after:rounded-[inherit] vjs:after:ring-black/15 vjs:after:pointer-events-none',
   ),
   PlayTooltipPopup: cn(
-    '[&_.pause-tooltip]:inline [&[data-paused]_.pause-tooltip]:hidden',
-    '[&_.play-tooltip]:hidden [&[data-paused]_.play-tooltip]:inline',
+    'vjs:[&_.pause-tooltip]:inline vjs:[&[data-paused]_.pause-tooltip]:hidden',
+    'vjs:[&_.play-tooltip]:hidden vjs:[&[data-paused]_.play-tooltip]:inline',
   ),
   PlayTooltip: cn('play-tooltip'),
   PauseTooltip: cn('pause-tooltip'),
   MuteButton: cn(
-    '[&_.icon]:opacity-0',
-    '[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
-    '[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
-    '[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',
-    '[&[data-volume-level="off"]_.volume-off-icon]:opacity-100',
+    'vjs:[&_.icon]:opacity-0',
+    'vjs:[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
+    'vjs:[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
+    'vjs:[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',
+    'vjs:[&[data-volume-level="off"]_.volume-off-icon]:opacity-100',
   ),
   VolumeHighIcon: cn('volume-high-icon'),
   VolumeLowIcon: cn('volume-low-icon'),
   VolumeOffIcon: cn('volume-off-icon'),
   FullscreenButton: cn(
-    '[&_.fullscreen-enter-icon]:opacity-100 [&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
-    '[&_.fullscreen-exit-icon]:opacity-0 [&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
-    '[&_path]:transition-transform ease-out',
+    'vjs:[&_.fullscreen-enter-icon]:opacity-100 vjs:[&[data-fullscreen]_.fullscreen-enter-icon]:opacity-0',
+    'vjs:[&_.fullscreen-exit-icon]:opacity-0 vjs:[&[data-fullscreen]_.fullscreen-exit-icon]:opacity-100',
+    'vjs:[&_path]:transition-transform vjs:ease-out',
   ),
   FullscreenEnterIcon: cn(
     'fullscreen-enter-icon',
-    'group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px',
-    'group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px',
+    'vjs:group-hover/button:[&_.arrow-1]:-translate-x-px vjs:group-hover/button:[&_.arrow-1]:-translate-y-px',
+    'vjs:group-hover/button:[&_.arrow-2]:translate-x-px vjs:group-hover/button:[&_.arrow-2]:translate-y-px',
   ),
   FullscreenExitIcon: cn(
     'fullscreen-exit-icon',
-    '[&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px',
-    '[&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px',
-    'group-hover/button:[&_.arrow-1]:translate-0',
-    'group-hover/button:[&_.arrow-2]:translate-0',
+    'vjs:[&_.arrow-1]:-translate-x-px vjs:[&_.arrow-1]:-translate-y-px',
+    'vjs:[&_.arrow-2]:translate-x-px vjs:[&_.arrow-2]:translate-y-px',
+    'vjs:group-hover/button:[&_.arrow-1]:translate-0',
+    'vjs:group-hover/button:[&_.arrow-2]:translate-0',
   ),
   FullscreenTooltipPopup: cn(
-    '[&_.fullscreen-enter-tooltip]:inline [&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
-    '[&_.fullscreen-exit-tooltip]:hidden [&[data-fullscreen]_.fullscreen-exit-tooltip]:inline',
+    'vjs:[&_.fullscreen-enter-tooltip]:inline vjs:[&[data-fullscreen]_.fullscreen-enter-tooltip]:hidden',
+    'vjs:[&_.fullscreen-exit-tooltip]:hidden vjs:[&[data-fullscreen]_.fullscreen-exit-tooltip]:inline',
   ),
   FullscreenEnterTooltip: cn('fullscreen-enter-tooltip'),
   FullscreenExitTooltip: cn('fullscreen-exit-tooltip'),
-  TimeControls: cn('flex-1 flex items-center gap-3 px-1.5'),
-  TimeDisplay: cn('tabular-nums text-shadow-2xs/25'),
+  TimeControls: cn('vjs:flex-1 vjs:flex vjs:items-center vjs:gap-3 vjs:px-1.5'),
+  TimeDisplay: cn('vjs:tabular-nums vjs:text-shadow-2xs/25'),
   SliderRoot: cn(
-    'flex items-center justify-center flex-1 group/slider relative rounded-full',
-    '[&[data-orientation="horizontal"]]:h-5 [&[data-orientation="horizontal"]]:min-w-20',
-    '[&[data-orientation="vertical"]]:w-5 [&[data-orientation="vertical"]]:h-20',
+    'vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-full',
+    'vjs:[&[data-orientation="horizontal"]]:h-5 vjs:[&[data-orientation="horizontal"]]:min-w-20',
+    'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-20',
     // Focus state
-    'focus-visible:outline-2 focus-visible:outline-blue-500',
+    'vjs:focus-visible:outline-2 vjs:focus-visible:outline-blue-500',
   ),
   SliderTrack: cn(
-    'w-full relative select-none rounded-full bg-white/20 ring-1 ring-black/5',
-    '[&[data-orientation="horizontal"]]:h-1',
-    '[&[data-orientation="vertical"]]:w-1',
+    'vjs:w-full vjs:relative vjs:select-none vjs:rounded-full vjs:bg-white/20 vjs:ring-1 vjs:ring-black/5',
+    'vjs:[&[data-orientation="horizontal"]]:h-1',
+    'vjs:[&[data-orientation="vertical"]]:w-1',
   ),
-  SliderProgress: cn('bg-white rounded-[inherit]'),
+  SliderProgress: cn('vjs:bg-white vjs:rounded-[inherit]'),
   // TODO: Work out what we want to do here.
-  SliderPointer: cn('bg-white/20 rounded-[inherit]'),
+  SliderPointer: cn('vjs:bg-white/20 vjs:rounded-[inherit]'),
   SliderThumb: cn(
-    'bg-white z-10 select-none ring ring-black/10 rounded-full shadow-sm shadow-black/15',
-    'opacity-0 transition-[opacity,height,width] ease-in-out',
-    '-outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
-    'group-hover/slider:opacity-100 group-focus-within/slider:opacity-100',
-    'size-2.5 active:size-3 group-active/slider:size-3',
-    '[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
-    '[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
+    'vjs:bg-white vjs:z-10 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15',
+    'vjs:opacity-0 vjs:transition-[opacity,height,width] vjs:ease-in-out',
+    'vjs:-outline-offset-2 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-2 vjs:focus-visible:outline-blue-500',
+    'vjs:group-hover/slider:opacity-100 vjs:group-focus-within/slider:opacity-100',
+    'vjs:size-2.5 vjs:active:size-3 vjs:group-active/slider:size-3',
+    'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
+    'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
   TimeSliderRoot: cn(
     // Focus state
-    '-outline-offset-8 focus-visible:outline-offset-8',
+    'vjs:-outline-offset-8 vjs:focus-visible:outline-offset-8',
   ),
   VolumeSliderRoot: cn(
     // Focus state
-    '-outline-offset-4 focus-visible:outline-offset-4',
+    'vjs:-outline-offset-4 vjs:focus-visible:outline-offset-4',
   ),
   PopoverPopup: cn(
-    'relative px-1.5 py-3.5 rounded-full',
-    'bg-white/10 backdrop-blur-3xl backdrop-saturate-150 backdrop-brightness-90',
-    'ring ring-white/10 ring-inset shadow-sm shadow-black/15',
+    'vjs:relative vjs:px-1.5 vjs:py-3.5 vjs:rounded-full',
+    'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
+    'vjs:ring vjs:ring-white/10 vjs:ring-inset vjs:shadow-sm vjs:shadow-black/15',
     // Animation
-    'transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
+    'vjs:transition-[transform,scale,opacity] vjs:data-[ending-style]:scale-90 vjs:data-[ending-style]:opacity-0 vjs:data-[instant]:duration-0 vjs:data-[starting-style]:scale-90 vjs:data-[starting-style]:opacity-0',
     // Border to enhance contrast on lighter videos
-    'after:absolute after:inset-0 after:ring after:rounded-[inherit] after:ring-black/15 after:pointer-events-none after:z-10',
+    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring vjs:after:rounded-[inherit] vjs:after:ring-black/15 vjs:after:pointer-events-none vjs:after:z-10',
     // Reduced transparency for users with preference
     // XXX: This requires a Tailwind custom variant (see 1 below)
-    'reduced-transparency:bg-black/70 reduced-transparency:ring-black reduced-transparency:after:ring-white/20',
+    'vjs:reduced-transparency:bg-black/70 vjs:reduced-transparency:ring-black vjs:reduced-transparency:after:ring-white/20',
     // High contrast mode
-    'contrast-more:bg-black/90 contrast-more:ring-black contrast-more:after:ring-white/20',
+    'vjs:contrast-more:bg-black/90 vjs:contrast-more:ring-black vjs:contrast-more:after:ring-white/20',
   ),
 };
 

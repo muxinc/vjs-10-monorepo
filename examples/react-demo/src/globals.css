@@ -1,8 +1,5 @@
 @import 'tailwindcss';
 
-/* TODO: Documentation for how this will work in the wild. */
-@source "../../../packages/react";
-
 @theme {
   --font-sans:
     InterVariable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
