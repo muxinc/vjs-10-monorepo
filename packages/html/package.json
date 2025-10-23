@@ -17,16 +17,16 @@
       "default": "./dist/index.js"
     },
     "./store": {
-      "types": "./dist/store/index.d.ts",
-      "default": "./dist/store/index.js"
+      "types": "./dist/store.d.ts",
+      "default": "./dist/store.js"
     },
     "./icons": {
-      "types": "./dist/icons/index.d.ts",
-      "default": "./dist/icons/index.js"
+      "types": "./dist/icons.d.ts",
+      "default": "./dist/icons.js"
     },
     "./skins/default": {
-      "types": "./dist/skins/default/index.d.ts",
-      "default": "./dist/skins/default/index.js"
+      "types": "./dist/skins/default.d.ts",
+      "default": "./dist/skins/default.js"
     }
   },
   "main": "dist/index.js",

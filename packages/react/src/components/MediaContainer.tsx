@@ -1,9 +1,10 @@
 import type { FC, HTMLProps, PropsWithChildren, RefCallback } from 'react';
 
-import { playButtonStateDefinition, useMediaSelector, useMediaStore } from '@vjs-10/core/store';
+import { playButtonStateDefinition } from '@vjs-10/core/store';
 
 import { shallowEqual } from '@vjs-10/utils';
 import { forwardRef, useCallback, useMemo } from 'react';
+import { useMediaSelector, useMediaStore } from '@/store';
 import { useComposedRefs } from '../utils/use-composed-refs';
 
 /**
