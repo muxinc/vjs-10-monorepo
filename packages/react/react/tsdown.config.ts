@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsdown';
+import buildStyles from './build/build-styles.ts';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -11,5 +12,10 @@ export default defineConfig({
   },
   dts: {
     oxc: true,
+  },
+  hooks: {
+    'build:done': async () => {
+      await buildStyles();
+    },
   },
 });

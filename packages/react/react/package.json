@@ -15,7 +15,9 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./skins/frosted.css": "./dist/skins/frosted.css",
+    "./skins/minimal.css": "./dist/skins/minimal.css"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -25,7 +27,7 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "build:watch": "tsdown --watch --silent",
+    "build:watch": "tsdown --watch ./src --silent",
     "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
@@ -43,8 +45,12 @@
     "@vjs-10/react-media-store": "workspace:*"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
     "@types/react": "^18.0.0",
+    "postcss": "^8.4.49",
+    "postcss-prefix-selector": "^1.16.1",
     "react": "^18.0.0",
+    "tailwindcss": "^4.1.13",
     "tsdown": "^0.15.9",
     "typescript": "^5.9.2"
   },

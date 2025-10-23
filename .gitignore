@@ -17,7 +17,6 @@ lerna-debug.log*
 # Build & Generated Outputs
 # -------------------------
 dist/
-build/
 lib/
 out/
 *.tsbuildinfo
