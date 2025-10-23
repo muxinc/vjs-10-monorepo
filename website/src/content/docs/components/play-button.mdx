@@ -1,0 +1,110 @@
+---
+title: PlayButton
+description: A button component for playing and pausing media playback
+---
+
+import { PlayButtonDemo } from '@/examples/react/PlayButton/PlayButtonDemo';
+
+# PlayButton
+
+A button component that toggles between play and pause states for media playback.
+
+## Features
+
+- Automatically switches icons based on playback state
+- Uses data attributes for state-based styling
+- Accessible keyboard navigation
+- Works with any media element
+
+## Live Example
+
+<PlayButtonDemo client:load />
+
+## Usage
+
+### React
+
+```tsx
+import { MediaProvider, Video, MediaContainer, PlayButton } from '@vjs-10/react';
+import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+
+function VideoPlayer() {
+  return (
+    <MediaProvider>
+      <MediaContainer>
+        <Video src="video.mp4" />
+        <PlayButton className="play-button">
+          <PlayIcon className="play-icon" />
+          <PauseIcon className="pause-icon" />
+        </PlayButton>
+      </MediaContainer>
+    </MediaProvider>
+  );
+}
+```
+
+### HTML
+
+```html
+<media-container>
+  <video src="video.mp4"></video>
+  <media-play-button class="play-button">
+    <svg class="play-icon"><!-- play icon --></svg>
+    <svg class="pause-icon"><!-- pause icon --></svg>
+  </media-play-button>
+</media-container>
+```
+
+## Styling
+
+The PlayButton uses data attributes to reflect its current state:
+
+### Data Attributes
+
+- `data-paused` - Present when media is paused, absent when playing
+
+### CSS Example
+
+```css
+/* Position both icons in same grid cell */
+.play-button {
+  display: grid;
+}
+
+.play-icon,
+.pause-icon {
+  grid-area: 1/1;
+  transition: opacity 200ms;
+}
+
+/* Show play icon when paused */
+.play-button[data-paused] .play-icon {
+  opacity: 1;
+}
+.play-button[data-paused] .pause-icon {
+  opacity: 0;
+}
+
+/* Show pause icon when playing */
+.play-button:not([data-paused]) .play-icon {
+  opacity: 0;
+}
+.play-button:not([data-paused]) .pause-icon {
+  opacity: 1;
+}
+```
+
+## Props
+
+All standard button props are supported, plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Button content (typically icons) |
+| `className` | `string` | CSS class name |
+
+## Accessibility
+
+- Automatically includes proper ARIA labels
+- Keyboard accessible (Space/Enter)
+- Announces state changes to screen readers

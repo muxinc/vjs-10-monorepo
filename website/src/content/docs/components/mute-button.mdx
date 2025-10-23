@@ -1,0 +1,115 @@
+---
+title: MuteButton
+description: A button component for toggling audio mute state
+---
+
+import { MuteButtonDemo } from '@/examples/react/MuteButton/MuteButtonDemo';
+
+# MuteButton
+
+A button component that toggles the mute state of media playback and displays different icons based on volume level.
+
+## Features
+
+- Multi-state icon display (high, low, off)
+- Automatically reflects volume level changes
+- Toggles mute/unmute on click
+- Accessible keyboard navigation
+
+## Live Example
+
+<MuteButtonDemo client:load />
+
+## Usage
+
+### React
+
+```tsx
+import { MediaProvider, Video, MediaContainer, MuteButton } from '@vjs-10/react';
+import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
+
+function VideoPlayer() {
+  return (
+    <MediaProvider>
+      <MediaContainer>
+        <Video src="video.mp4" />
+        <MuteButton className="mute-button">
+          <VolumeHighIcon className="volume-high-icon" />
+          <VolumeLowIcon className="volume-low-icon" />
+          <VolumeOffIcon className="volume-off-icon" />
+        </MuteButton>
+      </MediaContainer>
+    </MediaProvider>
+  );
+}
+```
+
+### HTML
+
+```html
+<media-container>
+  <video src="video.mp4"></video>
+  <media-mute-button class="mute-button">
+    <svg class="volume-high-icon"><!-- high volume icon --></svg>
+    <svg class="volume-low-icon"><!-- low volume icon --></svg>
+    <svg class="volume-off-icon"><!-- muted icon --></svg>
+  </media-mute-button>
+</media-container>
+```
+
+## Styling
+
+The MuteButton uses data attributes to reflect the current volume level:
+
+### Data Attributes
+
+- `data-volume-level="high"` - Volume > 50%
+- `data-volume-level="medium"` - Volume 25-50%
+- `data-volume-level="low"` - Volume 1-24%
+- `data-volume-level="off"` - Volume 0% (muted)
+
+### CSS Example
+
+```css
+/* Position all icons in same grid cell */
+.mute-button {
+  display: grid;
+}
+
+.volume-high-icon,
+.volume-low-icon,
+.volume-off-icon {
+  grid-area: 1/1;
+  transition: opacity 200ms;
+  opacity: 0;
+}
+
+/* Show appropriate icon based on volume level */
+.mute-button[data-volume-level='high'] .volume-high-icon {
+  opacity: 1;
+}
+
+.mute-button[data-volume-level='medium'] .volume-low-icon,
+.mute-button[data-volume-level='low'] .volume-low-icon {
+  opacity: 1;
+}
+
+.mute-button[data-volume-level='off'] .volume-off-icon {
+  opacity: 1;
+}
+```
+
+## Props
+
+All standard button props are supported, plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Button content (typically icons) |
+| `className` | `string` | CSS class name |
+
+## Accessibility
+
+- Automatically includes proper ARIA labels
+- Keyboard accessible (Space/Enter)
+- Announces volume state changes to screen readers

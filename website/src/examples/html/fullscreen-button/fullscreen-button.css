@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: #0a0a0a;
+  color: white;
+}
+
+.demo-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.media-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+}
+
+video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.controls {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
+
+.fullscreen-button {
+  position: relative;
+  display: grid;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: background 150ms ease;
+}
+
+.fullscreen-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.fullscreen-button:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Icon positioning - both occupy same grid cell */
+.fullscreen-enter-icon,
+.fullscreen-exit-icon {
+  grid-area: 1/1;
+  transition: opacity 200ms ease;
+  width: 18px;
+  height: 18px;
+}
+
+/* Show/hide icons based on fullscreen state using data attributes */
+.fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon {
+  opacity: 1;
+}
+
+.fullscreen-button:not([data-fullscreen]) .fullscreen-exit-icon {
+  opacity: 0;
+}
+
+.fullscreen-button[data-fullscreen] .fullscreen-enter-icon {
+  opacity: 0;
+}
+
+.fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
+  opacity: 1;
+}
