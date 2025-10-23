@@ -3,8 +3,8 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 
 import { muteButtonStateDefinition } from '@vjs-10/core/store';
 
+import { setAttributes } from '@vjs-10/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { setAttributes } from '../utils/element-utils';
 import { MediaChromeButton } from './media-chrome-button';
 
 export class MuteButtonBase extends MediaChromeButton {

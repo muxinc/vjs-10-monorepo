@@ -3,8 +3,8 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 import { VolumeSlider as CoreVolumeSlider } from '@vjs-10/core';
 import { volumeSliderStateDefinition } from '@vjs-10/core/store';
 
+import { setAttributes } from '@vjs-10/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { setAttributes } from '../utils/element-utils';
 
 /**
  * VolumeSlider Root props hook - equivalent to React's useVolumeSliderRootProps

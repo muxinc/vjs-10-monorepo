@@ -4,8 +4,8 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 import { durationDisplayStateDefinition } from '@vjs-10/core/store';
 
 import { formatDisplayTime } from '@vjs-10/utils';
+import { namedNodeMapToObject } from '@vjs-10/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { namedNodeMapToObject } from '../utils/element-utils.js';
 
 export function getTemplateHTML(
   this: typeof DurationDisplayBase,

@@ -47,8 +47,7 @@
     "@open-wc/context-protocol": "^0.0.9",
     "@vjs-10/core": "workspace:*",
     "@vjs-10/icons": "workspace:*",
-    "@vjs-10/utils": "workspace:*",
-    "tabbable": "^6.2.0"
+    "@vjs-10/utils": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",

@@ -3,8 +3,8 @@ import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../uti
 import { TimeSlider as CoreTimeSlider } from '@vjs-10/core';
 import { timeSliderStateDefinition } from '@vjs-10/core/store';
 
+import { setAttributes } from '@vjs-10/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { setAttributes } from '../utils/element-utils';
 
 interface TimeSliderRootState {
   currentTime: number;

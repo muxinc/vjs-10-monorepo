@@ -164,9 +164,6 @@ importers:
       '@vjs-10/utils':
         specifier: workspace:*
         version: link:../utils
-      tabbable:
-        specifier: ^6.2.0
-        version: 6.2.0
     devDependencies:
       tsdown:
         specifier: ^0.15.9
@@ -285,6 +282,10 @@ importers:
         version: 5.9.2
 
   packages/utils:
+    dependencies:
+      tabbable:
+        specifier: ^6.2.0
+        version: 6.2.0
     devDependencies:
       tsdown:
         specifier: ^0.15.9
