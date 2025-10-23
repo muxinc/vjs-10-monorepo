@@ -5,7 +5,10 @@
   "tasks": {
     "build": {
       "dependsOn": ["generate:icons", "^build"],
-      "outputs": ["dist/**"]
+      "outputs": [
+        "dist/**",
+        ".vercel/output/**"
+      ]
     },
     "dev": {
       "cache": false,
