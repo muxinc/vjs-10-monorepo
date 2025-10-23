@@ -21,11 +21,13 @@ export class MediaContainer extends CustomElementConsumer {
 
   _mediaStore: any;
   _mediaSlot: HTMLSlotElement;
+  _paused: boolean = true;
   contexts = {
     mediaStore: (mediaStore: any): void => {
       this._mediaStore = mediaStore;
       this._handleMediaSlotChange();
       this._registerContainerStateOwner();
+      this._subscribeToPlayState();
     },
   };
 
@@ -39,6 +41,9 @@ export class MediaContainer extends CustomElementConsumer {
 
     this._mediaSlot = this.shadowRoot!.querySelector('slot[name=media]') as HTMLSlotElement;
     this._mediaSlot.addEventListener('slotchange', this._handleMediaSlotChange);
+
+    // Add click handler for play/pause functionality
+    this.addEventListener('click', this._handleClick);
   }
 
   connectedCallback(): void {
@@ -65,9 +70,29 @@ export class MediaContainer extends CustomElementConsumer {
     const media = this._mediaSlot.assignedElements({ flatten: true })[0];
     this._mediaStore.dispatch({ type: 'mediastateownerchangerequest', detail: media });
   };
+
+  _handleClick = (event: Event): void => {
+    if (!this._mediaStore) return;
+
+    if (!['video', 'audio'].includes((event.target as HTMLElement).localName || '')) return;
+
+    if (this._paused) {
+      this._mediaStore.dispatch({ type: 'playrequest' });
+    } else {
+      this._mediaStore.dispatch({ type: 'pauserequest' });
+    }
+  };
+
+  _subscribeToPlayState = (): void => {
+    if (!this._mediaStore) return;
+
+    // Subscribe to paused state changes
+    this._mediaStore.subscribe((state: any) => {
+      this._paused = state.paused ?? true;
+    });
+  };
 }
 
-// Register the custom element
 if (!globalThis.customElements.get('media-container')) {
   // @ts-expect-error ts(2345)
   globalThis.customElements.define('media-container', MediaContainer);

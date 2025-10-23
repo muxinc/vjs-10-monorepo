@@ -22,7 +22,7 @@ const styles: MinimalSkinStyles = {
     '[&_video]:rounded-[inherit] [&_video]:w-full [&_video]:h-auto',
   ),
   Overlay: cn(
-    'absolute inset-0 rounded-[inherit]',
+    'absolute inset-0 rounded-[inherit] pointer-events-none',
     'bg-gradient-to-t from-black/70 via-black/50 via-[120px] to-transparent',
     'opacity-0 delay-500 duration-300',
     //  FIXME: Temporary hide/show logic

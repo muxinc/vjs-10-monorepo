@@ -1,9 +1,10 @@
 import type { FC, HTMLProps, PropsWithChildren, RefCallback } from 'react';
 
-import { useMediaStore } from '@vjs-10/react-media-store';
+import { playButtonStateDefinition } from '@vjs-10/media-store';
 
-import { forwardRef, useCallback } from 'react';
+import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 
+import { forwardRef, useCallback, useMemo } from 'react';
 import { useComposedRefs } from '../utils/useComposedRefs';
 
 /**
@@ -21,6 +22,7 @@ import { useComposedRefs } from '../utils/useComposedRefs';
  *   return <div ref={containerRef}>{children}</div>;
  * };
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useMediaContainerRef(): RefCallback<HTMLElement | null> {
   const mediaStore = useMediaStore();
 
@@ -56,8 +58,28 @@ export const MediaContainer: FC<PropsWithChildren<HTMLProps<HTMLDivElement> & { 
   ({ children, portalId = '@default_portal_id', ...props }, ref) => {
     const containerRef = useMediaContainerRef();
     const composedRef = useComposedRefs(ref, containerRef);
+
+    const mediaStore = useMediaStore();
+    const mediaState = useMediaSelector(playButtonStateDefinition.stateTransform, shallowEqual);
+    const methods = useMemo(() => playButtonStateDefinition.createRequestMethods(mediaStore.dispatch), [mediaStore]);
+
+    const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+      if (!['video', 'audio'].includes((event.target as HTMLElement).localName || '')) return;
+
+      if (mediaState.paused) {
+        methods.requestPlay();
+      } else {
+        methods.requestPause();
+      }
+    }, [mediaState.paused, methods]);
+
     return (
-      <div ref={composedRef} {...props}>
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+      <div
+        ref={composedRef}
+        onClick={handleClick}
+        {...props}
+      >
         {children}
         {/* @TODO We need to make sure this is non-brittle longer term (CJP) */}
         <div id={portalId} style={{ position: 'absolute', zIndex: 10 }} />
