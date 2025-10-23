@@ -141,15 +141,6 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/core/icons:
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
   packages/core/media:
     dependencies:
       '@vjs-10/playback-engine':
@@ -227,7 +218,7 @@ importers:
     dependencies:
       '@vjs-10/icons':
         specifier: workspace:*
-        version: link:../../core/icons
+        version: link:../../icons
     devDependencies:
       tsdown:
         specifier: ^0.15.9
@@ -267,6 +258,15 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
+
+  packages/icons:
+    devDependencies:
+      tsdown:
+        specifier: ^0.15.9
+        version: 0.15.9(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
 
   packages/react/react:
     dependencies:
@@ -321,7 +321,7 @@ importers:
     dependencies:
       '@vjs-10/icons':
         specifier: workspace:*
-        version: link:../../core/icons
+        version: link:../../icons
     devDependencies:
       '@svgr/babel-plugin-add-jsx-attribute':
         specifier: ^8.0.0
@@ -3316,9 +3316,6 @@ packages:
   get-symbol-description@1.1.0:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
-
-  get-tsconfig@4.10.1:
-    resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
 
   get-tsconfig@4.12.0:
     resolution: {integrity: sha512-LScr2aNr2FbjAjZh2C6X6BxRx1/x+aTDExct/xyq2XKbYOiG5c0aK7pMsSuyc0brz3ibr/lbQiHD9jzt4lccJw==}
@@ -8293,7 +8290,7 @@ snapshots:
       enhanced-resolve: 5.18.3
       eslint: 9.37.0(jiti@2.6.1)
       eslint-plugin-es-x: 7.8.0(eslint@9.37.0(jiti@2.6.1))
-      get-tsconfig: 4.10.1
+      get-tsconfig: 4.12.0
       globals: 15.15.0
       globrex: 0.1.2
       ignore: 5.3.2
@@ -8790,10 +8787,6 @@ snapshots:
       call-bound: 1.0.4
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
-
-  get-tsconfig@4.10.1:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
 
   get-tsconfig@4.12.0:
     dependencies:
@@ -10522,6 +10515,24 @@ snapshots:
       - oxc-resolver
       - supports-color
 
+  rolldown-plugin-dts@0.16.12(rolldown@1.0.0-beta.44)(typescript@5.9.3):
+    dependencies:
+      '@babel/generator': 7.28.3
+      '@babel/parser': 7.28.4
+      '@babel/types': 7.28.4
+      ast-kit: 2.1.3
+      birpc: 2.6.1
+      debug: 4.4.3
+      dts-resolver: 2.1.2
+      get-tsconfig: 4.12.0
+      magic-string: 0.30.19
+      rolldown: 1.0.0-beta.44
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - oxc-resolver
+      - supports-color
+
   rolldown@1.0.0-beta.44:
     dependencies:
       '@oxc-project/types': 0.95.0
@@ -11020,6 +11031,31 @@ snapshots:
       unconfig: 7.3.3
     optionalDependencies:
       typescript: 5.9.2
+    transitivePeerDependencies:
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - supports-color
+      - vue-tsc
+
+  tsdown@0.15.9(typescript@5.9.3):
+    dependencies:
+      ansis: 4.2.0
+      cac: 6.7.14
+      chokidar: 4.0.3
+      debug: 4.4.3
+      diff: 8.0.2
+      empathic: 2.0.0
+      hookable: 5.5.3
+      rolldown: 1.0.0-beta.44
+      rolldown-plugin-dts: 0.16.12(rolldown@1.0.0-beta.44)(typescript@5.9.3)
+      semver: 7.7.3
+      tinyexec: 1.0.1
+      tinyglobby: 0.2.15
+      tree-kill: 1.2.2
+      unconfig: 7.3.3
+    optionalDependencies:
+      typescript: 5.9.3
     transitivePeerDependencies:
       - '@ts-macro/tsc'
       - '@typescript/native-preview'
