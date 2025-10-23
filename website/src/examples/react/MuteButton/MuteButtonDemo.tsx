@@ -12,7 +12,6 @@ export function MuteButtonDemo() {
       <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
         <Video
           src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8"
-          poster="https://image.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ/thumbnail.webp"
         />
         <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', zIndex: 10 }}>
           <BasicMuteButton />

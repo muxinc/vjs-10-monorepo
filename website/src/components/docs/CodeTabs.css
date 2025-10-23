@@ -1,0 +1,45 @@
+.code-tabs-list {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.code-tabs-tab {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 150ms ease;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.code-tabs-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.code-tabs-tab[data-selected] {
+  color: white;
+  border-bottom-color: #0ea5e9;
+}
+
+.code-tabs-panel {
+  animation: fadeIn 200ms ease;
+}
+
+.code-tabs-panel[data-hidden] {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

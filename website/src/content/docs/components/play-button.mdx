@@ -4,6 +4,7 @@ description: A button component for playing and pausing media playback
 ---
 
 import { PlayButtonDemo } from '@/examples/react/PlayButton/PlayButtonDemo';
+import { CodeTabs } from '@/components/docs/CodeTabs';
 
 # PlayButton
 
@@ -22,21 +23,145 @@ A button component that toggles between play and pause states for media playback
 
 ## Usage
 
-### React
+<CodeTabs
+  client:load
+  tabs={[
+    {
+      label: 'Regular CSS',
+      filename: 'PlayButton.css',
+      componentCode: `import { PlayButton } from '@vjs-10/react';
+import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
+import './PlayButton.css';
+
+export function BasicPlayButton() {
+  return (
+    <PlayButton className="example-play-button">
+      <PlayIcon className="play-icon" />
+      <PauseIcon className="pause-icon" />
+    </PlayButton>
+  );
+}`,
+      cssCode: `.example-play-button {
+  position: relative;
+  display: grid;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: background 150ms ease;
+}
+
+.example-play-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon positioning - both occupy same grid cell */
+.play-icon,
+.pause-icon {
+  grid-area: 1/1;
+  transition: opacity 200ms ease;
+  width: 18px;
+  height: 18px;
+}
+
+/* Show/hide icons based on paused state */
+.example-play-button[data-paused] .play-icon {
+  opacity: 1;
+}
+
+.example-play-button[data-paused] .pause-icon {
+  opacity: 0;
+}
+
+.example-play-button:not([data-paused]) .play-icon {
+  opacity: 0;
+}
+
+.example-play-button:not([data-paused]) .pause-icon {
+  opacity: 1;
+}`,
+    },
+    {
+      label: 'CSS Modules',
+      filename: 'PlayButton.module.css',
+      componentCode: `import { PlayButton } from '@vjs-10/react';
+import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
+import styles from './PlayButton.module.css';
+
+export function PlayButtonCSSModules() {
+  return (
+    <PlayButton className={styles.playButton}>
+      <PlayIcon className={styles.playIcon} />
+      <PauseIcon className={styles.pauseIcon} />
+    </PlayButton>
+  );
+}`,
+      cssCode: `.playButton {
+  position: relative;
+  display: grid;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: background 150ms ease;
+}
+
+.playButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon positioning - both occupy same grid cell */
+.playIcon,
+.pauseIcon {
+  grid-area: 1/1;
+  transition: opacity 200ms ease;
+  width: 18px;
+  height: 18px;
+}
+
+/* Show/hide icons based on paused state */
+.playButton[data-paused] .playIcon {
+  opacity: 1;
+}
+
+.playButton[data-paused] .pauseIcon {
+  opacity: 0;
+}
+
+.playButton:not([data-paused]) .playIcon {
+  opacity: 0;
+}
+
+.playButton:not([data-paused]) .pauseIcon {
+  opacity: 1;
+}`,
+    },
+  ]}
+/>
+
+### Complete Example with MediaProvider
 
 ```tsx
-import { MediaProvider, Video, MediaContainer, PlayButton } from '@vjs-10/react';
-import { PlayIcon, PauseIcon } from '@vjs-10/react-icons';
+import { MediaProvider, MediaContainer, Video } from '@vjs-10/react';
+import { BasicPlayButton } from './BasicPlayButton';
 
-function VideoPlayer() {
+export function PlayButtonDemo() {
   return (
     <MediaProvider>
-      <MediaContainer>
-        <Video src="video.mp4" />
-        <PlayButton className="play-button">
-          <PlayIcon className="play-icon" />
-          <PauseIcon className="pause-icon" />
-        </PlayButton>
+      <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
+        <Video
+          src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8"
+          poster="https://image.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ/thumbnail.webp"
+        />
+        <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', zIndex: 10 }}>
+          <BasicPlayButton />
+        </div>
       </MediaContainer>
     </MediaProvider>
   );
@@ -46,53 +171,35 @@ function VideoPlayer() {
 ### HTML
 
 ```html
-<media-container>
-  <video src="video.mp4"></video>
-  <media-play-button class="play-button">
-    <svg class="play-icon"><!-- play icon --></svg>
-    <svg class="pause-icon"><!-- pause icon --></svg>
-  </media-play-button>
-</media-container>
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./play-button.css" />
+    <script type="module" src="./play-button.js"></script>
+  </head>
+  <body>
+    <media-container>
+      <video src="video.mp4"></video>
+      <media-play-button class="play-button">
+        <svg class="play-icon" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        <svg class="pause-icon" viewBox="0 0 24 24">
+          <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+        </svg>
+      </media-play-button>
+    </media-container>
+  </body>
+</html>
 ```
 
-## Styling
+## Data Attributes
 
-The PlayButton uses data attributes to reflect its current state:
-
-### Data Attributes
+The PlayButton automatically sets data attributes based on media state:
 
 - `data-paused` - Present when media is paused, absent when playing
 
-### CSS Example
-
-```css
-/* Position both icons in same grid cell */
-.play-button {
-  display: grid;
-}
-
-.play-icon,
-.pause-icon {
-  grid-area: 1/1;
-  transition: opacity 200ms;
-}
-
-/* Show play icon when paused */
-.play-button[data-paused] .play-icon {
-  opacity: 1;
-}
-.play-button[data-paused] .pause-icon {
-  opacity: 0;
-}
-
-/* Show pause icon when playing */
-.play-button:not([data-paused]) .play-icon {
-  opacity: 0;
-}
-.play-button:not([data-paused]) .pause-icon {
-  opacity: 1;
-}
-```
+Use these attributes for state-based styling in your CSS.
 
 ## Props
 

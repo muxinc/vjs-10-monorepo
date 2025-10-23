@@ -1,0 +1,48 @@
+.muteButton {
+  position: relative;
+  display: grid;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: background 150ms ease;
+}
+
+.muteButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.muteButton:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Icon positioning - all icons occupy same grid cell */
+.volumeHighIcon,
+.volumeLowIcon,
+.volumeOffIcon {
+  grid-area: 1/1;
+  transition: opacity 200ms ease;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+}
+
+/* Show appropriate icon based on volume level using data attributes */
+/* High volume (> 50%) */
+.muteButton[data-volume-level='high'] .volumeHighIcon {
+  opacity: 1;
+}
+
+/* Medium/Low volume (1-50%) */
+.muteButton[data-volume-level='medium'] .volumeLowIcon,
+.muteButton[data-volume-level='low'] .volumeLowIcon {
+  opacity: 1;
+}
+
+/* Muted/Off volume (0%) */
+.muteButton[data-volume-level='off'] .volumeOffIcon {
+  opacity: 1;
+}
