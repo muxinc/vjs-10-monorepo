@@ -33,13 +33,14 @@ export class VolumeSlider extends Slider {
     return { ...state, _fillWidth, _volumeText };
   }
 
-  setState(state: Partial<VolumeSliderState>): void {
+  setState(newState: Partial<VolumeSliderState>): void {
+    const state = this.getState();
     // When not dragging or keying, set pointer ratio to current volume.
-    if (!state._dragging && !state._keying && state.volume) {
-      super.setState({ ...state, _pointerRatio: state.volume });
+    if (!state._dragging && !state._keying && newState.volume) {
+      super.setState({ ...newState, _pointerRatio: newState.volume });
       return;
     }
-    super.setState(state);
+    super.setState(newState);
   }
 
   handleEvent(event: Event): void {

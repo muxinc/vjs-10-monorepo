@@ -23,7 +23,7 @@ const styles: MinimalSkinStyles = {
     'vjs:[&_video]:rounded-[inherit] vjs:[&_video]:w-full vjs:[&_video]:h-auto',
   ),
   Overlay: cn(
-    'vjs:absolute vjs:inset-0 vjs:rounded-[inherit]',
+    'vjs:absolute vjs:inset-0 vjs:rounded-[inherit] vjs:pointer-events-none',
     'vjs:bg-gradient-to-t vjs:from-black/70 vjs:via-black/50 vjs:via-[120px] vjs:to-transparent',
     'vjs:opacity-0 vjs:delay-500 vjs:duration-300',
     //  FIXME: Temporary hide/show logic
