@@ -13,10 +13,6 @@ export interface PlayButtonStateDefinition {
   createRequestMethods: (dispatch: (action: { type: string; detail?: unknown }) => void) => PlayButtonMethods;
 }
 
-/**
- * PlayButton state definition
- * Defines the core state logic that can be shared between implementations
- */
 export const playButtonStateDefinition: PlayButtonStateDefinition = {
   keys: ['paused'],
 

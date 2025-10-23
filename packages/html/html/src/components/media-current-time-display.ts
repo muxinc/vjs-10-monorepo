@@ -1,7 +1,7 @@
-import type { CurrentTimeDisplayState } from '@vjs-10/media-store';
+import type { CurrentTimeDisplayState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/core/store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 

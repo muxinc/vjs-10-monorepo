@@ -1,10 +1,3 @@
-/**
- * @fileoverview Time formatting utilities for media components
- *
- * This module provides utilities for formatting time values in various formats
- * suitable for display in media player UI components. Based on patterns from
- * Media Chrome but adapted for VJS-10 architecture.
- */
 
 /**
  * Checks if a value is a valid number (not NaN, null, undefined, or Infinity)
@@ -35,7 +28,8 @@ function toTimeUnitPhrase(timeUnitValue: number, unitIndex: number): string {
 }
 
 /**
- * Converts numeric seconds into a human-readable phrase for accessibility
+ * Converts numeric seconds into a human-readable phrase for accessibility.
+ * 
  * @param seconds - A (positive or negative) time, represented as seconds
  * @returns The time, represented as a phrase of hours, minutes, and seconds
  *
@@ -123,7 +117,8 @@ export function formatTime(seconds: number, guide?: number): string {
 }
 
 /**
- * Formats a time value with fallback handling for invalid values
+ * Formats a time value with fallback handling for invalid values.
+ * 
  * @param time - The time value to format in seconds (duration, currentTime, etc.)
  * @param guide - Optional guide time for consistent formatting
  * @param fallback - Fallback text when time is invalid (default: "--:--")

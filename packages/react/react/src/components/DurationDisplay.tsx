@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/core/store';
 import { shallowEqual, useMediaSelector } from '@vjs-10/react-media-store';
 
 import { toConnectedComponent } from '../utils/component-factory';

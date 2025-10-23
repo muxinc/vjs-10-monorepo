@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@open-wc/context-protocol": "^0.0.9",
-    "@vjs-10/media-store": "workspace:*"
+    "@vjs-10/core": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",

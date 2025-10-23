@@ -6,9 +6,12 @@ export * from './component-state-definitions/play-button';
 export * from './component-state-definitions/preview-time-display';
 export * from './component-state-definitions/time-slider';
 export * from './component-state-definitions/volume-slider';
+
 export * from './factory';
 export { createMediaStore } from './media-store';
+
 export * from './state-mediators/audible';
 export * from './state-mediators/playable';
 export * from './state-mediators/temporal';
-export * from './utils/time';
+
+export * from '../utils/time';

@@ -1,7 +1,7 @@
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
 import { VolumeSlider as CoreVolumeSlider } from '@vjs-10/core';
-import { volumeSliderStateDefinition } from '@vjs-10/media-store';
+import { volumeSliderStateDefinition } from '@vjs-10/core/store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { setAttributes } from '../utils/element-utils';

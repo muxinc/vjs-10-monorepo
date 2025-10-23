@@ -15,10 +15,6 @@ export interface TimeSliderStateDefinition {
   createRequestMethods: (dispatch: (action: { type: string; detail?: any }) => void) => TimeSliderMethods;
 }
 
-/**
- * TimeSlider state definition
- * Defines the core state logic that can be shared between implementations
- */
 export const timeSliderStateDefinition: TimeSliderStateDefinition = {
   keys: ['currentTime', 'duration', 'previewTime'],
   stateTransform: (rawState: any) => ({

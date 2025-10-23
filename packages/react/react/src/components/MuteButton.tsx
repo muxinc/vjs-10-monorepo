@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { muteButtonStateDefinition } from '@vjs-10/media-store';
+import { muteButtonStateDefinition } from '@vjs-10/core/store';
 
 import { shallowEqual, useMediaSelector, useMediaStore } from '@vjs-10/react-media-store';
 import { useMemo } from 'react';

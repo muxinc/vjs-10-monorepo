@@ -37,12 +37,7 @@
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
-    "@vjs-10/core": "workspace:*",
-    "@vjs-10/media": "workspace:*",
-    "@vjs-10/media-store": "workspace:*",
-    "@vjs-10/react-icons": "workspace:*",
-    "@vjs-10/react-media-elements": "workspace:*",
-    "@vjs-10/react-media-store": "workspace:*"
+    "@vjs-10/core": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.0",

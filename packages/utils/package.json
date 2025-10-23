@@ -1,20 +1,26 @@
 {
-  "name": "@vjs-10/media-store",
+  "name": "@vjs-10/utils",
   "type": "module",
   "version": "0.1.0",
-  "description": "Media store for tracking and managing media state.",
+  "description": "Utility functions and helpers.",
   "license": "Apache-2.0",
   "keywords": [
     "media",
-    "state",
-    "video",
-    "audio",
-    "player"
+    "playback",
+    "engine",
+    "hls",
+    "dash",
+    "streaming",
+    "utils"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./dom": {
+      "types": "./dist/dom.d.ts",
+      "default": "./dist/dom.js"
     }
   },
   "main": "dist/index.js",
@@ -29,9 +35,6 @@
     "dev": "pnpm run build:watch",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
-  },
-  "dependencies": {
-    "nanostores": "^1.0.1"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",

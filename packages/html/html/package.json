@@ -34,10 +34,7 @@
     "@floating-ui/dom": "^1.6.13",
     "@open-wc/context-protocol": "^0.0.9",
     "@vjs-10/core": "workspace:*",
-    "@vjs-10/html-icons": "workspace:*",
-    "@vjs-10/html-media-elements": "workspace:*",
-    "@vjs-10/html-media-store": "workspace:*",
-    "@vjs-10/media-store": "workspace:*",
+    "@vjs-10/html": "workspace:*",
     "tabbable": "^6.2.0"
   },
   "devDependencies": {

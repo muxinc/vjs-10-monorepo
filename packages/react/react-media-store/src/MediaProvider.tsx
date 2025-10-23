@@ -1,10 +1,10 @@
 'use client';
 
 /** @TODO !!! Revisit for SSR (CJP) */
-import type { MediaStore } from '@vjs-10/media-store';
+import type { MediaStore } from '@vjs-10/core/store';
 import type { Context, ReactNode } from 'react';
 
-import { createMediaStore } from '@vjs-10/media-store';
+import { createMediaStore } from '@vjs-10/core/store';
 
 import { createContext, useContext, useMemo } from 'react';
 

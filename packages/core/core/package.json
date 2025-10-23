@@ -32,6 +32,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@vjs-10/utils": "workspace:*",
     "nanostores": "^1.0.1"
   },
   "devDependencies": {

@@ -130,6 +130,9 @@ importers:
 
   packages/core/core:
     dependencies:
+      '@vjs-10/utils':
+        specifier: workspace:*
+        version: link:../../utils
       nanostores:
         specifier: ^1.0.1
         version: 1.0.1
@@ -146,19 +149,6 @@ importers:
       '@vjs-10/playback-engine':
         specifier: workspace:*
         version: link:../playback-engine
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/media-store:
-    dependencies:
-      nanostores:
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       tsdown:
         specifier: ^0.15.9
@@ -191,18 +181,9 @@ importers:
       '@vjs-10/core':
         specifier: workspace:*
         version: link:../../core/core
-      '@vjs-10/html-icons':
+      '@vjs-10/html':
         specifier: workspace:*
-        version: link:../html-icons
-      '@vjs-10/html-media-elements':
-        specifier: workspace:*
-        version: link:../html-media-elements
-      '@vjs-10/html-media-store':
-        specifier: workspace:*
-        version: link:../html-media-store
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
+        version: 'link:'
       tabbable:
         specifier: ^6.2.0
         version: 6.2.0
@@ -232,9 +213,9 @@ importers:
       '@open-wc/context-protocol':
         specifier: ^0.0.9
         version: 0.0.9
-      '@vjs-10/media-store':
+      '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/media-store
+        version: link:../../core/core
     devDependencies:
       tsdown:
         specifier: ^0.15.9
@@ -245,12 +226,12 @@ importers:
 
   packages/html/html-media-store:
     dependencies:
+      '@vjs-10/core':
+        specifier: workspace:*
+        version: link:../../core/core
       '@vjs-10/html-media-elements':
         specifier: workspace:*
         version: link:../html-media-elements
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
     devDependencies:
       tsdown:
         specifier: ^0.15.9
@@ -276,21 +257,6 @@ importers:
       '@vjs-10/core':
         specifier: workspace:*
         version: link:../../core/core
-      '@vjs-10/media':
-        specifier: workspace:*
-        version: link:../../core/media
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
-      '@vjs-10/react-icons':
-        specifier: workspace:*
-        version: link:../react-icons
-      '@vjs-10/react-media-elements':
-        specifier: workspace:*
-        version: link:../react-media-elements
-      '@vjs-10/react-media-store':
-        specifier: workspace:*
-        version: link:../react-media-store
     devDependencies:
       '@tailwindcss/cli':
         specifier: ^4.1.0
@@ -369,9 +335,9 @@ importers:
 
   packages/react/react-media-store:
     dependencies:
-      '@vjs-10/media-store':
+      '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/media-store
+        version: link:../../core/core
     devDependencies:
       '@types/react':
         specifier: ^18.0.0
@@ -385,6 +351,15 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
+
+  packages/utils:
+    devDependencies:
+      tsdown:
+        specifier: ^0.15.9
+        version: 0.15.9(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
 
   website:
     dependencies:

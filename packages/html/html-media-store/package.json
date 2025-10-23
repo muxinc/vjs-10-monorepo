@@ -31,8 +31,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@vjs-10/html-media-elements": "workspace:*",
-    "@vjs-10/media-store": "workspace:*"
+    "@vjs-10/core": "workspace:*",
+    "@vjs-10/html-media-elements": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",

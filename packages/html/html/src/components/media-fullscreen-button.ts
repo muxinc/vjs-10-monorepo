@@ -1,7 +1,7 @@
-import type { FullscreenButtonState } from '@vjs-10/media-store';
+import type { FullscreenButtonState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { fullscreenButtonStateDefinition } from '@vjs-10/media-store';
+import { fullscreenButtonStateDefinition } from '@vjs-10/core/store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { setAttributes } from '../utils/element-utils';

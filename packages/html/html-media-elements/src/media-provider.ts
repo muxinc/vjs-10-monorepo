@@ -1,8 +1,8 @@
 import type { Constructor, CustomElement } from '@open-wc/context-protocol';
-import type { MediaStore } from '@vjs-10/media-store';
+import type { MediaStore } from '@vjs-10/core/store';
 
 import { ProviderMixin } from '@open-wc/context-protocol';
-import { createMediaStore } from '@vjs-10/media-store';
+import { createMediaStore } from '@vjs-10/core/store';
 
 const ProviderHTMLElement: Constructor<CustomElement> = ProviderMixin(HTMLElement);
 

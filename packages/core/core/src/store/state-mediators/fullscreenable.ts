@@ -1,14 +1,3 @@
-// Utility function to check if a root node contains a child node across shadow DOM boundaries
-function containsComposedNode(rootNode: Node, childNode: Node): boolean {
-  if (!rootNode || !childNode) return false;
-  if (rootNode?.contains(childNode)) return true;
-  const childRootNode = childNode.getRootNode();
-  if (childRootNode && 'host' in childRootNode && childRootNode.host) {
-    return containsComposedNode(rootNode, childRootNode.host as Node);
-  }
-  return false;
-}
-
 /** @TODO This is implemented for web/browser only! We will need an alternative state mediator model for e.g. React Native. (CJP) */
 export const fullscreenable = {
   fullscreen: {

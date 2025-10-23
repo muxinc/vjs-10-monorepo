@@ -14,10 +14,6 @@ export interface VolumeSliderStateDefinition {
   createRequestMethods: (dispatch: (action: { type: string; detail?: any }) => void) => VolumeSliderMethods;
 }
 
-/**
- * VolumeSlider state definition
- * Defines the core state logic that can be shared between implementations
- */
 export const volumeSliderStateDefinition: VolumeSliderStateDefinition = {
   keys: ['volume', 'muted', 'volumeLevel'],
   stateTransform: (rawState: any) => ({

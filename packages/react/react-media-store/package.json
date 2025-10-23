@@ -35,7 +35,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@vjs-10/media-store": "workspace:*"
+    "@vjs-10/core": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

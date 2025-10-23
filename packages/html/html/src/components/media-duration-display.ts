@@ -1,7 +1,7 @@
-import type { DurationDisplayState } from '@vjs-10/media-store';
+import type { DurationDisplayState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/media-store';
+import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/core/store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { namedNodeMapToObject } from '../utils/element-utils.js';

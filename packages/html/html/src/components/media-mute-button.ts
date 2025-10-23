@@ -1,7 +1,7 @@
-import type { MuteButtonState } from '@vjs-10/media-store';
+import type { MuteButtonState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { muteButtonStateDefinition } from '@vjs-10/media-store';
+import { muteButtonStateDefinition } from '@vjs-10/core/store';
 
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { setAttributes } from '../utils/element-utils';

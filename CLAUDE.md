@@ -8,10 +8,10 @@ This is a Video.js 10 monorepo organized by platform/runtime with a clear depend
 
 ### Package Structure
 
-- **Core packages** (`packages/core/*`) - Runtime-agnostic packages that form the foundation
-- **HTML packages** (`packages/html/*`) - DOM/Browser-specific implementations
-- **React packages** (`packages/react/*`) - React-specific implementations
-- **React Native packages** (`packages/react-native/*`) - React Native implementations
+- **Core package** (`packages/core`) - Runtime-agnostic packages that form the foundation
+- **HTML package** (`packages/html`) - DOM/Browser-specific implementation
+- **React package** (`packages/react`) - React-specific implementation
+- **React Native package** (`packages/react-native`) - React Native implementation
 - **Examples** (`examples/*`) - Demo applications for different platforms
 - **Website** (`website/`) - Astro-based website, including documentation and blog
 
@@ -23,13 +23,6 @@ This is a Video.js 10 monorepo organized by platform/runtime with a clear depend
 - React Native packages depend only on core packages (with React Native peer deps)
 
 This prevents circular dependencies and ensures maximum reusability.
-
-### Key Core Packages
-
-- `@vjs-10/media-store` - State management for media players
-- `@vjs-10/playback-engine` - Abstraction layer for media engines (HLS.js, Dash.js, etc.)
-- `@vjs-10/media` - HTMLMediaElement contracts and utilities
-- `@vjs-10/icons` - SVG icon definitions and utilities
 
 ## Common Development Commands
 
@@ -78,14 +71,14 @@ pnpm dev
 
 ```bash
 # Build specific package
-pnpm --filter @vjs-10/media-store build
+pnpm --filter @vjs-10/core build
 
 # Run website independently
 cd website
 pnpm dev
 
 # Work in specific package directory
-cd packages/core/media-store
+cd packages/core
 pnpm build
 ```
 
@@ -126,10 +119,10 @@ npm run clean    # Remove dist directory
 
 This uses pnpm workspaces with the following workspace patterns:
 
-- `packages/core/*` - Core library packages
-- `packages/html/*` - HTML/DOM packages
-- `packages/react/*` - React packages
-- `packages/react-native/*` - React Native packages
+- `packages/core` - Core library package
+- `packages/html` - HTML/DOM package
+- `packages/react` - React package
+- `packages/react-native` - React Native package
 - `examples/*` - Demo applications
 - `website` - Website (Astro)
 
@@ -177,8 +170,8 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/en/
 
 Use package names or areas of the codebase:
 
-- `feat(media-store): add pause state management`
-- `fix(react-icons): resolve SVG rendering issue`
+- `feat(core): add pause state management`
+- `fix(icons): resolve SVG rendering issue`
 - `docs(readme): update installation instructions`
 - `chore(deps): update typescript to 5.4.0`
 

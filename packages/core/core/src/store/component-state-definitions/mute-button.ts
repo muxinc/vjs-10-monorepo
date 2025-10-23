@@ -14,10 +14,6 @@ export interface MuteButtonStateDefinition {
   createRequestMethods: (dispatch: (action: { type: string }) => void) => MuteButtonMethods;
 }
 
-/**
- * MuteButton state definition
- * Defines the core state logic that can be shared between implementations
- */
 export const muteButtonStateDefinition: MuteButtonStateDefinition = {
   keys: ['muted', 'volumeLevel'],
 
