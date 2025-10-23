@@ -1,4 +1,4 @@
-# VJS-10 Monorepo
+# Video.js v10 - Web Video Player & Framework
 
 > Modern, modular media player framework for web, React, and React Native
 
