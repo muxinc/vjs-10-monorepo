@@ -1,15 +1,15 @@
-export * from './component-state-definitions/current-time-display';
-export * from './component-state-definitions/duration-display';
-export * from './component-state-definitions/fullscreen-button';
-export * from './component-state-definitions/mute-button';
-export * from './component-state-definitions/play-button';
-export * from './component-state-definitions/preview-time-display';
-export * from './component-state-definitions/time-slider';
-export * from './component-state-definitions/volume-slider';
+export * from './definitions/current-time-display';
+export * from './definitions/duration-display';
+export * from './definitions/fullscreen-button';
+export * from './definitions/mute-button';
+export * from './definitions/play-button';
+export * from './definitions/preview-time-display';
+export * from './definitions/time-slider';
+export * from './definitions/volume-slider';
 
 export * from './factory';
 export { createMediaStore } from './media-store';
 
-export * from './state-mediators/audible';
-export * from './state-mediators/playable';
-export * from './state-mediators/temporal';
+export * from './mediators/audible';
+export * from './mediators/playable';
+export * from './mediators/temporal';
