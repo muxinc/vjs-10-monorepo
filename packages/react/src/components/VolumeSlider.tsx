@@ -1,9 +1,9 @@
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { VolumeSlider as CoreVolumeSlider } from '@vjs-10/core';
+import { VolumeSlider as CoreVolumeSlider } from '@videojs/core';
 
-import { volumeSliderStateDefinition } from '@vjs-10/core/store';
-import { shallowEqual } from '@vjs-10/utils';
+import { volumeSliderStateDefinition } from '@videojs/core/store';
+import { shallowEqual } from '@videojs/utils';
 import { useCallback, useMemo } from 'react';
 
 import { useMediaSelector, useMediaStore } from '@/store';

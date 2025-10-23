@@ -1,5 +1,5 @@
 {
-  "name": "@vjs-10/icons",
+  "name": "@videojs/icons",
   "type": "module",
   "version": "0.1.0",
   "description": "SVG icon library for Video.js",

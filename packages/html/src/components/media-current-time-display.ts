@@ -1,9 +1,9 @@
-import type { CurrentTimeDisplayState } from '@vjs-10/core/store';
+import type { CurrentTimeDisplayState } from '@videojs/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { currentTimeDisplayStateDefinition } from '@vjs-10/core/store';
+import { currentTimeDisplayStateDefinition } from '@videojs/core/store';
 
-import { formatDisplayTime } from '@vjs-10/utils';
+import { formatDisplayTime } from '@videojs/utils';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class CurrentTimeDisplayBase extends HTMLElement {

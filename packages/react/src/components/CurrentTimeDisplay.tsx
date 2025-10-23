@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react';
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { currentTimeDisplayStateDefinition } from '@vjs-10/core/store';
-import { formatDisplayTime, shallowEqual } from '@vjs-10/utils';
+import { currentTimeDisplayStateDefinition } from '@videojs/core/store';
+import { formatDisplayTime, shallowEqual } from '@videojs/utils';
 
 import { useMediaSelector } from '@/store';
 import { toConnectedComponent } from '../utils/component-factory';

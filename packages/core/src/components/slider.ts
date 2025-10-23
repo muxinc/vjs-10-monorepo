@@ -1,4 +1,4 @@
-import { shallowEqual } from '@vjs-10/utils';
+import { shallowEqual } from '@videojs/utils';
 
 import { map } from 'nanostores';
 

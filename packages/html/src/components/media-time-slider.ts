@@ -1,9 +1,9 @@
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { TimeSlider as CoreTimeSlider } from '@vjs-10/core';
-import { timeSliderStateDefinition } from '@vjs-10/core/store';
+import { TimeSlider as CoreTimeSlider } from '@videojs/core';
+import { timeSliderStateDefinition } from '@videojs/core/store';
 
-import { setAttributes } from '@vjs-10/utils/dom';
+import { setAttributes } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 interface TimeSliderRootState {

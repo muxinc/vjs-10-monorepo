@@ -71,7 +71,7 @@ pnpm dev
 
 ```bash
 # Build specific package
-pnpm --filter @vjs-10/core build
+pnpm --filter @videojs/core build
 
 # Run website independently
 cd website
@@ -93,7 +93,7 @@ The monorepo uses TypeScript project references for efficient compilation:
 Key TypeScript features:
 
 - Strict mode enabled with additional checks (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
-- Path mappings for all `@vjs-10/*` packages point to source directories
+- Path mappings for all `@videojs/*` packages point to source directories
 - Composite builds for incremental compilation
 
 ## Package Development

@@ -1,9 +1,9 @@
-import type { MuteButtonState } from '@vjs-10/core/store';
+import type { MuteButtonState } from '@videojs/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { muteButtonStateDefinition } from '@vjs-10/core/store';
+import { muteButtonStateDefinition } from '@videojs/core/store';
 
-import { setAttributes } from '@vjs-10/utils/dom';
+import { setAttributes } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
 

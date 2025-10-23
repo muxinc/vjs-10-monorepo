@@ -1,9 +1,9 @@
 import { useStore } from '@nanostores/react';
-import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@vjs-10/react';
+import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@videojs/react';
 import { skin } from '@/stores/homePageDemos';
 import { PLAYBACK_ID } from './config';
-import '@vjs-10/react/skins/frosted.css';
-import '@vjs-10/react/skins/minimal.css';
+import '@videojs/react/skins/frosted.css';
+import '@videojs/react/skins/minimal.css';
 
 export default function HeroVideo({ className, poster }: { className?: string; poster: string }) {
   // Subscribe to skin store for future skin switching functionality

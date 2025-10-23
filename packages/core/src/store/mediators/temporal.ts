@@ -1,4 +1,4 @@
-import { isValidNumber } from '@vjs-10/utils';
+import { isValidNumber } from '@videojs/utils';
 
 export const temporal = {
   currentTime: {

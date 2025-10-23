@@ -1,5 +1,5 @@
 {
-  "name": "@vjs-10/react",
+  "name": "@videojs/react",
   "type": "module",
   "version": "0.1.0",
   "description": "React library for building media players",
@@ -55,9 +55,9 @@
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
-    "@vjs-10/core": "workspace:*",
-    "@vjs-10/icons": "workspace:*",
-    "@vjs-10/utils": "workspace:*"
+    "@videojs/core": "workspace:*",
+    "@videojs/icons": "workspace:*",
+    "@videojs/utils": "workspace:*"
   },
   "devDependencies": {
     "@svgr/babel-plugin-add-jsx-attribute": "^8.0.0",

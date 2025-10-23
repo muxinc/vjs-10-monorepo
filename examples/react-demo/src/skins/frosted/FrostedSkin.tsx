@@ -11,7 +11,7 @@ import {
   TimeSlider,
   Tooltip,
   VolumeSlider,
-} from '@vjs-10/react';
+} from '@videojs/react';
 
 import {
   FullscreenEnterIcon,
@@ -21,7 +21,7 @@ import {
   VolumeHighIcon,
   VolumeLowIcon,
   VolumeOffIcon,
-} from '@vjs-10/react/icons';
+} from '@videojs/react/icons';
 
 import styles from './styles';
 

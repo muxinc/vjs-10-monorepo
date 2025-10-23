@@ -10,7 +10,7 @@ import type {
   VideoHTMLAttributes,
 } from 'react';
 
-import { createMediaPlaybackController } from '@vjs-10/core/media';
+import { createMediaPlaybackController } from '@videojs/core/media';
 
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useMediaRef } from '@/store';
