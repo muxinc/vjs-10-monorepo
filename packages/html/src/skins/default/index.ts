@@ -1,17 +1,16 @@
-import { MediaSkin } from '../media-skin';
-
-import '../media-container';
-import '../components/media-play-button';
-import '../components/media-mute-button';
-import '../components/media-volume-slider';
-import '../components/media-time-slider';
-import '../components/media-fullscreen-button';
-import '../components/media-duration-display';
-import '../components/media-current-time-display';
-import '../components/media-preview-time-display';
-import '../components/media-popover';
-import '../components/media-tooltip';
-import '@vjs-10/html-icons';
+import { MediaSkin } from '@/media/media-skin';
+import '@/media/media-container';
+import '@/components/media-play-button';
+import '@/components/media-mute-button';
+import '@/components/media-volume-slider';
+import '@/components/media-time-slider';
+import '@/components/media-fullscreen-button';
+import '@/components/media-duration-display';
+import '@/components/media-current-time-display';
+import '@/components/media-preview-time-display';
+import '@/components/media-popover';
+import '@/components/media-tooltip';
+import '@/icons';
 
 export function getTemplateHTML() {
   return /* html */`

@@ -1,8 +1,9 @@
 import type { PreviewTimeDisplayState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { formatDisplayTime, previewTimeDisplayStateDefinition } from '@vjs-10/core/store';
+import { previewTimeDisplayStateDefinition } from '@vjs-10/core/store';
 
+import { formatDisplayTime } from '@vjs-10/utils';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class PreviewTimeDisplayBase extends HTMLElement {
@@ -63,7 +64,7 @@ export const usePreviewTimeDisplayState: StateHook<{
   }),
 };
 
-export const usePreviewTimeDisplayProps: PropsHook<{
+export const getPreviewTimeDisplayProps: PropsHook<{
   previewTime: number | undefined;
 }> = (_state, _element) => {
   const baseProps: Record<string, any> = {};
@@ -73,7 +74,7 @@ export const usePreviewTimeDisplayProps: PropsHook<{
 export const PreviewTimeDisplay: ConnectedComponentConstructor<PreviewTimeDisplayState> = toConnectedHTMLComponent(
   PreviewTimeDisplayBase,
   usePreviewTimeDisplayState,
-  usePreviewTimeDisplayProps,
+  getPreviewTimeDisplayProps,
   'PreviewTimeDisplay',
 );
 

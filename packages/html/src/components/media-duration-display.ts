@@ -1,8 +1,9 @@
 import type { DurationDisplayState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { durationDisplayStateDefinition, formatDisplayTime } from '@vjs-10/core/store';
+import { durationDisplayStateDefinition } from '@vjs-10/core/store';
 
+import { formatDisplayTime } from '@vjs-10/utils';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { namedNodeMapToObject } from '../utils/element-utils.js';
 
@@ -67,7 +68,7 @@ export const useDurationDisplayState: StateHook<{
   }),
 };
 
-export const useDurationDisplayProps: PropsHook<{
+export const getDurationDisplayProps: PropsHook<{
   duration: number | undefined;
 }> = (_state, _element) => {
   const baseProps: Record<string, any> = {};
@@ -77,13 +78,12 @@ export const useDurationDisplayProps: PropsHook<{
 export const DurationDisplay: ConnectedComponentConstructor<DurationDisplayState> = toConnectedHTMLComponent(
   DurationDisplayBase,
   useDurationDisplayState,
-  useDurationDisplayProps,
+  getDurationDisplayProps,
   'DurationDisplay',
 );
 
 // Register the custom element
 if (!globalThis.customElements.get('media-duration-display')) {
-  // @ts-ignore - Custom element constructor compatibility
   globalThis.customElements.define('media-duration-display', DurationDisplay);
 }
 

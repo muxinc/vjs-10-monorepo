@@ -1,20 +1,32 @@
 {
-  "name": "@vjs-10/html-media-store",
+  "name": "@vjs-10/html",
   "type": "module",
   "version": "0.1.0",
-  "description": "HTML media store integration",
+  "description": "HTML library for building media players",
   "license": "Apache-2.0",
   "keywords": [
     "media",
-    "store",
-    "state",
+    "player",
     "html",
-    "dom"
+    "ui",
+    "components"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./store": {
+      "types": "./dist/store/index.d.ts",
+      "default": "./dist/store/index.js"
+    },
+    "./icons": {
+      "types": "./dist/icons/index.d.ts",
+      "default": "./dist/icons/index.js"
+    },
+    "./skins/default": {
+      "types": "./dist/skins/default/index.d.ts",
+      "default": "./dist/skins/default/index.js"
     }
   },
   "main": "dist/index.js",
@@ -31,8 +43,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.6.13",
+    "@open-wc/context-protocol": "^0.0.9",
     "@vjs-10/core": "workspace:*",
-    "@vjs-10/html-media-elements": "workspace:*"
+    "@vjs-10/icons": "workspace:*",
+    "@vjs-10/utils": "workspace:*",
+    "tabbable": "^6.2.0"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",

@@ -1,5 +1,5 @@
 import type { Placement } from '@floating-ui/dom';
-import type { MediaContainer } from '@/media-container';
+import type { MediaContainer } from '@/media/media-container';
 
 import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 

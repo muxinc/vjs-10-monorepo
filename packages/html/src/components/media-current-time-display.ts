@@ -1,8 +1,9 @@
 import type { CurrentTimeDisplayState } from '@vjs-10/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { currentTimeDisplayStateDefinition, formatDisplayTime } from '@vjs-10/core/store';
+import { currentTimeDisplayStateDefinition } from '@vjs-10/core/store';
 
+import { formatDisplayTime } from '@vjs-10/utils';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 export class CurrentTimeDisplayBase extends HTMLElement {
@@ -72,7 +73,7 @@ export const useCurrentTimeDisplayState: StateHook<{
   }),
 };
 
-export const useCurrentTimeDisplayProps: PropsHook<{
+export const getCurrentTimeDisplayProps: PropsHook<{
   currentTime: number | undefined;
   duration: number | undefined;
 }> = (_state, _element) => {
@@ -83,7 +84,7 @@ export const useCurrentTimeDisplayProps: PropsHook<{
 export const CurrentTimeDisplay: ConnectedComponentConstructor<CurrentTimeDisplayState> = toConnectedHTMLComponent(
   CurrentTimeDisplayBase,
   useCurrentTimeDisplayState,
-  useCurrentTimeDisplayProps,
+  getCurrentTimeDisplayProps,
   'CurrentTimeDisplay',
 );
 

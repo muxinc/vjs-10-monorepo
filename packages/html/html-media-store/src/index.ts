@@ -1,1 +1,0 @@
-// Store integration utilities for HTML/Web Components

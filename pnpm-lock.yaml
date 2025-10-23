@@ -76,7 +76,7 @@ importers:
     dependencies:
       '@vjs-10/html':
         specifier: workspace:*
-        version: link:../../packages/html/html
+        version: link:../../packages/html
     devDependencies:
       typescript:
         specifier: ^5.9.2
@@ -147,7 +147,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
 
-  packages/html/html:
+  packages/html:
     dependencies:
       '@floating-ui/dom':
         specifier: ^1.6.13
@@ -157,65 +157,23 @@ importers:
         version: 0.0.9
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core
-      '@vjs-10/html':
+        version: link:../core
+      '@vjs-10/icons':
         specifier: workspace:*
-        version: 'link:'
+        version: link:../icons
+      '@vjs-10/utils':
+        specifier: workspace:*
+        version: link:../utils
       tabbable:
         specifier: ^6.2.0
         version: 6.2.0
     devDependencies:
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/html/html-icons:
-    dependencies:
-      '@vjs-10/icons':
-        specifier: workspace:*
-        version: link:../../icons
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/html/html-media-elements:
-    dependencies:
-      '@open-wc/context-protocol':
-        specifier: ^0.0.9
-        version: 0.0.9
-      '@vjs-10/core':
-        specifier: workspace:*
-        version: link:../../core
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/html/html-media-store:
-    dependencies:
-      '@vjs-10/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@vjs-10/html-media-elements':
-        specifier: workspace:*
-        version: link:../html-media-elements
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
   packages/icons:
     devDependencies:
