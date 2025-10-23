@@ -128,47 +128,24 @@ importers:
         specifier: ^7.1.6
         version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)
 
-  packages/core/core:
+  packages/core:
     dependencies:
       '@vjs-10/utils':
         specifier: workspace:*
-        version: link:../../utils
+        version: link:../utils
+      hls.js:
+        specifier: ^1.6.7
+        version: 1.6.12
       nanostores:
         specifier: ^1.0.1
         version: 1.0.1
     devDependencies:
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/media:
-    dependencies:
-      '@vjs-10/playback-engine':
-        specifier: workspace:*
-        version: link:../playback-engine
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/playback-engine:
-    dependencies:
-      hls.js:
-        specifier: ^1.6.7
-        version: 1.6.12
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
   packages/html/html:
     dependencies:
@@ -180,7 +157,7 @@ importers:
         version: 0.0.9
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
+        version: link:../../core
       '@vjs-10/html':
         specifier: workspace:*
         version: 'link:'
@@ -215,7 +192,7 @@ importers:
         version: 0.0.9
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
+        version: link:../../core
     devDependencies:
       tsdown:
         specifier: ^0.15.9
@@ -228,7 +205,7 @@ importers:
     dependencies:
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
+        version: link:../../core
       '@vjs-10/html-media-elements':
         specifier: workspace:*
         version: link:../html-media-elements
@@ -256,7 +233,7 @@ importers:
         version: 0.27.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
+        version: link:../../core
     devDependencies:
       '@tailwindcss/cli':
         specifier: ^4.1.0
@@ -313,12 +290,9 @@ importers:
 
   packages/react/react-media-elements:
     dependencies:
-      '@vjs-10/media':
+      '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/media
-      '@vjs-10/playback-engine':
-        specifier: workspace:*
-        version: link:../../core/playback-engine
+        version: link:../../core
     devDependencies:
       '@types/react':
         specifier: ^18.0.0
@@ -337,7 +311,7 @@ importers:
     dependencies:
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
+        version: link:../../core
     devDependencies:
       '@types/react':
         specifier: ^18.0.0
@@ -6422,7 +6396,7 @@ snapshots:
       https-proxy-agent: 7.0.6
       node-fetch: 2.7.0
       nopt: 8.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       tar: 7.5.1
     transitivePeerDependencies:
       - encoding
@@ -7125,7 +7099,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -7463,7 +7437,7 @@ snapshots:
       espree: 10.4.0
       fast-glob: 3.3.3
       is-glob: 4.0.3
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8132,7 +8106,7 @@ snapshots:
   eslint-compat-utils@0.6.5(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       eslint: 9.37.0(jiti@2.6.1)
-      semver: 7.7.2
+      semver: 7.7.3
 
   eslint-config-flat-gitignore@2.1.0(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
@@ -8221,7 +8195,7 @@ snapshots:
       esquery: 1.6.0
       object-deep-merge: 1.0.5
       parse-imports-exports: 0.2.4
-      semver: 7.7.2
+      semver: 7.7.3
       spdx-expression-parse: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -8269,7 +8243,7 @@ snapshots:
       globals: 15.15.0
       globrex: 0.1.2
       ignore: 5.3.2
-      semver: 7.7.2
+      semver: 7.7.3
       ts-declaration-location: 1.0.7(typescript@5.9.2)
     transitivePeerDependencies:
       - typescript
@@ -8472,7 +8446,7 @@ snapshots:
       pluralize: 8.0.0
       regexp-tree: 0.1.27
       regjsparser: 0.12.0
-      semver: 7.7.2
+      semver: 7.7.3
       strip-indent: 4.1.0
 
   eslint-plugin-unused-imports@4.2.0(@typescript-eslint/eslint-plugin@8.44.1(@typescript-eslint/parser@8.44.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.2))(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.2))(eslint@9.37.0(jiti@2.6.1)):
@@ -8488,7 +8462,7 @@ snapshots:
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 6.1.2
-      semver: 7.7.2
+      semver: 7.7.3
       vue-eslint-parser: 10.2.0(eslint@9.37.0(jiti@2.6.1))
       xml-name-validator: 4.0.0
     optionalDependencies:
@@ -9287,7 +9261,7 @@ snapshots:
       acorn: 8.15.0
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
-      semver: 7.7.2
+      semver: 7.7.3
 
   jsx-ast-utils@3.3.5:
     dependencies:
@@ -9445,7 +9419,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   markdown-extensions@2.0.0: {}
 
@@ -11357,7 +11331,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       esquery: 1.6.0
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 

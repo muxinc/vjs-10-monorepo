@@ -2,7 +2,7 @@ import Hls from 'hls.js';
 
 /** @TODO Move interface/type defs (CJP) */
 /** @TODO Narrow and/or parameterize EventTarget via generics/inference (CJP) */
-export interface IBasePlaybackEngine extends EventTarget {
+export interface PlaybackEngine extends EventTarget {
   src: HTMLMediaElement['src'] | undefined;
   // NOTE: Unlike other APIs, this *must* be an HTMLMediaElement based on internal and/or external API assumptions (CJP)
   mediaElement: HTMLMediaElement | undefined;
@@ -11,7 +11,7 @@ export interface IBasePlaybackEngine extends EventTarget {
   destroy: () => void;
 }
 
-export class HlsJSPlaybackEngine extends EventTarget {
+export class HlsPlaybackEngine extends EventTarget {
   constructor() {
     super();
   }
@@ -77,4 +77,4 @@ export class HlsJSPlaybackEngine extends EventTarget {
   }
 }
 
-export const createPlaybackEngine = (): IBasePlaybackEngine => new HlsJSPlaybackEngine();
+export const createHlsPlaybackEngine = (): PlaybackEngine => new HlsPlaybackEngine();

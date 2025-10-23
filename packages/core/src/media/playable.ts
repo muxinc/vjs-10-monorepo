@@ -1,6 +1,5 @@
-import type { IBasePlaybackEngine } from '@vjs-10/playback-engine';
-
-import { createPlaybackEngine } from '@vjs-10/playback-engine';
+import type { PlaybackEngine } from '@/media/engine/hls-engine';
+import { createHlsPlaybackEngine } from '@/media/engine/hls-engine';
 
 /** @TODO Split out "playable" vs. "audible" vs. "temporal" and compose via factory (current mixin pattern or spreadable mixin pattern) (CJP) */
 export const Events = [
@@ -14,31 +13,31 @@ export const Events = [
   'durationchange',
 ] as const;
 
-export interface IBaseMediaStateOwner extends EventTarget, Pick<HTMLMediaElement, 'src'> {
+export interface MediaStateOwner extends EventTarget, Pick<HTMLMediaElement, 'src'> {
   mediaElement?: HTMLMediaElement | undefined;
 }
 
-export interface IPlayableMediaStateOwner
+export interface PlayableMediaStateOwner
   extends EventTarget,
-  IBaseMediaStateOwner,
+  MediaStateOwner,
   Pick<HTMLMediaElement, 'play' | 'pause' | 'paused'> {}
 
-export interface IAudibleMediaStateOwner
+export interface AudibleMediaStateOwner
   extends EventTarget,
-  IBaseMediaStateOwner,
+  MediaStateOwner,
   Pick<HTMLMediaElement, 'muted' | 'volume'> {}
 
-export interface ITemporalMediaStateOwner
+export interface TemporalMediaStateOwner
   extends EventTarget,
-  IBaseMediaStateOwner,
+  MediaStateOwner,
   Pick<HTMLMediaElement, 'duration' | 'currentTime'> {}
 
-export class PlayableMediaStateOwner extends EventTarget implements IPlayableMediaStateOwner, IAudibleMediaStateOwner {
-  protected _playbackEngine: IBasePlaybackEngine;
+export class MediaPlaybackController extends EventTarget implements MediaStateOwner, PlayableMediaStateOwner, AudibleMediaStateOwner {
+  protected _playbackEngine: PlaybackEngine;
 
   constructor() {
     super();
-    this._playbackEngine = createPlaybackEngine();
+    this._playbackEngine = createHlsPlaybackEngine();
   }
 
   get mediaElement(): HTMLMediaElement | undefined {
@@ -75,7 +74,7 @@ export class PlayableMediaStateOwner extends EventTarget implements IPlayableMed
 
   play(): Promise<void> {
     /** @TODO implement deferred state etc. for cases where media has yet to be set */
-    if (!this.mediaElement) return Promise.reject();
+    if (!this.mediaElement) throw new Error('No media element is set');
     return this.mediaElement.play();
   }
 
@@ -136,4 +135,4 @@ export class PlayableMediaStateOwner extends EventTarget implements IPlayableMed
   }
 }
 
-export const createMediaStateOwner = (): PlayableMediaStateOwner => new PlayableMediaStateOwner();
+export const createMediaPlaybackController = (): MediaPlaybackController => new MediaPlaybackController();

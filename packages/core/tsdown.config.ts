@@ -1,7 +1,11 @@
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-  entry: 'src/index.ts',
+  entry: {
+    index: './src/index.ts',
+    store: './src/store/index.ts',
+    engine: './src/engine/index.ts',
+  },
   platform: 'browser',
   format: 'es',
   sourcemap: true,

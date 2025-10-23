@@ -917,11 +917,6 @@ Unlike Base UI's generic sliders, VJS-10 sliders include media-specific features
 **VJS-10 Adoption**: This philosophy directly shaped VJS-10's core package architecture:
 
 ```tsx
-// VidStack's common core concept -> VJS-10's core packages targeting multiple runtimes
-// @vjs-10/media-store - Framework-agnostic state management
-// @vjs-10/playback-engine - Runtime-independent media abstractions
-// @vjs-10/media - HTMLMediaElement contracts usable across platforms
-
 // HTML Platform Implementation
 export class MediaButton extends HTMLElement {
   connectedCallback() {
@@ -1126,7 +1121,7 @@ export function useMuteButtonState(_props: any) {
 
 **Key Characteristics**:
 
-- Uses core `muteButtonStateDefinition` from `@vjs-10/media-store`
+- Uses core `muteButtonStateDefinition` from `@vjs-10/core/store`
 - No platform-specific assumptions
 - Could theoretically work with React Native or other platforms
 

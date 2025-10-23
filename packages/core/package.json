@@ -1,20 +1,29 @@
 {
-  "name": "@vjs-10/media",
+  "name": "@vjs-10/core",
   "type": "module",
   "version": "0.1.0",
-  "description": "Media related contracts and utilities.",
+  "description": "Core components and utilities for Video.js",
   "license": "Apache-2.0",
   "keywords": [
+    "core",
+    "components",
     "media",
-    "HTMLMediaElement",
-    "video",
-    "audio",
-    "contracts"
+    "player",
+    "ui",
+    "time-range"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./store": {
+      "types": "./dist/store.d.ts",
+      "default": "./dist/store.js"
+    },
+    "./media": {
+      "types": "./dist/media.d.ts",
+      "default": "./dist/media.js"
     }
   },
   "main": "dist/index.js",
@@ -31,7 +40,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@vjs-10/playback-engine": "workspace:*"
+    "@vjs-10/utils": "workspace:*",
+    "hls.js": "^1.6.7",
+    "nanostores": "^1.0.1"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",
