@@ -1,9 +1,9 @@
 import type { ConnectedComponent } from '../utils/component-factory';
 
-import { TimeSlider as CoreTimeSlider } from '@vjs-10/core';
+import { TimeSlider as CoreTimeSlider } from '@videojs/core';
 
-import { timeSliderStateDefinition } from '@vjs-10/core/store';
-import { shallowEqual } from '@vjs-10/utils';
+import { timeSliderStateDefinition } from '@videojs/core/store';
+import { shallowEqual } from '@videojs/utils';
 import { useCallback, useMemo } from 'react';
 
 import { useMediaSelector, useMediaStore } from '@/store';

@@ -1,4 +1,4 @@
-import { namedNodeMapToObject } from '@vjs-10/utils/dom';
+import { namedNodeMapToObject } from '@videojs/utils/dom';
 
 export function getTemplateHTML(
   this: typeof MediaChromeButton,

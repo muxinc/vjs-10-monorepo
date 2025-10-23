@@ -1,5 +1,5 @@
 {
-  "name": "@vjs-10/utils",
+  "name": "@videojs/utils",
   "type": "module",
   "version": "0.1.0",
   "description": "Utility functions and helpers.",

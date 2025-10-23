@@ -1,4 +1,4 @@
-import { defineVjsPlayer } from '@vjs-10/html';
+import { defineVjsPlayer } from '@videojs/html';
 
 defineVjsPlayer();
 

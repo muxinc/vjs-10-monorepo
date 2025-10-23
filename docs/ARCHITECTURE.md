@@ -1121,7 +1121,7 @@ export function useMuteButtonState(_props: any) {
 
 **Key Characteristics**:
 
-- Uses core `muteButtonStateDefinition` from `@vjs-10/core/store`
+- Uses core `muteButtonStateDefinition` from `@videojs/core/store`
 - No platform-specific assumptions
 - Could theoretically work with React Native or other platforms
 

@@ -1,4 +1,4 @@
-import { SVG_ICONS } from '@vjs-10/icons';
+import { SVG_ICONS } from '@videojs/icons';
 
 import { MediaChromeIcon } from './media-chrome-icon';
 

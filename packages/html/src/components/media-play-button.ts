@@ -1,9 +1,9 @@
-import type { PlayButtonState } from '@vjs-10/core/store';
+import type { PlayButtonState } from '@videojs/core/store';
 import type { ConnectedComponentConstructor, PropsHook, StateHook } from '../utils/component-factory';
 
-import { playButtonStateDefinition } from '@vjs-10/core/store';
+import { playButtonStateDefinition } from '@videojs/core/store';
 
-import { setAttributes } from '@vjs-10/utils/dom';
+import { setAttributes } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 import { MediaChromeButton } from './media-chrome-button';
 

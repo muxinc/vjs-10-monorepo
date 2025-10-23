@@ -2,7 +2,7 @@ import type { Placement } from '@floating-ui/dom';
 import type { MediaContainer } from '@/media/media-container';
 
 import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { uniqueId } from '@vjs-10/utils';
+import { uniqueId } from '@videojs/utils';
 
 export class MediaTooltipRoot extends HTMLElement {
   #open = false;

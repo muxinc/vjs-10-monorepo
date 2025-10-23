@@ -3,7 +3,7 @@
 /** @TODO !!! Revisit for SSR (CJP) */
 import type { ReactNode } from 'react';
 
-import { createMediaStore } from '@vjs-10/core/store';
+import { createMediaStore } from '@videojs/core/store';
 
 import { useMemo } from 'react';
 import { MediaContext } from './context';

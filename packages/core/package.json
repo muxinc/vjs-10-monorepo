@@ -1,5 +1,5 @@
 {
-  "name": "@vjs-10/core",
+  "name": "@videojs/core",
   "type": "module",
   "version": "0.1.0",
   "description": "Core components and utilities for Video.js",
@@ -40,7 +40,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@vjs-10/utils": "workspace:*",
+    "@videojs/utils": "workspace:*",
     "hls.js": "^1.6.7",
     "nanostores": "^1.0.1"
   },

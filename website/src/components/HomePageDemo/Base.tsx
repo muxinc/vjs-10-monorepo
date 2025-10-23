@@ -21,8 +21,8 @@ function generateReactCode(skin: Skin, media: Media): string {
   const skinImport = skin === 'frosted' ? 'frosted' : 'minimal';
   const videoExtension = media === 'hls-video' ? 'm3u8' : 'mp4';
 
-  return `import { VideoProvider, ${mediaComponent} } from '@vjs-10/react';
-import { ${skinComponent} } from '@vjs-10/react/skins/${skinImport}';
+  return `import { VideoProvider, ${mediaComponent} } from '@videojs/react';
+import { ${skinComponent} } from '@videojs/react/skins/${skinImport}';
 
 export const VideoPlayer = () => {
   return (

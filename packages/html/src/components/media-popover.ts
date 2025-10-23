@@ -1,8 +1,8 @@
 import type { Placement } from '@floating-ui/dom';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { uniqueId } from '@vjs-10/utils';
+import { uniqueId } from '@videojs/utils';
 
-import { getDocument, getNextTabbable, getPreviousTabbable, isOutsideEvent } from '@vjs-10/utils/dom';
+import { getDocument, getNextTabbable, getPreviousTabbable, isOutsideEvent } from '@videojs/utils/dom';
 
 export class MediaPopoverRoot extends HTMLElement {
   #open = false;

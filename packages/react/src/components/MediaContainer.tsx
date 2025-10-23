@@ -1,8 +1,8 @@
 import type { FC, HTMLProps, PropsWithChildren, RefCallback } from 'react';
 
-import { playButtonStateDefinition } from '@vjs-10/core/store';
+import { playButtonStateDefinition } from '@videojs/core/store';
 
-import { shallowEqual } from '@vjs-10/utils';
+import { shallowEqual } from '@videojs/utils';
 import { forwardRef, useCallback, useMemo } from 'react';
 import { useMediaSelector, useMediaStore } from '@/store';
 import { useComposedRefs } from '../utils/use-composed-refs';
@@ -15,7 +15,7 @@ import { useComposedRefs } from '../utils/use-composed-refs';
  * in the media store, enabling fullscreen functionality.
  *
  * @example
- * import { useMediaContainerRef } from '@vjs-10/react';
+ * import { useMediaContainerRef } from '@videojs/react';
  *
  * const PlayerContainer = ({ children }) => {
  *   const containerRef = useMediaContainerRef();
@@ -45,7 +45,7 @@ export function useMediaContainerRef(): RefCallback<HTMLElement | null> {
  * This provides a simple wrapper component for fullscreen functionality.
  *
  * @example
- * import { MediaContainer } from '@vjs-10/react';
+ * import { MediaContainer } from '@videojs/react';
  *
  * const MyPlayer = () => (
  *   <MediaContainer>

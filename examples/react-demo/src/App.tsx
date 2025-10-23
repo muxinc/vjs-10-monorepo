@@ -1,18 +1,18 @@
 import type { ChangeEventHandler } from 'react';
 
-import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@vjs-10/react';
-import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@vjs-10/react/icons';
+import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@videojs/react';
+import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@videojs/react/icons';
 import clsx from 'clsx';
 
 // import FrostedSkin from './skins/frosted/FrostedSkin';
 // import MinimalSkin from './skins/toasted/MinimalSkin';
 
 // NOTE: Commented out imports are for testing locally/externally defined skins.
-// import { MediaProvider, Video } from '@vjs-10/react';
+// import { MediaProvider, Video } from '@videojs/react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useFullscreen } from './hooks/useFullscreen';
-import '@vjs-10/react/skins/frosted.css';
-import '@vjs-10/react/skins/minimal.css';
+import '@videojs/react/skins/frosted.css';
+import '@videojs/react/skins/minimal.css';
 import './globals.css';
 
 const skins = [

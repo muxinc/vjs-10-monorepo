@@ -1,5 +1,5 @@
 {
-  "name": "@vjs-10/html",
+  "name": "@videojs/html",
   "type": "module",
   "version": "0.1.0",
   "description": "HTML library for building media players",
@@ -45,9 +45,9 @@
   "dependencies": {
     "@floating-ui/dom": "^1.6.13",
     "@open-wc/context-protocol": "^0.0.9",
-    "@vjs-10/core": "workspace:*",
-    "@vjs-10/icons": "workspace:*",
-    "@vjs-10/utils": "workspace:*"
+    "@videojs/core": "workspace:*",
+    "@videojs/icons": "workspace:*",
+    "@videojs/utils": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "^0.15.9",
