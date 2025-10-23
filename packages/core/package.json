@@ -17,13 +17,13 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./store": {
-      "types": "./dist/store.d.ts",
-      "default": "./dist/store.js"
-    },
     "./media": {
       "types": "./dist/media.d.ts",
       "default": "./dist/media.js"
+    },
+    "./store": {
+      "types": "./dist/store.d.ts",
+      "default": "./dist/store.js"
     }
   },
   "main": "dist/index.js",
