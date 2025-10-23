@@ -8,8 +8,8 @@ import vercel from '@astrojs/vercel';
 
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
-import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks.js';
-import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings.js';
+import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks';
+import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings';
 import { remarkReadingTime } from './src/utils/remarkReadingTime.mjs';
 
 // https://astro.build/config

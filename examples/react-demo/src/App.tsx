@@ -1,7 +1,7 @@
 import type { ChangeEventHandler } from 'react';
 
 import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@vjs-10/react';
-import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@vjs-10/react-icons';
+import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@vjs-10/react/icons';
 import clsx from 'clsx';
 
 // import FrostedSkin from './skins/frosted/FrostedSkin';

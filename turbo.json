@@ -4,7 +4,7 @@
   "concurrency": "20",
   "tasks": {
     "build": {
-      "dependsOn": ["generate:icons", "^build"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
     "dev": {
@@ -12,10 +12,6 @@
       "persistent": true,
       "interactive": false,
       "dependsOn": ["^build"]
-    },
-    "generate:icons": {
-      "inputs": ["./packages/core/icons/assets/**"],
-      "outputs": ["src/generated-icons/**"]
     },
     "clean": {
       "cache": false

@@ -1,8 +1,8 @@
 {
-  "name": "vjs-10-monorepo",
-  "version": "1.0.0",
+  "name": "video.js",
+  "version": "0.1.0",
   "packageManager": "pnpm@10.17.0",
-  "description": "A monorepo for Video.js 10 related library packages",
+  "description": "Video.js 10 Monorepo",
   "author": "Video.js Contributors",
   "license": "Apache-2.0",
   "repository": {
