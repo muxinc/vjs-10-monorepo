@@ -71,7 +71,7 @@ pnpm dev
 
 ```bash
 # Build specific package
-pnpm --filter @videojs-10/core build
+pnpm --filter @videojs/core build
 
 # Run website independently
 cd website
