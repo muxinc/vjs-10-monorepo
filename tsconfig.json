@@ -7,8 +7,7 @@
     { "path": "packages/core" },
     { "path": "packages/icons" },
     { "path": "packages/html" },
-    { "path": "packages/react" },
-    { "path": "packages/react-native" }
+    { "path": "packages/react" }
   ],
   "files": [],
   "include": []
