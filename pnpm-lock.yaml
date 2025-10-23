@@ -76,7 +76,7 @@ importers:
     dependencies:
       '@vjs-10/html':
         specifier: workspace:*
-        version: link:../../packages/html/html
+        version: link:../../packages/html
     devDependencies:
       typescript:
         specifier: ^5.9.2
@@ -89,10 +89,7 @@ importers:
     dependencies:
       '@vjs-10/react':
         specifier: workspace:*
-        version: link:../../packages/react/react
-      '@vjs-10/react-icons':
-        specifier: workspace:*
-        version: link:../../packages/react/react-icons
+        version: link:../../packages/react
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -128,68 +125,26 @@ importers:
         specifier: ^7.1.6
         version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)
 
-  packages/core/core:
+  packages/core:
     dependencies:
-      nanostores:
-        specifier: ^1.0.1
-        version: 1.0.1
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/icons:
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/media:
-    dependencies:
-      '@vjs-10/playback-engine':
+      '@vjs-10/utils':
         specifier: workspace:*
-        version: link:../playback-engine
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/media-store:
-    dependencies:
-      nanostores:
-        specifier: ^1.0.1
-        version: 1.0.1
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/core/playback-engine:
-    dependencies:
+        version: link:../utils
       hls.js:
         specifier: ^1.6.7
         version: 1.6.12
+      nanostores:
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
-  packages/html/html:
+  packages/html:
     dependencies:
       '@floating-ui/dom':
         specifier: ^1.6.13
@@ -199,99 +154,54 @@ importers:
         version: 0.0.9
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
-      '@vjs-10/html-icons':
-        specifier: workspace:*
-        version: link:../html-icons
-      '@vjs-10/html-media-elements':
-        specifier: workspace:*
-        version: link:../html-media-elements
-      '@vjs-10/html-media-store':
-        specifier: workspace:*
-        version: link:../html-media-store
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
-      tabbable:
-        specifier: ^6.2.0
-        version: 6.2.0
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/html/html-icons:
-    dependencies:
+        version: link:../core
       '@vjs-10/icons':
         specifier: workspace:*
-        version: link:../../core/icons
+        version: link:../icons
+      '@vjs-10/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
-  packages/html/html-media-elements:
-    dependencies:
-      '@open-wc/context-protocol':
-        specifier: ^0.0.9
-        version: 0.0.9
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
+  packages/icons:
     devDependencies:
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
-  packages/html/html-media-store:
-    dependencies:
-      '@vjs-10/html-media-elements':
-        specifier: workspace:*
-        version: link:../html-media-elements
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
-    devDependencies:
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/react/react:
+  packages/react:
     dependencies:
       '@floating-ui/react':
         specifier: ^0.27.16
         version: 0.27.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vjs-10/core':
         specifier: workspace:*
-        version: link:../../core/core
-      '@vjs-10/media':
+        version: link:../core
+      '@vjs-10/icons':
         specifier: workspace:*
-        version: link:../../core/media
-      '@vjs-10/media-store':
+        version: link:../icons
+      '@vjs-10/utils':
         specifier: workspace:*
-        version: link:../../core/media-store
-      '@vjs-10/react-icons':
-        specifier: workspace:*
-        version: link:../react-icons
-      '@vjs-10/react-media-elements':
-        specifier: workspace:*
-        version: link:../react-media-elements
-      '@vjs-10/react-media-store':
-        specifier: workspace:*
-        version: link:../react-media-store
+        version: link:../utils
     devDependencies:
+      '@svgr/babel-plugin-add-jsx-attribute':
+        specifier: ^8.0.0
+        version: 8.0.0(@babel/core@7.28.4)
+      '@svgr/cli':
+        specifier: ^8.1.0
+        version: 8.1.0(typescript@5.9.3)
+      '@svgr/plugin-jsx':
+        specifier: ^8.1.0
+        version: 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
       '@tailwindcss/cli':
         specifier: ^4.1.0
         version: 4.1.14
@@ -312,79 +222,23 @@ importers:
         version: 4.1.14
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
-  packages/react/react-icons:
+  packages/utils:
     dependencies:
-      '@vjs-10/icons':
-        specifier: workspace:*
-        version: link:../../core/icons
+      tabbable:
+        specifier: ^6.2.0
+        version: 6.2.0
     devDependencies:
-      '@svgr/babel-plugin-add-jsx-attribute':
-        specifier: ^8.0.0
-        version: 8.0.0(@babel/core@7.28.4)
-      '@svgr/cli':
-        specifier: ^8.1.0
-        version: 8.1.0(typescript@5.9.2)
-      '@svgr/plugin-jsx':
-        specifier: ^8.1.0
-        version: 8.1.0(@svgr/core@8.1.0(typescript@5.9.2))
-      '@types/react':
-        specifier: ^18.0.0
-        version: 18.3.24
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
       tsdown:
         specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
+        version: 0.15.9(typescript@5.9.3)
       typescript:
         specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/react/react-media-elements:
-    dependencies:
-      '@vjs-10/media':
-        specifier: workspace:*
-        version: link:../../core/media
-      '@vjs-10/playback-engine':
-        specifier: workspace:*
-        version: link:../../core/playback-engine
-    devDependencies:
-      '@types/react':
-        specifier: ^18.0.0
-        version: 18.3.24
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/react/react-media-store:
-    dependencies:
-      '@vjs-10/media-store':
-        specifier: workspace:*
-        version: link:../../core/media-store
-    devDependencies:
-      '@types/react':
-        specifier: ^18.0.0
-        version: 18.3.24
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      tsdown:
-        specifier: ^0.15.9
-        version: 0.15.9(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
+        version: 5.9.3
 
   website:
     dependencies:
@@ -414,7 +268,7 @@ importers:
         version: 4.1.14(vite@7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))
       '@vjs-10/react':
         specifier: workspace:*
-        version: link:../packages/react/react
+        version: link:../packages/react
       astro:
         specifier: ^5.14.4
         version: 5.14.4(@types/node@22.18.6)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.0)(typescript@5.9.3)(yaml@2.8.1)
@@ -3316,9 +3170,6 @@ packages:
   get-symbol-description@1.1.0:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
-
-  get-tsconfig@4.10.1:
-    resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
 
   get-tsconfig@4.12.0:
     resolution: {integrity: sha512-LScr2aNr2FbjAjZh2C6X6BxRx1/x+aTDExct/xyq2XKbYOiG5c0aK7pMsSuyc0brz3ibr/lbQiHD9jzt4lccJw==}
@@ -6450,7 +6301,7 @@ snapshots:
       https-proxy-agent: 7.0.6
       node-fetch: 2.7.0
       nopt: 8.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       tar: 7.5.1
     transitivePeerDependencies:
       - encoding
@@ -6805,12 +6656,12 @@ snapshots:
       '@svgr/babel-plugin-transform-react-native-svg': 8.1.0(@babel/core@7.28.4)
       '@svgr/babel-plugin-transform-svg-component': 8.0.0(@babel/core@7.28.4)
 
-  '@svgr/cli@8.1.0(typescript@5.9.2)':
+  '@svgr/cli@8.1.0(typescript@5.9.3)':
     dependencies:
-      '@svgr/core': 8.1.0(typescript@5.9.2)
-      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.9.2))
-      '@svgr/plugin-prettier': 8.1.0(@svgr/core@8.1.0(typescript@5.9.2))
-      '@svgr/plugin-svgo': 8.1.0(@svgr/core@8.1.0(typescript@5.9.2))(typescript@5.9.2)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
+      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
+      '@svgr/plugin-prettier': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
+      '@svgr/plugin-svgo': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))(typescript@5.9.3)
       camelcase: 6.3.0
       chalk: 4.1.2
       commander: 9.5.0
@@ -6821,12 +6672,12 @@ snapshots:
       - supports-color
       - typescript
 
-  '@svgr/core@8.1.0(typescript@5.9.2)':
+  '@svgr/core@8.1.0(typescript@5.9.3)':
     dependencies:
       '@babel/core': 7.28.4
       '@svgr/babel-preset': 8.1.0(@babel/core@7.28.4)
       camelcase: 6.3.0
-      cosmiconfig: 8.3.6(typescript@5.9.2)
+      cosmiconfig: 8.3.6(typescript@5.9.3)
       snake-case: 3.0.4
     transitivePeerDependencies:
       - supports-color
@@ -6837,26 +6688,26 @@ snapshots:
       '@babel/types': 7.28.4
       entities: 4.5.0
 
-  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.9.2))':
+  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.9.3))':
     dependencies:
       '@babel/core': 7.28.4
       '@svgr/babel-preset': 8.1.0(@babel/core@7.28.4)
-      '@svgr/core': 8.1.0(typescript@5.9.2)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
       '@svgr/hast-util-to-babel-ast': 8.0.0
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
 
-  '@svgr/plugin-prettier@8.1.0(@svgr/core@8.1.0(typescript@5.9.2))':
+  '@svgr/plugin-prettier@8.1.0(@svgr/core@8.1.0(typescript@5.9.3))':
     dependencies:
-      '@svgr/core': 8.1.0(typescript@5.9.2)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
       deepmerge: 4.3.1
       prettier: 2.8.8
 
-  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0(typescript@5.9.2))(typescript@5.9.2)':
+  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
-      '@svgr/core': 8.1.0(typescript@5.9.2)
-      cosmiconfig: 8.3.6(typescript@5.9.2)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
+      cosmiconfig: 8.3.6(typescript@5.9.3)
       deepmerge: 4.3.1
       svgo: 3.3.2
     transitivePeerDependencies:
@@ -7153,7 +7004,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -7491,7 +7342,7 @@ snapshots:
       espree: 10.4.0
       fast-glob: 3.3.3
       is-glob: 4.0.3
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -7808,14 +7659,14 @@ snapshots:
     dependencies:
       browserslist: 4.26.2
 
-  cosmiconfig@8.3.6(typescript@5.9.2):
+  cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
       import-fresh: 3.3.1
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.9.3
 
   cross-spawn@7.0.6:
     dependencies:
@@ -8160,7 +8011,7 @@ snapshots:
   eslint-compat-utils@0.6.5(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       eslint: 9.37.0(jiti@2.6.1)
-      semver: 7.7.2
+      semver: 7.7.3
 
   eslint-config-flat-gitignore@2.1.0(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
@@ -8249,7 +8100,7 @@ snapshots:
       esquery: 1.6.0
       object-deep-merge: 1.0.5
       parse-imports-exports: 0.2.4
-      semver: 7.7.2
+      semver: 7.7.3
       spdx-expression-parse: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -8293,11 +8144,11 @@ snapshots:
       enhanced-resolve: 5.18.3
       eslint: 9.37.0(jiti@2.6.1)
       eslint-plugin-es-x: 7.8.0(eslint@9.37.0(jiti@2.6.1))
-      get-tsconfig: 4.10.1
+      get-tsconfig: 4.12.0
       globals: 15.15.0
       globrex: 0.1.2
       ignore: 5.3.2
-      semver: 7.7.2
+      semver: 7.7.3
       ts-declaration-location: 1.0.7(typescript@5.9.2)
     transitivePeerDependencies:
       - typescript
@@ -8500,7 +8351,7 @@ snapshots:
       pluralize: 8.0.0
       regexp-tree: 0.1.27
       regjsparser: 0.12.0
-      semver: 7.7.2
+      semver: 7.7.3
       strip-indent: 4.1.0
 
   eslint-plugin-unused-imports@4.2.0(@typescript-eslint/eslint-plugin@8.44.1(@typescript-eslint/parser@8.44.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.2))(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.2))(eslint@9.37.0(jiti@2.6.1)):
@@ -8516,7 +8367,7 @@ snapshots:
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 6.1.2
-      semver: 7.7.2
+      semver: 7.7.3
       vue-eslint-parser: 10.2.0(eslint@9.37.0(jiti@2.6.1))
       xml-name-validator: 4.0.0
     optionalDependencies:
@@ -8790,10 +8641,6 @@ snapshots:
       call-bound: 1.0.4
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
-
-  get-tsconfig@4.10.1:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
 
   get-tsconfig@4.12.0:
     dependencies:
@@ -9319,7 +9166,7 @@ snapshots:
       acorn: 8.15.0
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
-      semver: 7.7.2
+      semver: 7.7.3
 
   jsx-ast-utils@3.3.5:
     dependencies:
@@ -9477,7 +9324,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   markdown-extensions@2.0.0: {}
 
@@ -10504,7 +10351,7 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rolldown-plugin-dts@0.16.12(rolldown@1.0.0-beta.44)(typescript@5.9.2):
+  rolldown-plugin-dts@0.16.12(rolldown@1.0.0-beta.44)(typescript@5.9.3):
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.4
@@ -10517,7 +10364,7 @@ snapshots:
       magic-string: 0.30.19
       rolldown: 1.0.0-beta.44
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.9.3
     transitivePeerDependencies:
       - oxc-resolver
       - supports-color
@@ -11002,7 +10849,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.15.9(typescript@5.9.2):
+  tsdown@0.15.9(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -11012,14 +10859,14 @@ snapshots:
       empathic: 2.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.44
-      rolldown-plugin-dts: 0.16.12(rolldown@1.0.0-beta.44)(typescript@5.9.2)
+      rolldown-plugin-dts: 0.16.12(rolldown@1.0.0-beta.44)(typescript@5.9.3)
       semver: 7.7.3
       tinyexec: 1.0.1
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
       unconfig: 7.3.3
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.9.3
     transitivePeerDependencies:
       - '@ts-macro/tsc'
       - '@typescript/native-preview'
@@ -11346,7 +11193,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       esquery: 1.6.0
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 

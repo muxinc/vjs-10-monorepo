@@ -21,7 +21,7 @@ import {
   VolumeHighIcon,
   VolumeLowIcon,
   VolumeOffIcon,
-} from '@vjs-10/react-icons';
+} from '@vjs-10/react/icons';
 
 import styles from './styles';
 

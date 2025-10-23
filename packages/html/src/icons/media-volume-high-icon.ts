@@ -1,0 +1,21 @@
+import { SVG_ICONS } from '@vjs-10/icons';
+
+import { MediaChromeIcon } from './media-chrome-icon';
+
+export function getTemplateHTML() {
+  return /* html */ `
+    ${MediaChromeIcon.getTemplateHTML()}
+    <style>
+      :host {
+        display: var(--media-play-icon-display, inline-flex);
+      }
+    </style>
+    ${SVG_ICONS.volumeHigh}
+  `;
+}
+
+export class MediaVolumeHighIcon extends MediaChromeIcon {
+  static getTemplateHTML: () => string = getTemplateHTML;
+}
+
+customElements.define('media-volume-high-icon', MediaVolumeHighIcon);
