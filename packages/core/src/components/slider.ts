@@ -1,6 +1,6 @@
-import { map } from 'nanostores';
+import { shallowEqual } from '@vjs-10/utils';
 
-import { shallowEqual } from '../utils/state';
+import { map } from 'nanostores';
 
 export interface SliderState {
   _trackElement: HTMLElement | null;
