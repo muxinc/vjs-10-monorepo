@@ -46,7 +46,7 @@
 }
 
 .Icon {
-  @apply icon;
+  /* @apply icon; */
 }
 
 .Button {

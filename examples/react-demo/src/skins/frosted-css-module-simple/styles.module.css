@@ -84,7 +84,7 @@
 }
 
 .Icon {
-  @apply icon;
+  /* @apply icon; */
 }
 
 .IconButton {
@@ -98,11 +98,11 @@
 }
 
 .PlayIcon {
-  @apply play-icon;
+  /* @apply play-icon; */
 }
 
 .PauseIcon {
-  @apply pause-icon;
+  /* @apply pause-icon; */
 }
 
 .TooltipPopup {
@@ -125,11 +125,11 @@
 }
 
 .PlayTooltip {
-  @apply play-tooltip;
+  /* @apply play-tooltip; */
 }
 
 .PauseTooltip {
-  @apply pause-tooltip;
+  /* @apply pause-tooltip; */
 }
 
 .MuteButton {
@@ -141,15 +141,15 @@
 }
 
 .VolumeHighIcon {
-  @apply volume-high-icon;
+  /* @apply volume-high-icon; */
 }
 
 .VolumeLowIcon {
-  @apply volume-low-icon;
+  /* @apply volume-low-icon; */
 }
 
 .VolumeOffIcon {
-  @apply volume-off-icon;
+  /* @apply volume-off-icon; */
 }
 
 .FullScreenButton {
@@ -159,7 +159,7 @@
 }
 
 .FullScreenEnterIcon {
-  @apply fullscreen-enter-icon;
+  /* @apply fullscreen-enter-icon; */
   /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-1]:-translate-x-px group-hover/button:[&_.arrow-1]:-translate-y-px */
   /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-2]:translate-x-px group-hover/button:[&_.arrow-2]:translate-y-px */
 }
@@ -174,7 +174,7 @@
 }
 
 .FullScreenExitIcon {
-  @apply fullscreen-exit-icon;
+  /* @apply fullscreen-exit-icon; */
   @apply [&_.arrow-1]:-translate-x-px [&_.arrow-1]:-translate-y-px;
   @apply [&_.arrow-2]:translate-x-px [&_.arrow-2]:translate-y-px;
   /* REMOVED (breaks @apply): group-hover/button:[&_.arrow-1]:translate-0 */
@@ -193,11 +193,11 @@
 }
 
 .FullScreenEnterTooltip {
-  @apply fullscreen-enter-tooltip;
+  /* @apply fullscreen-enter-tooltip; */
 }
 
 .FullScreenExitTooltip {
-  @apply fullscreen-exit-tooltip;
+  /* @apply fullscreen-exit-tooltip; */
 }
 
 .TimeControls {
