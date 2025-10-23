@@ -13,5 +13,3 @@ export { createMediaStore } from './media-store';
 export * from './state-mediators/audible';
 export * from './state-mediators/playable';
 export * from './state-mediators/temporal';
-
-export * from '../utils/time';

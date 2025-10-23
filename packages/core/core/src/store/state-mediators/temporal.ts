@@ -1,6 +1,4 @@
-function isValidNumber(value: any): value is number {
-  return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
-}
+import { isValidNumber } from '@vjs-10/utils';
 
 export const temporal = {
   currentTime: {

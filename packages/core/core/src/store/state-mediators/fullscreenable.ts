@@ -1,3 +1,5 @@
+import { containsComposedNode } from '@vjs-10/utils/dom';
+
 /** @TODO This is implemented for web/browser only! We will need an alternative state mediator model for e.g. React Native. (CJP) */
 export const fullscreenable = {
   fullscreen: {
@@ -44,10 +46,12 @@ export const fullscreenable = {
         }
 
         // Traverse shadow DOM layers looking for our container
-        while (fullscreenElementKey && currentRoot?.[fullscreenElementKey]) {
-          if (currentRoot[fullscreenElementKey] === container) return true;
-          if (currentRoot[fullscreenElementKey]?.contains?.(container)) return true;
-          currentRoot = currentRoot[fullscreenElementKey]?.shadowRoot;
+        if (fullscreenElementKey) {
+          while (currentRoot?.[fullscreenElementKey]) {
+            if (currentRoot[fullscreenElementKey] === container) return true;
+            if (currentRoot[fullscreenElementKey]?.contains?.(container)) return true;
+            currentRoot = currentRoot[fullscreenElementKey]?.shadowRoot;
+          }
         }
       }
 
