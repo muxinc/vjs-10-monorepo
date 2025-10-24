@@ -1,4 +1,4 @@
-import { VolumeSlider } from '@vjs-10/react';
+import { VolumeSlider } from '@videojs/react';
 import styles from './VolumeSlider.module.css';
 
 /**

@@ -1,5 +1,5 @@
-import { MuteButton } from '@vjs-10/react';
-import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
+import { MuteButton } from '@videojs/react';
+import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@videojs/react/icons';
 import styles from './MuteButton.module.css';
 
 /**

@@ -1,4 +1,4 @@
-import { MediaContainer, MediaProvider, Video } from '@vjs-10/react';
+import { MediaContainer, MediaProvider, Video } from '@videojs/react';
 import { BasicMuteButton } from './BasicMuteButton';
 
 /**
