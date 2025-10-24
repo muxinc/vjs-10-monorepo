@@ -11,7 +11,7 @@ function cn(...classes: (string | undefined)[]): string {
 
 const styles: FrostedSkinStyles = {
   MediaContainer: cn(
-    'vjs', // scope preflight
+    'vjs', // Scope preflight
     'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px
@@ -31,19 +31,10 @@ const styles: FrostedSkinStyles = {
     'vjs:has-[+.controls_[aria-expanded="true"]]:opacity-100 vjs:has-[+.controls_[aria-expanded="true"]]:delay-0',
     'vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
   ),
-  Controls: cn(
-    'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
-    'vjs:@container/controls vjs:absolute vjs:inset-x-3 vjs:bottom-3 vjs:rounded-full vjs:flex vjs:items-center vjs:p-1 vjs:ring vjs:ring-white/10 vjs:ring-inset vjs:gap-0.5 vjs:text-white',
-    'vjs:shadow-sm vjs:shadow-black/15',
-    // Background
+  Surface: cn(
     'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
-    // Animation
-    'vjs:transition vjs:will-change-transform vjs:origin-bottom vjs:ease-out',
-    //  FIXME: Temporary hide/show logic
-    'vjs:scale-90 vjs:opacity-0 vjs:delay-500 vjs:duration-300',
-    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:delay-0',
-    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:delay-0',
-    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
+    // Ring and shadow
+    'vjs:ring vjs:ring-white/10 vjs:ring-inset vjs:shadow-sm vjs:shadow-black/15',
     // Border to enhance contrast on lighter videos
     'vjs:after:absolute vjs:after:inset-0 vjs:after:ring vjs:after:rounded-[inherit] vjs:after:ring-black/15 vjs:after:pointer-events-none vjs:after:z-10',
     // Reduced transparency for users with preference
@@ -51,6 +42,18 @@ const styles: FrostedSkinStyles = {
     'vjs:reduced-transparency:bg-black/70 vjs:reduced-transparency:ring-black vjs:reduced-transparency:after:ring-white/20',
     // High contrast mode
     'vjs:contrast-more:bg-black/90 vjs:contrast-more:ring-black vjs:contrast-more:after:ring-white/20',
+  ),
+  Controls: cn(
+    'vjs:@container/controls vjs:absolute vjs:inset-x-3 vjs:bottom-3 vjs:rounded-full vjs:flex vjs:items-center vjs:p-1 vjs:gap-0.5 vjs:text-white',
+    // Animation
+    'vjs:transition vjs:will-change-transform vjs:origin-bottom vjs:ease-out',
+    //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
+    'controls',
+    //  FIXME: Temporary hide/show logic
+    'vjs:scale-90 vjs:opacity-0 vjs:delay-500 vjs:duration-300',
+    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:delay-0',
+    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:delay-0',
+    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
   ),
   Icon: cn('icon'),
   Button: cn(
@@ -72,25 +75,14 @@ const styles: FrostedSkinStyles = {
   ),
   IconButton: cn(
     'vjs:grid vjs:[&_.icon]:[grid-area:1/1]',
-    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-opacity vjs:[&_.icon]:duration-300 vjs:[&_.icon]:ease-out vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/25',
+    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-[opacity,filter] vjs:[&_.icon]:duration-500 vjs:[&_.icon]:linear vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/25',
   ),
   PlayButton: cn(
-    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0',
-    'vjs:[&_.play-icon]:opacity-0 vjs:[&[data-paused]_.play-icon]:opacity-100',
+    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0 vjs:[&[data-paused]_.pause-icon]:blur-sm',
+    'vjs:[&_.play-icon]:opacity-0 vjs:[&_.play-icon]:blur-sm vjs:[&[data-paused]_.play-icon]:opacity-100 vjs:[&[data-paused]_.play-icon]:blur-none',
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
-  TooltipPopup: cn(
-    'vjs:whitespace-nowrap vjs:flex vjs:origin-[var(--transform-origin)] vjs:flex-col vjs:rounded-md vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2 vjs:py-1',
-    // Background
-    'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
-    // Animation
-    'vjs:transition-[transform,scale,opacity] vjs:data-[ending-style]:scale-90 vjs:data-[ending-style]:opacity-0 vjs:data-[instant]:duration-0 vjs:data-[starting-style]:scale-90 vjs:data-[starting-style]:opacity-0',
-    // Ring
-    'vjs:ring-1 vjs:ring-white/10 vjs:ring-inset',
-    // Border to enhance contrast on lighter videos
-    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring vjs:after:rounded-[inherit] vjs:after:ring-black/15 vjs:after:pointer-events-none',
-  ),
   PlayTooltipPopup: cn(
     'vjs:[&_.pause-tooltip]:inline vjs:[&[data-paused]_.pause-tooltip]:hidden',
     'vjs:[&_.play-tooltip]:hidden vjs:[&[data-paused]_.play-tooltip]:inline',
@@ -98,11 +90,11 @@ const styles: FrostedSkinStyles = {
   PlayTooltip: cn('play-tooltip'),
   PauseTooltip: cn('pause-tooltip'),
   MuteButton: cn(
-    'vjs:[&_.icon]:opacity-0',
-    'vjs:[&[data-volume-level="high"]_.volume-high-icon]:opacity-100',
-    'vjs:[&[data-volume-level="medium"]_.volume-low-icon]:opacity-100',
-    'vjs:[&[data-volume-level="low"]_.volume-low-icon]:opacity-100',
-    'vjs:[&[data-volume-level="off"]_.volume-off-icon]:opacity-100',
+    'vjs:[&_.icon]:hidden',
+    'vjs:[&[data-volume-level="high"]_.volume-high-icon]:inline',
+    'vjs:[&[data-volume-level="medium"]_.volume-low-icon]:inline',
+    'vjs:[&[data-volume-level="low"]_.volume-low-icon]:inline',
+    'vjs:[&[data-volume-level="off"]_.volume-off-icon]:inline',
   ),
   VolumeHighIcon: cn('volume-high-icon'),
   VolumeLowIcon: cn('volume-low-icon'),
@@ -133,13 +125,14 @@ const styles: FrostedSkinStyles = {
   TimeControls: cn('vjs:flex-1 vjs:flex vjs:items-center vjs:gap-3 vjs:px-1.5'),
   TimeDisplay: cn('vjs:tabular-nums vjs:text-shadow-2xs/25'),
   SliderRoot: cn(
+    'vjs:group/slider-root',
+    'vjs:outline-0',
     'vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-full',
     'vjs:[&[data-orientation="horizontal"]]:h-5 vjs:[&[data-orientation="horizontal"]]:min-w-20',
     'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-20',
-    // Focus state
-    'vjs:focus-visible:outline-2 vjs:focus-visible:outline-blue-500',
   ),
   SliderTrack: cn(
+    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-2 vjs:group-focus-visible/slider-root:outline-blue-500',
     'vjs:w-full vjs:relative vjs:select-none vjs:rounded-full vjs:bg-white/20 vjs:ring-1 vjs:ring-black/5',
     'vjs:[&[data-orientation="horizontal"]]:h-1',
     'vjs:[&[data-orientation="vertical"]]:w-1',
@@ -156,27 +149,18 @@ const styles: FrostedSkinStyles = {
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
-  TimeSliderRoot: cn(
-    // Focus state
-    'vjs:-outline-offset-8 vjs:focus-visible:outline-offset-8',
-  ),
-  VolumeSliderRoot: cn(
-    // Focus state
-    'vjs:-outline-offset-4 vjs:focus-visible:outline-offset-4',
+  PopupAnimation: cn(
+    // Animation
+    // XXX: We can't use transforms since floating UI uses them for positioning.
+    'vjs:transition-[transform,scale,opacity,filter] vjs:origin-bottom vjs:duration-200 vjs:data-[instant]:duration-0',
+    'vjs:data-[starting-style]:scale-0 vjs:data-[starting-style]:opacity-0 vjs:data-[starting-style]:blur-sm',
+    'vjs:data-[ending-style]:scale-0 vjs:data-[ending-style]:opacity-0 vjs:data-[ending-style]:blur-sm',
   ),
   PopoverPopup: cn(
-    'vjs:relative vjs:px-1.5 vjs:py-3.5 vjs:rounded-full',
-    'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
-    'vjs:ring vjs:ring-white/10 vjs:ring-inset vjs:shadow-sm vjs:shadow-black/15',
-    // Animation
-    'vjs:transition-[transform,scale,opacity] vjs:data-[ending-style]:scale-90 vjs:data-[ending-style]:opacity-0 vjs:data-[instant]:duration-0 vjs:data-[starting-style]:scale-90 vjs:data-[starting-style]:opacity-0',
-    // Border to enhance contrast on lighter videos
-    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring vjs:after:rounded-[inherit] vjs:after:ring-black/15 vjs:after:pointer-events-none vjs:after:z-10',
-    // Reduced transparency for users with preference
-    // XXX: This requires a Tailwind custom variant (see 1 below)
-    'vjs:reduced-transparency:bg-black/70 vjs:reduced-transparency:ring-black vjs:reduced-transparency:after:ring-white/20',
-    // High contrast mode
-    'vjs:contrast-more:bg-black/90 vjs:contrast-more:ring-black vjs:contrast-more:after:ring-white/20',
+    'vjs:relative vjs:px-1 vjs:py-3 vjs:rounded-full',
+  ),
+  TooltipPopup: cn(
+    'vjs:whitespace-nowrap vjs:flex vjs:flex-col vjs:rounded-full vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2.5 vjs:py-1',
   ),
 };
 

@@ -11,7 +11,7 @@ function cn(...classes: (string | undefined)[]): string {
 
 const styles: MinimalSkinStyles = {
   MediaContainer: cn(
-    'vjs', // scope preflight
+    'vjs', // Scope preflight
     'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px
@@ -63,20 +63,14 @@ const styles: MinimalSkinStyles = {
   ButtonGroup: cn('vjs:flex vjs:items-center vjs:gap-1.5'),
   IconButton: cn(
     'vjs:grid vjs:[&_.icon]:[grid-area:1/1]',
-    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition vjs:[&_.icon]:duration-300 vjs:[&_.icon]:ease-out vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/40',
+    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-[opacity,filter] vjs:[&_.icon]:duration-300 vjs:[&_.icon]:linear vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/40',
   ),
   PlayButton: cn(
-    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0',
-    'vjs:[&_.play-icon]:opacity-0 vjs:[&[data-paused]_.play-icon]:opacity-100',
+    'vjs:[&_.pause-icon]:opacity-100 vjs:[&_.pause-icon]:blur-none vjs:[&[data-paused]_.pause-icon]:opacity-0 vjs:[&[data-paused]_.pause-icon]:blur-xs',
+    'vjs:[&_.play-icon]:opacity-0 vjs:[&_.play-icon]:blur-xs vjs:[&[data-paused]_.play-icon]:opacity-100 vjs:[&[data-paused]_.play-icon]:blur-none',
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
-  TooltipPopup: cn(
-    'vjs:whitespace-nowrap vjs:flex vjs:origin-[var(--transform-origin)] vjs:flex-col vjs:rounded-md vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2 vjs:py-1',
-    'vjs:bg-black/10 vjs:backdrop-blur-md',
-    // Animation
-    'vjs:transition-[transform,scale,opacity] vjs:data-[ending-style]:scale-90 vjs:data-[ending-style]:opacity-0 vjs:data-[instant]:duration-0 vjs:data-[starting-style]:scale-90 vjs:data-[starting-style]:opacity-0',
-  ),
   PlayTooltipPopup: cn(
     'vjs:[&_.pause-tooltip]:inline vjs:[&[data-paused]_.pause-tooltip]:hidden',
     'vjs:[&_.play-tooltip]:hidden vjs:[&[data-paused]_.play-tooltip]:inline',
@@ -140,10 +134,18 @@ const styles: MinimalSkinStyles = {
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
+  PopupAnimation: cn(
+    // Animation
+    // XXX: We can't use transforms since floating UI uses them for positioning.
+    'vjs:transition-[transform,scale,opacity,filter] vjs:origin-bottom vjs:duration-200 vjs:data-[instant]:duration-0',
+    'vjs:data-[starting-style]:scale-0 vjs:data-[starting-style]:opacity-0 vjs:data-[starting-style]:blur-sm',
+    'vjs:data-[ending-style]:scale-0 vjs:data-[ending-style]:opacity-0 vjs:data-[ending-style]:blur-sm',
+  ),
   PopoverPopup: cn(
     'vjs:py-2',
-    // Animation
-    'vjs:transition-[transform,scale,opacity] vjs:data-[ending-style]:scale-90 vjs:data-[ending-style]:opacity-0 vjs:data-[instant]:duration-0 vjs:data-[starting-style]:scale-90 vjs:data-[starting-style]:opacity-0',
+  ),
+  TooltipPopup: cn(
+    'vjs:whitespace-nowrap vjs:flex vjs:flex-col vjs:rounded vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2 vjs:py-1 vjs:bg-white/20 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90 vjs:shadow-md vjs:shadow-black/5',
   ),
 };
 

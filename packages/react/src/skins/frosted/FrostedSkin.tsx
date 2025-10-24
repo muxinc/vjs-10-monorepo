@@ -35,7 +35,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
       {/* Background gradient to help with controls contrast. */}
       <div className={styles.Overlay} aria-hidden="true" />
 
-      <div className={styles.Controls} data-testid="media-controls">
+      <div className={`${styles.Surface} ${styles.Controls}`} data-testid="media-controls">
         <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
             <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
@@ -45,7 +45,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
           </Tooltip.Trigger>
           <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
+              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.Surface} ${styles.PopupAnimation} ${styles.PlayTooltipPopup}`}>
                 <span className={styles.PlayTooltip}>Play</span>
                 <span className={styles.PauseTooltip}>Pause</span>
               </Tooltip.Popup>
@@ -62,7 +62,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
 
           <Tooltip.Root trackCursorAxis="x">
             <Tooltip.Trigger>
-              <TimeSlider.Root className={`${styles.SliderRoot} ${styles.TimeSliderRoot}`}>
+              <TimeSlider.Root className={styles.SliderRoot}>
                 <TimeSlider.Track className={styles.SliderTrack}>
                   <TimeSlider.Progress className={styles.SliderProgress} />
                   <TimeSlider.Pointer className={styles.SliderPointer} />
@@ -72,8 +72,8 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
             </Tooltip.Trigger>
             <Tooltip.Portal>
               <Tooltip.Positioner side="top" sideOffset={18} collisionPadding={12}>
-                <Tooltip.Popup className={`${styles.TooltipPopup}`}>
-                  <PreviewTimeDisplay />
+                <Tooltip.Popup className={`${styles.Surface} ${styles.PopupAnimation} ${styles.TooltipPopup}`}>
+                  <PreviewTimeDisplay className={styles.TimeDisplay} />
                 </Tooltip.Popup>
               </Tooltip.Positioner>
             </Tooltip.Portal>
@@ -92,8 +92,8 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
           </Popover.Trigger>
           <Popover.Portal>
             <Popover.Positioner side="top" sideOffset={12}>
-              <Popover.Popup className={styles.PopoverPopup}>
-                <VolumeSlider.Root className={`${styles.SliderRoot} ${styles.VolumeSliderRoot}`} orientation="vertical">
+              <Popover.Popup className={`${styles.Surface} ${styles.PopupAnimation} ${styles.PopoverPopup}`}>
+                <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
                   <VolumeSlider.Track className={styles.SliderTrack}>
                     <VolumeSlider.Progress className={styles.SliderProgress} />
                   </VolumeSlider.Track>
@@ -113,7 +113,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
           </Tooltip.Trigger>
           <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
+              <Tooltip.Popup className={`${styles.Surface} ${styles.PopupAnimation} ${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
                 <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
                 <span className={styles.FullscreenExitTooltip}>Exit Fullscreen</span>
               </Tooltip.Popup>

@@ -12,7 +12,6 @@ export interface MinimalSkinStyles {
   readonly PlayTooltipPopup: string;
   readonly PlayTooltip: string;
   readonly PauseTooltip: string;
-  readonly TooltipPopup: string;
   readonly MuteButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
@@ -23,7 +22,6 @@ export interface MinimalSkinStyles {
   readonly FullscreenTooltipPopup: string;
   readonly FullscreenEnterTooltip: string;
   readonly FullscreenExitTooltip: string;
-  readonly PopoverPopup: string;
   readonly TimeSliderRoot: string;
   readonly TimeDisplay: string;
   readonly DurationDisplay: string;
@@ -32,4 +30,7 @@ export interface MinimalSkinStyles {
   readonly SliderProgress: string;
   readonly SliderPointer: string;
   readonly SliderThumb: string;
+  readonly PopupAnimation: string;
+  readonly PopoverPopup: string;
+  readonly TooltipPopup: string;
 }

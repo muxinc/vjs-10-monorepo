@@ -1,5 +1,6 @@
 export interface FrostedSkinStyles {
   readonly MediaContainer: string;
+  readonly Surface: string;
   readonly Overlay: string;
   readonly Controls: string;
   readonly Icon: string;
@@ -11,7 +12,6 @@ export interface FrostedSkinStyles {
   readonly PlayTooltipPopup: string;
   readonly PlayTooltip: string;
   readonly PauseTooltip: string;
-  readonly TooltipPopup: string;
   readonly MuteButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
@@ -27,9 +27,9 @@ export interface FrostedSkinStyles {
   readonly SliderProgress: string;
   readonly SliderPointer: string;
   readonly SliderThumb: string;
-  readonly TimeSliderRoot: string;
-  readonly VolumeSliderRoot: string;
-  readonly PopoverPopup: string;
   readonly TimeControls: string;
   readonly TimeDisplay: string;
+  readonly PopupAnimation: string;
+  readonly PopoverPopup: string;
+  readonly TooltipPopup: string;
 }
