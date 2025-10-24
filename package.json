@@ -16,7 +16,7 @@
   },
   "scripts": {
     "prepare": "simple-git-hooks",
-    "build:libs": "turbo run build --filter=./packages/**",
+    "build:packages": "turbo run build --filter=./packages/**",
     "build:website": "turbo run build --filter=website",
     "build": "turbo run build",
     "clean": "turbo run clean",
