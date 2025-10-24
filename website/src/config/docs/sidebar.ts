@@ -9,6 +9,8 @@ export const sidebar: Sidebar = [
       { slug: 'components/play-button', sidebarLabel: 'PlayButton' },
       { slug: 'components/mute-button', sidebarLabel: 'MuteButton' },
       { slug: 'components/fullscreen-button', sidebarLabel: 'FullscreenButton' },
+      { slug: 'components/time-slider', sidebarLabel: 'TimeSlider' },
+      { slug: 'components/volume-slider', sidebarLabel: 'VolumeSlider' },
     ],
   },
   // {
