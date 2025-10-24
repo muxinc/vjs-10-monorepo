@@ -1,6 +1,6 @@
 # @videojs/core
 
-[![npm](https://img.shields.io/badge/npm-%40vjs--10%2Fcore-blue)](https://www.npmjs.com/package/@videojs/core)
+[![package-badge]][package]
 
 > **⚠️ Technical Preview - SUBJECT TO CHANGE** Not recommended for production use.
 
@@ -13,3 +13,6 @@ packages. These are foundational building blocks used by platform-specific imple
 ## License
 
 [Apache-2.0](./LICENSE)
+
+[package]: https://www.npmjs.com/package/@videojs/core
+[package-badge]: https://img.shields.io/npm/v/%40videojs%2Fcore%40next
