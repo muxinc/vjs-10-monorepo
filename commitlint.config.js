@@ -1,20 +1,29 @@
 export default {
   extends: ['@commitlint/config-conventional'],
   formatter: '@commitlint/format',
+  ignores: [
+    /** @param {string} message */
+    (message) => {
+      const lower = message.toLowerCase().trim();
+      return ['wip'].includes(lower);
+    },
+  ],
   rules: {
     'scope-enum': [2, 'always', [
-      'root',
+      'cd',
+      'ci',
       'core',
-      'icons',
-      'html',
-      'react',
-      'react-native',
-      'utils',
-      'site',
       'docs',
-      'test',
       'example/html',
       'example/react',
+      'html',
+      'icons',
+      'react-native',
+      'react',
+      'root',
+      'site',
+      'test',
+      'utils',
     ]],
   },
 };
