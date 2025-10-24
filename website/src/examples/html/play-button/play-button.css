@@ -37,7 +37,7 @@ video {
   z-index: 10;
 }
 
-.play-button {
+media-play-button {
   position: relative;
   display: grid;
   padding: 0.625rem;
@@ -50,17 +50,17 @@ video {
   transition: background 150ms ease;
 }
 
-.play-button:hover {
+media-play-button:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.play-button:active {
+media-play-button:active {
   background: rgba(255, 255, 255, 0.2);
 }
 
 /* Icon positioning - both occupy same grid cell */
-.play-icon,
-.pause-icon {
+media-play-icon,
+media-pause-icon {
   grid-area: 1/1;
   transition: opacity 200ms ease;
   width: 18px;
@@ -68,18 +68,18 @@ video {
 }
 
 /* Show/hide icons based on paused state using data attributes */
-.play-button[data-paused] .play-icon {
+media-play-button[data-paused] media-play-icon {
   opacity: 1;
 }
 
-.play-button[data-paused] .pause-icon {
+media-play-button[data-paused] media-pause-icon {
   opacity: 0;
 }
 
-.play-button:not([data-paused]) .play-icon {
+media-play-button:not([data-paused]) media-play-icon {
   opacity: 0;
 }
 
-.play-button:not([data-paused]) .pause-icon {
+media-play-button:not([data-paused]) media-pause-icon {
   opacity: 1;
 }
