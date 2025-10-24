@@ -1,5 +1,6 @@
 import { MediaSkin } from '@/media/media-skin';
 import '@/media/media-container';
+import '@/media/media-provider';
 import '@/components/media-play-button';
 import '@/components/media-mute-button';
 import '@/components/media-volume-slider';
