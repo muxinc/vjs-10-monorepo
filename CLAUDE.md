@@ -36,7 +36,7 @@ pnpm install
 pnpm build
 
 # Build only library packages (excludes examples)
-pnpm build:libs
+pnpm build:packages
 
 # Run tests across all packages
 pnpm test
