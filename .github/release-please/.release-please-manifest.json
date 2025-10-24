@@ -1,0 +1,7 @@
+{
+  "packages/core": "0.1.0-experimental.0",
+  "packages/html": "0.1.0-experimental.0",
+  "packages/react": "0.1.0-experimental.0",
+  "packages/icons": "0.1.0-experimental.0",
+  "packages/utils": "0.1.0-experimental.0"
+}

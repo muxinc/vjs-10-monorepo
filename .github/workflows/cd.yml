@@ -1,0 +1,69 @@
+name: Deployment
+
+concurrency: production
+
+on:
+  push:
+    branches:
+      - main
+
+# To use Turborepo Remote Caching, set the following environment variables.
+# env:
+#   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+#   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: .github/release-please/release-please-config.json
+          manifest-file: .github/release-please/.release-please-manifest.json
+
+      - uses: actions/checkout@v5
+        # these if statements ensure that a publication only occurs when
+        # a new release is created:
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: read node version from the .nvmrc file
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
+        shell: bash
+        id: nvmrc
+      - uses: actions/setup-node@v5
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        with:
+          node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
+          # this line is required for the setup-node action to be able to run the npm publish below.
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: pnpm i --frozen-lockfile
+
+      - name: Clean
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: pnpm clean
+
+      - name: Build
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: pnpm build:libs
+
+      - name: Publish
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: pnpm -r publish --dry-run --access public --provenance --tag next --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

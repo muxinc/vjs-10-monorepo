@@ -1,0 +1,40 @@
+{
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false,
+  "tag-separator": "@",
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "plugins": [
+    {
+      "type": "node-workspace",
+      "merge": false
+    }
+  ],
+  "packages": {
+    "packages/core": {
+      "component": "@videojs/core",
+      "prerelease": true,
+      "versioning": "prerelease"
+    },
+    "packages/html": {
+      "component": "@videojs/html",
+      "prerelease": true,
+      "versioning": "prerelease"
+    },
+    "packages/icons": {
+      "component": "@videojs/icons",
+      "prerelease": true,
+      "versioning": "prerelease"
+    },
+    "packages/react": {
+      "component": "@videojs/react",
+      "prerelease": true,
+      "versioning": "prerelease"
+    },
+    "packages/utils": {
+      "component": "@videojs/utils",
+      "prerelease": true,
+      "versioning": "prerelease"
+    }
+  }
+}
