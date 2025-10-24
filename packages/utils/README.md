@@ -1,9 +1,12 @@
 # @videojs/utils
 
-[![npm](https://img.shields.io/badge/npm-%40videojs%2Futils-blue)](https://www.npmjs.com/package/@videojs/utils)
+[![package-badge]][package]
 
 > **⚠️ Technical Preview - SUBJECT TO CHANGE** Not recommended for production use.
 
 ## License
 
 [Apache-2.0](./LICENSE)
+
+[package]: https://www.npmjs.com/package/@videojs/utils
+[package-badge]: https://img.shields.io/npm/v/%40videojs%2Futils%40next

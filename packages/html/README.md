@@ -1,6 +1,6 @@
 # @videojs/html
 
-[![npm](https://img.shields.io/badge/npm-%40videojs%2Fhtml-blue)](https://www.npmjs.com/package/@videojs/html)
+[![package-badge]][package]
 
 > **⚠️ Technical Preview - SUBJECT TO CHANGE** Not recommended for production use.
 
@@ -11,3 +11,6 @@
 ## License
 
 [Apache-2.0](./LICENSE)
+
+[package]: https://www.npmjs.com/package/@videojs/html
+[package-badge]: https://img.shields.io/npm/v/%40videojs%2Fhtml%40next
