@@ -3,7 +3,7 @@
   "ignorePaths": ["package.json", "tsconfig.json"],
   "dictionaryDefinitions": [],
   "dictionaries": ["css", "html", "node", "typescript", "npm"],
-  "words": ["antfu", "noto", "nums", "rahim", "segoe"],
+  "words": ["antfu", "noto", "nums", "rahim", "segoe", "videojs"],
   "ignoreWords": [],
   "import": []
 }

@@ -50,10 +50,10 @@ const styles: FrostedSkinStyles = {
     //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
     'controls',
     //  FIXME: Temporary hide/show logic
-    'vjs:scale-90 vjs:opacity-0 vjs:delay-500 vjs:duration-300',
-    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:delay-0',
-    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:delay-0',
-    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
+    'vjs:scale-90 vjs:opacity-0 vjs:blur-sm vjs:delay-500 vjs:duration-200',
+    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:blur-none vjs:has-[[data-paused]]:delay-0',
+    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:blur-none vjs:has-[[aria-expanded="true"]]:delay-0',
+    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:blur-none vjs:group-hover/root:delay-0',
   ),
   Icon: cn('icon'),
   Button: cn(
