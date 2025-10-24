@@ -36,7 +36,7 @@ members:
 
 Join our community channels above and give us feedback! Keep in mind this is a technical preview
 and we're working on a lot of polish over the coming months. Feedback on any of the following
-would help us al ot:
+would help us:
 
 - Player skin designs
 - Architecture and general approach
