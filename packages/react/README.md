@@ -1,6 +1,6 @@
 # @videojs/react
 
-[![npm](https://img.shields.io/badge/npm-%40vjs--10%2Fcore-blue)](https://www.npmjs.com/package/@videojs/react)
+[![npm](https://img.shields.io/badge/npm-%40videojs%2Freact-blue)](https://www.npmjs.com/package/@videojs/react)
 
 > **⚠️ Technical Preview - SUBJECT TO CHANGE** Not recommended for production use.
 
