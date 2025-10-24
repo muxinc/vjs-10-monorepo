@@ -1,4 +1,4 @@
-.muteButton {
+.button {
   position: relative;
   display: grid;
   padding: 0.625rem;
@@ -11,11 +11,11 @@
   transition: background 150ms ease;
 }
 
-.muteButton:hover {
+.button:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.muteButton:active {
+.button:active {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -32,17 +32,17 @@
 
 /* Show appropriate icon based on volume level using data attributes */
 /* High volume (> 50%) */
-.muteButton[data-volume-level='high'] .volumeHighIcon {
+.button[data-volume-level='high'] .volumeHighIcon {
   opacity: 1;
 }
 
 /* Medium/Low volume (1-50%) */
-.muteButton[data-volume-level='medium'] .volumeLowIcon,
-.muteButton[data-volume-level='low'] .volumeLowIcon {
+.button[data-volume-level='medium'] .volumeLowIcon,
+.button[data-volume-level='low'] .volumeLowIcon {
   opacity: 1;
 }
 
 /* Muted/Off volume (0%) */
-.muteButton[data-volume-level='off'] .volumeOffIcon {
+.button[data-volume-level='off'] .volumeOffIcon {
   opacity: 1;
 }

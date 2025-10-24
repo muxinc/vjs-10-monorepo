@@ -1,11 +1,11 @@
 import { VolumeSlider } from '@vjs-10/react';
-import './VolumeSlider.css';
+import styles from './VolumeSlider.module.css';
 
 /**
  * Basic VolumeSlider example demonstrating:
  * - Volume level visualization
  * - Horizontal orientation
- * - Regular CSS for styling (compatible with Astro)
+ * - CSS Modules for scoped styling
  * - Data attribute selectors for state-based styling
  *
  * Note: This component must be used within a MediaProvider context.
@@ -13,11 +13,11 @@ import './VolumeSlider.css';
  */
 export function BasicVolumeSlider() {
   return (
-    <VolumeSlider.Root className="example-volume-slider" orientation="horizontal">
-      <VolumeSlider.Track className="volume-slider-track">
-        <VolumeSlider.Progress className="volume-slider-progress" />
+    <VolumeSlider.Root className={styles.root} orientation="horizontal">
+      <VolumeSlider.Track className={styles.track}>
+        <VolumeSlider.Progress className={styles.progress} />
       </VolumeSlider.Track>
-      <VolumeSlider.Thumb className="volume-slider-thumb" />
+      <VolumeSlider.Thumb className={styles.thumb} />
     </VolumeSlider.Root>
   );
 }

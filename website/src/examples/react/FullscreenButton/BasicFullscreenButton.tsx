@@ -1,6 +1,6 @@
 import { FullscreenButton } from '@vjs-10/react';
 import { FullscreenEnterIcon, FullscreenExitIcon } from '@vjs-10/react-icons';
-import './FullscreenButton.css';
+import styles from './FullscreenButton.module.css';
 
 /**
  * Basic FullscreenButton example demonstrating:
@@ -13,9 +13,9 @@ import './FullscreenButton.css';
  */
 export function BasicFullscreenButton() {
   return (
-    <FullscreenButton className="example-fullscreen-button">
-      <FullscreenEnterIcon className="fullscreen-enter-icon" />
-      <FullscreenExitIcon className="fullscreen-exit-icon" />
+    <FullscreenButton className={styles.button}>
+      <FullscreenEnterIcon className={styles.fullscreenEnterIcon} />
+      <FullscreenExitIcon className={styles.fullscreenExitIcon} />
     </FullscreenButton>
   );
 }

@@ -1,6 +1,6 @@
 import { MuteButton } from '@vjs-10/react';
 import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
-import './MuteButton.css';
+import styles from './MuteButton.module.css';
 
 /**
  * Basic MuteButton example demonstrating:
@@ -13,10 +13,10 @@ import './MuteButton.css';
  */
 export function BasicMuteButton() {
   return (
-    <MuteButton className="example-mute-button">
-      <VolumeHighIcon className="volume-high-icon" />
-      <VolumeLowIcon className="volume-low-icon" />
-      <VolumeOffIcon className="volume-off-icon" />
+    <MuteButton className={styles.button}>
+      <VolumeHighIcon className={styles.volumeHighIcon} />
+      <VolumeLowIcon className={styles.volumeLowIcon} />
+      <VolumeOffIcon className={styles.volumeOffIcon} />
     </MuteButton>
   );
 }

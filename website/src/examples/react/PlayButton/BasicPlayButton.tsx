@@ -1,11 +1,11 @@
 import { PlayButton } from '@vjs-10/react';
 import { PauseIcon, PlayIcon } from '@vjs-10/react-icons';
-import './PlayButton.css';
+import styles from './PlayButton.module.css';
 
 /**
  * Basic PlayButton example demonstrating:
  * - Icon switching based on paused state
- * - Regular CSS for styling (compatible with Astro)
+ * - CSS Modules for scoped styling
  * - Data attribute selectors for state-based styling
  *
  * Note: This component must be used within a MediaProvider context.
@@ -13,9 +13,9 @@ import './PlayButton.css';
  */
 export function BasicPlayButton() {
   return (
-    <PlayButton className="example-play-button">
-      <PlayIcon className="play-icon" />
-      <PauseIcon className="pause-icon" />
+    <PlayButton className={styles.button}>
+      <PlayIcon className={styles.playIcon} />
+      <PauseIcon className={styles.pauseIcon} />
     </PlayButton>
   );
 }

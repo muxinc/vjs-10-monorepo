@@ -1,4 +1,4 @@
-.fullscreenButton {
+.button {
   position: relative;
   display: grid;
   padding: 0.625rem;
@@ -11,11 +11,11 @@
   transition: background 150ms ease;
 }
 
-.fullscreenButton:hover {
+.button:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.fullscreenButton:active {
+.button:active {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -29,18 +29,18 @@
 }
 
 /* Show/hide icons based on fullscreen state using data attributes */
-.fullscreenButton:not([data-fullscreen]) .fullscreenEnterIcon {
+.button:not([data-fullscreen]) .fullscreenEnterIcon {
   opacity: 1;
 }
 
-.fullscreenButton:not([data-fullscreen]) .fullscreenExitIcon {
+.button:not([data-fullscreen]) .fullscreenExitIcon {
   opacity: 0;
 }
 
-.fullscreenButton[data-fullscreen] .fullscreenEnterIcon {
+.button[data-fullscreen] .fullscreenEnterIcon {
   opacity: 0;
 }
 
-.fullscreenButton[data-fullscreen] .fullscreenExitIcon {
+.button[data-fullscreen] .fullscreenExitIcon {
   opacity: 1;
 }

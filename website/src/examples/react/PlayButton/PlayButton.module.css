@@ -1,4 +1,4 @@
-.playButton {
+.button {
   position: relative;
   display: grid;
   padding: 0.625rem;
@@ -11,11 +11,11 @@
   transition: background 150ms ease;
 }
 
-.playButton:hover {
+.button:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.playButton:active {
+.button:active {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -29,18 +29,18 @@
 }
 
 /* Show/hide icons based on paused state using data attributes */
-.playButton[data-paused] .playIcon {
+.button[data-paused] .playIcon {
   opacity: 1;
 }
 
-.playButton[data-paused] .pauseIcon {
+.button[data-paused] .pauseIcon {
   opacity: 0;
 }
 
-.playButton:not([data-paused]) .playIcon {
+.button:not([data-paused]) .playIcon {
   opacity: 0;
 }
 
-.playButton:not([data-paused]) .pauseIcon {
+.button:not([data-paused]) .pauseIcon {
   opacity: 1;
 }

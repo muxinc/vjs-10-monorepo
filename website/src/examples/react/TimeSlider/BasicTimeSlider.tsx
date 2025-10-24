@@ -1,11 +1,11 @@
 import { TimeSlider } from '@vjs-10/react';
-import './TimeSlider.css';
+import styles from './TimeSlider.module.css';
 
 /**
  * Basic TimeSlider example demonstrating:
  * - Progress and pointer visualization
  * - Horizontal orientation
- * - Regular CSS for styling (compatible with Astro)
+ * - CSS Modules for scoped styling
  * - Data attribute selectors for state-based styling
  *
  * Note: This component must be used within a MediaProvider context.
@@ -13,12 +13,12 @@ import './TimeSlider.css';
  */
 export function BasicTimeSlider() {
   return (
-    <TimeSlider.Root className="example-time-slider" orientation="horizontal">
-      <TimeSlider.Track className="time-slider-track">
-        <TimeSlider.Progress className="time-slider-progress" />
-        <TimeSlider.Pointer className="time-slider-pointer" />
+    <TimeSlider.Root className={styles.root} orientation="horizontal">
+      <TimeSlider.Track className={styles.track}>
+        <TimeSlider.Progress className={styles.progress} />
+        <TimeSlider.Pointer className={styles.pointer} />
       </TimeSlider.Track>
-      <TimeSlider.Thumb className="time-slider-thumb" />
+      <TimeSlider.Thumb className={styles.thumb} />
     </TimeSlider.Root>
   );
 }
