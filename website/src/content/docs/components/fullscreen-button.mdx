@@ -4,11 +4,9 @@ description: A button component for toggling fullscreen mode
 ---
 
 import { FullscreenButtonDemo } from '@/examples/react/FullscreenButton/FullscreenButtonDemo';
+import componentModuleStr from '@/examples/react/FullscreenButton/FullscreenButtonCSSModules.tsx?raw';
+import cssModuleStr from '@/examples/react/FullscreenButton/FullscreenButton.module.css?raw';
 import { CodeTabs } from '@/components/docs/CodeTabs';
-
-# FullscreenButton
-
-A button component that toggles fullscreen mode for the media container.
 
 ## Features
 
@@ -23,185 +21,12 @@ A button component that toggles fullscreen mode for the media container.
 
 ## Usage
 
-<CodeTabs
-  client:load
-  tabs={[
-    {
-      label: 'Regular CSS',
-      content: (
-        <>
-          <h4>Component</h4>
-          <pre><code className="language-tsx">{`import { FullscreenButton } from '@vjs-10/react';
-import { FullscreenEnterIcon, FullscreenExitIcon } from '@vjs-10/react-icons';
-import './FullscreenButton.css';
+### React
+Component
+<pre>{componentModuleStr}</pre>
+CSS Module
+<pre>{cssModuleStr}</pre>
 
-export function BasicFullscreenButton() {
-  return (
-    <FullscreenButton className="example-fullscreen-button">
-      <FullscreenEnterIcon className="fullscreen-enter-icon" />
-      <FullscreenExitIcon className="fullscreen-exit-icon" />
-    </FullscreenButton>
-  );
-}`}</code></pre>
-          <h4>Styles (FullscreenButton.css)</h4>
-          <pre><code className="language-css">{`.example-fullscreen-button {
-  position: relative;
-  display: grid;
-  padding: 0.625rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: background 150ms ease;
-}
-
-.example-fullscreen-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Icon positioning - both occupy same grid cell */
-.fullscreen-enter-icon,
-.fullscreen-exit-icon {
-  grid-area: 1/1;
-  transition: opacity 200ms ease;
-  width: 18px;
-  height: 18px;
-}
-
-/* Show/hide icons based on fullscreen state */
-.example-fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon {
-  opacity: 1;
-}
-
-.example-fullscreen-button:not([data-fullscreen]) .fullscreen-exit-icon {
-  opacity: 0;
-}
-
-.example-fullscreen-button[data-fullscreen] .fullscreen-enter-icon {
-  opacity: 0;
-}
-
-.example-fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
-  opacity: 1;
-}`}</code></pre>
-        </>
-      ),
-    },
-    {
-      label: 'CSS Modules',
-      content: (
-        <>
-          <h4>Component</h4>
-          <pre><code className="language-tsx">{`import { FullscreenButton } from '@vjs-10/react';
-import { FullscreenEnterIcon, FullscreenExitIcon } from '@vjs-10/react-icons';
-import styles from './FullscreenButton.module.css';
-
-export function FullscreenButtonCSSModules() {
-  return (
-    <FullscreenButton className={styles.fullscreenButton}>
-      <FullscreenEnterIcon className={styles.fullscreenEnterIcon} />
-      <FullscreenExitIcon className={styles.fullscreenExitIcon} />
-    </FullscreenButton>
-  );
-}`}</code></pre>
-          <h4>Styles (FullscreenButton.module.css)</h4>
-          <pre><code className="language-css">{`.fullscreenButton {
-  position: relative;
-  display: grid;
-  padding: 0.625rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: background 150ms ease;
-}
-
-.fullscreenButton:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Icon positioning - both occupy same grid cell */
-.fullscreenEnterIcon,
-.fullscreenExitIcon {
-  grid-area: 1/1;
-  transition: opacity 200ms ease;
-  width: 18px;
-  height: 18px;
-}
-
-/* Show/hide icons based on fullscreen state */
-.fullscreenButton:not([data-fullscreen]) .fullscreenEnterIcon {
-  opacity: 1;
-}
-
-.fullscreenButton:not([data-fullscreen]) .fullscreenExitIcon {
-  opacity: 0;
-}
-
-.fullscreenButton[data-fullscreen] .fullscreenEnterIcon {
-  opacity: 0;
-}
-
-.fullscreenButton[data-fullscreen] .fullscreenExitIcon {
-  opacity: 1;
-}`}</code></pre>
-        </>
-      ),
-    },
-  ]}
-/>
-
-### Complete Example with MediaProvider
-
-```tsx
-import { MediaProvider, MediaContainer, Video } from '@vjs-10/react';
-import { BasicFullscreenButton } from './BasicFullscreenButton';
-
-export function FullscreenButtonDemo() {
-  return (
-    <MediaProvider>
-      <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
-        <Video
-          src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8"
-          poster="https://image.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ/thumbnail.webp"
-        />
-        <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', zIndex: 10 }}>
-          <BasicFullscreenButton />
-        </div>
-      </MediaContainer>
-    </MediaProvider>
-  );
-}
-```
-
-### HTML
-
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <link rel="stylesheet" href="./fullscreen-button.css" />
-    <script type="module" src="./fullscreen-button.js"></script>
-  </head>
-  <body>
-    <media-container>
-      <video src="video.mp4"></video>
-      <media-fullscreen-button class="fullscreen-button">
-        <svg class="fullscreen-enter-icon" viewBox="0 0 24 24">
-          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
-        </svg>
-        <svg class="fullscreen-exit-icon" viewBox="0 0 24 24">
-          <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
-        </svg>
-      </media-fullscreen-button>
-    </media-container>
-  </body>
-</html>
-```
 
 ## Data Attributes
 
@@ -219,7 +44,6 @@ All standard button props are supported, plus:
 |------|------|-------------|
 | `children` | `ReactNode` | Button content (typically icons) |
 | `className` | `string` | CSS class name |
-| `target` | `RefObject<HTMLElement>` | Optional element to make fullscreen (defaults to MediaContainer) |
 
 ## Accessibility
 
@@ -229,4 +53,6 @@ All standard button props are supported, plus:
 
 ## Browser Support
 
-The FullscreenButton uses the standard Fullscreen API, which is supported in all modern browsers. On older browsers or contexts where fullscreen is not available, the button will be automatically hidden.
+The FullscreenButton uses the standard Fullscreen API, which is supported in all modern browsers.
+
+Something about MediaContainer

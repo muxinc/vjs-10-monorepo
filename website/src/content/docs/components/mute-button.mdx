@@ -4,11 +4,8 @@ description: A button component for toggling audio mute state
 ---
 
 import { MuteButtonDemo } from '@/examples/react/MuteButton/MuteButtonDemo';
-import { CodeTabs } from '@/components/docs/CodeTabs';
-
-# MuteButton
-
-A button component that toggles the mute state of media playback and displays different icons based on volume level.
+import componentModuleStr from '@/examples/react/MuteButton/MuteButtonCSSModules.tsx?raw';
+import cssModuleStr from '@/examples/react/MuteButton/MuteButton.module.css?raw';
 
 ## Features
 
@@ -23,195 +20,14 @@ A button component that toggles the mute state of media playback and displays di
 
 ## Usage
 
-<CodeTabs
-  client:load
-  tabs={[
-    {
-      label: 'Regular CSS',
-      content: (
-        <>
-          <h4>Component</h4>
-          <pre><code className="language-tsx">{`import { MuteButton } from '@vjs-10/react';
-import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
-import './MuteButton.css';
+### React
+Component
+<pre>{componentModuleStr}</pre>
+CSS Module
+<pre>{cssModuleStr}</pre>
 
-export function BasicMuteButton() {
-  return (
-    <MuteButton className="example-mute-button">
-      <VolumeHighIcon className="volume-high-icon" />
-      <VolumeLowIcon className="volume-low-icon" />
-      <VolumeOffIcon className="volume-off-icon" />
-    </MuteButton>
-  );
-}`}</code></pre>
-          <h4>Styles (MuteButton.css)</h4>
-          <pre><code className="language-css">{`.example-mute-button {
-  position: relative;
-  display: grid;
-  padding: 0.625rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: background 150ms ease;
-}
 
-.example-mute-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Icon positioning - all icons occupy same grid cell */
-.volume-high-icon,
-.volume-low-icon,
-.volume-off-icon {
-  grid-area: 1/1;
-  transition: opacity 200ms ease;
-  width: 18px;
-  height: 18px;
-  opacity: 0;
-}
-
-/* Show appropriate icon based on volume level */
-/* High volume (> 50%) */
-.example-mute-button[data-volume-level='high'] .volume-high-icon {
-  opacity: 1;
-}
-
-/* Medium/Low volume (1-50%) */
-.example-mute-button[data-volume-level='medium'] .volume-low-icon,
-.example-mute-button[data-volume-level='low'] .volume-low-icon {
-  opacity: 1;
-}
-
-/* Muted/Off volume (0%) */
-.example-mute-button[data-volume-level='off'] .volume-off-icon {
-  opacity: 1;
-}`}</code></pre>
-        </>
-      ),
-    },
-    {
-      label: 'CSS Modules',
-      content: (
-        <>
-          <h4>Component</h4>
-          <pre><code className="language-tsx">{`import { MuteButton } from '@vjs-10/react';
-import { VolumeHighIcon, VolumeLowIcon, VolumeOffIcon } from '@vjs-10/react-icons';
-import styles from './MuteButton.module.css';
-
-export function MuteButtonCSSModules() {
-  return (
-    <MuteButton className={styles.muteButton}>
-      <VolumeHighIcon className={styles.volumeHighIcon} />
-      <VolumeLowIcon className={styles.volumeLowIcon} />
-      <VolumeOffIcon className={styles.volumeOffIcon} />
-    </MuteButton>
-  );
-}`}</code></pre>
-          <h4>Styles (MuteButton.module.css)</h4>
-          <pre><code className="language-css">{`.muteButton {
-  position: relative;
-  display: grid;
-  padding: 0.625rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: background 150ms ease;
-}
-
-.muteButton:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Icon positioning - all icons occupy same grid cell */
-.volumeHighIcon,
-.volumeLowIcon,
-.volumeOffIcon {
-  grid-area: 1/1;
-  transition: opacity 200ms ease;
-  width: 18px;
-  height: 18px;
-  opacity: 0;
-}
-
-/* Show appropriate icon based on volume level */
-/* High volume (> 50%) */
-.muteButton[data-volume-level='high'] .volumeHighIcon {
-  opacity: 1;
-}
-
-/* Medium/Low volume (1-50%) */
-.muteButton[data-volume-level='medium'] .volumeLowIcon,
-.muteButton[data-volume-level='low'] .volumeLowIcon {
-  opacity: 1;
-}
-
-/* Muted/Off volume (0%) */
-.muteButton[data-volume-level='off'] .volumeOffIcon {
-  opacity: 1;
-}`}</code></pre>
-        </>
-      ),
-    },
-  ]}
-/>
-
-### Complete Example with MediaProvider
-
-```tsx
-import { MediaProvider, MediaContainer, Video } from '@vjs-10/react';
-import { BasicMuteButton } from './BasicMuteButton';
-
-export function MuteButtonDemo() {
-  return (
-    <MediaProvider>
-      <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
-        <Video
-          src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8"
-          poster="https://image.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ/thumbnail.webp"
-        />
-        <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', zIndex: 10 }}>
-          <BasicMuteButton />
-        </div>
-      </MediaContainer>
-    </MediaProvider>
-  );
-}
-```
-
-### HTML
-
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <link rel="stylesheet" href="./mute-button.css" />
-    <script type="module" src="./mute-button.js"></script>
-  </head>
-  <body>
-    <media-container>
-      <video src="video.mp4"></video>
-      <media-mute-button class="mute-button">
-        <svg class="volume-high-icon" viewBox="0 0 24 24">
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z..." />
-        </svg>
-        <svg class="volume-low-icon" viewBox="0 0 24 24">
-          <path d="M7 9v6h4l5 5V4l-5 5H7zm9.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-        </svg>
-        <svg class="volume-off-icon" viewBox="0 0 24 24">
-          <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63z..." />
-        </svg>
-      </media-mute-button>
-    </media-container>
-  </body>
-</html>
-```
-
+## Data Attributes
 ## Data Attributes
 
 The MuteButton automatically sets data attributes based on volume level:

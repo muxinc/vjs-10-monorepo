@@ -1,45 +1,26 @@
-.code-tabs-list {
+.code-examples {
   display: flex;
-  gap: 0.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.code-example-section {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.code-example-section h3 {
+  margin-top: 0;
   margin-bottom: 1rem;
+  color: #0ea5e9;
+  font-size: 1.25rem;
 }
 
-.code-tabs-tab {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 150ms ease;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-}
-
-.code-tabs-tab:hover {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.code-tabs-tab[data-selected] {
-  color: white;
-  border-bottom-color: #0ea5e9;
-}
-
-.code-tabs-panel {
-  animation: fadeIn 200ms ease;
-}
-
-.code-tabs-panel[data-hidden] {
-  display: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.code-example-section h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }

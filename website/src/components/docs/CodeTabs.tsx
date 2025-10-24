@@ -1,5 +1,3 @@
-import * as Tabs from '@base-ui-components/react/tabs';
-import { useState } from 'react';
 import './CodeTabs.css';
 
 interface CodeTab {
@@ -14,19 +12,11 @@ interface CodeTabsProps {
 }
 
 export function CodeTabs({ tabs }: CodeTabsProps) {
-  const [value, setValue] = useState(0);
-
   return (
-    <Tabs.Root value={value} onValueChange={setValue}>
-      <Tabs.List className="code-tabs-list">
-        {tabs.map((tab, index) => (
-          <Tabs.Tab key={index} value={index} className="code-tabs-tab">
-            {tab.label}
-          </Tabs.Tab>
-        ))}
-      </Tabs.List>
+    <div className="code-examples">
       {tabs.map((tab, index) => (
-        <Tabs.Panel key={index} value={index} className="code-tabs-panel">
+        <div key={index} className="code-example-section">
+          <h3>{tab.label}</h3>
           <div>
             <h4>Component</h4>
             <pre>
@@ -41,8 +31,8 @@ export function CodeTabs({ tabs }: CodeTabsProps) {
               <code className="language-css">{tab.cssCode}</code>
             </pre>
           </div>
-        </Tabs.Panel>
+        </div>
       ))}
-    </Tabs.Root>
+    </div>
   );
 }
