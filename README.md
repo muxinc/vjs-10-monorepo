@@ -6,9 +6,7 @@
 
 Modern, modular, and composable media player framework for Web and React.
 
-🚧 Note to new comers 🚧
-
-\[90s under-construction gif\]
+🚧 Techincal Preview - not recommended for production. 🚧
 
 Thanks for checking out the project! It's in its early stages and currently a mix of protoyping
 and early structure pointing in the direction we want to go with Video.js v10 (so be kind 🙏).
