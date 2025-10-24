@@ -1,5 +1,7 @@
 import { defineVjsPlayer } from '@videojs/html';
 
+import '@videojs/html/skins/default';
+
 defineVjsPlayer();
 
 document.body.innerHTML = /* html */ `
