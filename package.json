@@ -1,5 +1,6 @@
 {
   "name": "video.js",
+  "type": "module",
   "version": "0.1.0",
   "packageManager": "pnpm@10.17.0",
   "description": "Video.js 10 Monorepo",
@@ -19,6 +20,7 @@
     "build:website": "turbo run build --filter=website",
     "build": "turbo run build",
     "clean": "turbo run clean",
+    "commitlint": "commitlint --config ./commitlint.config.js --edit $1",
     "dev:html": "turbo run dev --filter=html-demo...",
     "dev:react": "turbo run dev --filter=react-demo...",
     "dev:website": "turbo run dev --filter=website",
@@ -31,6 +33,9 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/format": "^20.0.0",
     "@eslint-react/eslint-plugin": "^1.53.1",
     "@eslint/eslintrc": "^3.3.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
@@ -53,7 +58,8 @@
     "typescript": "^5.9.2"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm lint-staged"
+    "pre-commit": "pnpm lint-staged",
+    "commit-msg": "pnpm commitlint"
   },
   "lint-staged": {
     "*": "eslint --fix"
