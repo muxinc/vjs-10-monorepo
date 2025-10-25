@@ -46,7 +46,7 @@ const styles: MinimalSkinStyles = {
   ),
   Icon: cn('icon'),
   Button: cn(
-    'vjs:group/button vjs:cursor-pointer vjs:relative vjs:shrink-0 vjs:transition vjs:select-none vjs:p-2.5 vjs:rounded-md',
+    'vjs:group/button vjs:cursor-pointer vjs:relative vjs:shrink-0 vjs:transition-[color,background,outline-offset] vjs:select-none vjs:p-2.5 vjs:rounded-md',
     // Background/foreground
     'vjs:bg-transparent vjs:text-white',
     // Hover and focus states
@@ -54,7 +54,7 @@ const styles: MinimalSkinStyles = {
     // Focus state
     'vjs:-outline-offset-2 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-2 vjs:focus-visible:outline-white',
     // Disabled state
-    'vjs:aria-disabled:grayscale vjs:aria-disabled:opacity-50 vjs:aria-disabled:cursor-not-allowed',
+    'vjs:disabled:grayscale vjs:disabled:opacity-50 vjs:disabled:cursor-not-allowed',
     // Loading state
     'vjs:aria-busy:pointer-events-none vjs:aria-busy:cursor-not-allowed',
     // Expanded state
@@ -63,11 +63,11 @@ const styles: MinimalSkinStyles = {
   ButtonGroup: cn('vjs:flex vjs:items-center vjs:gap-1.5'),
   IconButton: cn(
     'vjs:grid vjs:[&_.icon]:[grid-area:1/1]',
-    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-[opacity,filter] vjs:[&_.icon]:duration-300 vjs:[&_.icon]:linear vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/40',
+    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-opacity vjs:[&_.icon]:duration-150 vjs:[&_.icon]:ease-linear vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/40',
   ),
   PlayButton: cn(
-    'vjs:[&_.pause-icon]:opacity-100 vjs:[&_.pause-icon]:blur-none vjs:[&[data-paused]_.pause-icon]:opacity-0 vjs:[&[data-paused]_.pause-icon]:blur-xs',
-    'vjs:[&_.play-icon]:opacity-0 vjs:[&_.play-icon]:blur-xs vjs:[&[data-paused]_.play-icon]:opacity-100 vjs:[&[data-paused]_.play-icon]:blur-none',
+    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0',
+    'vjs:[&_.play-icon]:opacity-0 vjs:[&[data-paused]_.play-icon]:opacity-100',
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
@@ -114,23 +114,21 @@ const styles: MinimalSkinStyles = {
   TimeDisplay: cn('vjs:tabular-nums vjs:text-shadow-2xs/20'),
   DurationDisplay: cn('vjs:text-white/50 vjs:contents'),
   SliderRoot: cn(
-    'vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-sm',
+    'vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-full',
     'vjs:[&[data-orientation="horizontal"]]:h-5 vjs:[&[data-orientation="horizontal"]]:min-w-20',
     'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-18',
-    // Focus state
-    'vjs:-outline-offset-8 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-8 vjs:focus-visible:outline-white',
   ),
   SliderTrack: cn(
-    'vjs:relative vjs:select-none vjs:rounded-full vjs:bg-white/10 vjs:transition-[height,width] vjs:ease-in-out',
+    'vjs:relative vjs:select-none vjs:rounded-[inherit] vjs:bg-white/10',
     'vjs:[&[data-orientation="horizontal"]]:w-full vjs:[&[data-orientation="horizontal"]]:h-[0.1875rem]',
     'vjs:[&[data-orientation="vertical"]]:w-[0.1875rem]',
+    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-2 vjs:group-focus-visible/slider-root:outline-white',
   ),
   SliderProgress: cn('vjs:bg-white vjs:rounded-[inherit]'),
   SliderPointer: cn('vjs:hidden'),
   SliderThumb: cn(
     'vjs:opacity-0 vjs:scale-70 vjs:group-hover/slider:opacity-100 vjs:group-hover/slider:scale-100 vjs:focus-visible:opacity-100 vjs:focus-visible:scale-100',
     'vjs:bg-white vjs:z-10 vjs:size-3 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15 vjs:transition-[opacity,scale] vjs:ease-out',
-    'vjs:-outline-offset-2 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-2 vjs:focus-visible:outline-amber-500',
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),

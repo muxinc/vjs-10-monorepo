@@ -25,9 +25,13 @@
       "types": "./dist/icons.d.ts",
       "default": "./dist/icons.js"
     },
-    "./skins/default": {
-      "types": "./dist/skins/default.d.ts",
-      "default": "./dist/skins/default.js"
+    "./skins/frosted": {
+      "types": "./dist/skins/frosted.d.ts",
+      "default": "./dist/skins/frosted.js"
+    },
+    "./skins/minimal": {
+      "types": "./dist/skins/minimal.d.ts",
+      "default": "./dist/skins/minimal.js"
     }
   },
   "main": "dist/index.js",
