@@ -1,0 +1,68 @@
+---
+title: FullscreenButton
+description: A button component for toggling fullscreen mode
+---
+
+import { FullscreenButtonDemo } from '@/examples/react/FullscreenButton/FullscreenButtonDemo';
+import componentModuleStr from '@/examples/react/FullscreenButton/BasicFullscreenButton.tsx?raw';
+import cssModuleStr from '@/examples/react/FullscreenButton/FullscreenButton.module.css?raw';
+import htmlStr from '@/examples/html/fullscreen-button/snippet.html?raw';
+import htmlCssStr from '@/examples/html/fullscreen-button/fullscreen-button.css?raw';
+import htmlJsStr from '@/examples/html/fullscreen-button/fullscreen-button.js?raw';
+
+## Features
+
+- Automatically switches icons based on fullscreen state
+- Works with browser Fullscreen API
+- Falls back gracefully when fullscreen not supported
+- Accessible keyboard navigation
+
+## Live Example
+
+<FullscreenButtonDemo client:load />
+
+## Usage
+
+### React
+Component
+<pre>{componentModuleStr}</pre>
+CSS Module
+<pre>{cssModuleStr}</pre>
+
+### HTML
+HTML
+<pre>{htmlStr}</pre>
+CSS
+<pre>{htmlCssStr}</pre>
+JavaScript
+<pre>{htmlJsStr}</pre>
+
+
+## Data Attributes
+
+The FullscreenButton automatically sets data attributes based on fullscreen state:
+
+- `data-fullscreen` - Present when in fullscreen, absent when not
+
+Use these attributes for state-based styling in your CSS.
+
+## Props
+
+All standard button props are supported, plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Button content (typically icons) |
+| `className` | `string` | CSS class name |
+
+## Accessibility
+
+- Automatically includes proper ARIA labels
+- Keyboard accessible (Space/Enter)
+- Announces fullscreen state changes to screen readers
+
+## Browser Support
+
+The FullscreenButton uses the standard Fullscreen API, which is supported in all modern browsers.
+
+Something about MediaContainer
