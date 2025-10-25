@@ -6,6 +6,6 @@ export default defineConfig({
     port: 5174,
   },
   optimizeDeps: {
-    exclude: ['@vjs/html'],
+    exclude: ['@videojs/html'],
   },
 });
