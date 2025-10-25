@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0-preview.2](https://github.com/muxinc/vjs-10-monorepo/compare/@videojs/html@0.1.0-preview.1...@videojs/html@0.1.0-preview.2) (2025-10-25)
+
+
+### Miscellaneous Chores
+
+* **@videojs/html:** Synchronize videojs versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.2
+    * @videojs/icons bumped to 0.1.0-preview.2
+    * @videojs/utils bumped to 0.1.0-preview.2
+
 ## [0.1.0-preview.1](https://github.com/muxinc/vjs-10-monorepo/compare/@videojs/html@0.1.0-preview.0...@videojs/html@0.1.0-preview.1) (2025-10-25)
 
 
