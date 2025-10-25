@@ -12,7 +12,7 @@ function cn(...classes: (string | undefined)[]): string {
 const styles: FrostedSkinStyles = {
   MediaContainer: cn(
     'vjs', // Scope preflight
-    'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip',
+    'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px
     // Prevent rounded corners in fullscreen.
@@ -21,7 +21,7 @@ const styles: FrostedSkinStyles = {
     'vjs:after:absolute vjs:after:inset-0 vjs:after:ring-black/10 vjs:after:ring-1 vjs:dark:after:ring-white/10 vjs:after:ring-inset vjs:after:z-10 vjs:after:pointer-events-none vjs:after:rounded-[inherit]',
     'vjs:before:absolute vjs:before:inset-px vjs:before:rounded-[inherit] vjs:before:ring-white/15 vjs:before:ring-1 vjs:before:ring-inset vjs:before:z-10 vjs:before:pointer-events-none vjs:dark:before:ring-0',
     // Ensure the nested video inherits the radius.
-    'vjs:[&_video]:rounded-[inherit] vjs:[&_video]:w-full vjs:[&_video]:h-auto',
+    'vjs:[&_video]:w-full vjs:[&_video]:h-full',
   ),
   Overlay: cn(
     'vjs:opacity-0 vjs:delay-500 vjs:rounded-[inherit] vjs:absolute vjs:inset-0 vjs:pointer-events-none vjs:bg-gradient-to-t vjs:from-black/50 vjs:via-black/20 vjs:to-transparent vjs:transition-opacity vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',

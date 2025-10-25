@@ -111,9 +111,9 @@ export default function App(): JSX.Element {
   const skinClassName = useMemo(() => {
     switch (skinKey) {
       case 'frosted':
-        return 'rounded-4xl shadow shadow-lg shadow-black/15';
+        return 'aspect-video rounded-4xl shadow shadow-lg shadow-black/15';
       case 'minimal':
-        return 'rounded-2xl shadow shadow-lg shadow-black/15';
+        return 'aspect-video rounded-2xl shadow shadow-lg shadow-black/15';
       default:
         return '';
     }
@@ -185,7 +185,7 @@ export default function App(): JSX.Element {
           <MediaProvider key={key}>
             <Skin className={skinClassName}>
               {/* @ts-expect-error -- types are incorrect */}
-              <Video src={mediaSource} poster={poster} />
+              <Video src={mediaSource} poster={poster} playsinline />
             </Skin>
           </MediaProvider>
         </div>

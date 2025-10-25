@@ -20,7 +20,7 @@ const styles: MinimalSkinStyles = {
     // Prevent rounded corners in fullscreen.
     'vjs:[&:fullscreen]:rounded-none vjs:[&:fullscreen]:[&_video]:h-full vjs:[&:fullscreen]:[&_video]:w-full',
     // Ensure the nested video inherits the radius.
-    'vjs:[&_video]:rounded-[inherit] vjs:[&_video]:w-full vjs:[&_video]:h-auto',
+    'vjs:[&_video]:w-full vjs:[&_video]:h-full',
   ),
   Overlay: cn(
     'vjs:absolute vjs:inset-0 vjs:rounded-[inherit] vjs:pointer-events-none',
