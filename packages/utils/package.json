@@ -2,7 +2,7 @@
   "name": "@videojs/utils",
   "type": "module",
   "version": "0.1.0",
-  "description": "Utility functions and helpers.",
+  "description": "Utility functions and helpers for Video.js",
   "license": "Apache-2.0",
   "keywords": [
     "media",
@@ -11,7 +11,8 @@
     "hls",
     "dash",
     "streaming",
-    "utils"
+    "utils",
+    "videojs"
   ],
   "exports": {
     ".": {

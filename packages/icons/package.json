@@ -9,7 +9,8 @@
     "svg",
     "media",
     "player",
-    "ui"
+    "ui",
+    "videojs"
   ],
   "exports": {
     ".": {

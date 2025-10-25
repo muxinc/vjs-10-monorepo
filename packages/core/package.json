@@ -10,7 +10,8 @@
     "media",
     "player",
     "ui",
-    "time-range"
+    "time-range",
+    "videojs"
   ],
   "exports": {
     ".": {

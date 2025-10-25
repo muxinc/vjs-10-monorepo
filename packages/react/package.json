@@ -9,7 +9,8 @@
     "player",
     "react",
     "components",
-    "hooks"
+    "hooks",
+    "videojs"
   ],
   "exports": {
     ".": {

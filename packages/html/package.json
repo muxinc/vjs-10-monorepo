@@ -9,7 +9,8 @@
     "player",
     "html",
     "ui",
-    "components"
+    "components",
+    "videojs"
   ],
   "exports": {
     ".": {
