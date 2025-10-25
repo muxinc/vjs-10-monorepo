@@ -45,7 +45,7 @@ export function getTemplateHTML() {
 
         <div class="time-controls">
           <!-- Use the show-remaining attribute to show count down/remaining time -->
-          <media-current-time-display show-remaining></media-current-time-display>
+          <media-current-time-display></media-current-time-display>
 
           <media-tooltip-root track-cursor-axis="x">
             <media-tooltip-trigger>
