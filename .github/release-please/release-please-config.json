@@ -8,6 +8,11 @@
     {
       "type": "node-workspace",
       "merge": false
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "videojs",
+      "components": ["@videojs/core", "@videojs/html", "@videojs/icons", "@videojs/react", "@videojs/utils"]
     }
   ],
   "packages": {

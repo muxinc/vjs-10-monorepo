@@ -12,7 +12,7 @@ packages. These are foundational building blocks used by platform-specific imple
 
 ## Community
 
-If you need help with anything related to Video.js 10, or if you'd like to casually chat with other
+If you need help with anything related to Video.js v10, or if you'd like to casually chat with other
 members:
 
 - [Join Discord Server][discord]
