@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.0-preview.2](https://github.com/muxinc/vjs-10-monorepo/compare/@videojs/core@0.1.0-preview.1...@videojs/core@0.1.0-preview.2) (2025-10-25)
+
+
+### Bug Fixes
+
+* **core:** update README to use v10 terminology ([93dd266](https://github.com/muxinc/vjs-10-monorepo/commit/93dd266f551923e103111019e12834f27cefabe7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/utils bumped to 0.1.0-preview.2
+
 ## [0.1.0-preview.1](https://github.com/muxinc/vjs-10-monorepo/compare/@videojs/core@0.1.0-preview.0...@videojs/core@0.1.0-preview.1) (2025-10-25)
 
 
