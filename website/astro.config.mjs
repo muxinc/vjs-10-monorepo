@@ -51,7 +51,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      exclude: ['@vjs/react'],
+      exclude: ['@videojs/react'],
     },
     resolve: {
       alias: {
