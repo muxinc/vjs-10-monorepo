@@ -304,6 +304,10 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   border-radius: inherit;
 }
 
+preview-time-display {
+  font-variant-numeric: tabular-nums;
+}
+
 .popup-animation {
   transition-property: transform, scale, opacity, filter;
   transition-duration: 200ms;
