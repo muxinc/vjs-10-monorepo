@@ -288,7 +288,7 @@ export class MediaPopoverPortal extends HTMLElement {
     if (!portalId) return;
 
     /* @TODO We need to make sure portal logic is non-brittle longer term (CJP) */
-    // NOTE: Hacky solution in part to ensure styling propogates from skin to container's baked in portal (TL;DR - Shadow DOM vs. Light DOM CSS) (CJP)
+    // NOTE: Hacky solution in part to ensure styling propagates from skin to container's baked in portal (TL;DR - Shadow DOM vs. Light DOM CSS) (CJP)
     const portalContainer
       = ((this.getRootNode() as ShadowRoot | Document).getElementById(portalId)
         ?? (this.getRootNode() as ShadowRoot | Document)

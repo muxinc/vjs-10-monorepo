@@ -5,7 +5,8 @@ export default defineConfig({
     index: './src/index.ts',
     store: './src/store/index.ts',
     icons: './src/icons/index.ts',
-    'skins/default': './src/skins/default/index.ts',
+    'skins/frosted': './src/skins/frosted/index.ts',
+    'skins/minimal': './src/skins/minimal/index.ts',
   },
   platform: 'browser',
   format: 'es',
@@ -19,5 +20,6 @@ export default defineConfig({
   },
   loader: {
     '.svg': 'text',
+    '.css': 'text',
   },
 });

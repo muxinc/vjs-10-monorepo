@@ -46,18 +46,18 @@ const styles: FrostedSkinStyles = {
   Controls: cn(
     'vjs:@container/controls vjs:absolute vjs:inset-x-3 vjs:bottom-3 vjs:rounded-full vjs:flex vjs:items-center vjs:p-1 vjs:gap-0.5 vjs:text-white',
     // Animation
-    'vjs:transition vjs:will-change-transform vjs:origin-bottom vjs:ease-out',
+    'vjs:transition vjs:will-change-[transform,scale,filter,opacity] vjs:origin-bottom vjs:ease-out',
     //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
     'controls',
     //  FIXME: Temporary hide/show logic
-    'vjs:scale-90 vjs:opacity-0 vjs:blur-sm vjs:delay-500 vjs:duration-200',
-    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:blur-none vjs:has-[[data-paused]]:delay-0',
-    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:blur-none vjs:has-[[aria-expanded="true"]]:delay-0',
-    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:blur-none vjs:group-hover/root:delay-0',
+    'vjs:scale-90 vjs:opacity-0 vjs:blur-sm vjs:delay-500 vjs:duration-300',
+    'vjs:has-[[data-paused]]:scale-100 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:blur-none vjs:has-[[data-paused]]:delay-0 vjs:has-[[data-paused]]:duration-100',
+    'vjs:has-[[aria-expanded="true"]]:scale-100 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:blur-none vjs:has-[[aria-expanded="true"]]:delay-0 vjs:has-[[aria-expanded="true"]]:duration-100',
+    'vjs:group-hover/root:scale-100 vjs:group-hover/root:opacity-100 vjs:group-hover/root:blur-none vjs:group-hover/root:delay-0 vjs:group-hover/root:duration-100',
   ),
   Icon: cn('icon'),
   Button: cn(
-    'vjs:group/button vjs:cursor-pointer vjs:relative vjs:shrink-0 vjs:transition vjs:select-none vjs:p-2 vjs:rounded-full',
+    'vjs:group/button vjs:cursor-pointer vjs:relative vjs:shrink-0 vjs:transition-[color,background,outline-offset] vjs:select-none vjs:p-2 vjs:rounded-full',
     // Background/foreground
     'vjs:bg-transparent vjs:text-white/90',
     // Hover and focus states
@@ -65,21 +65,19 @@ const styles: FrostedSkinStyles = {
     // Focus state
     'vjs:-outline-offset-2 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-2 vjs:focus-visible:outline-blue-500',
     // Disabled state
-    'vjs:aria-disabled:grayscale vjs:aria-disabled:opacity-50 vjs:aria-disabled:cursor-not-allowed',
+    'vjs:disabled:grayscale vjs:disabled:opacity-50 vjs:disabled:cursor-not-allowed',
     // Loading state
     'vjs:aria-busy:pointer-events-none vjs:aria-busy:cursor-not-allowed',
     // Expanded state
     'vjs:aria-expanded:bg-white/10 vjs:aria-expanded:text-white',
-    // Pressed state
-    'vjs:active:scale-95',
   ),
   IconButton: cn(
     'vjs:grid vjs:[&_.icon]:[grid-area:1/1]',
-    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-[opacity,filter] vjs:[&_.icon]:duration-500 vjs:[&_.icon]:linear vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/25',
+    'vjs:[&_.icon]:shrink-0 vjs:[&_.icon]:transition-opacity vjs:[&_.icon]:duration-150 vjs:[&_.icon]:ease-linear vjs:[&_.icon]:drop-shadow-[0_1px_0_var(--tw-shadow-color)] vjs:[&_.icon]:shadow-black/25',
   ),
   PlayButton: cn(
-    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0 vjs:[&[data-paused]_.pause-icon]:blur-sm',
-    'vjs:[&_.play-icon]:opacity-0 vjs:[&_.play-icon]:blur-sm vjs:[&[data-paused]_.play-icon]:opacity-100 vjs:[&[data-paused]_.play-icon]:blur-none',
+    'vjs:[&_.pause-icon]:opacity-100 vjs:[&[data-paused]_.pause-icon]:opacity-0',
+    'vjs:[&_.play-icon]:opacity-0 vjs:[&[data-paused]_.play-icon]:opacity-100',
   ),
   PlayIcon: cn('play-icon'),
   PauseIcon: cn('pause-icon'),
@@ -132,10 +130,10 @@ const styles: FrostedSkinStyles = {
     'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-20',
   ),
   SliderTrack: cn(
-    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-2 vjs:group-focus-visible/slider-root:outline-blue-500',
-    'vjs:w-full vjs:relative vjs:select-none vjs:rounded-full vjs:bg-white/20 vjs:ring-1 vjs:ring-black/5',
-    'vjs:[&[data-orientation="horizontal"]]:h-1',
+    'vjs:relative vjs:select-none vjs:transition-[outline-offset] vjs:rounded-[inherit] vjs:bg-white/20 vjs:ring-1 vjs:ring-black/5',
+    'vjs:[&[data-orientation="horizontal"]]:w-full vjs:[&[data-orientation="horizontal"]]:h-1',
     'vjs:[&[data-orientation="vertical"]]:w-1',
+    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-6 vjs:group-focus-visible/slider-root:outline-blue-500',
   ),
   SliderProgress: cn('vjs:bg-white vjs:rounded-[inherit]'),
   // TODO: Work out what we want to do here.
@@ -143,7 +141,6 @@ const styles: FrostedSkinStyles = {
   SliderThumb: cn(
     'vjs:bg-white vjs:z-10 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15',
     'vjs:opacity-0 vjs:transition-[opacity,height,width] vjs:ease-in-out',
-    'vjs:-outline-offset-2 vjs:focus-visible:outline-2 vjs:focus-visible:outline-offset-2 vjs:focus-visible:outline-blue-500',
     'vjs:group-hover/slider:opacity-100 vjs:group-focus-within/slider:opacity-100',
     'vjs:size-2.5 vjs:active:size-3 vjs:group-active/slider:size-3',
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
@@ -160,7 +157,7 @@ const styles: FrostedSkinStyles = {
     'vjs:relative vjs:px-1 vjs:py-3 vjs:rounded-full',
   ),
   TooltipPopup: cn(
-    'vjs:whitespace-nowrap vjs:flex vjs:flex-col vjs:rounded-full vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2.5 vjs:py-1',
+    'vjs:whitespace-nowrap vjs:rounded-full vjs:text-white vjs:text-xs vjs:@7xl/root:text-sm vjs:px-2.5 vjs:py-1',
   ),
 };
 
