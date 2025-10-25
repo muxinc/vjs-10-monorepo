@@ -18,6 +18,7 @@ export default {
       'example/react',
       'html',
       'icons',
+      'packages',
       'react-native',
       'react',
       'root',
