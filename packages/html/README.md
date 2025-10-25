@@ -21,6 +21,6 @@ members:
 [Apache-2.0](./LICENSE)
 
 [package]: https://www.npmjs.com/package/@videojs/html
-[package-badge]: https://img.shields.io/npm/v/%40videojs%2Fhtml%40next
+[package-badge]: https://img.shields.io/npm/v/@videojs/html/next?label=@videojs/html@next
 [discord]: https://discord.gg/b664Gq3pdy
 [gh-discussions]: https://github.com/muxinc/vjs-10-monorepo/discussions

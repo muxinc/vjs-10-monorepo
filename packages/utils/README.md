@@ -17,6 +17,6 @@ members:
 [Apache-2.0](./LICENSE)
 
 [package]: https://www.npmjs.com/package/@videojs/utils
-[package-badge]: https://img.shields.io/npm/v/%40videojs%2Futils%40next
+[package-badge]: https://img.shields.io/npm/v/@videojs/react/utils?label=@videojs/react@utils
 [discord]: https://discord.gg/b664Gq3pdy
 [gh-discussions]: https://github.com/muxinc/vjs-10-monorepo/discussions
