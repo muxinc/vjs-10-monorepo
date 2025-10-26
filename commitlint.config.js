@@ -23,6 +23,7 @@ export default {
       'react',
       'root',
       'site',
+      'skins',
       'test',
       'utils',
     ]],

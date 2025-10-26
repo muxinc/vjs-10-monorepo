@@ -185,7 +185,7 @@ export default function App(): JSX.Element {
           <MediaProvider key={key}>
             <Skin className={skinClassName}>
               {/* @ts-expect-error -- types are incorrect */}
-              <Video src={mediaSource} poster={poster} playsinline />
+              <Video src={mediaSource} poster={poster} playsInline />
             </Skin>
           </MediaProvider>
         </div>

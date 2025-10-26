@@ -15,16 +15,15 @@ const styles: MinimalSkinStyles = {
     'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px
-    // 'ring-1 ring-inset ring-black/10 dark:ring-white/10',
-    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring-black/10 vjs:after:ring-1 vjs:dark:after:ring-white/10 vjs:after:ring-inset vjs:after:z-10 vjs:after:pointer-events-none vjs:after:rounded-[inherit]',
+    'vjs:after:absolute vjs:after:inset-0 vjs:after:ring-black/20 vjs:after:ring-1 vjs:dark:after:ring-white/20 vjs:after:ring-inset vjs:after:z-10 vjs:after:pointer-events-none vjs:after:rounded-[inherit]',
     // Prevent rounded corners in fullscreen.
-    'vjs:[&:fullscreen]:rounded-none vjs:[&:fullscreen]:[&_video]:h-full vjs:[&:fullscreen]:[&_video]:w-full',
+    'vjs:[&:fullscreen]:rounded-none',
     // Ensure the nested video inherits the radius.
     'vjs:[&_video]:w-full vjs:[&_video]:h-full',
   ),
   Overlay: cn(
     'vjs:absolute vjs:inset-0 vjs:rounded-[inherit] vjs:pointer-events-none',
-    'vjs:bg-gradient-to-t vjs:from-black/70 vjs:via-black/50 vjs:via-[120px] vjs:to-transparent',
+    'vjs:bg-gradient-to-t vjs:from-black/70 vjs:via-black/50 vjs:via-[7.5rem] vjs:to-transparent',
     'vjs:opacity-0 vjs:delay-500 vjs:duration-300',
     //  FIXME: Temporary hide/show logic
     'vjs:has-[+.controls_[data-paused]]:opacity-100 vjs:has-[+.controls_[data-paused]]:delay-0 vjs:has-[+.controls_[data-paused]]:duration-75',
@@ -37,14 +36,15 @@ const styles: MinimalSkinStyles = {
     'controls', //  FIXME: Temporary className hook for above logic in the overlay. Can be removed once have a proper way to handle controls visibility.
     'vjs:@container/controls vjs:absolute vjs:inset-x-0 vjs:bottom-0 vjs:flex vjs:items-center vjs:gap-3.5 vjs:z-20 vjs:px-3 vjs:pb-3 vjs:pt-10 vjs:text-white',
     // Animation
-    'vjs:transition vjs:ease-in-out',
+    'vjs:transition vjs:will-change-[transform,filter,opacity] vjs:ease-out',
     //  FIXME: Temporary hide/show logic
-    'vjs:translate-y-full vjs:opacity-0 vjs:delay-500 vjs:duration-300',
-    'vjs:has-[[data-paused]]:translate-y-0 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:delay-0 vjs:has-[[data-paused]]:duration-75',
-    'vjs:has-[[aria-expanded="true"]]:translate-y-0 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:delay-0 vjs:has-[[aria-expanded="true"]]:duration-75',
-    'vjs:group-hover/root:translate-y-0 vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0 vjs:group-hover/root:duration-75',
+    'vjs:translate-y-full vjs:opacity-0 vjs:blur-sm vjs:delay-500 vjs:duration-300',
+    'vjs:has-[[data-paused]]:translate-y-0 vjs:has-[[data-paused]]:opacity-100 vjs:has-[[data-paused]]:blur-none vjs:has-[[data-paused]]:delay-0 vjs:has-[[data-paused]]:duration-75',
+    'vjs:has-[[aria-expanded="true"]]:translate-y-0 vjs:has-[[aria-expanded="true"]]:opacity-100 vjs:has-[[aria-expanded="true"]]:blur-none vjs:has-[[aria-expanded="true"]]:delay-0 vjs:has-[[aria-expanded="true"]]:duration-75',
+    'vjs:group-hover/root:translate-y-0 vjs:group-hover/root:opacity-100 vjs:group-hover/root:blur-none vjs:group-hover/root:delay-0 vjs:group-hover/root:duration-75',
   ),
   Icon: cn('icon'),
+  TimeDisplayGroup: cn('flex items-center gap-1'),
   Button: cn(
     'vjs:group/button vjs:cursor-pointer vjs:relative vjs:shrink-0 vjs:transition-[color,background,outline-offset] vjs:select-none vjs:p-2.5 vjs:rounded-md',
     // Background/foreground
@@ -114,7 +114,7 @@ const styles: MinimalSkinStyles = {
   TimeDisplay: cn('vjs:tabular-nums vjs:text-shadow-2xs/20'),
   DurationDisplay: cn('vjs:text-white/50 vjs:contents'),
   SliderRoot: cn(
-    'vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-full',
+    'vjs:group/slider-root vjs:outline-0 vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-full',
     'vjs:[&[data-orientation="horizontal"]]:h-5 vjs:[&[data-orientation="horizontal"]]:min-w-20',
     'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-18',
   ),
@@ -122,13 +122,13 @@ const styles: MinimalSkinStyles = {
     'vjs:relative vjs:select-none vjs:rounded-[inherit] vjs:bg-white/10',
     'vjs:[&[data-orientation="horizontal"]]:w-full vjs:[&[data-orientation="horizontal"]]:h-[0.1875rem]',
     'vjs:[&[data-orientation="vertical"]]:w-[0.1875rem]',
-    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-2 vjs:group-focus-visible/slider-root:outline-white',
+    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-6 vjs:group-focus-visible/slider-root:outline-white',
   ),
   SliderProgress: cn('vjs:bg-white vjs:rounded-[inherit]'),
   SliderPointer: cn('vjs:hidden'),
   SliderThumb: cn(
-    'vjs:opacity-0 vjs:scale-70 vjs:group-hover/slider:opacity-100 vjs:group-hover/slider:scale-100 vjs:focus-visible:opacity-100 vjs:focus-visible:scale-100',
-    'vjs:bg-white vjs:z-10 vjs:size-3 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15 vjs:transition-[opacity,scale] vjs:ease-out',
+    'vjs:bg-white vjs:z-10 vjs:size-3 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15 vjs:transition-[opacity,scale] vjs:ease-out vjs:opacity-0 vjs:scale-70 vjs:origin-center',
+    'vjs:group-hover/slider-root:opacity-100 vjs:group-hover/slider-root:scale-100',
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),

@@ -23,6 +23,7 @@ export interface MinimalSkinStyles {
   readonly FullscreenEnterTooltip: string;
   readonly FullscreenExitTooltip: string;
   readonly TimeSliderRoot: string;
+  readonly TimeDisplayGroup: string;
   readonly TimeDisplay: string;
   readonly DurationDisplay: string;
   readonly SliderRoot: string;

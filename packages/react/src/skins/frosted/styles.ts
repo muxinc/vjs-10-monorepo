@@ -15,21 +15,21 @@ const styles: FrostedSkinStyles = {
     'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black',
     // Base typography
     'vjs:text-[0.8125rem]', // 13px
-    // Prevent rounded corners in fullscreen.
-    'vjs:[&:fullscreen]:rounded-none vjs:[&:fullscreen]:[&_video]:h-full vjs:[&:fullscreen]:[&_video]:w-full',
     // Fancy borders.
     'vjs:after:absolute vjs:after:inset-0 vjs:after:ring-black/10 vjs:after:ring-1 vjs:dark:after:ring-white/10 vjs:after:ring-inset vjs:after:z-10 vjs:after:pointer-events-none vjs:after:rounded-[inherit]',
     'vjs:before:absolute vjs:before:inset-px vjs:before:rounded-[inherit] vjs:before:ring-white/15 vjs:before:ring-1 vjs:before:ring-inset vjs:before:z-10 vjs:before:pointer-events-none vjs:dark:before:ring-0',
+    // Prevent rounded corners in fullscreen.
+    'vjs:[&:fullscreen]:rounded-none',
     // Ensure the nested video inherits the radius.
     'vjs:[&_video]:w-full vjs:[&_video]:h-full',
   ),
   Overlay: cn(
-    'vjs:opacity-0 vjs:delay-500 vjs:rounded-[inherit] vjs:absolute vjs:inset-0 vjs:pointer-events-none vjs:bg-gradient-to-t vjs:from-black/50 vjs:via-black/20 vjs:to-transparent vjs:transition-opacity vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
+    'vjs:opacity-0 vjs:delay-500 vjs:duration-300 vjs:rounded-[inherit] vjs:absolute vjs:inset-0 vjs:pointer-events-none vjs:bg-gradient-to-t vjs:from-black/50 vjs:via-black/20 vjs:to-transparent vjs:transition-opacity vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
     // Hide when playing (for now).
     //  FIXME: This is crude temporary logic, we'll improve it later I guess with a [data-show-controls] attribute or something?
-    'vjs:has-[+.controls_[data-paused]]:opacity-100 vjs:has-[+.controls_[data-paused]]:delay-0',
-    'vjs:has-[+.controls_[aria-expanded="true"]]:opacity-100 vjs:has-[+.controls_[aria-expanded="true"]]:delay-0',
-    'vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0',
+    'vjs:has-[+.controls_[data-paused]]:opacity-100 vjs:has-[+.controls_[data-paused]]:delay-0 vjs:has-[+.controls_[data-paused]]:duration-100',
+    'vjs:has-[+.controls_[aria-expanded="true"]]:opacity-100 vjs:has-[+.controls_[aria-expanded="true"]]:delay-0 vjs:has-[+.controls_[aria-expanded="true"]]:duration-100',
+    'vjs:group-hover/root:opacity-100 vjs:group-hover/root:delay-0 vjs:group-hover/root:duration-100',
   ),
   Surface: cn(
     'vjs:bg-white/10 vjs:backdrop-blur-3xl vjs:backdrop-saturate-150 vjs:backdrop-brightness-90',
@@ -123,9 +123,7 @@ const styles: FrostedSkinStyles = {
   TimeControls: cn('vjs:flex-1 vjs:flex vjs:items-center vjs:gap-3 vjs:px-1.5'),
   TimeDisplay: cn('vjs:tabular-nums vjs:text-shadow-2xs/25'),
   SliderRoot: cn(
-    'vjs:group/slider-root',
-    'vjs:outline-0',
-    'vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:group/slider vjs:relative vjs:rounded-full',
+    'vjs:group/slider-root vjs:outline-0 vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:relative vjs:rounded-full',
     'vjs:[&[data-orientation="horizontal"]]:h-5 vjs:[&[data-orientation="horizontal"]]:min-w-20',
     'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-20',
   ),
@@ -139,10 +137,9 @@ const styles: FrostedSkinStyles = {
   // TODO: Work out what we want to do here.
   SliderPointer: cn('vjs:bg-white/20 vjs:rounded-[inherit]'),
   SliderThumb: cn(
-    'vjs:bg-white vjs:z-10 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15',
-    'vjs:opacity-0 vjs:transition-[opacity,height,width] vjs:ease-in-out',
-    'vjs:group-hover/slider:opacity-100 vjs:group-focus-within/slider:opacity-100',
-    'vjs:size-2.5 vjs:active:size-3 vjs:group-active/slider:size-3',
+    'vjs:bg-white vjs:z-10 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15 vjs:opacity-0 vjs:transition-[opacity,height,width] vjs:ease-out',
+    'vjs:group-hover/slider-root:opacity-100 vjs:group-focus-within/slider-root:opacity-100',
+    'vjs:size-2.5 vjs:active:size-3 vjs:group-active/slider-root:size-3',
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),
