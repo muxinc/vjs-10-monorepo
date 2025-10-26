@@ -6,13 +6,5 @@
     'Noto Color Emoji';
 }
 
-.body {
-  @apply antialiased font-[510] font-sans text-[0.8125rem] @7xl/root:text-[0.9375rem] leading-normal tracking-[-0.0125em];
-}
-
-:root {
-  font-feature-settings: 'cv01', 'ss01', 'ss03';
-}
-
 /* Make reduced-transparency variant */
 @custom-variant reduced-transparency @media (prefers-reduced-transparency: reduce);

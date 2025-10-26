@@ -1,4 +1,6 @@
+export * as MediaFullscreenEnterAltIcon from './media-fullscreen-enter-alt-icon';
 export * as MediaFullscreenEnterIcon from './media-fullscreen-enter-icon';
+export * as MediaFullscreenExitAltIcon from './media-fullscreen-exit-alt-icon';
 export * as MediaFullscreenExitIcon from './media-fullscreen-exit-icon';
 export * as MediaPauseIcon from './media-pause-icon';
 export * as MediaPlayIcon from './media-play-icon';

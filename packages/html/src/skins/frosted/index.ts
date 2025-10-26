@@ -22,11 +22,12 @@ export function getTemplateHTML() {
 
     <media-container>
       <slot name="media" slot="media"></slot>
+
       <div class="overlay"></div>
 
       <div class="control-bar surface">
         <!-- NOTE: We can decide if we further want to provide a further, "themed" media-play-button that comes with baked in default styles and icons. (CJP) -->
-        <media-tooltip-root delay="600" close-delay="0">
+        <media-tooltip-root delay="500" close-delay="0">
           <media-tooltip-trigger>
             <media-play-button class="button">
               <media-play-icon class="icon play-icon"></media-play-icon>
@@ -91,7 +92,7 @@ export function getTemplateHTML() {
           </media-popover-portal>
         </media-popover-root>
 
-        <media-tooltip-root delay="600" close-delay="0">
+        <media-tooltip-root delay="500" close-delay="0">
           <media-tooltip-trigger>
             <media-fullscreen-button class="button">
               <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>

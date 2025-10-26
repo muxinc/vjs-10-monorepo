@@ -1,5 +1,16 @@
 import type { PropsWithChildren } from 'react';
 
+import { CurrentTimeDisplay } from '@/components/CurrentTimeDisplay';
+import { DurationDisplay } from '@/components/DurationDisplay';
+import { FullscreenButton } from '@/components/FullscreenButton';
+import { MediaContainer } from '@/components/MediaContainer';
+import MuteButton from '@/components/MuteButton';
+import PlayButton from '@/components/PlayButton';
+import { Popover } from '@/components/Popover';
+import { PreviewTimeDisplay } from '@/components/PreviewTimeDisplay';
+import { TimeSlider } from '@/components/TimeSlider';
+import { Tooltip } from '@/components/Tooltip';
+import { VolumeSlider } from '@/components/VolumeSlider';
 import {
   FullscreenEnterIcon,
   FullscreenExitIcon,
@@ -9,18 +20,6 @@ import {
   VolumeLowIcon,
   VolumeOffIcon,
 } from '@/icons';
-
-import { CurrentTimeDisplay } from '../../components/CurrentTimeDisplay';
-import { DurationDisplay } from '../../components/DurationDisplay';
-import { FullscreenButton } from '../../components/FullscreenButton';
-import { MediaContainer } from '../../components/MediaContainer';
-import MuteButton from '../../components/MuteButton';
-import PlayButton from '../../components/PlayButton';
-import { Popover } from '../../components/Popover';
-import { PreviewTimeDisplay } from '../../components/PreviewTimeDisplay';
-import { TimeSlider } from '../../components/TimeSlider';
-import { Tooltip } from '../../components/Tooltip';
-import { VolumeSlider } from '../../components/VolumeSlider';
 import styles from './styles';
 
 type SkinProps = PropsWithChildren<{
@@ -32,8 +31,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
     <MediaContainer className={`${styles.MediaContainer} ${className}`}>
       {children}
 
-      {/* Background gradient to help with controls contrast. */}
-      <div className={styles.Overlay} aria-hidden="true" />
+      <div className={styles.Overlay} />
 
       <div className={`${styles.Surface} ${styles.Controls}`} data-testid="media-controls">
         <Tooltip.Root delay={500}>

@@ -186,11 +186,11 @@ export class TimeSliderThumbBase extends HTMLElement {
     if (props['data-orientation'] === 'horizontal') {
       this.style.left = 'var(--slider-fill, 0%)';
       this.style.top = '50%';
-      this.style.transform = 'translate(-50%, -50%)';
+      this.style.translate = '-50% -50%';
     } else {
       this.style.bottom = 'var(--slider-fill, 0%)';
       this.style.left = '50%';
-      this.style.transform = 'translate(-50%, 50%)';
+      this.style.translate = '-50% 50%';
     }
   }
 }
