@@ -384,7 +384,8 @@ function createFocusGuard(dataType: 'inside' | 'outside'): HTMLElement {
   const focusGuard = document.createElement('span');
   focusGuard.setAttribute('data-type', dataType);
   focusGuard.setAttribute('tabindex', '0');
-  focusGuard.toggleAttribute('data-focus-guard', true);
+  focusGuard.setAttribute('data-focus-guard', '');
+  focusGuard.setAttribute('aria-hidden', 'true');
   focusGuard.style.cssText = visuallyHiddenStyles;
   return focusGuard;
 }
