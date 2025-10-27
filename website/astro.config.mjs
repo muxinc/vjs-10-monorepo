@@ -65,7 +65,7 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: 'Instrument Sans',
       cssVariable: '--font-instrument-sans',
-      weights: ['600', '500', '400'],
+      weights: ['400 600'],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
       fallbacks: ['sans-serif'],

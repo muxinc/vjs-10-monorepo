@@ -81,46 +81,56 @@
   --tracking-wider: 0.04em;
   --tracking-widest: 0.08em;
 
+  --font-weight-code-normal: 400;
+  --font-weight-normal: 450;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
   --text-*: initial;
   --text-h1: 4rem; /* 64px */
   --text-h1--line-height: 1;
   --text-h1--letter-spacing: -0.04em;
-  --text-h1--font-weight: 600;
+  --text-h1--font-weight: var(--font-weight-semibold);
   --text-h2: 3rem; /* 48px */
   --text-h2--line-height: calc(56 / 48);
   --text-h2--letter-spacing: -0.04em;
-  --text-h2--font-weight: 600;
+  --text-h2--font-weight: var(--font-weight-semibold);
   --text-h3: 2.5rem; /* 40px */
   --text-h3--line-height: 1;
   --text-h3--letter-spacing: -0.04em;
-  --text-h3--font-weight: 600;
+  --text-h3--font-weight: var(--font-weight-semibold);
   --text-h4: 2rem; /* 32px */
   --text-h4--line-height: calc(40 / 32);
   --text-h4--letter-spacing: -0.02em;
-  --text-h4--font-weight: 600;
+  --text-h4--font-weight: var(--font-weight-semibold);
   --text-h5: 1.5rem; /* 24px */
   --text-h5--line-height: calc(32 / 24);
   --text-h5--letter-spacing: -0.02em;
-  --text-h5--font-weight: 500;
+  --text-h5--font-weight: var(--font-weight-medium);
 
   --text-md: 1.25rem;
   --text-md--line-height: calc(28 / 20);
   --text-md--letter-spacing: -0.02em;
+  --text-md--font-weight: var(--font-weight-normal);
   --text-base: 1rem;
   --text-base--line-height: calc(24 / 16);
   --text-base--letter-spacing: -0.02em;
+  --text-base--font-weight: var(--font-weight-normal);
   --text-sm: 0.875rem;
   --text-sm--line-height: calc(20 / 14);
   --text-sm--letter-spacing: -0.02em;
+  --text-sm--font-weight: var(--font-weight-normal);
 
   /* Notice the use of em, so that code scales with, say, headers */
   --text-code: 0.9375em;
   --text-code--line-height: calc(28 / 16);
   --text-code--letter-spacing: -0.02em;
+  --text-code--font-weight: var(--font-weight-code-normal);
   /* if you don't want this scaling, use text-base-code */
   --text-base-code: 0.9375rem;
   --text-base-code--line-height: calc(28 / 16);
   --text-base-code--letter-spacing: -0.02em;
+  --text-base-code--font-weight: var(--font-weight-code-normal);
 
   /* animations */
   --animate-marquee: marquee 40s linear infinite;
