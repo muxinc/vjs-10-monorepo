@@ -9,6 +9,7 @@ import Footer from '@/components/Footer.astro';
 
 import Base from './Base.astro';
 import { Selectors } from '@/components/docs/Selectors';
+import { getDocTitle } from '@/utils/docs/title';
 
 type Props<F extends SupportedFramework = SupportedFramework> = {
   doc: CollectionEntry<'docs'>;
@@ -19,12 +20,12 @@ type Props<F extends SupportedFramework = SupportedFramework> = {
 
 const { doc, framework, style, slug } = Astro.props;
 
-// Fetch all docs to get their titles
+// Fetch all docs to get their framework-specific titles
 const allDocs = await getCollection('docs');
-const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
+const docTitles = new Map(allDocs.map((d) => [d.id, getDocTitle(d, framework)]));
 ---
 
-<Base title={[doc.data.title, 'Docs']} description={doc.data.description}>
+<Base title={[getDocTitle(doc, framework), 'Docs']} description={doc.data.description}>
   <slot name="head" slot="head" />
   <div
     class="grid grid-cols-1 lg:grid-cols-(--lg-grid-cols) min-h-screen"

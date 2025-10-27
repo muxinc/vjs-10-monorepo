@@ -1,11 +1,66 @@
 import type { Guide, Sidebar } from '../../../types/docs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   resolveDocsLinkUrl,
   resolveFrameworkChange,
   resolveIndexRedirect,
   resolveStyleChange,
 } from '../routing';
+
+// Mock the validation functions from @/types/docs to use mock framework/style configuration
+// Note: This mock is hoisted, so we define MOCK_FRAMEWORK_STYLES inside the factory
+vi.mock('@/types/docs', async () => {
+  const actual = await vi.importActual('@/types/docs');
+
+  // Mock framework/style configuration for tests
+  // This allows tests to remain stable when the actual FRAMEWORK_STYLES changes
+  const MOCK_FRAMEWORK_STYLES = {
+    html: ['css', 'tailwind'],
+    react: ['css', 'tailwind'],
+  } as const;
+
+  type MockFramework = keyof typeof MOCK_FRAMEWORK_STYLES;
+  type MockStyle = typeof MOCK_FRAMEWORK_STYLES[MockFramework][number];
+
+  return {
+    ...actual,
+    // Mock FRAMEWORK_STYLES to match our test config
+    FRAMEWORK_STYLES: MOCK_FRAMEWORK_STYLES,
+
+    // Mock DEFAULT_FRAMEWORK
+    DEFAULT_FRAMEWORK: 'react' as const,
+
+    // Mock isValidFramework to check against mock frameworks
+    isValidFramework: (value: string | undefined | null): value is MockFramework => {
+      if (!value) return false;
+      return value === 'html' || value === 'react';
+    },
+
+    // Mock isValidStyleForFramework to check against mock styles
+    isValidStyleForFramework: (
+      framework: MockFramework,
+      style: string | undefined | null,
+    ): style is MockStyle => {
+      if (!style) return false;
+      return MOCK_FRAMEWORK_STYLES[framework]?.includes(style as MockStyle) ?? false;
+    },
+
+    // Mock getDefaultStyle to return first style from mock config
+    getDefaultStyle: <F extends MockFramework>(framework: F): MockStyle => {
+      return MOCK_FRAMEWORK_STYLES[framework][0];
+    },
+  };
+});
+
+// Re-export the mock types for use in tests
+// Prefixed with _ to indicate it's only used for type derivation
+const _MOCK_FRAMEWORK_STYLES = {
+  html: ['css', 'tailwind'],
+  react: ['css', 'tailwind'],
+} as const;
+
+type MockFramework = keyof typeof _MOCK_FRAMEWORK_STYLES;
+type MockStyle = typeof _MOCK_FRAMEWORK_STYLES[MockFramework][number];
 
 describe('routing utilities', () => {
   // Test fixtures - comprehensive mock sidebar for testing
@@ -16,24 +71,24 @@ describe('routing utilities', () => {
 
   const guideReactOnly: Guide = {
     slug: 'concepts/react-only',
-    frameworks: ['react'],
+    frameworks: ['react'] satisfies MockFramework[],
   };
 
   const guideTailwindOnly: Guide = {
     slug: 'concepts/tailwind-only',
-    styles: ['tailwind'],
+    styles: ['tailwind'] satisfies MockStyle[],
   };
 
   const guideHtmlCssOnly: Guide = {
     slug: 'how-to/html-css-only',
-    frameworks: ['html'],
-    styles: ['css'],
+    frameworks: ['html'] satisfies MockFramework[],
+    styles: ['css'] satisfies MockStyle[],
   };
 
   const guideReactTailwind: Guide = {
     slug: 'how-to/react-tailwind',
-    frameworks: ['react'],
-    styles: ['tailwind'],
+    frameworks: ['react'] satisfies MockFramework[],
+    styles: ['tailwind'] satisfies MockStyle[],
   };
 
   const mockSidebar: Sidebar = [
@@ -210,9 +265,8 @@ describe('routing utilities', () => {
       });
 
       it('should change style to default when current style invalid for new framework', () => {
-        // Create a temporary guide with a framework that only supports one style
-        // Since both html and react support css and tailwind, we'll test with an edge case
-        // where we'd need to demonstrate style adjustment. For now, this tests the logic path.
+        // Since both html and react support css and tailwind in our mock, we'll test
+        // the logic by verifying that valid styles are kept
         const result = resolveFrameworkChange({
           currentFramework: 'react',
           currentStyle: 'tailwind',
@@ -221,7 +275,7 @@ describe('routing utilities', () => {
         }, mockSidebar);
 
         expect(result.selectedFramework).toBe('html');
-        // tailwind is also valid for html, so it will be kept
+        // tailwind is valid for both frameworks, so it will be kept
         expect(result.selectedStyle).toBe('tailwind');
         expect(result.reason).toContain('kept style');
       });
@@ -439,10 +493,6 @@ describe('routing utilities', () => {
 
     describe('priority 4: change both framework and style', () => {
       it('should use guide\'s first valid framework and style as fallback', () => {
-        // Use concepts/react-only with HTML + styled-components
-        // - html doesn't support react-only (framework restriction)
-        // - react doesn't support styled-components... wait, it does!
-        // Let me use a different test case
         const result = resolveDocsLinkUrl({
           targetSlug: 'concepts/react-only',
           contextFramework: 'html', // doesn't support react-only

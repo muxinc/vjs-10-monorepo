@@ -1,5 +1,7 @@
 ---
 title: PlayButton
+frameworkTitle:
+  html: play-button
 description: A button component for playing and pausing media playback
 ---
 
@@ -9,6 +11,9 @@ import cssModuleStr from '@/examples/react/PlayButton/PlayButton.module.css?raw'
 import htmlStr from '@/examples/html/play-button/snippet.html?raw';
 import htmlCssStr from '@/examples/html/play-button/play-button.css?raw';
 import htmlJsStr from '@/examples/html/play-button/play-button.js?raw';
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import Container from '@/components/docs/Container.astro';
+import ServerCode from '@/components/ServerCode.astro';
 
 ## Features
 
@@ -19,24 +24,39 @@ import htmlJsStr from '@/examples/html/play-button/play-button.js?raw';
 
 ## Live Example
 
-<PlayButtonDemo client:load />
+<Container>
+  <PlayButtonDemo client:load />
+</Container>
 
 ## Usage
 
-### React
-Component
-<pre>{componentModuleStr}</pre>
-CSS Module
-<pre>{cssModuleStr}</pre>
+<FrameworkCase frameworks={["react"]}>
+
+### Component
+
+<ServerCode code={componentModuleStr} lang="tsx" />
+
+### CSS Module
+
+<ServerCode code={cssModuleStr} lang="css" />
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
 
 ### HTML
-HTML
-<pre>{htmlStr}</pre>
-CSS
-<pre>{htmlCssStr}</pre>
-JavaScript
-<pre>{htmlJsStr}</pre>
 
+<ServerCode code={htmlStr} lang="html" />
+
+### CSS
+
+<ServerCode code={htmlCssStr} lang="css" />
+
+### JavaScript
+
+<ServerCode code={htmlJsStr} lang="js" />
+
+</FrameworkCase>
 
 ## Data Attributes
 
@@ -46,6 +66,8 @@ The PlayButton automatically sets data attributes based on media state:
 
 Use these attributes for state-based styling in your CSS.
 
+<FrameworkCase frameworks={["react"]}>
+
 ## Props
 
 All standard button props are supported, plus:
@@ -54,6 +76,8 @@ All standard button props are supported, plus:
 |------|------|-------------|
 | `children` | `ReactNode` | Button content (typically icons) |
 | `className` | `string` | CSS class name |
+
+</FrameworkCase>
 
 ## Accessibility
 

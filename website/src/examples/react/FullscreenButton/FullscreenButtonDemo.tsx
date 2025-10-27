@@ -11,8 +11,8 @@ export function FullscreenButtonDemo() {
     <MediaProvider>
       <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
         <Video
-          src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8"
-          poster="https://image.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ/thumbnail.webp"
+          src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
+          poster="https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp"
           muted
         />
         <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', zIndex: 10 }}>

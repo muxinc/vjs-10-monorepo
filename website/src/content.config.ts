@@ -1,5 +1,6 @@
 import { file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
+import { SUPPORTED_FRAMEWORKS } from './types/docs';
 import { defaultGitService } from './utils/gitService';
 import { globWithParser } from './utils/globWithParser';
 
@@ -80,6 +81,7 @@ const docs = defineCollection({
     title: z.string(),
     description: z.string(),
     updatedDate: z.coerce.date().optional(),
+    frameworkTitle: z.record(z.enum(SUPPORTED_FRAMEWORKS as [string, ...string[]]), z.string()).optional(),
   }),
 });
 

@@ -1,5 +1,7 @@
 ---
 title: VolumeSlider
+frameworkTitle:
+  html: volume-slider
 description: A slider component for controlling media volume
 ---
 
@@ -9,6 +11,9 @@ import cssModuleStr from '@/examples/react/VolumeSlider/VolumeSlider.module.css?
 import htmlHorizontalStr from '@/examples/html/volume-slider/snippet-horizontal.html?raw';
 import htmlVerticalStr from '@/examples/html/volume-slider/snippet-vertical.html?raw';
 import htmlCssStr from '@/examples/html/volume-slider/volume-slider.css?raw';
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import Container from '@/components/docs/Container.astro';
+import ServerCode from '@/components/ServerCode.astro';
 
 ## Features
 
@@ -20,28 +25,41 @@ import htmlCssStr from '@/examples/html/volume-slider/volume-slider.css?raw';
 
 ## Live Example
 
-<VolumeSliderDemo client:load />
+<Container>
+  <VolumeSliderDemo client:load />
+</Container>
 
 ## Usage
 
-### React
+<FrameworkCase frameworks={["react"]}>
 
-#### Component
-<pre>{componentModuleStr}</pre>
+### Component
 
-#### CSS Module
-<pre>{cssModuleStr}</pre>
+<ServerCode code={componentModuleStr} lang="tsx" />
 
-### HTML
+### CSS Module
 
-#### Horizontal Orientation
-<pre>{htmlHorizontalStr}</pre>
+<ServerCode code={cssModuleStr} lang="css" />
 
-#### Vertical Orientation
-<pre>{htmlVerticalStr}</pre>
+</FrameworkCase>
 
-#### CSS
-<pre>{htmlCssStr}</pre>
+<FrameworkCase frameworks={["html"]}>
+
+### Horizontal Orientation
+
+<ServerCode code={htmlHorizontalStr} lang="html" />
+
+### Vertical Orientation
+
+<ServerCode code={htmlVerticalStr} lang="html" />
+
+### CSS
+
+<ServerCode code={htmlCssStr} lang="css" />
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["react"]}>
 
 ## Compound Components
 
@@ -62,6 +80,8 @@ Visual indicator showing the current volume level.
 
 ### VolumeSlider.Thumb
 The draggable handle that indicates and controls the current volume level.
+
+</FrameworkCase>
 
 ## Data Attributes
 

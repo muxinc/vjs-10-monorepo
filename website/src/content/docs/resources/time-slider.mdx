@@ -1,5 +1,7 @@
 ---
 title: TimeSlider
+frameworkTitle:
+  html: time-slider
 description: A slider component for seeking through media content
 ---
 
@@ -9,6 +11,9 @@ import cssModuleStr from '@/examples/react/TimeSlider/TimeSlider.module.css?raw'
 import htmlHorizontalStr from '@/examples/html/time-slider/snippet-horizontal.html?raw';
 import htmlVerticalStr from '@/examples/html/time-slider/snippet-vertical.html?raw';
 import htmlCssStr from '@/examples/html/time-slider/time-slider.css?raw';
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import Container from '@/components/docs/Container.astro';
+import ServerCode from '@/components/ServerCode.astro';
 
 ## Features
 
@@ -20,28 +25,41 @@ import htmlCssStr from '@/examples/html/time-slider/time-slider.css?raw';
 
 ## Live Example
 
-<TimeSliderDemo client:load />
+<Container>
+  <TimeSliderDemo client:load />
+</Container>
 
 ## Usage
 
-### React
+<FrameworkCase frameworks={["react"]}>
 
-#### Component
-<pre>{componentModuleStr}</pre>
+### Component
 
-#### CSS Module
-<pre>{cssModuleStr}</pre>
+<ServerCode code={componentModuleStr} lang="tsx" />
 
-### HTML
+### CSS Module
 
-#### Horizontal Orientation
-<pre>{htmlHorizontalStr}</pre>
+<ServerCode code={cssModuleStr} lang="css" />
 
-#### Vertical Orientation
-<pre>{htmlVerticalStr}</pre>
+</FrameworkCase>
 
-#### CSS
-<pre>{htmlCssStr}</pre>
+<FrameworkCase frameworks={["html"]}>
+
+### Horizontal Orientation
+
+<ServerCode code={htmlHorizontalStr} lang="html" />
+
+### Vertical Orientation
+
+<ServerCode code={htmlVerticalStr} lang="html" />
+
+### CSS
+
+<ServerCode code={htmlCssStr} lang="css" />
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["react"]}>
 
 ## Compound Components
 
@@ -65,6 +83,8 @@ Shows the hover/preview position when user moves cursor over the slider.
 
 ### TimeSlider.Thumb
 The draggable handle that indicates and controls the current playback position.
+
+</FrameworkCase>
 
 ## Data Attributes
 

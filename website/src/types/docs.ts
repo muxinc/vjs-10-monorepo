@@ -1,6 +1,6 @@
 export const FRAMEWORK_STYLES = {
-  react: ['css', 'tailwind'],
-  html: ['css', 'tailwind'],
+  react: ['css'],
+  html: ['css'],
 } as const;
 
 export type SupportedFramework = keyof typeof FRAMEWORK_STYLES;

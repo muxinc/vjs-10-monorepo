@@ -15,6 +15,7 @@ import DocsNavigation from '@/components/docs/DocsNavigation.astro';
 import EditPageButton from '@/components/docs/EditPageButton.astro';
 import JsonLd from '@/components/JsonLd.astro';
 import { createTechArticleSchema } from '@/utils/jsonLd/schemas';
+import { getDocTitle } from '@/utils/docs/title';
 
 export async function getStaticPaths() {
   const docsCollection = await getCollection('docs');
@@ -75,14 +76,14 @@ const filteredHeadings = conditionalHeadings
 // Get adjacent guides for navigation
 const { prev, next } = getAdjacentGuides(slug, framework, style);
 
-// Fetch all docs to get their titles
+// Fetch all docs to get their framework-specific titles
 const allDocs = await getCollection('docs');
-const docTitles = new Map(allDocs.map((d) => [d.id, d.data.title]));
+const docTitles = new Map(allDocs.map((d) => [d.id, getDocTitle(d, framework)]));
 
 // Build JSON-LD schema for TechArticle
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const jsonLdSchema = createTechArticleSchema({
-  title: doc.data.title,
+  title: getDocTitle(doc, framework),
   description: doc.data.description,
   url: pageUrl,
   updatedDate: doc.data.updatedDate,
@@ -120,7 +121,7 @@ const jsonLdSchema = createTechArticleSchema({
     <div class="@container px-6 lg:px-12 flex flex-col" style="grid-area: article;">
       <article class="mb-18 flex-1">
         <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto py-8 mb-8">
-          <H3 as="h1" class="mt-0 mb-2">{doc.data.title}</H3>
+          <H3 as="h1" class="mt-0 mb-2">{getDocTitle(doc, framework)}</H3>
           <p class="@lg:font-medium">{doc.data.description}</p>
         </header>
         <Content components={{ ...defaultMarkdownComponents }} />

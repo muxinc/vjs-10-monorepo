@@ -14,11 +14,10 @@ const { as: Tag = 'pre', maxWidth = true, class: className, style: _style, ...pr
 <div class={twMerge(clsx('relative my-6 group', maxWidth && 'max-w-3xl mx-auto'))}>
   <Tag
     class={twMerge(
-      'rounded-lg p-6 overflow-x-auto overflow-y-scroll max-h-96 border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110',
+      'rounded-lg p-6 overflow-scroll max-h-96 border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110',
       className,
     )}
-    {...props}
+    {/* weird formatting to prevent leading whitespace */}
+    {...props}><slot /></Tag
   >
-    <slot />
-  </Tag>
 </div>
