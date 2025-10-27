@@ -9,3 +9,4 @@ not comprehensive. just the things I'm worried about forgetting
 - docs features
   - copy code blocks
 - search
+- update docs following dev
