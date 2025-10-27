@@ -15,12 +15,27 @@ import { THEME_KEY } from '@/consts';
       localStorage[localStorageKey] = 'system';
       localStorageValue = 'system';
     }
+    let isDark = false;
     if (localStorageValue === 'dark') {
       document.documentElement.classList.add('dark');
+      isDark = true;
     } else if (localStorageValue === 'system') {
       if (typeof window.matchMedia !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add('dark');
+        isDark = true;
       }
+    }
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', isDark ? '#393836' : '#ebe4c1');
+    }
+    const svgFavicon = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
+    const icoFavicon = document.querySelector('link[rel="icon"][sizes="32x32"]');
+    if (svgFavicon) {
+      svgFavicon.setAttribute('href', isDark ? '/favicon-dark.svg' : '/favicon.svg');
+    }
+    if (icoFavicon) {
+      icoFavicon.setAttribute('href', isDark ? '/favicon-dark.ico' : '/favicon.ico');
     }
   }
 </script>

@@ -74,11 +74,20 @@ export function ThemeToggle() {
     };
   }, [preference]);
 
-  // Keep document.documentElement in sync with theme
+  // Keep document.documentElement, theme-color, and favicons in sync with theme
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    if (theme === 'light') document.documentElement.classList.remove('dark');
-    else if (theme === 'dark') document.documentElement.classList.add('dark');
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#ebe4c1');
+      document.querySelector('link[rel="icon"][type="image/svg+xml"]')?.setAttribute('href', '/favicon.svg');
+      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/favicon.ico');
+    } else if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#393836');
+      document.querySelector('link[rel="icon"][type="image/svg+xml"]')?.setAttribute('href', '/favicon-dark.svg');
+      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/favicon-dark.ico');
+    }
 
     return () => {
       document.documentElement.classList.remove('dark');
