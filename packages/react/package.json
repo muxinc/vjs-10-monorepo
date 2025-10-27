@@ -65,6 +65,7 @@
     "@svgr/cli": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
     "@tailwindcss/cli": "^4.1.0",
+    "@types/postcss-prefix-selector": "^1.16.3",
     "@types/react": "^18.0.0",
     "postcss": "^8.4.49",
     "postcss-prefix-selector": "^1.16.1",

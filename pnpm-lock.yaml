@@ -214,6 +214,9 @@ importers:
       '@tailwindcss/cli':
         specifier: ^4.1.0
         version: 4.1.14
+      '@types/postcss-prefix-selector':
+        specifier: ^1.16.3
+        version: 1.16.3
       '@types/react':
         specifier: ^18.0.0
         version: 18.3.24
@@ -1905,6 +1908,9 @@ packages:
 
   '@types/node@22.18.6':
     resolution: {integrity: sha512-r8uszLPpeIWbNKtvWRt/DbVi5zbqZyj1PTmhRMqBMvDnaz1QpmSKujUtJLrqGZeoM8v72MfYggDceY4K1itzWQ==}
+
+  '@types/postcss-prefix-selector@1.16.3':
+    resolution: {integrity: sha512-YZLPWRkJIrYjwaqojVDXzaRCAEYslRAm8Shznwwn+ZFA4iKQR4LZlS3d+ZMVteFz4iyQnngZZG7k/GIzV1f3mQ==}
 
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
@@ -7272,6 +7278,10 @@ snapshots:
   '@types/node@22.18.6':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/postcss-prefix-selector@1.16.3':
+    dependencies:
+      postcss: 8.5.6
 
   '@types/prop-types@15.7.15': {}
 
