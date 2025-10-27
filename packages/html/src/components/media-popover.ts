@@ -378,11 +378,14 @@ export class MediaPopoverPortal extends HTMLElement {
   }
 }
 
+const visuallyHiddenStyles = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;';
+
 function createFocusGuard(dataType: 'inside' | 'outside'): HTMLElement {
   const focusGuard = document.createElement('span');
   focusGuard.setAttribute('data-type', dataType);
   focusGuard.setAttribute('tabindex', '0');
   focusGuard.toggleAttribute('data-focus-guard', true);
+  focusGuard.style.cssText = visuallyHiddenStyles;
   return focusGuard;
 }
 
