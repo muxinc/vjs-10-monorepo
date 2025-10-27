@@ -385,7 +385,7 @@ function createFocusGuard(dataType: 'inside' | 'outside'): HTMLElement {
   focusGuard.setAttribute('data-type', dataType);
   focusGuard.setAttribute('tabindex', '0');
   focusGuard.toggleAttribute('data-focus-guard', true);
-  focusGuard.style = visuallyHiddenStyles;
+  focusGuard.style.cssText = visuallyHiddenStyles;
   return focusGuard;
 }
 
