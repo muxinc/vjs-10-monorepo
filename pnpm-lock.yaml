@@ -252,7 +252,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
 
-  website:
+  site:
     dependencies:
       '@astrojs/mdx':
         specifier: ^4.3.7

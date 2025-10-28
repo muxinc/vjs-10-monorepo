@@ -13,7 +13,7 @@ This is a Video.js 10 monorepo organized by platform/runtime with a clear depend
 - **React package** (`packages/react`) - React-specific implementation
 - **React Native package** (`packages/react-native`) - React Native implementation
 - **Examples** (`examples/*`) - Demo applications for different platforms
-- **Website** (`website/`) - Astro-based website, including documentation and blog
+- **Website** (`site/`) - Astro-based website, including documentation and blog
 
 ### Dependency Hierarchy
 
@@ -61,7 +61,7 @@ pnpm dev:html
 pnpm dev:react
 
 # Run website
-pnpm dev:website
+pnpm dev:site
 
 # Run all dev servers in parallel
 pnpm dev
@@ -74,7 +74,7 @@ pnpm dev
 pnpm --filter @videojs/core build
 
 # Run website independently
-cd website
+cd site
 pnpm dev
 
 # Work in specific package directory
@@ -124,20 +124,20 @@ This uses pnpm workspaces with the following workspace patterns:
 - `packages/react` - React package
 - `packages/react-native` - React Native package
 - `examples/*` - Demo applications
-- `website` - Website (Astro)
+- `site` - Website (Astro)
 
 Internal dependencies use `workspace:*` protocol for linking between packages.
 
 ### Website
 
-The `website/` directory contains an Astro-based website with its own dependencies and build process. It's integrated into the monorepo workspace but can be developed independently:
+The `site/` directory contains an Astro-based website with its own dependencies and build process. It's integrated into the monorepo workspace but can be developed independently:
 
 ```bash
 # From root - runs via Turbo
-pnpm dev:website
+pnpm dev:site
 
-# From website directory - runs directly
-cd website && pnpm dev
+# From site directory - runs directly
+cd site && pnpm dev
 ```
 
 The website uses Astro with MDX support for content authoring.

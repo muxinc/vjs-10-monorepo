@@ -48,7 +48,7 @@ The website serves two main purposes:
 ### Project Structure
 
 ```text
-website/
+site/
 ├── src/
 │   ├── components/     # Reusable UI components
 │   │   └── docs/       # Documentation-specific components

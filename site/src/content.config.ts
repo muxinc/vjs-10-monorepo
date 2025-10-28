@@ -32,7 +32,7 @@ const blog = defineCollection({
       const pubDate = extractDateFromFilename(originalEntry);
 
       // Get updatedDate from git history (last modification date)
-      const filePath = `website/src/content/blog/${originalEntry}`;
+      const filePath = `site/src/content/blog/${originalEntry}`;
       const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
       // Return transformed entry with added fields
@@ -64,7 +64,7 @@ const docs = defineCollection({
     pattern: '**/*.mdx',
     parser: async (entry, originalEntry) => {
       // Get updatedDate from git history
-      const filePath = `website/src/content/docs/${originalEntry}`;
+      const filePath = `site/src/content/docs/${originalEntry}`;
       const updatedDate = await defaultGitService.getLastModifiedDate(filePath);
 
       // Return transformed entry with added field if updatedDate exists

@@ -1,5 +1,5 @@
 packages:
   - 'packages/*'
   - 'examples/*'
-  - website
+  - site
 minimumReleaseAge: 1440

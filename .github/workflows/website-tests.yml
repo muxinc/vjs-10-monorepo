@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'website/**'
+      - 'site/**'
   pull_request:
     paths:
-      - 'website/**'
+      - 'site/**'
 
 jobs:
   test:
@@ -31,4 +31,4 @@ jobs:
         run: pnpm install
 
       - name: Run website tests
-        run: pnpm --filter website test
+        run: pnpm --filter site test

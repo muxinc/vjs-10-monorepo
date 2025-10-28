@@ -27,8 +27,8 @@ export default antfu(
       '**/dist/',
       '**/styles/vjs.css',
       // some files that make eslint/prettier panic
-      'website/src/components/Posthog.astro',
-      'website/src/components/ThemeInit.astro',
+      'site/src/components/Posthog.astro',
+      'site/src/components/ThemeInit.astro',
     ],
     plugins: {
       'jsx-a11y': jsxA11y,
