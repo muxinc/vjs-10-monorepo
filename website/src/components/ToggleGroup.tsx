@@ -5,17 +5,20 @@ import { twMerge } from 'tailwind-merge';
 
 export interface ToggleOption<T = string> {
   value: T;
-  label: string;
+  label: React.ReactNode;
+  'aria-label'?: string;
   disabled?: boolean;
 }
 
 export interface ToggleGroupProps<T = string> {
-  value: T;
-  onChange: (value: T) => void;
+  value: T[];
+  onChange: (value: T[]) => void;
   options: ToggleOption<T>[];
   className?: string;
   toggleClassName?: string;
+  disabled?: boolean;
   'aria-label'?: string;
+  multiple?: boolean;
 }
 
 export default function ToggleGroup<T extends string = string>({
@@ -24,41 +27,43 @@ export default function ToggleGroup<T extends string = string>({
   options,
   className,
   toggleClassName,
+  disabled,
   'aria-label': ariaLabel,
+  multiple = false,
 }: ToggleGroupProps<T>) {
-  const handleChange = (newValue: string[]) => {
-    if (newValue.length > 0) {
-      onChange(newValue[0] as T);
-    }
-  };
-
   return (
     <BaseToggleGroup
-      value={[value]}
-      onValueChange={handleChange}
-      multiple={false}
+      value={value}
+      onValueChange={onChange}
+      disabled={disabled}
       className={twMerge(
-        clsx(
-          'inline-flex items-center gap-5',
-        ),
+        'inline-flex items-center gap-1 bg-light-60 dark:bg-dark-90 dark:text-light-100 border border-light-40 dark:border-dark-80 rounded-lg p-1',
         className,
       )}
       aria-label={ariaLabel}
+      multiple={multiple}
     >
-      {options.map(option => (
-        <Toggle
-          key={option.value}
-          value={option.value}
-          disabled={option.disabled}
-          className={twMerge(clsx(
-            'text-dark-40 dark:text-light-40 data-[pressed]:text-current',
-            'py-3 border-b border-transparent',
-            option.disabled ? 'opacity-50 cursor-not-allowed' : 'intent:border-dark-40 dark:intent:border-light-40 data-[pressed]:border-current cursor-pointer',
-          ), toggleClassName)}
-        >
-          {option.label}
-        </Toggle>
-      ))}
+      {options.map((option) => {
+        const isPressed = value.includes(option.value as T);
+        const isDisabled = disabled || option.disabled;
+
+        return (
+          <Toggle
+            key={option.value}
+            value={option.value}
+            disabled={isDisabled}
+            className={twMerge(clsx(
+              'relative',
+              'flex items-center gap-1.5 px-2.5 py-1.5 rounded text-sm',
+              isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+              isPressed ? 'bg-light-80 dark:bg-dark-100' : !isDisabled ? 'intent:bg-light-80/50 dark:intent:bg-dark-100/50' : '',
+            ), toggleClassName)}
+            aria-label={option['aria-label']}
+          >
+            {option.label}
+          </Toggle>
+        );
+      })}
     </BaseToggleGroup>
   );
 }

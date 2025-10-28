@@ -1,18 +1,17 @@
-import { Toggle } from '@base-ui-components/react/toggle';
-import { ToggleGroup } from '@base-ui-components/react/toggle-group';
 import clsx from 'clsx';
 import { Monitor, Moon, Sun } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
+import { useEffect, useState } from 'react';
 import { THEME_KEY } from '@/consts';
+import ToggleGroup from './ToggleGroup';
 
 type Preference = 'system' | 'light' | 'dark';
 type Theme = 'light' | 'dark';
 
 const themeOptions = [
-  { value: 'system' as const, label: 'System', icon: Monitor },
-  { value: 'light' as const, label: 'Light', icon: Sun },
-  { value: 'dark' as const, label: 'Dark', icon: Moon },
+  { value: 'system' as const, label: <Monitor size={14} aria-hidden="true" />, 'aria-label': 'System' },
+  { value: 'light' as const, label: <Sun size={14} aria-hidden="true" />, 'aria-label': 'Light' },
+  { value: 'dark' as const, label: <Moon size={14} aria-hidden="true" />, 'aria-label': 'Dark' },
 ];
 
 function initPreference(): Preference {
@@ -47,10 +46,6 @@ export function ThemeToggle() {
     setTheme(getThemeFromPreference(newPreference));
   };
 
-  const handleValueChange = (values: Preference[]) => {
-    if (values.length > 0) setPreference(values[0]);
-  };
-
   // Initialize preference and theme on mount
   useEffect(() => {
     const initialPreference = initPreference();
@@ -74,19 +69,15 @@ export function ThemeToggle() {
     };
   }, [preference]);
 
-  // Keep document.documentElement, theme-color, and favicons in sync with theme
+  // Keep document.documentElement and theme-color in sync with theme
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (theme === 'light') {
       document.documentElement.classList.remove('dark');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#ebe4c1');
-      document.querySelector('link[rel="icon"][type="image/svg+xml"]')?.setAttribute('href', '/favicon.svg');
-      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/favicon.ico');
     } else if (theme === 'dark') {
       document.documentElement.classList.add('dark');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#393836');
-      document.querySelector('link[rel="icon"][type="image/svg+xml"]')?.setAttribute('href', '/favicon-dark.svg');
-      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/favicon-dark.ico');
     }
 
     return () => {
@@ -97,31 +88,10 @@ export function ThemeToggle() {
   return (
     <ToggleGroup
       disabled={preference === null}
-      value={[preference]}
-      onValueChange={handleValueChange}
-      multiple={false}
-      className={clsx(
-        'inline-flex items-center gap-1 bg-light-60 dark:bg-dark-90 dark:text-light-100 border border-light-40 dark:border-dark-80 rounded-lg p-1',
-      )}
-    >
-      {themeOptions.map((option) => {
-        const Icon = option.icon;
-        return (
-          <Toggle
-            key={option.value}
-            value={option.value}
-            className={clsx(
-              'relative',
-              'flex items-center gap-1.5 px-2.5 py-1.5 rounded text-sm',
-              preference === null ? 'cursor-wait' : 'cursor-pointer',
-              preference === option.value ? 'bg-light-80 dark:bg-dark-100' : preference !== null ? 'intent:bg-light-80/50 dark:intent:bg-dark-100/50' : '',
-            )}
-            aria-label={option.label}
-          >
-            <Icon size={14} />
-          </Toggle>
-        );
-      })}
-    </ToggleGroup>
+      value={preference ? [preference] : []}
+      onChange={(values) => { if (values.length > 0) setPreference(values[0]); }}
+      options={themeOptions}
+      toggleClassName={clsx(preference === null && 'cursor-wait')}
+    />
   );
 }

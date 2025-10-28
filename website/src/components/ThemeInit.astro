@@ -29,13 +29,5 @@ import { THEME_KEY } from '@/consts';
     if (themeColorMeta) {
       themeColorMeta.setAttribute('content', isDark ? '#393836' : '#ebe4c1');
     }
-    const svgFavicon = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
-    const icoFavicon = document.querySelector('link[rel="icon"][sizes="32x32"]');
-    if (svgFavicon) {
-      svgFavicon.setAttribute('href', isDark ? '/favicon-dark.svg' : '/favicon.svg');
-    }
-    if (icoFavicon) {
-      icoFavicon.setAttribute('href', isDark ? '/favicon-dark.ico' : '/favicon.ico');
-    }
   }
 </script>
