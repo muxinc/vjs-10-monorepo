@@ -17,12 +17,14 @@ export class MediaPopoverRoot extends HTMLElement {
     this.#abortController ??= new AbortController();
     const { signal } = this.#abortController;
 
-    this.addEventListener('mouseenter', this, { signal });
-    this.addEventListener('mouseleave', this, { signal });
+    if (globalThis.matchMedia?.('(hover: hover)')?.matches) {
+      this.addEventListener('pointerenter', this, { signal });
+      this.addEventListener('pointerleave', this, { signal });
+      getDocument(this).documentElement.addEventListener('pointerleave', this, { signal });
+    }
+
     this.addEventListener('focusin', this, { signal });
     this.addEventListener('focusout', this, { signal });
-
-    getDocument(this).documentElement.addEventListener('mouseleave', this, { signal });
   }
 
   disconnectedCallback(): void {
@@ -38,11 +40,11 @@ export class MediaPopoverRoot extends HTMLElement {
 
   handleEvent(event: Event): void {
     switch (event.type) {
-      case 'mouseenter':
-        this.#handleMouseEnter();
+      case 'pointerenter':
+        this.#handlePointerEnter();
         break;
-      case 'mouseleave':
-        this.#handleMouseLeave(event as MouseEvent);
+      case 'pointerleave':
+        this.#handlePointerLeave(event as PointerEvent);
         break;
       case 'focusin':
         this.#handleFocusIn(event as FocusEvent);
@@ -176,7 +178,7 @@ export class MediaPopoverRoot extends HTMLElement {
     }
   }
 
-  #handleMouseEnter(): void {
+  #handlePointerEnter(): void {
     if (!this.openOnHover) return;
 
     this.#clearHoverTimeout();
@@ -185,10 +187,8 @@ export class MediaPopoverRoot extends HTMLElement {
     }, this.delay);
   }
 
-  #handleMouseLeave(event: MouseEvent): void {
+  #handlePointerLeave(_event: PointerEvent): void {
     if (!this.openOnHover) return;
-
-    if (event.relatedTarget && this.#popupElement?.contains(event.relatedTarget as Node)) return;
 
     this.#clearHoverTimeout();
     this.#hoverTimeout = globalThis.setTimeout(() => {
