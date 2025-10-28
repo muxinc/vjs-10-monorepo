@@ -5,6 +5,8 @@ description: 'A guide on writing documentation for the Video.js project, and a t
 
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import StyleCase from '@/components/docs/StyleCase.astro';
+import Container from '@/components/docs/Container.astro';
+import ServerCode from '@/components/ServerCode.astro';
 
 ## What kind of guide are you writing?
 I haven't written this section yet, but when I do, it'll rehash [Diátaxis](https://diataxis.fr/).
@@ -40,6 +42,39 @@ will render:
 <StyleCase styles={["tailwind"]}>
   Tailwind-only content
 </StyleCase>
+
+## Displaying Code from Files
+
+Use the `<ServerCode>` component to display code imported from source files with syntax highlighting. Supports any language that [Shiki supports](https://shiki.style/languages).
+
+```mdx
+import exampleCode from '@/examples/react/Example.tsx?raw';
+import ServerCode from '@/components/ServerCode.astro';
+
+<ServerCode code={exampleCode} lang="tsx" />
+```
+
+will render:
+
+<ServerCode code={`import { useState } from 'react';
+
+export function Example() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}`} lang="tsx" />
+
+## Wrapping Live Demos
+
+Use the `<Container>` component to constrain live demos to a readable width.
+
+```mdx
+import { MyDemo } from '@/examples/react/MyDemo';
+import Container from '@/components/docs/Container.astro';
+
+<Container>
+  <MyDemo client:load />
+</Container>
+```
 
 ## Use Github-Flavored Markdown
 

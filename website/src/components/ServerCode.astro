@@ -1,0 +1,28 @@
+---
+import type { ComponentProps } from 'astro/types';
+import { Code } from 'astro:components';
+import Pre from './typography/Pre.astro';
+import { twMerge } from 'tailwind-merge';
+
+interface Props extends Omit<ComponentProps<typeof Code>, 'class'> {
+  maxWidth?: ComponentProps<typeof Pre>['maxWidth'];
+  wrapperClass?: ComponentProps<typeof Pre>['class'];
+  codeClass?: ComponentProps<typeof Code>['class'];
+}
+
+const { code, lang, maxWidth = true, themes, wrapperClass, codeClass, style, ...codeProps } = Astro.props;
+---
+
+<Pre as="div" maxWidth={maxWidth} class={wrapperClass}>
+  <Code
+    code={code}
+    lang={lang}
+    themes={themes ?? {
+      light: 'gruvbox-light-hard',
+      dark: 'gruvbox-dark-medium',
+    }}
+    class={twMerge('font-mono text-code', codeClass)}
+    style={style ? `${style};` : '' + 'overflow-x:visible!important;background:none!important'}
+    {...codeProps}
+  />
+</Pre>

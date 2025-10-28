@@ -1,0 +1,88 @@
+---
+title: FullscreenButton
+frameworkTitle:
+  html: fullscreen-button
+description: A button component for toggling fullscreen mode
+---
+
+import { FullscreenButtonDemo } from '@/examples/react/FullscreenButton/FullscreenButtonDemo';
+import componentModuleStr from '@/examples/react/FullscreenButton/BasicFullscreenButton.tsx?raw';
+import cssModuleStr from '@/examples/react/FullscreenButton/FullscreenButton.module.css?raw';
+import htmlStr from '@/examples/html/fullscreen-button/snippet.html?raw';
+import htmlCssStr from '@/examples/html/fullscreen-button/fullscreen-button.css?raw';
+import htmlJsStr from '@/examples/html/fullscreen-button/fullscreen-button.js?raw';
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import Container from '@/components/docs/Container.astro';
+import ServerCode from '@/components/ServerCode.astro';
+
+## Features
+
+- Automatically switches icons based on fullscreen state
+- Works with browser Fullscreen API
+- Falls back gracefully when fullscreen not supported
+- Accessible keyboard navigation
+
+## Live Example
+
+<Container>
+  <FullscreenButtonDemo client:load />
+</Container>
+
+## Usage
+
+<FrameworkCase frameworks={["react"]}>
+
+### Component
+
+<ServerCode code={componentModuleStr} lang="tsx" />
+
+### CSS Module
+<ServerCode code={cssModuleStr} lang="css" />
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+### HTML
+
+<ServerCode code={htmlStr} lang="html" />
+
+### CSS
+<ServerCode code={htmlCssStr} lang="css" />
+
+### JavaScript
+
+<ServerCode code={htmlJsStr} lang="js" />
+
+</FrameworkCase>
+
+## Data Attributes
+
+The FullscreenButton automatically sets data attributes based on fullscreen state:
+
+- `data-fullscreen` - Present when in fullscreen, absent when not
+
+Use these attributes for state-based styling in your CSS.
+
+<FrameworkCase frameworks={["react"]}>
+
+## Props
+
+All standard button props are supported, plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Button content (typically icons) |
+| `className` | `string` | CSS class name |
+
+</FrameworkCase>
+
+## Accessibility
+
+- Automatically includes proper ARIA labels
+- Keyboard accessible (Space/Enter)
+- Announces fullscreen state changes to screen readers
+
+## Browser Support
+
+The FullscreenButton uses the standard Fullscreen API, which is supported in all modern browsers.

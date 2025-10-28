@@ -1,5 +1,5 @@
 import type { Guide, Section, Sidebar } from '../../../types/docs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   filterSidebar,
   findFirstGuide,
@@ -8,18 +8,59 @@ import {
   getValidStylesForGuide,
 } from '../sidebar';
 
+// Mock FRAMEWORK_STYLES from @/types/docs to use our test config
+// Note: This mock is hoisted, so we define MOCK_FRAMEWORK_STYLES inside the factory
+vi.mock('@/types/docs', async () => {
+  const actual = await vi.importActual('@/types/docs');
+
+  // Mock framework/style configuration for tests
+  // This allows tests to remain stable when the actual FRAMEWORK_STYLES changes
+  const MOCK_FRAMEWORK_STYLES = {
+    html: ['css', 'tailwind'],
+    react: ['css', 'tailwind'],
+  } as const;
+
+  type MockFramework = keyof typeof MOCK_FRAMEWORK_STYLES;
+  type MockStyle = typeof MOCK_FRAMEWORK_STYLES[MockFramework][number];
+
+  return {
+    ...actual,
+    // Mock FRAMEWORK_STYLES to match our test config
+    FRAMEWORK_STYLES: MOCK_FRAMEWORK_STYLES,
+
+    // Mock isValidStyleForFramework to check against mock styles
+    isValidStyleForFramework: (
+      framework: MockFramework,
+      style: string | undefined | null,
+    ): style is MockStyle => {
+      if (!style) return false;
+      return MOCK_FRAMEWORK_STYLES[framework]?.includes(style as MockStyle) ?? false;
+    },
+  };
+});
+
+// Re-export the mock types for use in tests
+// Prefixed with _ to indicate it's only used for type derivation
+const _MOCK_FRAMEWORK_STYLES = {
+  html: ['css', 'tailwind'],
+  react: ['css', 'tailwind'],
+} as const;
+
+type MockFramework = keyof typeof _MOCK_FRAMEWORK_STYLES;
+type MockStyle = typeof _MOCK_FRAMEWORK_STYLES[MockFramework][number];
+
 describe('sidebar utilities', () => {
-  // Test fixtures
+  // Test fixtures using mock framework/style values
   const mockGuide1: Guide = {
     slug: 'guide-1',
-    frameworks: ['html', 'react'],
-    styles: ['css', 'tailwind'],
+    frameworks: ['html', 'react'] satisfies MockFramework[],
+    styles: ['css', 'tailwind'] satisfies MockStyle[],
   };
 
   const mockGuide2: Guide = {
     slug: 'guide-2',
-    frameworks: ['react'],
-    styles: ['tailwind'],
+    frameworks: ['react'] satisfies MockFramework[],
+    styles: ['tailwind'] satisfies MockStyle[],
   };
 
   const mockGuide3: Guide = {
@@ -29,7 +70,7 @@ describe('sidebar utilities', () => {
 
   const mockSection: Section = {
     sidebarLabel: 'Section 1',
-    frameworks: ['html', 'react'],
+    frameworks: ['html', 'react'] satisfies MockFramework[],
     contents: [mockGuide1, mockGuide2],
   };
 
@@ -217,25 +258,31 @@ describe('sidebar utilities', () => {
     it('should return framework styles that guide supports', () => {
       const result = getValidStylesForGuide(mockGuide1, 'html');
 
+      // Should return the intersection of mockGuide1 styles and html framework styles
+      // With our mock, both have ['css', 'tailwind'], so intersection is both
       expect(result).toEqual(['css', 'tailwind']);
     });
 
     it('should return only styles that both framework and guide support', () => {
       const result = getValidStylesForGuide(mockGuide1, 'react');
 
+      // Should return the intersection of mockGuide1 styles and react framework styles
+      // With our mock, both have ['css', 'tailwind'], so intersection is both
       expect(result).toEqual(['css', 'tailwind']);
     });
 
     it('should return all framework styles if guide has no restrictions', () => {
       const result = getValidStylesForGuide(mockGuide3, 'react');
 
+      // Since mockGuide3 has no style restrictions, it should return all framework styles
+      // With our mock, react supports ['css', 'tailwind']
       expect(result).toEqual(['css', 'tailwind']);
     });
 
     it('should handle guide with limited style support', () => {
       const cssOnlyGuide: Guide = {
         slug: 'css-only',
-        styles: ['css'],
+        styles: ['css'] satisfies MockStyle[],
       };
       const result = getValidStylesForGuide(cssOnlyGuide, 'react');
 
@@ -246,8 +293,8 @@ describe('sidebar utilities', () => {
       // Guide that only supports html framework, but we check with react
       const cssOnlyGuide: Guide = {
         slug: 'css-only-test',
-        styles: ['css'],
-        frameworks: ['html'],
+        styles: ['css'] satisfies MockStyle[],
+        frameworks: ['html'] satisfies MockFramework[],
       };
       const result = getValidStylesForGuide(cssOnlyGuide, 'react');
 
@@ -258,13 +305,14 @@ describe('sidebar utilities', () => {
       it('should return all guide styles when guide has style restrictions', () => {
         const result = getValidStylesForGuide(mockGuide1);
 
-        expect(result).toEqual(['css', 'tailwind']);
+        expect(result).toEqual(['css', 'tailwind'] satisfies MockStyle[]);
       });
 
       it('should return all possible styles when guide has no restrictions', () => {
         const result = getValidStylesForGuide(mockGuide3);
 
-        // Should include all styles from all frameworks (css and tailwind for both react and html)
+        // Should include all styles from MOCK_FRAMEWORK_STYLES (deduplicated)
+        // Both frameworks support ['css', 'tailwind'], so we get both
         expect(result).toEqual(expect.arrayContaining(['css', 'tailwind']));
         expect(result).toHaveLength(2);
       });
@@ -272,7 +320,7 @@ describe('sidebar utilities', () => {
       it('should return guide-specific styles for limited support guides', () => {
         const tailwindOnlyGuide: Guide = {
           slug: 'tailwind-only',
-          styles: ['tailwind'],
+          styles: ['tailwind'] satisfies MockStyle[],
         };
         const result = getValidStylesForGuide(tailwindOnlyGuide);
 

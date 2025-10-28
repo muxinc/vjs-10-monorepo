@@ -2,7 +2,17 @@ import type { Sidebar } from '@/types/docs';
 
 export const sidebar: Sidebar = [
   { sidebarLabel: 'Writing guides', slug: 'how-to/write-guides', devOnly: true },
-  { slug: 'concepts/coming-soon' },
+  { sidebarLabel: 'Getting started', contents: [{ slug: 'concepts/under-construction' }] },
+  {
+    sidebarLabel: 'Components',
+    contents: [
+      { slug: 'resources/play-button' },
+      { slug: 'resources/mute-button' },
+      { slug: 'resources/fullscreen-button' },
+      { slug: 'resources/time-slider' },
+      { slug: 'resources/volume-slider' },
+    ],
+  },
   // {
   //   sidebarLabel: 'Getting started',
   //   contents: [

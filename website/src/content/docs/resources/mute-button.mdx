@@ -1,0 +1,88 @@
+---
+title: MuteButton
+frameworkTitle:
+  html: mute-button
+description: A button component for toggling audio mute state
+---
+
+import { MuteButtonDemo } from '@/examples/react/MuteButton/MuteButtonDemo';
+import componentModuleStr from '@/examples/react/MuteButton/BasicMuteButton.tsx?raw';
+import cssModuleStr from '@/examples/react/MuteButton/MuteButton.module.css?raw';
+import htmlStr from '@/examples/html/mute-button/snippet.html?raw';
+import htmlCssStr from '@/examples/html/mute-button/mute-button.css?raw';
+import htmlJsStr from '@/examples/html/mute-button/mute-button.js?raw';
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import Container from '@/components/docs/Container.astro';
+import ServerCode from '@/components/ServerCode.astro';
+
+## Features
+
+- Multi-state icon display (high, low, off)
+- Automatically reflects volume level changes
+- Toggles mute/unmute on click
+- Accessible keyboard navigation
+
+## Live Example
+
+<Container>
+  <MuteButtonDemo client:load />
+</Container>
+
+## Usage
+
+<FrameworkCase frameworks={["react"]}>
+
+### Component
+
+<ServerCode code={componentModuleStr} lang="tsx" />
+
+### CSS Module
+<ServerCode code={cssModuleStr} lang="css" />
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+### HTML
+
+<ServerCode code={htmlStr} lang="html" />
+
+### CSS
+
+<ServerCode code={htmlCssStr} lang="css" />
+
+### JavaScript
+
+<ServerCode code={htmlJsStr} lang="js" />
+
+</FrameworkCase>
+
+## Data Attributes
+
+The MuteButton automatically sets data attributes based on volume level:
+
+- `data-volume-level="high"` - Volume > 50%
+- `data-volume-level="medium"` - Volume 25-50%
+- `data-volume-level="low"` - Volume 1-24%
+- `data-volume-level="off"` - Volume 0% (muted)
+
+Use these attributes for state-based styling in your CSS.
+
+<FrameworkCase frameworks={["react"]}>
+
+## Props
+
+All standard button props are supported, plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Button content (typically icons) |
+| `className` | `string` | CSS class name |
+
+</FrameworkCase>
+
+## Accessibility
+
+- Automatically includes proper ARIA labels
+- Keyboard accessible (Space/Enter)
+- Announces volume state changes to screen readers

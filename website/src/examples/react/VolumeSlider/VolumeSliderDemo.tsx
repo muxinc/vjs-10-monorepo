@@ -1,0 +1,24 @@
+import { MediaContainer, MediaProvider, Video } from '@videojs/react';
+import { BasicVolumeSlider } from './BasicVolumeSlider';
+
+/**
+ * Demo showing proper MediaProvider usage with VolumeSlider.
+ * The MediaProvider wraps the entire media experience and provides
+ * the necessary context for all media components.
+ */
+export function VolumeSliderDemo() {
+  return (
+    <MediaProvider>
+      <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
+        <Video
+          src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
+          poster="https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp"
+          muted
+        />
+        <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', zIndex: 10 }}>
+          <BasicVolumeSlider />
+        </div>
+      </MediaContainer>
+    </MediaProvider>
+  );
+}
