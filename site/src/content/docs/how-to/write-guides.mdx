@@ -270,7 +270,6 @@ Use `<TabsRoot>` and `<TabsPanel>` to show multiple code examples side-by-side:
 ````mdx
 <TabsRoot
   aria-label="Code examples"
-  defaultValue="typescript"
   titles={{ typescript: 'TypeScript', javascript: 'JavaScript' }}
   client:load
 >
@@ -290,7 +289,6 @@ Use `<TabsRoot>` and `<TabsPanel>` to show multiple code examples side-by-side:
 Which renders
 <TabsRoot
   aria-label="Code examples"
-  defaultValue="typescript"
   titles={{ typescript: 'TypeScript', javascript: 'JavaScript' }}
   client:load
 >
@@ -310,7 +308,7 @@ Which renders
 **Important notes:**
 - You might've noticed that elsewhere in the codebase, TabsRoot requires `id` and TabsPanel requires `tabsId`. In MDX, these are generated for you with a rehype plugin
 - Both `<TabsRoot>` and `<TabsPanel>` require `client:load` directive in MDX
-- The `defaultValue` should match one of the keys in `titles`
+- The first key in `titles` will be the default active tab. Your panels should be in the same order as the keys in `titles`.
 - Use descriptive `aria-label` for accessibility
 
 
@@ -327,7 +325,6 @@ import ServerCode from '@/components/Code/ServerCode.astro';
 
 <TabsRoot
   aria-label="Component implementation"
-  defaultValue="component"
   titles={{ component: 'Component', css: 'CSS Module' }}
   client:load
 >
@@ -341,7 +338,6 @@ Which will happily render
 
 <TabsRoot
   aria-label="Component implementation"
-  defaultValue="component"
   titles={{ component: 'Component' }}
   client:load
 >
@@ -386,7 +382,6 @@ import ServerCode from '@/components/Code/ServerCode.astro';
 
 <TabsRoot
   aria-label="MyDemo implementation"
-  defaultValue="component"
   titles={{ component: 'Component', css: 'CSS Module' }}
   client:load
 >

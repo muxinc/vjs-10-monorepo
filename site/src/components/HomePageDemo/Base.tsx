@@ -54,7 +54,6 @@ export default function BaseDemo({ className }: { className?: string }) {
       <TabsRoot
         id="base-html"
         aria-label="HTML implementation"
-        defaultValue="html"
         titles={{ html: 'HTML', css: 'CSS', javascript: 'JavaScript' }}
         className={className}
       >
@@ -75,7 +74,6 @@ export default function BaseDemo({ className }: { className?: string }) {
     <TabsRoot
       id="base-react"
       aria-label="React implementation"
-      defaultValue="react"
       titles={{ react: 'React' }}
       className={className}
     >

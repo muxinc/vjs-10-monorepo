@@ -6,6 +6,10 @@
  * Built as a custom component instead of using Base UI because Astro islands
  * cannot share React Context across separate component instances. We use
  * nanostores for cross-island state management instead.
+ *
+ * Oh, and by the way. The first key in the titles object OR the first panel
+ * will be used as the default active tab. Ensure that TabsPanel children
+ * are provided in the same order for predictable behavior.
  */
 
 import type { KeyboardEvent, ReactNode } from 'react';
@@ -24,14 +28,20 @@ interface TabsRootProps {
   id: string;
   /** Accessible label for the tablist */
   'aria-label': string;
-  /** Initial active tab value */
-  defaultValue: string;
-  /** Map of tab values to their display labels */
-  titles: Record<string, string>;
   /** Additional CSS classes */
   className?: string;
-  /** TabsPanel children */
+  /**
+   * TabsPanel children.
+   * Order of children should match the order of keys in titles object.
+   * The first key in titles or the first panel will be the default active tab.
+   */
   children: ReactNode;
+  /**
+   * Map of tab values to their display labels.
+   * Order of children should match the order of keys in this object.
+   * The first key in titles or the first panel will be the default active tab.
+   */
+  titles: Record<string, string>;
 
   maxWidth?: boolean;
 }
@@ -39,7 +49,6 @@ interface TabsRootProps {
 export function TabsRoot({
   id,
   'aria-label': ariaLabel,
-  defaultValue,
   titles,
   className,
   children,
@@ -47,19 +56,23 @@ export function TabsRoot({
 }: TabsRootProps) {
   const isHydrated = useIsHydrated();
 
+  // Derive default from first item in titles
+  // This assumes titles keys and TabsPanel children are in the same order...
+  // Which is... unfortunate. But. Astro's gonna astro. It's hard to communicate between components.
+  const defaultValue = Object.keys(titles)[0];
+  if (!defaultValue) {
+    throw new Error('TabsRoot requires at least one item in titles.');
+  }
+
   const currentState = $tabs.get();
   if (currentState[id] === undefined) {
-    if (defaultValue) {
-      $tabs.setKey(id, defaultValue);
-    } else {
-      throw new Error('TabsRoot requires a defaultValue prop on first render.');
-    }
+    $tabs.setKey(id, defaultValue);
   }
 
   // Subscribe to the tabs store
   const allTabsState = useStore($tabs);
 
-  // Get current active value, or use default as fallback
+  // Get current active value, or use first item as fallback
   const activeValue = allTabsState[id] ?? defaultValue;
 
   const handleTabClick = (value: string) => {
@@ -174,10 +187,20 @@ interface TabsPanelProps {
 }
 
 export function TabsPanel({ tabsId, value, className, children }: TabsPanelProps) {
+  // Initialize tabs store if necessary
+  // Astro SOMETIMES renders TabsPanel before TabsRoot, unfortunately
+  // so, in this case, let's assume this is the first TabsPanel in order
+  // and set ourselves as the active one
+  // I hate this, but it seems to work.
+  const currentState = $tabs.get();
+  if (currentState[tabsId] === undefined) {
+    $tabs.setKey(tabsId, value);
+  }
+
   // Subscribe to the tabs store
   const allTabsState = useStore($tabs);
   const activeValue = allTabsState[tabsId];
-  const isActive = activeValue === value;
+  const isActive = activeValue === value; ;
 
   return (
     <div

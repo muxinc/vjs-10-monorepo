@@ -29,7 +29,7 @@ const value = 'code';
       <slot />
     </Tag>
   ) : (
-    <TabsRoot id={tabsId} aria-label={`${label} code`} defaultValue={value} titles={{ [value]: label }} client:load>
+    <TabsRoot id={tabsId} aria-label={`${label} code`} titles={{ [value]: label }} client:load>
       <TabsPanel tabsId={tabsId} value={value} client:load>
         <Tag class={className} {...props}>
           <slot />
