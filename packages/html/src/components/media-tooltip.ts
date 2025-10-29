@@ -9,23 +9,26 @@ export class MediaTooltipRoot extends HTMLElement {
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
   #arrowElement: HTMLElement | null = null;
-  #mousePosition = { x: 0, y: 0 };
+  #pointerPosition = { x: 0, y: 0 };
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
 
   constructor() {
     super();
-    this.addEventListener('mouseenter', this);
-    this.addEventListener('mouseleave', this);
-    this.addEventListener('mousemove', this);
+
+    if (globalThis.matchMedia?.('(hover: hover)')?.matches) {
+      this.addEventListener('pointerenter', this);
+      this.addEventListener('pointerleave', this);
+      this.addEventListener('pointermove', this);
+    }
   }
 
   handleEvent(event: Event): void {
-    if (event.type === 'mouseenter') {
-      this.#handleMouseEnter();
-    } else if (event.type === 'mouseleave') {
-      this.#handleMouseLeave();
-    } else if (event.type === 'mousemove') {
-      this.#handleMouseMove(event as MouseEvent);
+    if (event.type === 'pointerenter') {
+      this.#handlePointerEnter();
+    } else if (event.type === 'pointerleave') {
+      this.#handlePointerLeave(event as PointerEvent);
+    } else if (event.type === 'pointermove') {
+      this.#handlePointerMove(event as PointerEvent);
     }
   }
 
@@ -157,34 +160,34 @@ export class MediaTooltipRoot extends HTMLElement {
                   width: 0,
                   height: 0,
                   top: triggerRect.top,
-                  right: this.#mousePosition.x,
+                  right: this.#pointerPosition.x,
                   bottom: triggerRect.bottom,
-                  left: this.#mousePosition.x,
-                  x: this.#mousePosition.x,
+                  left: this.#pointerPosition.x,
+                  x: this.#pointerPosition.x,
                   y: triggerRect.top,
                 };
               } else if (this.trackCursorAxis === 'y') {
                 return {
                   width: 0,
                   height: 0,
-                  top: this.#mousePosition.y,
+                  top: this.#pointerPosition.y,
                   right: triggerRect.right,
-                  bottom: this.#mousePosition.y,
+                  bottom: this.#pointerPosition.y,
                   left: triggerRect.left,
                   x: triggerRect.left,
-                  y: this.#mousePosition.y,
+                  y: this.#pointerPosition.y,
                 };
               } else {
                 // Track both axes (trackCursorAxis === 'both')
                 return {
                   width: 0,
                   height: 0,
-                  top: this.#mousePosition.y,
-                  right: this.#mousePosition.x,
-                  bottom: this.#mousePosition.y,
-                  left: this.#mousePosition.x,
-                  x: this.#mousePosition.x,
-                  y: this.#mousePosition.y,
+                  top: this.#pointerPosition.y,
+                  right: this.#pointerPosition.x,
+                  bottom: this.#pointerPosition.y,
+                  left: this.#pointerPosition.x,
+                  x: this.#pointerPosition.x,
+                  y: this.#pointerPosition.y,
                 };
               }
             },
@@ -232,23 +235,23 @@ export class MediaTooltipRoot extends HTMLElement {
     }
   }
 
-  #handleMouseEnter(): void {
+  #handlePointerEnter(): void {
     this.#clearHoverTimeout();
     this.#hoverTimeout = globalThis.setTimeout(() => {
       this.#setOpen(true);
     }, this.delay);
   }
 
-  #handleMouseLeave(): void {
+  #handlePointerLeave(_event: PointerEvent): void {
     this.#clearHoverTimeout();
     this.#hoverTimeout = globalThis.setTimeout(() => {
       this.#setOpen(false);
     }, this.closeDelay);
   }
 
-  #handleMouseMove(event: MouseEvent): void {
+  #handlePointerMove(event: PointerEvent): void {
     if (this.trackCursorAxis) {
-      this.#mousePosition = { x: event.clientX, y: event.clientY };
+      this.#pointerPosition = { x: event.clientX, y: event.clientY };
 
       if (this.#open) {
         this.#updatePosition();

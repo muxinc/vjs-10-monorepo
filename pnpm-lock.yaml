@@ -155,6 +155,9 @@ importers:
 
   packages/html:
     dependencies:
+      '@floating-ui/core':
+        specifier: ^1.6.13
+        version: 1.7.3
       '@floating-ui/dom':
         specifier: ^1.6.13
         version: 1.7.4
