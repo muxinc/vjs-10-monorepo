@@ -8,9 +8,11 @@ import vercel from '@astrojs/vercel';
 
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
+import rehypeGenerateTabsIds from './src/utils/rehypeGenerateTabsIds';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks';
 import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings';
 import { remarkReadingTime } from './src/utils/remarkReadingTime.mjs';
+import shikiTransformMetadata from './src/utils/shikiTransformMetadata';
 
 // https://astro.build/config
 export default defineConfig({
@@ -38,10 +40,11 @@ export default defineConfig({
         light: 'gruvbox-light-hard',
         dark: 'gruvbox-dark-medium',
       },
-      // TODO shiki transformers
+      // TODO more shiki transformers
+      transformers: [shikiTransformMetadata],
     },
     remarkPlugins: [remarkConditionalHeadings, remarkReadingTime],
-    rehypePlugins: [rehypePrepareCodeBlocks],
+    rehypePlugins: [rehypeGenerateTabsIds, rehypePrepareCodeBlocks],
   },
 
   image: {

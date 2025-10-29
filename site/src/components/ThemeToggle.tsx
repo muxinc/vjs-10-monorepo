@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
 import { useEffect, useState } from 'react';
@@ -91,7 +90,6 @@ export function ThemeToggle() {
       value={preference ? [preference] : []}
       onChange={(values) => { if (values.length > 0) setPreference(values[0]); }}
       options={themeOptions}
-      toggleClassName={clsx(preference === null && 'cursor-wait')}
     />
   );
 }

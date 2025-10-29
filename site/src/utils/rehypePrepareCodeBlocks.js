@@ -1,47 +1,56 @@
-import { visit } from 'unist-util-visit';
-
 /**
  * Adapted from https://mdxjs.com/guides/syntax-highlighting/
+ *
+ * This plugin:
+ * 1. Generates stable IDs for <pre> blocks (for tabs)
+ * 2. Tags <code> children of <pre> blocks so they know they're in a pre block
+ * 3. Marks <pre> blocks with hasFrame based on whether they're inside a <TabsPanel> JSX component
  */
-export default function rehypePrepareCodeBlocks() {
-  // A regex that looks for a simplified attribute name, optionally followed
-  // by a double, single, or unquoted attribute value
-  const re = /\b([-\w]+)(?:=(?:"([^"]*)"|'([^']*)'|([^"'\s]+)))?/g;
-  return (tree) => {
-    visit(tree, 'element', (node) => {
-      let match;
 
-      /**
-       * We're looking for <pre> blocks containing <code> blocks to do some work on them because MDX 2 is weird.
-       * Here's what we're up to here:
-       * 1. taking the classname from code and moving it up to pre
-       * 2. notifying code that it's in a pre block so it wouldn't try to format itself as inline code
-       * 3. parsing the code block's metadata and putting the results into the pre block
-       * metadata, you ask? Stuff like title and lineNumbers in this example below.
-       * ```js title="src/pages/index.js" lineNumbers=true
-       * ```
-       */
-      if (node.tagName === 'pre') {
+let preBlockCounter = 0;
+
+export default function rehypePrepareCodeBlocks() {
+  return (tree) => {
+    // Process the tree with a stateful visitor
+    function visitWithContext(node, context = { hasFrame: false }) {
+      // Handle TabsPanel JSX component
+      if (node.type === 'mdxJsxFlowElement' && node.name === 'TabsPanel') {
+        // Create new context for children (inside tabs)
+        const newContext = { hasFrame: true };
+
+        // Visit children with new context
+        if (node.children) {
+          node.children.forEach(child => visitWithContext(child, newContext));
+        }
+
+        return;
+      }
+
+      // Handle <pre> elements
+      if (node.type === 'element' && node.tagName === 'pre') {
+        // Mark whether this pre block is inside tabs
+        node.properties.hasFrame = context.hasFrame;
+
+        // Generate stable ID for this pre block
+        node.properties['data-tabs-id'] = `pre-${preBlockCounter++}`;
+
+        // Tag <code> children
         node.children.forEach((child) => {
           if (child.tagName === 'code') {
-            const { className } = child.properties;
-            if (className) {
-              node.properties.className = className;
-            }
-
             child.properties.codeBlock = 'true';
-
-            if (child.data && child.data.meta) {
-              re.lastIndex = 0; // Reset regex.
-
-              // eslint-disable-next-line no-cond-assign
-              while ((match = re.exec(child.data.meta))) {
-                node.properties[match[1]] = match[2] || match[3] || match[4] || '';
-              }
-            }
           }
         });
       }
-    });
+
+      // Recursively visit children for other node types
+      if (node.children) {
+        node.children.forEach(child => visitWithContext(child, context));
+      }
+    }
+
+    // Start visiting from root
+    if (tree.children) {
+      tree.children.forEach(child => visitWithContext(child));
+    }
   };
 }

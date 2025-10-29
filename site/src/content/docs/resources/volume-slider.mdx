@@ -13,7 +13,8 @@ import htmlVerticalStr from '@/examples/html/volume-slider/snippet-vertical.html
 import htmlCssStr from '@/examples/html/volume-slider/volume-slider.css?raw';
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import Container from '@/components/docs/Container.astro';
-import ServerCode from '@/components/ServerCode.astro';
+import ServerCode from '@/components/Code/ServerCode.astro';
+import { TabsRoot, TabsPanel } from '@/components/Tabs';
 
 ## Features
 
@@ -23,40 +24,46 @@ import ServerCode from '@/components/ServerCode.astro';
 - Keyboard accessible (Arrow keys for volume adjustment)
 - Touch-friendly drag interaction
 
-## Live Example
-
-<Container>
-  <VolumeSliderDemo client:load />
-</Container>
-
-## Usage
+## Example
 
 <FrameworkCase frameworks={["react"]}>
+  <TabsRoot
+    aria-label="React implementation"
+    titles={{ component: 'Component', css: 'CSS Module' }}
+    client:load
+  >
+    <TabsPanel value="component" client:load>
+      <ServerCode code={componentModuleStr} lang="tsx" />
+    </TabsPanel>
 
-### Component
+    <TabsPanel value="css" client:load>
+      <ServerCode code={cssModuleStr} lang="css" />
+    </TabsPanel>
 
-<ServerCode code={componentModuleStr} lang="tsx" />
-
-### CSS Module
-
-<ServerCode code={cssModuleStr} lang="css" />
-
+    <VolumeSliderDemo client:load />
+  </TabsRoot>
 </FrameworkCase>
 
 <FrameworkCase frameworks={["html"]}>
+  <TabsRoot
+    aria-label="HTML implementation"
+    titles={{ 'html-horizontal': 'HTML (Horizontal)', 'html-vertical': 'HTML (Vertical)', css: 'CSS' }}
+    client:load
+  >
+    <TabsPanel value="html-horizontal" client:load>
+      <ServerCode code={htmlHorizontalStr} lang="html" />
+    </TabsPanel>
 
-### Horizontal Orientation
+    <TabsPanel value="html-vertical" client:load>
+      <ServerCode code={htmlVerticalStr} lang="html" />
+    </TabsPanel>
 
-<ServerCode code={htmlHorizontalStr} lang="html" />
+    <TabsPanel value="css" client:load>
+      <ServerCode code={htmlCssStr} lang="css" />
+    </TabsPanel>
 
-### Vertical Orientation
-
-<ServerCode code={htmlVerticalStr} lang="html" />
-
-### CSS
-
-<ServerCode code={htmlCssStr} lang="css" />
-
+    <VolumeSliderDemo client:load />
+  </TabsRoot>
 </FrameworkCase>
 
 <FrameworkCase frameworks={["react"]}>

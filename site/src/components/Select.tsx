@@ -77,8 +77,7 @@ export function Select<T extends string = string>({
                   disabled={option.disabled}
                   className={clsx(
                     'flex items-center gap-2 p-2',
-                    'cursor-pointer intent:bg-light-80 dark:intent:bg-dark-100',
-                    option.disabled && 'opacity-50 cursor-not-allowed',
+                    option.disabled ? 'opacity-50 cursor-default' : 'cursor-pointer intent:bg-light-80 dark:intent:bg-dark-100',
                     option.value === value && 'bg-light-80 dark:bg-dark-100',
                   )}
                 >

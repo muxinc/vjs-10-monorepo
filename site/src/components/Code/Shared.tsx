@@ -1,29 +1,14 @@
-import type { Highlighter } from 'shiki';
+import type { BundledLanguage, Highlighter } from 'shiki';
 import clsx from 'clsx';
-import { createHighlighter, hastToHtml } from 'shiki';
-import html from 'shiki/langs/html.mjs';
-import tsx from 'shiki/langs/tsx.mjs';
-import gruvboxDarkSoft from 'shiki/themes/gruvbox-dark-soft.mjs';
-import gruvboxLightHard from 'shiki/themes/gruvbox-light-hard.mjs';
+import { hastToHtml } from 'shiki';
 
-// If you try importing more than one island with ClientCode in it,
-// Safari MAY throw a hydration error because of this top-level await.
-// https://github.com/withastro/astro/issues/10055
-// consolidate the ClientCodes into a single island to work around... for now :(
-
-// eslint-disable-next-line antfu/no-top-level-await
-const highlighter: Highlighter = await createHighlighter({
-  themes: [gruvboxLightHard, gruvboxDarkSoft],
-  langs: [html, tsx],
-});
-
-export interface ClientCodeProps {
+export interface SharedProps {
   code: string;
-  lang: 'html' | 'tsx';
-  className?: string;
+  lang: BundledLanguage;
+  highlighter: Highlighter;
 }
 
-export default function ClientCode({ code, lang, className }: ClientCodeProps) {
+export default function Shared({ code, lang, highlighter }: SharedProps) {
   const hast = highlighter.codeToHast(code, {
     lang,
     themes: {
@@ -54,9 +39,7 @@ export default function ClientCode({ code, lang, className }: ClientCodeProps) {
   const { class: codeClassName } = codeProps;
 
   return (
-    <pre
-      className={clsx('rounded-lg p-6 overflow-x-auto overflow-y-scroll max-h-96 border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110', preClassName, className)}
-    >
+    <pre className={clsx('shiki', preClassName)}>
       <code
         className={clsx('font-mono text-code', codeClassName)}
         // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml

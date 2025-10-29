@@ -55,7 +55,7 @@ export default function ToggleGroup<T extends string = string>({
             className={twMerge(clsx(
               'relative',
               'flex items-center gap-1.5 px-2.5 py-1.5 rounded text-sm',
-              isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+              isDisabled ? 'cursor-wait opacity-50' : 'cursor-pointer',
               isPressed ? 'bg-light-80 dark:bg-dark-100' : !isDisabled ? 'intent:bg-light-80/50 dark:intent:bg-dark-100/50' : '',
             ), toggleClassName)}
             aria-label={option['aria-label']}
