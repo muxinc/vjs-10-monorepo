@@ -70,27 +70,29 @@ export function getTemplateHTML() {
           <media-duration-display></media-duration-display>
         </div>
 
-        <media-popover-root open-on-hover delay="200" close-delay="100">
-          <media-popover-trigger>
-            <media-mute-button class="button">
-              <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
-              <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
-              <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
-            </media-mute-button>
-          </media-popover-trigger>
-          <media-popover-portal>
-            <media-popover-positioner side="top" side-offset="12" collision-padding="12">
-              <media-popover-popup class="surface popup-animation">
-                <media-volume-slider-root class="slider-root" orientation="vertical">
-                  <media-volume-slider-track class="slider-track">
-                    <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
-                  </media-volume-slider-track>
-                  <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
-                </media-volume-slider-root>
-              </media-popover-popup>
-            </media-popover-positioner>
-          </media-popover-portal>
-        </media-popover-root>
+        <media-mute-button popovertarget="volume-slider-popover" class="button">
+          <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
+          <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
+          <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
+        </media-mute-button>
+        <media-popover 
+          id="volume-slider-popover" 
+          class="surface popup-animation" 
+          popover
+          open-on-hover
+          delay="200"
+          close-delay="300"
+          side="top"
+          side-offset="12"
+          collision-padding="12"
+        >
+          <media-volume-slider-root class="slider-root" orientation="vertical">
+            <media-volume-slider-track class="slider-track">
+              <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
+            </media-volume-slider-track>
+            <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
+          </media-volume-slider-root>
+        </media-popover>
 
         <media-tooltip-root delay="500" close-delay="0">
           <media-tooltip-trigger>

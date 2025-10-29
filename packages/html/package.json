@@ -48,6 +48,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@floating-ui/core": "^1.6.13",
     "@floating-ui/dom": "^1.6.13",
     "@open-wc/context-protocol": "^0.0.9",
     "@videojs/core": "workspace:*",
