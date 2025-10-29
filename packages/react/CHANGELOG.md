@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.0-preview.3](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.2...@videojs/react@0.1.0-preview.3) (2025-10-29)
+
+
+### Features
+
+* **skins:** add html port of minimal skin ([#140](https://github.com/videojs/v10/issues/140)) ([47ac22e](https://github.com/videojs/v10/commit/47ac22e9b8a513c9640ed1eff20838d8cdb749ce))
+* **ui:** skin design improvements, add html frosted skin (WIP) ([#133](https://github.com/videojs/v10/issues/133)) ([75a90e7](https://github.com/videojs/v10/commit/75a90e71041c2d0bf434823e59dd04f86f89b0bb))
+
+
+### Bug Fixes
+
+* add aspect-ratio to demos ([#136](https://github.com/videojs/v10/issues/136)) ([e0a46de](https://github.com/videojs/v10/commit/e0a46de0ab56199afd37b24ebfce93ee85e2b699))
+* **packages:** update version badges ([#138](https://github.com/videojs/v10/issues/138)) ([22d9cb6](https://github.com/videojs/v10/commit/22d9cb64f2e5b9601a2039bb166dbe3fee6a1b3e))
+* **react:** prevent dev build race condition ([#139](https://github.com/videojs/v10/issues/139)) ([67d1007](https://github.com/videojs/v10/commit/67d1007d0c78564537f38f1683a45af320869465))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.3
+    * @videojs/icons bumped to 0.1.0-preview.3
+    * @videojs/utils bumped to 0.1.0-preview.3
+
 ## [0.1.0-preview.2](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.1...@videojs/react@0.1.0-preview.2) (2025-10-25)
 
 

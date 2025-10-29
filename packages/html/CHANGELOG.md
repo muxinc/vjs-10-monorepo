@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.1.0-preview.3](https://github.com/videojs/v10/compare/@videojs/html@0.1.0-preview.2...@videojs/html@0.1.0-preview.3) (2025-10-29)
+
+
+### Features
+
+* idiomatic html markup, use popover API, add safe polygon utility ([#143](https://github.com/videojs/v10/issues/143)) ([419911f](https://github.com/videojs/v10/commit/419911f2f2b9f505700f5becb623bfe12e3878aa))
+* **skins:** add html port of minimal skin ([#140](https://github.com/videojs/v10/issues/140)) ([47ac22e](https://github.com/videojs/v10/commit/47ac22e9b8a513c9640ed1eff20838d8cdb749ce))
+* **ui:** skin design improvements, add html frosted skin (WIP) ([#133](https://github.com/videojs/v10/issues/133)) ([75a90e7](https://github.com/videojs/v10/commit/75a90e71041c2d0bf434823e59dd04f86f89b0bb))
+
+
+### Bug Fixes
+
+* add aria-hidden to focus guards ([77182f1](https://github.com/videojs/v10/commit/77182f1ab349d3b31470d7301e3dc2fb94c1d6ac))
+* add aspect-ratio to demos ([#136](https://github.com/videojs/v10/issues/136)) ([e0a46de](https://github.com/videojs/v10/commit/e0a46de0ab56199afd37b24ebfce93ee85e2b699))
+* add viewport meta element ([#135](https://github.com/videojs/v10/issues/135)) ([3bd50eb](https://github.com/videojs/v10/commit/3bd50ebac887229199fa6997eb0aaec361075b1a))
+* **packages:** update version badges ([#138](https://github.com/videojs/v10/issues/138)) ([22d9cb6](https://github.com/videojs/v10/commit/22d9cb64f2e5b9601a2039bb166dbe3fee6a1b3e))
+* remove `show-remaining` in HTML example ([#137](https://github.com/videojs/v10/issues/137)) ([7dde67a](https://github.com/videojs/v10/commit/7dde67ac927d6aca0f6a9b219ff3f3dc38594805))
+* visually hidden focus guards ([#142](https://github.com/videojs/v10/issues/142)) ([956dad7](https://github.com/videojs/v10/commit/956dad7ff5731d7630526ec97e33c652f260bc13))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.3
+    * @videojs/icons bumped to 0.1.0-preview.3
+    * @videojs/utils bumped to 0.1.0-preview.3
+
 ## [0.1.0-preview.2](https://github.com/videojs/v10/compare/@videojs/html@0.1.0-preview.1...@videojs/html@0.1.0-preview.2) (2025-10-25)
 
 
