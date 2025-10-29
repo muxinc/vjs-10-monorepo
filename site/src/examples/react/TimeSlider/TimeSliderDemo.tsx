@@ -9,7 +9,7 @@ import { BasicTimeSlider } from './BasicTimeSlider';
 export function TimeSliderDemo() {
   return (
     <MediaProvider>
-      <MediaContainer style={{ maxWidth: '640px', position: 'relative' }}>
+      <MediaContainer style={{ position: 'relative' }}>
         <Video
           src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
           poster="https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp"

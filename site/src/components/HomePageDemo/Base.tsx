@@ -1,7 +1,8 @@
 import type { Media, Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
+import { TabsPanel, TabsRoot } from '@/components/Tabs';
 import { framework, media, skin } from '@/stores/homePageDemos';
-import ClientCode from '../ClientCode';
+import ClientCode from '../Code/ClientCode';
 
 function generateHTMLCode(skin: Skin, media: Media): string {
   const skinTag = `${skin}-skin`;
@@ -35,21 +36,52 @@ export const VideoPlayer = () => {
 };`;
 }
 
-interface Props {
-  className?: string;
+function generateCSS(_skin: Skin, _media: Media): string {
+  return 'Coming soon';
 }
-export default function BaseDemo({ className }: Props) {
+
+function generateJS(_skin: Skin, _media: Media): string {
+  return 'Coming soon';
+}
+
+export default function BaseDemo({ className }: { className?: string }) {
   const $framework = useStore(framework);
   const $skin = useStore(skin);
   const $media = useStore(media);
 
-  const code = $framework === 'html'
-    ? generateHTMLCode($skin, $media)
-    : generateReactCode($skin, $media);
-
-  const lang = $framework === 'html' ? 'html' : 'tsx';
+  if ($framework === 'html') {
+    return (
+      <TabsRoot
+        id="base-html"
+        aria-label="HTML implementation"
+        defaultValue="html"
+        titles={{ html: 'HTML', css: 'CSS', javascript: 'JavaScript' }}
+        className={className}
+      >
+        <TabsPanel tabsId="base-html" value="html">
+          <ClientCode code={generateHTMLCode($skin, $media)} lang="html" />
+        </TabsPanel>
+        <TabsPanel tabsId="base-html" value="css">
+          <ClientCode code={generateCSS($skin, $media)} lang="css" />
+        </TabsPanel>
+        <TabsPanel tabsId="base-html" value="javascript">
+          <ClientCode code={generateJS($skin, $media)} lang="javascript" />
+        </TabsPanel>
+      </TabsRoot>
+    );
+  }
 
   return (
-    <ClientCode code={code} lang={lang} className={className} />
+    <TabsRoot
+      id="base-react"
+      aria-label="React implementation"
+      defaultValue="react"
+      titles={{ react: 'React' }}
+      className={className}
+    >
+      <TabsPanel tabsId="base-react" value="react">
+        <ClientCode code={generateReactCode($skin, $media)} lang="tsx" />
+      </TabsPanel>
+    </TabsRoot>
   );
 }

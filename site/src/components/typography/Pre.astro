@@ -1,23 +1,40 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
 
 type Props<Tag extends HTMLTag = 'pre'> = Polymorphic<{ as: Tag }> & {
   maxWidth?: boolean;
   class?: string;
+  hasFrame?: boolean;
+  title?: string;
+  'data-tabs-id'?: string;
 };
 
-const { as: Tag = 'pre', maxWidth = true, class: className, style: _style, ...props } = Astro.props;
+const { as: Tag = 'pre', maxWidth = false, class: className, style: _style, title, hasFrame, ...props } = Astro.props;
+
+const language = props['data-language'];
+const label = title || language || 'code';
+
+// Use stable ID from rehype plugin (generated at build time)
+const tabsId = props['data-tabs-id'] || '';
+if (tabsId === '' && !hasFrame) {
+  throw new Error('Pre component requires a stable "data-tabs-id" prop when not used inside tabs.');
+}
+const value = 'code';
 ---
 
-<div class={twMerge(clsx('relative my-6 group', maxWidth && 'max-w-3xl mx-auto'))}>
-  <Tag
-    class={twMerge(
-      'rounded-lg p-6 overflow-scroll max-h-96 border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110',
-      className,
-    )}
-    {/* weird formatting to prevent leading whitespace */}
-    {...props}><slot /></Tag
-  >
-</div>
+{
+  hasFrame ? (
+    <Tag class={className} {...props}>
+      <slot />
+    </Tag>
+  ) : (
+    <TabsRoot id={tabsId} aria-label={`${label} code`} defaultValue={value} titles={{ [value]: label }} client:load>
+      <TabsPanel tabsId={tabsId} value={value} client:load>
+        <Tag class={className} {...props}>
+          <slot />
+        </Tag>
+      </TabsPanel>
+    </TabsRoot>
+  )
+}

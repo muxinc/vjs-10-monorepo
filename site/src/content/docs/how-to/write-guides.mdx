@@ -6,7 +6,8 @@ description: 'A guide on writing documentation for the Video.js project, and a t
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import StyleCase from '@/components/docs/StyleCase.astro';
 import Container from '@/components/docs/Container.astro';
-import ServerCode from '@/components/ServerCode.astro';
+import ServerCode from '@/components/Code/ServerCode.astro';
+import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
 
 ## What kind of guide are you writing?
 I haven't written this section yet, but when I do, it'll rehash [Diátaxis](https://diataxis.fr/).
@@ -32,49 +33,16 @@ will render:
 Use the `<StyleCase>` component to show content only for specific styling approaches. For example,
 
 ```mdx
-<StyleCase styles={["tailwind"]}>
-  Tailwind-only content
+<StyleCase styles={["css"]}>
+  Css-only content
 </StyleCase>  
 ``` 
 
 will render:
 
-<StyleCase styles={["tailwind"]}>
-  Tailwind-only content
+<StyleCase styles={["css"]}>
+  Css-only content
 </StyleCase>
-
-## Displaying Code from Files
-
-Use the `<ServerCode>` component to display code imported from source files with syntax highlighting. Supports any language that [Shiki supports](https://shiki.style/languages).
-
-```mdx
-import exampleCode from '@/examples/react/Example.tsx?raw';
-import ServerCode from '@/components/ServerCode.astro';
-
-<ServerCode code={exampleCode} lang="tsx" />
-```
-
-will render:
-
-<ServerCode code={`import { useState } from 'react';
-
-export function Example() {
-  const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(count + 1)}>{count}</button>;
-}`} lang="tsx" />
-
-## Wrapping Live Demos
-
-Use the `<Container>` component to constrain live demos to a readable width.
-
-```mdx
-import { MyDemo } from '@/examples/react/MyDemo';
-import Container from '@/components/docs/Container.astro';
-
-<Container>
-  <MyDemo client:load />
-</Container>
-```
 
 ## Use Github-Flavored Markdown
 
@@ -279,3 +247,159 @@ Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
 
 Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
 
+## Code and Code Frames
+
+### Default frame
+
+Regular markdown code blocks automatically get wrapped in tabs with a copy button:
+
+````markdown
+```ts
+console.log('Hello, TypeScript!');
+```
+````
+Renders
+```ts
+console.log('Hello, TypeScript!');
+```
+
+### Tabs
+
+Use `<TabsRoot>` and `<TabsPanel>` to show multiple code examples side-by-side:
+
+````mdx
+<TabsRoot
+  aria-label="Code examples"
+  defaultValue="typescript"
+  titles={{ typescript: 'TypeScript', javascript: 'JavaScript' }}
+  client:load
+>
+  <TabsPanel value="typescript" client:load>
+    ```ts
+    console.log('Hello, TypeScript!');
+    ```
+  </TabsPanel>
+
+  <TabsPanel value="javascript" client:load>
+    ```js
+    console.log('Hello, JavaScript!');
+    ```
+  </TabsPanel>
+</TabsRoot>
+````
+Which renders
+<TabsRoot
+  aria-label="Code examples"
+  defaultValue="typescript"
+  titles={{ typescript: 'TypeScript', javascript: 'JavaScript' }}
+  client:load
+>
+  <TabsPanel value="typescript" client:load>
+    ```ts
+    console.log('Hello, TypeScript!');
+    ```
+  </TabsPanel>
+
+  <TabsPanel value="javascript" client:load>
+    ```js
+    console.log('Hello, JavaScript!');
+    ```
+  </TabsPanel>
+</TabsRoot>
+
+**Important notes:**
+- You might've noticed that elsewhere in the codebase, TabsRoot requires `id` and TabsPanel requires `tabsId`. In MDX, these are generated for you with a rehype plugin
+- Both `<TabsRoot>` and `<TabsPanel>` require `client:load` directive in MDX
+- The `defaultValue` should match one of the keys in `titles`
+- Use descriptive `aria-label` for accessibility
+
+
+## Displaying Code from Files
+
+Use the `<ServerCode>` component to display code imported from source files with syntax highlighting. Supports any language that [Shiki supports](https://shiki.style/languages).
+
+**Important:** Unlike regular markdown code blocks, `<ServerCode>` does **not** automatically get wrapped in a frame. You should use `TabsRoot` with a single `TabPanel` to make it look pretty
+
+```mdx
+import componentCode from '@/examples/react/Component.tsx?raw';
+import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import ServerCode from '@/components/Code/ServerCode.astro';
+
+<TabsRoot
+  aria-label="Component implementation"
+  defaultValue="component"
+  titles={{ component: 'Component', css: 'CSS Module' }}
+  client:load
+>
+  <TabsPanel value="component" client:load>
+    <ServerCode code={componentCode} lang="tsx" />
+  </TabsPanel>
+</TabsRoot>
+```
+
+Which will happily render
+
+<TabsRoot
+  aria-label="Component implementation"
+  defaultValue="component"
+  titles={{ component: 'Component' }}
+  client:load
+>
+  <TabsPanel value="component" client:load>
+    <ServerCode code={`import React from 'react';
+
+function Component() {
+  return <div>Hello, world!</div>;
+}`} lang="tsx" />
+  </TabsPanel>
+</TabsRoot>
+
+## Wrapping Live Demos
+
+There are two main patterns for displaying live demos, depending on whether you want to show code alongside the demo.
+
+### Option 1: Standalone Demo with Container
+
+Use the `<Container>` component to constrain standalone demos to a readable width:
+
+```mdx
+import { MyDemo } from '@/examples/react/MyDemo';
+import Container from '@/components/docs/Container.astro';
+
+<Container>
+  <MyDemo client:load />
+</Container>
+```
+
+This is best for demos that don't need accompanying code, or when the code is shown separately elsewhere on the page.
+
+### Option 2: Demo with Code in TabsRoot
+
+Place the demo directly inside `<TabsRoot>` (as a sibling to `<TabsPanel>` elements) to keep code and demo together:
+
+```mdx
+import { MyDemo } from '@/examples/react/MyDemo';
+import componentCode from '@/examples/react/MyDemo.tsx?raw';
+import cssCode from '@/examples/react/MyDemo.module.css?raw';
+import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import ServerCode from '@/components/Code/ServerCode.astro';
+
+<TabsRoot
+  aria-label="MyDemo implementation"
+  defaultValue="component"
+  titles={{ component: 'Component', css: 'CSS Module' }}
+  client:load
+>
+  <TabsPanel value="component" client:load>
+    <ServerCode code={componentCode} lang="tsx" />
+  </TabsPanel>
+
+  <TabsPanel value="css" client:load>
+    <ServerCode code={cssCode} lang="css" />
+  </TabsPanel>
+
+  <MyDemo client:load />
+</TabsRoot>
+```
+
+The demo will appear at the bottom of the tabs component, creating a cohesive unit of code and preview. This pattern is used throughout our resource documentation (see [PlayButton](/docs/framework/react/style/css/resources/play-button) for an example).

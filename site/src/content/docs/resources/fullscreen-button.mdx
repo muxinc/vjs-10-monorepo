@@ -13,7 +13,8 @@ import htmlCssStr from '@/examples/html/fullscreen-button/fullscreen-button.css?
 import htmlJsStr from '@/examples/html/fullscreen-button/fullscreen-button.js?raw';
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import Container from '@/components/docs/Container.astro';
-import ServerCode from '@/components/ServerCode.astro';
+import ServerCode from '@/components/Code/ServerCode.astro';
+import { TabsRoot, TabsPanel } from '@/components/Tabs';
 
 ## Features
 
@@ -22,38 +23,48 @@ import ServerCode from '@/components/ServerCode.astro';
 - Falls back gracefully when fullscreen not supported
 - Accessible keyboard navigation
 
-## Live Example
-
-<Container>
-  <FullscreenButtonDemo client:load />
-</Container>
-
-## Usage
+## Example
 
 <FrameworkCase frameworks={["react"]}>
+  <TabsRoot
+    aria-label="React implementation"
+    defaultValue="component"
+    titles={{ component: 'Component', css: 'CSS Module' }}
+    client:load
+  >
+    <TabsPanel value="component" client:load>
+      <ServerCode code={componentModuleStr} lang="tsx" />
+    </TabsPanel>
 
-### Component
+    <TabsPanel value="css" client:load>
+      <ServerCode code={cssModuleStr} lang="css" />
+    </TabsPanel>
 
-<ServerCode code={componentModuleStr} lang="tsx" />
-
-### CSS Module
-<ServerCode code={cssModuleStr} lang="css" />
-
+    <FullscreenButtonDemo client:load />
+  </TabsRoot>
 </FrameworkCase>
 
 <FrameworkCase frameworks={["html"]}>
+  <TabsRoot
+    aria-label="HTML implementation"
+    defaultValue="html"
+    titles={{ html: 'HTML', css: 'CSS', javascript: 'JS' }}
+    client:load
+  >
+    <TabsPanel value="html" client:load>
+      <ServerCode code={htmlStr} lang="html" />
+    </TabsPanel>
 
-### HTML
+    <TabsPanel value="css" client:load>
+      <ServerCode code={htmlCssStr} lang="css" />
+    </TabsPanel>
 
-<ServerCode code={htmlStr} lang="html" />
+    <TabsPanel value="javascript" client:load>
+      <ServerCode code={htmlJsStr} lang="js" />
+    </TabsPanel>
 
-### CSS
-<ServerCode code={htmlCssStr} lang="css" />
-
-### JavaScript
-
-<ServerCode code={htmlJsStr} lang="js" />
-
+    <FullscreenButtonDemo client:load />
+  </TabsRoot>
 </FrameworkCase>
 
 ## Data Attributes
