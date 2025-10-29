@@ -1,35 +1,36 @@
 import type { Sidebar } from '@/types/docs';
 
 export const sidebar: Sidebar = [
-  { sidebarLabel: 'Writing guides', slug: 'how-to/write-guides', devOnly: true },
-  { sidebarLabel: 'Getting started', contents: [{ slug: 'concepts/under-construction' }] },
+  {
+    sidebarLabel: 'Getting started',
+    contents: [
+      { slug: 'how-to/write-guides', sidebarLabel: 'Writing guides', devOnly: true },
+      { slug: 'how-to/installation' },
+      { slug: 'concepts/v10-roadmap', sidebarLabel: 'Roadmap' },
+    ],
+  },
+  {
+    sidebarLabel: 'Concepts',
+    contents: [
+      { slug: 'concepts/architecture' },
+      { slug: 'concepts/skins' },
+      { slug: 'concepts/ui-components' },
+    ],
+  },
+  {
+    sidebarLabel: 'How to',
+    contents: [
+      { slug: 'how-to/customize-the-skin' },
+    ],
+  },
   {
     sidebarLabel: 'Components',
     contents: [
-      { slug: 'resources/play-button' },
-      { slug: 'resources/mute-button' },
-      { slug: 'resources/fullscreen-button' },
-      { slug: 'resources/time-slider' },
-      { slug: 'resources/volume-slider' },
+      { slug: 'reference/play-button' },
+      { slug: 'reference/mute-button' },
+      { slug: 'reference/fullscreen-button' },
+      { slug: 'reference/time-slider' },
+      { slug: 'reference/volume-slider' },
     ],
   },
-  // {
-  //   sidebarLabel: 'Getting started',
-  //   contents: [
-  //     { slug: 'concepts/everyone' },
-  //   ],
-  // },
-  // {
-  //   sidebarLabel: 'Concepts',
-  //   contents: [
-  //     { slug: 'concepts/react-only', frameworks: ['react'] },
-  //     { slug: 'concepts/tailwind-only', styles: ['tailwind'] },
-  //   ],
-  // },
-  // {
-  //   sidebarLabel: 'How-To Guides',
-  //   contents: [
-  //     { slug: 'how-to/everyone' },
-  //   ],
-  // },
 ];

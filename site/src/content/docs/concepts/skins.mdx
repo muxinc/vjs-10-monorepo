@@ -1,0 +1,164 @@
+---
+title: Skins
+description: Understanding skins in Video.js v10 - packaged sets of UI components and styles
+---
+
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import { FrostedSkinDemo } from '@/examples/react/FrostedSkin/FrostedSkinDemo';
+import { MinimalSkinDemo } from '@/examples/react/MinimalSkin/MinimalSkinDemo';
+import MinimalFrame from '@/components/frames/Minimal.astro';
+import DocsLink from '@/components/docs/DocsLink.astro';
+
+In Video.js v10, skins are **complete, packaged player designs** that include both UI components and their styles. This is a significant change from v8, where skins were purely CSS themes applied to a fixed component structure.
+
+## What's Different in v10?
+
+### Video.js v8 Skins
+- CSS-only themes
+- Applied to a fixed component structure
+- Limited customization without JavaScript
+
+### Video.js v10 Skins
+- **UI components + styles packaged together**
+- Each skin can have completely different components
+- Can address entirely different use cases
+- Only include the components they need
+
+## Built-in Skins
+
+### Frosted
+
+A modern glassy design with backdrop blur effects and polished interactions.
+
+<FrameworkCase frameworks={["react"]}>
+
+```tsx
+import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
+import '@videojs/react/skins/frosted.css';
+
+<MediaProvider>
+  <FrostedSkin>
+    <Video src="video.mp4" />
+  </FrostedSkin>
+</MediaProvider>
+```
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+```html
+<media-provider>
+  <media-skin-frosted>
+    <video slot="media" src="video.mp4"></video>
+  </media-skin-frosted>
+</media-provider>
+```
+
+</FrameworkCase>
+
+<MinimalFrame>
+  <FrostedSkinDemo client:load />
+</MinimalFrame>
+
+### Minimal
+
+A clean, straightforward design that focuses on simplicity and clarity.
+
+<FrameworkCase frameworks={["react"]}>
+
+```tsx
+import { MediaProvider, MinimalSkin, Video } from '@videojs/react';
+import '@videojs/react/skins/minimal.css';
+
+<MediaProvider>
+  <MinimalSkin>
+    <Video src="video.mp4" />
+  </MinimalSkin>
+</MediaProvider>
+```
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+```html
+<media-provider>
+  <media-skin-minimal>
+    <video slot="media" src="video.mp4"></video>
+  </media-skin-minimal>
+</media-provider>
+```
+
+</FrameworkCase>
+
+<MinimalFrame>
+  <MinimalSkinDemo client:load />
+</MinimalFrame>
+
+## Customizing Skins
+
+Skins are designed to be copied and modified for your specific needs. The copy-paste approach (similar to shadcn/ui) gives you complete control.
+
+Ready to make it your own? <DocsLink slug="how-to/customize-the-skin">Learn how to customize a skin →</DocsLink>
+
+## Building Your Own Skin
+
+
+A skin is simply a component that:
+<FrameworkCase frameworks={["react"]}>
+1. Wraps content in a `MediaContainer`
+2. Includes a `children` prop (for the media renderer)
+3. Arranges UI components as desired
+4. Provides styles for those components
+</FrameworkCase>
+<FrameworkCase frameworks={["html"]}>
+1. Wraps content in a `media-container`
+2. Includes a `<slot>` element (for the media renderer)
+3. Arranges UI components as desired
+4. Provides styles for those components
+</FrameworkCase>
+
+<FrameworkCase frameworks={["react"]}>
+```tsx
+import { MediaContainer, PlayButton, TimeSlider } from '@videojs/react';
+
+export function CustomSkin({ children, className }) {
+  return (
+    <MediaContainer className={className}>
+      {children}
+      <div className="controls">
+        <PlayButton />
+        <TimeSlider.Root>
+          <TimeSlider.Track>
+            <TimeSlider.Progress />
+          </TimeSlider.Track>
+          <TimeSlider.Thumb />
+        </TimeSlider.Root>
+      </div>
+    </MediaContainer>
+  );
+}
+```
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+```html
+<media-provider>
+  <media-container class="custom-skin">
+    <slot></slot>
+    <div class="controls">
+      <vjs-play-button></vjs-play-button>
+      <vjs-time-slider>
+        <!-- Custom skin structure -->
+      </vjs-time-slider>
+    </div>
+  </media-container>
+</media-provider>
+```
+</FrameworkCase>
+
+## Coming Soon
+
+- More built-in skins for different use cases
+- CLI tool for ejecting and customizing skins

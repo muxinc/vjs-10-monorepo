@@ -29,7 +29,7 @@ const isActive = containsActivePath(item);
 
 {
   isSection(item) ? (
-    <details open class="group" style={`padding-left: calc(var(--spacing) * ${depth * 4})`}>
+    <details open class="group my-4 first:mt-0" style={`padding-left: calc(var(--spacing) * ${depth * 4})`}>
       <summary
         class:list={[
           'py-2 flex items-center gap-4 ',

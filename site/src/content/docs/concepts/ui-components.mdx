@@ -1,0 +1,103 @@
+---
+title: UI Components
+description: Understanding Video.js v10's primitive-based component architecture
+---
+
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import DocsLink from '@/components/docs/DocsLink.astro';
+
+Video.js v10 components are built from **unstyled UI primitives**, taking inspiration from projects like [shadcn/ui](https://ui.shadcn.com/) and [Base UI](https://base-ui.com/). This approach gives you complete control over styling and behavior while handling the complex interactions for you.
+
+## Core Principles
+
+### 1. Primitive-Based Design
+
+Each primitive represents at most **one HTML element**, without internal elements.
+
+<FrameworkCase frameworks={["react"]}>
+```tsx
+<TimeSlider.Root>
+  <TimeSlider.Track>       {/* One element: the track */}
+    <TimeSlider.Progress /> {/* One element: the progress bar */}
+    <TimeSlider.Pointer />  {/* One element: hover indicator */}
+  </TimeSlider.Track>
+  <TimeSlider.Thumb />       {/* One element: the draggable thumb */}
+</TimeSlider.Root>
+```
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+```html
+<vjs-time-slider>
+  <div class="track">        <!-- One element: the track -->
+    <div class="progress"></div>  <!-- One element: the progress bar -->
+    <div class="pointer"></div>   <!-- One element: hover indicator -->
+  </div>
+  <div class="thumb"></div>       <!-- One element: the draggable thumb -->
+</vjs-time-slider>
+```
+</FrameworkCase>
+
+### 2. Compound Components
+
+Complex components are broken into smaller, composable pieces. This pattern is used for:
+
+- **Sliders** - Root, Track, Thumb, Progress, Pointer
+- **Tooltips** - Root, Trigger, Positioner, Popup, Arrow, Portal
+- **Popovers** - Root, Trigger, Positioner, Popup, Portal
+
+Each piece handles one concern, but they work together seamlessly.
+
+### 3. Built-in Accessibility
+
+Components include proper ARIA attributes, keyboard navigation, and focus management out of the box:
+
+- Buttons have correct roles and labels
+- Sliders support arrow key navigation
+- Focus is managed properly in tooltips and popovers
+- Screen readers get meaningful announcements
+
+### 4. Data Attributes for Styling
+
+Components expose state through data attributes, allowing pure CSS state styling:
+
+```css
+/* Style based on state without JavaScript */
+button[data-paused] {
+  /* Paused state */
+}
+
+button:not([data-paused]) {
+  /* Playing state */
+}
+```
+
+Common data attributes:
+- `data-paused` - Present when media is paused
+- `data-muted` - Present when audio is muted
+- `data-fullscreen` - Present when in fullscreen mode
+- `data-volume-level` - Values: `high`, `medium`, `low`, `off`
+
+## Available Components
+
+### Simple Components
+
+Single-element components that handle one piece of UI:
+
+- **PlayButton** - Play/pause toggle
+- **MuteButton** - Audio mute toggle
+- **FullscreenButton** - Fullscreen toggle
+- **CurrentTimeDisplay** - Current playback time
+- **DurationDisplay** - Total media duration
+- **PreviewTimeDisplay** - Time at hover position
+
+### Compound Components
+
+Multi-element components for complex interactions:
+
+- **TimeSlider** - Seekable timeline with progress
+- **VolumeSlider** - Volume control slider
+- **Tooltip** - Hover tooltips with positioning
+- **Popover** - Click/hover popovers with collision detection
+
+Ready to dive in? <DocsLink slug="reference/play-button">Browse all component documentation →</DocsLink>

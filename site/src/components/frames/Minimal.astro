@@ -1,0 +1,23 @@
+---
+/**
+ * Minimal frame component for wrapping documentation demos.
+ *
+ * Provides a styled container with rounded borders and background
+ * matching the site's Tabs component aesthetic.
+ *
+ * Usage:
+ * ```mdx
+ * import Minimal from '@/components/frames/Minimal.astro';
+ *
+ * <MinimalFrame>
+ *   <MyDemo client:load />
+ * </MinimalFrame>
+ * ```
+ */
+---
+
+<div
+  class="w-full max-w-3xl mx-auto rounded-lg border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110"
+>
+  <slot />
+</div>

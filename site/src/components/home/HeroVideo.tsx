@@ -1,7 +1,7 @@
 import { useStore } from '@nanostores/react';
 import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@videojs/react';
+import { VJS8_DEMO_VIDEO } from '@/consts';
 import { skin } from '@/stores/homePageDemos';
-import { PLAYBACK_ID } from './config';
 import '@videojs/react/skins/frosted.css';
 import '@videojs/react/skins/minimal.css';
 
@@ -15,7 +15,7 @@ export default function HeroVideo({ className, poster }: { className?: string; p
       <SkinComponent className={className}>
         <Video
           // @ts-expect-error -- types are incorrect
-          src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`}
+          src={VJS8_DEMO_VIDEO.hls}
           poster={poster}
           playsInline
         />
