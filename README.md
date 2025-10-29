@@ -55,4 +55,4 @@ Copyright (c) Video.js Contributors
 [package-badge]: https://img.shields.io/npm/v/@videojs/core/next?label=@videojs/core@next
 [discord]: https://discord.gg/b664Gq3pdy
 [discord-badge]: https://img.shields.io/discord/507627062434070529?color=%235865F2&label=%20&logo=discord&logoColor=white
-[gh-discussions]: https://github.com/muxinc/vjs-10-monorepo/discussions
+[gh-discussions]: https://github.com/videojs/v10/discussions
