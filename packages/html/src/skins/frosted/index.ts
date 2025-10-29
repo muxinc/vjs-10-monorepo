@@ -81,7 +81,7 @@ export function getTemplateHTML() {
           popover
           open-on-hover
           delay="200"
-          close-delay="300"
+          close-delay="100"
           side="top"
           side-offset="12"
           collision-padding="12"
