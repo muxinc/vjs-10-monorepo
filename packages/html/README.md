@@ -23,4 +23,4 @@ members:
 [package]: https://www.npmjs.com/package/@videojs/html
 [package-badge]: https://img.shields.io/npm/v/@videojs/html/next?label=@videojs/html@next
 [discord]: https://discord.gg/b664Gq3pdy
-[gh-discussions]: https://github.com/muxinc/vjs-10-monorepo/discussions
+[gh-discussions]: https://github.com/videojs/v10/discussions
