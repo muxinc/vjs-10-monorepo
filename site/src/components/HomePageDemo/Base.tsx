@@ -32,8 +32,8 @@ export const VideoPlayer = () => {
 };`;
 }
 
-function generateJS(_skin: Skin): string {
-  return `import '@videojs/html/skins/frosted';`;
+function generateJS(skin: Skin): string {
+  return `import '@videojs/html/skins/${skin}';`;
 }
 
 export default function BaseDemo({ className }: { className?: string }) {
