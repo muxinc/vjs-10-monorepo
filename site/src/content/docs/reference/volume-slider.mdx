@@ -25,7 +25,7 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
 
 ## Example
 
-<FrameworkCase frameworks={["react"]}>
+<FrameworkCase frameworks={["react"]} withHydrationWorkaround>
   <TabsRoot
     aria-label="React implementation"
     titles={{ component: 'Component', css: 'CSS Module' }}
@@ -43,7 +43,7 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
   </TabsRoot>
 </FrameworkCase>
 
-<FrameworkCase frameworks={["html"]}>
+<FrameworkCase frameworks={["html"]} withHydrationWorkaround>
   <TabsRoot
     aria-label="HTML implementation"
     titles={{ 'html-horizontal': 'HTML (Horizontal)', 'html-vertical': 'HTML (Vertical)', css: 'CSS' }}

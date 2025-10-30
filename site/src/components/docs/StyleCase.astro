@@ -3,9 +3,15 @@ import type { AnySupportedStyle } from '@/types/docs';
 
 interface Props {
   styles?: AnySupportedStyle[];
+  /**
+   * I'm running into some crazy problems with hydration.
+   * Putting client:load in one of these conditionals causes Astro to just give up hydrating the whole app for some reason.
+   * If you're running into that, too, this prop may be for you.
+   */
+  withHydrationWorkaround?: boolean;
 }
 
-const { styles } = Astro.props;
+const { styles, withHydrationWorkaround } = Astro.props;
 const { style } = Astro.params;
 
 // Only render if current style matches, or if no styles specified (all styles)
@@ -13,19 +19,11 @@ const shouldRender = !styles || styles.includes(style as AnySupportedStyle);
 ---
 
 {
-  /*
-    What I WANT to do is
-    ```
-    {shouldRender && <slot />}
-    ```
-
-    But I'm running into some crazy problems with hydration.
-    Putting client:load in one of these conditionals causes Astro to just give up hydrating the whole app for some reason.
-    TODO: fix this
-
-    So, while I debug those... let's do this
-  */
+  withHydrationWorkaround ? (
+    <div class="contents" hidden={!shouldRender}>
+      <slot />
+    </div>
+  ) : (
+    shouldRender && <slot />
+  )
 }
-<div class="contents" hidden={!shouldRender}>
-  <slot />
-</div>
