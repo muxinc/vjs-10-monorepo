@@ -50,7 +50,7 @@
           <div class="overlay"></div>
 
           <div class="control-bar surface">
-            <media-tooltip-root delay="500" close-delay="0">
+            <media-tooltip delay="500" close-delay="0">
               <media-tooltip-trigger>
                 <media-play-button class="button">
                   <media-play-icon class="icon play-icon"></media-play-icon>
@@ -65,30 +65,30 @@
                   </media-tooltip-popup>
                 </media-tooltip-positioner>
               </media-tooltip-portal>
-            </media-tooltip-root>
+            </media-tooltip>
 
             <div class="time-controls">
               <!-- Use the show-remaining attribute to show count down/remaining time -->
               <media-current-time-display></media-current-time-display>
 
-              <media-tooltip-root track-cursor-axis="x">
+              <media-tooltip track-cursor-axis="x">
                 <media-tooltip-trigger>
-                  <media-time-slider-root class="slider-root">
+                  <media-time-slider class="slider">
                     <media-time-slider-track class="slider-track">
                       <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
                       <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
                     </media-time-slider-track>
                     <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
-                  </media-time-slider-root>
+                  </media-time-slider>
                 </media-tooltip-trigger>
                 <media-tooltip-portal>
                   <media-tooltip-positioner side="top" side-offset="18" collision-padding="12">
                     <media-tooltip-popup class="surface popup-animation">
-                      <preview-time-display></preview-time-display>
+                      <media-preview-time-display></media-preview-time-display>
                     </media-tooltip-popup>
                   </media-tooltip-positioner>
                 </media-tooltip-portal>
-              </media-tooltip-root>
+              </media-tooltip>
 
               <media-duration-display></media-duration-display>
             </div>
@@ -109,15 +109,15 @@
               side-offset="12"
               collision-padding="12"
             >
-              <media-volume-slider-root class="slider-root" orientation="vertical">
+              <media-volume-slider class="slider" orientation="vertical">
                 <media-volume-slider-track class="slider-track">
                   <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
                 </media-volume-slider-track>
                 <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
-              </media-volume-slider-root>
+              </media-volume-slider>
             </media-popover>
 
-            <media-tooltip-root delay="500" close-delay="0">
+            <media-tooltip delay="500" close-delay="0">
               <media-tooltip-trigger>
                 <media-fullscreen-button class="button">
                   <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
@@ -132,7 +132,7 @@
                   </media-tooltip-popup>
                 </media-tooltip-positioner>
               </media-tooltip-portal>
-            </media-tooltip-root>
+            </media-tooltip>
           </div>
         </media-container>
       </media-provider>

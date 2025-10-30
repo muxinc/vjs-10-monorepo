@@ -64,7 +64,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
 
           <Tooltip.Root trackCursorAxis="x">
             <Tooltip.Trigger>
-              <TimeSlider.Root className="slider-root">
+              <TimeSlider.Root className="slider">
                 <TimeSlider.Track className="slider-track">
                   <TimeSlider.Progress className="slider-progress" />
                   <TimeSlider.Pointer className="slider-pointer" />
@@ -75,7 +75,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
             <Tooltip.Portal>
               <Tooltip.Positioner side="top" sideOffset={18} collisionPadding={12}>
                 <Tooltip.Popup className="surface popup-animation tooltip-popup">
-                  <PreviewTimeDisplay className="time-display preview-time-display" />
+                  <PreviewTimeDisplay className="time-display media-preview-time-display" />
                 </Tooltip.Popup>
               </Tooltip.Positioner>
             </Tooltip.Portal>
@@ -95,7 +95,7 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
           <Popover.Portal>
             <Popover.Positioner side="top" sideOffset={12}>
               <Popover.Popup className="surface popup-animation popover-popup">
-                <VolumeSlider.Root className="slider-root" orientation="vertical">
+                <VolumeSlider.Root className="slider" orientation="vertical">
                   <VolumeSlider.Track className="slider-track">
                     <VolumeSlider.Progress className="slider-progress" />
                   </VolumeSlider.Track>
@@ -186,7 +186,7 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
 
         <Tooltip.Root trackCursorAxis="x">
           <Tooltip.Trigger>
-            <TimeSlider.Root className="slider-root">
+            <TimeSlider.Root className="slider">
               <TimeSlider.Track className="slider-track">
                 <TimeSlider.Progress className="slider-progress" />
                 <TimeSlider.Pointer className="slider-pointer" />
@@ -197,7 +197,7 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
           <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className="popup-animation tooltip-popup">
-                <PreviewTimeDisplay className="time-display preview-time-display" />
+                <PreviewTimeDisplay className="time-display media-preview-time-display" />
               </Tooltip.Popup>
             </Tooltip.Positioner>
           </Tooltip.Portal>
@@ -215,7 +215,7 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
             <Popover.Portal>
               <Popover.Positioner side="top" sideOffset={2}>
                 <Popover.Popup className="popup-animation popover-popup">
-                  <VolumeSlider.Root className="slider-root" orientation="vertical">
+                  <VolumeSlider.Root className="slider" orientation="vertical">
                     <VolumeSlider.Track className="slider-track">
                       <VolumeSlider.Progress className="slider-progress" />
                     </VolumeSlider.Track>
@@ -465,7 +465,7 @@ export function generateReactCSS(skin: Skin): string {
 }
 
 /* TimeSlider Component Styles */
-.vjs-frosted-skin .slider-root {
+.vjs-frosted-skin .slider {
   flex: 1;
   display: flex;
   align-items: center;
@@ -476,14 +476,14 @@ export function generateReactCSS(skin: Skin): string {
 }
 
 /* Horizontal orientation styles */
-.vjs-frosted-skin .slider-root[data-orientation='horizontal'] {
+.vjs-frosted-skin .slider[data-orientation='horizontal'] {
   min-width: 5rem;
   width: 100%;
   height: 1.25rem;
 }
 
 /* Vertical orientation styles */
-.vjs-frosted-skin .slider-root[data-orientation='vertical'] {
+.vjs-frosted-skin .slider[data-orientation='vertical'] {
   height: 5rem;
   width: 1.25rem;
 }
@@ -513,7 +513,7 @@ export function generateReactCSS(skin: Skin): string {
   height: 100%;
 }
 
-.vjs-frosted-skin .slider-root:focus-visible .slider-track {
+.vjs-frosted-skin .slider:focus-visible .slider-track {
   outline-color: oklch(62.3% 0.214 259.815);
   outline-offset: 6px;
 }
@@ -538,8 +538,8 @@ export function generateReactCSS(skin: Skin): string {
   width: 0.75rem;
   height: 0.75rem;
 }
-.vjs-frosted-skin .slider-root:hover .slider-thumb,
-.vjs-frosted-skin .slider-root:focus-within .slider-thumb {
+.vjs-frosted-skin .slider:hover .slider-thumb,
+.vjs-frosted-skin .slider:focus-within .slider-thumb {
   opacity: 1;
 }
 .vjs-frosted-skin .slider-track[data-orientation='horizontal'] .slider-thumb {
@@ -559,7 +559,7 @@ export function generateReactCSS(skin: Skin): string {
   border-radius: inherit;
 }
 
-.vjs-frosted-skin .preview-time-display {
+.vjs-frosted-skin .media-preview-time-display {
   font-variant-numeric: tabular-nums;
 }
 
@@ -802,7 +802,7 @@ export function generateReactCSS(skin: Skin): string {
 }
 
 /* TimeSlider Component Styles */
-.vjs-minimal-skin .slider-root {
+.vjs-minimal-skin .slider {
   flex: 1;
   display: flex;
   align-items: center;
@@ -813,14 +813,14 @@ export function generateReactCSS(skin: Skin): string {
 }
 
 /* Horizontal orientation styles */
-.vjs-minimal-skin .slider-root[data-orientation='horizontal'] {
+.vjs-minimal-skin .slider[data-orientation='horizontal'] {
   min-width: 5rem;
   width: 100%;
   height: 1.25rem;
 }
 
 /* Vertical orientation styles */
-.vjs-minimal-skin .slider-root[data-orientation='vertical'] {
+.vjs-minimal-skin .slider[data-orientation='vertical'] {
   height: 4.5rem;
   width: 1.25rem;
 }
@@ -850,7 +850,7 @@ export function generateReactCSS(skin: Skin): string {
   height: 100%;
 }
 
-.vjs-minimal-skin .slider-root:focus-visible .slider-track {
+.vjs-minimal-skin .slider:focus-visible .slider-track {
   outline-color: oklab(1 0 0);
   outline-offset: 6px;
 }
@@ -873,8 +873,8 @@ export function generateReactCSS(skin: Skin): string {
   transition-duration: 150ms;
   transition-timing-function: ease-out;
 }
-.vjs-minimal-skin .slider-root:hover .slider-thumb,
-.vjs-minimal-skin .slider-root:focus-within .slider-thumb {
+.vjs-minimal-skin .slider:hover .slider-thumb,
+.vjs-minimal-skin .slider:focus-within .slider-thumb {
   opacity: 1;
   scale: 1;
 }
@@ -894,7 +894,7 @@ export function generateReactCSS(skin: Skin): string {
   border-radius: inherit;
 }
 
-.vjs-minimal-skin .preview-time-display {
+.vjs-minimal-skin .media-preview-time-display {
   font-variant-numeric: tabular-nums;
 }
 
@@ -982,7 +982,7 @@ export function generateHTMLMarkup(skin: Skin): string {
     <div class="overlay"></div>
 
     <div class="control-bar surface">
-      <media-tooltip-root delay="500" close-delay="0">
+      <media-tooltip delay="500" close-delay="0">
         <media-tooltip-trigger>
           <media-play-button class="button">
             <media-play-icon class="icon play-icon"></media-play-icon>
@@ -997,30 +997,30 @@ export function generateHTMLMarkup(skin: Skin): string {
             </media-tooltip-popup>
           </media-tooltip-positioner>
         </media-tooltip-portal>
-      </media-tooltip-root>
+      </media-tooltip>
 
       <div class="time-controls">
         <!-- Use the show-remaining attribute to show count down/remaining time -->
         <media-current-time-display></media-current-time-display>
 
-        <media-tooltip-root track-cursor-axis="x">
+        <media-tooltip track-cursor-axis="x">
           <media-tooltip-trigger>
-            <media-time-slider-root class="slider-root">
+            <media-time-slider class="slider">
               <media-time-slider-track class="slider-track">
                 <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
                 <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
               </media-time-slider-track>
               <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
-            </media-time-slider-root>
+            </media-time-slider>
           </media-tooltip-trigger>
           <media-tooltip-portal>
             <media-tooltip-positioner side="top" side-offset="18" collision-padding="12">
               <media-tooltip-popup class="surface popup-animation">
-                <preview-time-display></preview-time-display>
+                <media-preview-time-display></media-preview-time-display>
               </media-tooltip-popup>
             </media-tooltip-positioner>
           </media-tooltip-portal>
-        </media-tooltip-root>
+        </media-tooltip>
 
         <media-duration-display></media-duration-display>
       </div>
@@ -1041,15 +1041,15 @@ export function generateHTMLMarkup(skin: Skin): string {
         side-offset="12"
         collision-padding="12"
       >
-        <media-volume-slider-root class="slider-root" orientation="vertical">
+        <media-volume-slider class="slider" orientation="vertical">
           <media-volume-slider-track class="slider-track">
             <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
           </media-volume-slider-track>
           <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
-        </media-volume-slider-root>
+        </media-volume-slider>
       </media-popover>
 
-      <media-tooltip-root delay="500" close-delay="0">
+      <media-tooltip delay="500" close-delay="0">
         <media-tooltip-trigger>
           <media-fullscreen-button class="button">
             <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
@@ -1064,7 +1064,7 @@ export function generateHTMLMarkup(skin: Skin): string {
             </media-tooltip-popup>
           </media-tooltip-positioner>
         </media-tooltip-portal>
-      </media-tooltip-root>
+      </media-tooltip>
     </div>
   </media-container>
 </media-provider>`;
@@ -1080,7 +1080,7 @@ export function generateHTMLMarkup(skin: Skin): string {
     <div class="overlay"></div>
 
     <div class="control-bar">
-      <media-tooltip-root delay="500" close-delay="0">
+      <media-tooltip delay="500" close-delay="0">
         <media-tooltip-trigger>
           <media-play-button class="button">
             <media-play-icon class="icon play-icon"></media-play-icon>
@@ -1095,7 +1095,7 @@ export function generateHTMLMarkup(skin: Skin): string {
             </media-tooltip-popup>
           </media-tooltip-positioner>
         </media-tooltip-portal>
-      </media-tooltip-root>
+      </media-tooltip>
 
       <div class="time-display-group">
         <!-- Use the show-remaining attribute to show count down/remaining time -->
@@ -1107,24 +1107,24 @@ export function generateHTMLMarkup(skin: Skin): string {
         </span>
       </div>
 
-      <media-tooltip-root track-cursor-axis="x">
+      <media-tooltip track-cursor-axis="x">
         <media-tooltip-trigger>
-          <media-time-slider-root class="slider-root">
+          <media-time-slider class="slider">
             <media-time-slider-track class="slider-track">
               <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
               <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
             </media-time-slider-track>
             <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
-          </media-time-slider-root>
+          </media-time-slider>
         </media-tooltip-trigger>
         <media-tooltip-portal>
           <media-tooltip-positioner side="top" side-offset="12" collision-padding="12">
             <media-tooltip-popup class="popup-animation">
-              <preview-time-display></preview-time-display>
+              <media-preview-time-display></media-preview-time-display>
             </media-tooltip-popup>
           </media-tooltip-positioner>
         </media-tooltip-portal>
-      </media-tooltip-root>
+      </media-tooltip>
 
       <div class="button-group">
         <media-mute-button popovertarget="volume-slider-popover" class="button">
@@ -1143,15 +1143,15 @@ export function generateHTMLMarkup(skin: Skin): string {
           side-offset="2"
           collision-padding="12"
         >
-          <media-volume-slider-root class="slider-root" orientation="vertical">
+          <media-volume-slider class="slider" orientation="vertical">
             <media-volume-slider-track class="slider-track">
               <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
             </media-volume-slider-track>
             <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
-          </media-volume-slider-root>
+          </media-volume-slider>
         </media-popover>
 
-        <media-tooltip-root delay="500" close-delay="0">
+        <media-tooltip delay="500" close-delay="0">
           <media-tooltip-trigger>
             <media-fullscreen-button class="button">
               <media-fullscreen-enter-alt-icon
@@ -1168,7 +1168,7 @@ export function generateHTMLMarkup(skin: Skin): string {
               </media-tooltip-popup>
             </media-tooltip-positioner>
           </media-tooltip-portal>
-        </media-tooltip-root>
+        </media-tooltip>
       </div>
     </div>
   </media-container>
@@ -1395,7 +1395,7 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
 }
 
 /* TimeSlider Component Styles */
-.slider-root {
+.slider {
   flex: 1;
   display: flex;
   align-items: center;
@@ -1406,14 +1406,14 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
 }
 
 /* Horizontal orientation styles */
-.slider-root[data-orientation='horizontal'] {
+.slider[data-orientation='horizontal'] {
   min-width: 5rem;
   width: 100%;
   height: 1.25rem;
 }
 
 /* Vertical orientation styles */
-.slider-root[data-orientation='vertical'] {
+.slider[data-orientation='vertical'] {
   height: 5rem;
   width: 1.25rem;
 }
@@ -1443,7 +1443,7 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   height: 100%;
 }
 
-.slider-root:focus-visible .slider-track {
+.slider:focus-visible .slider-track {
   outline-color: oklch(62.3% 0.214 259.815);
   outline-offset: 6px;
 }
@@ -1468,8 +1468,8 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   width: 0.75rem;
   height: 0.75rem;
 }
-.slider-root:hover .slider-thumb,
-.slider-root:focus-within .slider-thumb {
+.slider:hover .slider-thumb,
+.slider:focus-within .slider-thumb {
   opacity: 1;
 }
 .slider-track[data-orientation='horizontal'] .slider-thumb {
@@ -1489,7 +1489,7 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   border-radius: inherit;
 }
 
-preview-time-display {
+media-preview-time-display {
   font-variant-numeric: tabular-nums;
 }
 
@@ -1735,7 +1735,7 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
 }
 
 /* TimeSlider Component Styles */
-.slider-root {
+.slider {
   flex: 1;
   display: flex;
   align-items: center;
@@ -1746,14 +1746,14 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
 }
 
 /* Horizontal orientation styles */
-.slider-root[data-orientation='horizontal'] {
+.slider[data-orientation='horizontal'] {
   min-width: 5rem;
   width: 100%;
   height: 1.25rem;
 }
 
 /* Vertical orientation styles */
-.slider-root[data-orientation='vertical'] {
+.slider[data-orientation='vertical'] {
   height: 4.5rem;
   width: 1.25rem;
 }
@@ -1783,7 +1783,7 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   height: 100%;
 }
 
-.slider-root:focus-visible .slider-track {
+.slider:focus-visible .slider-track {
   outline-color: oklab(1 0 0);
   outline-offset: 6px;
 }
@@ -1806,8 +1806,8 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   transition-duration: 150ms;
   transition-timing-function: ease-out;
 }
-.slider-root:hover .slider-thumb,
-.slider-root:focus-within .slider-thumb {
+.slider:hover .slider-thumb,
+.slider:focus-within .slider-thumb {
   opacity: 1;
   scale: 1;
 }
@@ -1827,7 +1827,7 @@ media-mute-button[data-volume-level='off'] .volume-off-icon {
   border-radius: inherit;
 }
 
-preview-time-display {
+media-preview-time-display {
   font-variant-numeric: tabular-nums;
 }
 
@@ -1904,5 +1904,16 @@ media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
 export function generateHTMLJS(skin: Skin): string {
   return `import './${skin}.css';
 import '@videojs/html/icons';
-import '@videojs/html';`;
+import '@videojs/html/define/media-container';
+import '@videojs/html/define/media-provider';
+import '@videojs/html/define/media-play-button';
+import '@videojs/html/define/media-mute-button';
+import '@videojs/html/define/media-volume-slider';
+import '@videojs/html/define/media-time-slider';
+import '@videojs/html/define/media-fullscreen-button';
+import '@videojs/html/define/media-duration-display';
+import '@videojs/html/define/media-current-time-display';
+import '@videojs/html/define/media-preview-time-display';
+import '@videojs/html/define/media-popover';
+import '@videojs/html/define/media-tooltip';`;
 }

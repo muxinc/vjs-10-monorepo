@@ -57,7 +57,7 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
 
         <Tooltip.Root trackCursorAxis="x">
           <Tooltip.Trigger>
-            <TimeSlider.Root className="slider-root">
+            <TimeSlider.Root className="slider">
               <TimeSlider.Track className="slider-track">
                 <TimeSlider.Progress className="slider-progress" />
                 <TimeSlider.Pointer className="slider-pointer" />
@@ -68,7 +68,7 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
           <Tooltip.Portal>
             <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
               <Tooltip.Popup className="popup-animation tooltip-popup">
-                <PreviewTimeDisplay className="time-display preview-time-display" />
+                <PreviewTimeDisplay className="time-display media-preview-time-display" />
               </Tooltip.Popup>
             </Tooltip.Positioner>
           </Tooltip.Portal>
@@ -86,7 +86,7 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
             <Popover.Portal>
               <Popover.Positioner side="top" sideOffset={2}>
                 <Popover.Popup className="popup-animation popover-popup">
-                  <VolumeSlider.Root className="slider-root" orientation="vertical">
+                  <VolumeSlider.Root className="slider" orientation="vertical">
                     <VolumeSlider.Track className="slider-track">
                       <VolumeSlider.Progress className="slider-progress" />
                     </VolumeSlider.Track>
