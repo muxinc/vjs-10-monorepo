@@ -4,6 +4,7 @@ export { FullscreenButton } from './components/media-fullscreen-button';
 export { MuteButton } from './components/media-mute-button';
 export { PlayButton } from './components/media-play-button';
 export { Popover } from './components/media-popover';
+export { PreviewTimeDisplay } from './components/media-preview-time-display';
 export { TimeSlider } from './components/media-time-slider';
 export { Tooltip } from './components/media-tooltip';
 export { VolumeSlider } from './components/media-volume-slider';
