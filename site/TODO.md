@@ -7,6 +7,6 @@ not comprehensive. just the things I'm worried about forgetting
 - a11y audit. some of those colors are sus.
 - animations
 - docs features
-  - copy code blocks
+  - /docs/[slug] redirect ("share this guide")
 - search
-- update docs following dev
+- update READMEs following dev

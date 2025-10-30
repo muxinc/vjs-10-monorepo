@@ -58,8 +58,8 @@ const renderTitle = title ?? defaultTitles[type];
       />
     </div>
     <div class="flex-1 min-w-0">
-      <p class="text-md font-semibold mb-2 text-black dark:text-white">{renderTitle}</p>
-      <div class="prose prose-sm max-w-none text-black dark:text-white [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+      <p class="text-md font-semibold mb-2">{renderTitle}</p>
+      <div class="[&>.my-6]:my-2 [&>.my-12]:my-4 [&>*:last-child]:!mb-0">
         <slot />
       </div>
     </div>
