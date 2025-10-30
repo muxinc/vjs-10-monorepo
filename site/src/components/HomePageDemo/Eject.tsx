@@ -1,33 +1,39 @@
-import type { Media, Skin } from '@/stores/homePageDemos';
+import type { Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
 import { TabsPanel, TabsRoot } from '@/components/Tabs';
-import { framework, media, skin } from '@/stores/homePageDemos';
+import { framework, skin } from '@/stores/homePageDemos';
+import {
+  generateHTMLCSS,
+  generateHTMLJS,
+  generateHTMLMarkup,
+  generateReactComponent,
+  generateReactCSS as genReactCSS,
+} from '@/utils/ejectCodeGenerator';
 import ClientCode from '../Code/ClientCode';
 
-function generateHTMLCode(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
+function generateReactCode(skin: Skin): string {
+  return generateReactComponent(skin);
 }
 
-function generateReactCode(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
+function generateReactCSS(skin: Skin): string {
+  return genReactCSS(skin);
 }
 
-function generateCSSModuleCode(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
+function generateHTMLCode(skin: Skin): string {
+  return generateHTMLMarkup(skin);
 }
 
-function generateCSS(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
+function generateCSS(skin: Skin): string {
+  return generateHTMLCSS(skin);
 }
 
-function generateJS(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
+function generateJS(skin: Skin): string {
+  return generateHTMLJS(skin);
 }
 
 export default function EjectDemo({ className }: { className?: string }) {
   const $framework = useStore(framework);
   const $skin = useStore(skin);
-  const $media = useStore(media);
 
   if ($framework === 'html') {
     return (
@@ -39,13 +45,13 @@ export default function EjectDemo({ className }: { className?: string }) {
         maxWidth={false}
       >
         <TabsPanel tabsId="eject-html" value="html">
-          <ClientCode code={generateHTMLCode($skin, $media)} lang="html" />
+          <ClientCode code={generateHTMLCode($skin)} lang="html" />
         </TabsPanel>
         <TabsPanel tabsId="eject-html" value="css">
-          <ClientCode code={generateCSS($skin, $media)} lang="css" />
+          <ClientCode code={generateCSS($skin)} lang="css" />
         </TabsPanel>
         <TabsPanel tabsId="eject-html" value="javascript">
-          <ClientCode code={generateJS($skin, $media)} lang="javascript" />
+          <ClientCode code={generateJS($skin)} lang="javascript" />
         </TabsPanel>
       </TabsRoot>
     );
@@ -55,15 +61,15 @@ export default function EjectDemo({ className }: { className?: string }) {
     <TabsRoot
       id="eject-react"
       aria-label="React implementation"
-      titles={{ react: 'React', css: 'CSS Module' }}
+      titles={{ react: 'React', css: 'CSS' }}
       className={className}
       maxWidth={false}
     >
       <TabsPanel tabsId="eject-react" value="react">
-        <ClientCode code={generateReactCode($skin, $media)} lang="tsx" />
+        <ClientCode code={generateReactCode($skin)} lang="tsx" />
       </TabsPanel>
       <TabsPanel tabsId="eject-react" value="css">
-        <ClientCode code={generateCSSModuleCode($skin, $media)} lang="css" />
+        <ClientCode code={generateReactCSS($skin)} lang="css" />
       </TabsPanel>
     </TabsRoot>
   );
