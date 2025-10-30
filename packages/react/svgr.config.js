@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+/** @type {import('@svgr/core').Config & { indexTemplate: (filePaths: { path: string }[]) => string }} */
 export default {
   plugins: ['@svgr/plugin-jsx'],
   typescript: true,

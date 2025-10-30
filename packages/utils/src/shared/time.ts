@@ -1,9 +1,8 @@
-
 /**
  * Checks if a value is a valid number (not NaN, null, undefined, or Infinity)
  */
 function isValidNumber(value: unknown): value is number {
-  return typeof value === 'number' && isFinite(value);
+  return typeof value === 'number' && Number.isFinite(value);
 }
 
 const UnitLabels = [
@@ -29,7 +28,7 @@ function toTimeUnitPhrase(timeUnitValue: number, unitIndex: number): string {
 
 /**
  * Converts numeric seconds into a human-readable phrase for accessibility.
- * 
+ *
  * @param seconds - A (positive or negative) time, represented as seconds
  * @returns The time, represented as a phrase of hours, minutes, and seconds
  *
@@ -96,7 +95,7 @@ export function formatTime(seconds: number, guide?: number): string {
   const gh = guide ? Math.floor(guide / 3600) : 0;
 
   // Handle invalid times
-  if (isNaN(seconds) || seconds === Infinity) {
+  if (Number.isNaN(seconds) || seconds === Infinity) {
     // '-' is false for all relational operators (e.g. <, >=) so this setting
     // will add the minimum number of fields specified by the guide
     h = m = s = '0';
@@ -118,7 +117,7 @@ export function formatTime(seconds: number, guide?: number): string {
 
 /**
  * Formats a time value with fallback handling for invalid values.
- * 
+ *
  * @param time - The time value to format in seconds (duration, currentTime, etc.)
  * @param guide - Optional guide time for consistent formatting
  * @param fallback - Fallback text when time is invalid (default: "--:--")

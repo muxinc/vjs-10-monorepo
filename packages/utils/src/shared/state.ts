@@ -3,7 +3,7 @@
  * so we may treat them specifically as unequal if they are not a) both arrays
  * or b) don't contain the same (shallowly compared) elements.
  */
-export function shallowEqual(objA: any, objB: any): boolean {
+export function shallowEqual(objA: object, objB: object): boolean {
   // Using Object.is as a first pass, as it covers a lot of the "simple" cases that are
   // more complex than strict equality and is a built-in. For discussion, see, e.g.:
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#description

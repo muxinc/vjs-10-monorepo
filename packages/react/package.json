@@ -63,6 +63,7 @@
   "devDependencies": {
     "@svgr/babel-plugin-add-jsx-attribute": "^8.0.0",
     "@svgr/cli": "^8.1.0",
+    "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
     "@tailwindcss/cli": "^4.1.0",
     "@types/postcss-prefix-selector": "^1.16.3",
