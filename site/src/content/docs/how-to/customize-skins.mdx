@@ -3,4 +3,96 @@ title: Customize Skins
 description: Learn how to customize Video.js v10 skins by copying and modifying them
 ---
 
-I'm going to put the eject examples here in another PR
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import ServerCode from '@/components/Code/ServerCode.astro';
+import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
+import {
+  generateHTMLCSS,
+  generateHTMLJS,
+  generateHTMLMarkup,
+  generateReactComponent,
+  generateReactCSS,
+} from '@/utils/ejectCodeGenerator';
+
+
+Video.js v10 comes with pre-built skins like Frosted and Minimal, but you can fully customize them by "ejecting" the code and making it your own. While eventually we'll have a CLI that'll eject skins in your preferred framework and style, for now we invite you to try it out with these copy-paste-ready implementations.
+
+> ⚠️ **Notice:** The HTML examples below aren't quite working, yet. Stay tuned for updates.
+
+## Frosted Skin
+
+<FrameworkCase frameworks={["react"]}>
+
+<TabsRoot
+  aria-label="Frosted React implementation"
+  titles={{ component: 'Component', css: 'CSS' }}
+  client:load
+>
+  <TabsPanel value="component" client:load>
+    <ServerCode code={generateReactComponent('frosted')} lang="tsx" />
+  </TabsPanel>
+  <TabsPanel value="css" client:load>
+    <ServerCode code={generateReactCSS('frosted')} lang="css" />
+  </TabsPanel>
+</TabsRoot>
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+<TabsRoot
+  aria-label="Frosted HTML implementation"
+  titles={{ markup: 'HTML', js: 'JS', css: 'CSS' }}
+  client:load
+>
+  <TabsPanel value="markup" client:load>
+    <ServerCode code={generateHTMLMarkup('frosted')} lang="html" />
+  </TabsPanel>
+  <TabsPanel value="js" client:load>
+    <ServerCode code={generateHTMLJS('frosted')} lang="typescript" />
+  </TabsPanel>
+  <TabsPanel value="css" client:load>
+    <ServerCode code={generateHTMLCSS('frosted')} lang="css" />
+  </TabsPanel>
+</TabsRoot>
+
+</FrameworkCase>
+
+## Minimal Skin
+
+<FrameworkCase frameworks={["react"]}>
+
+<TabsRoot
+  aria-label="Minimal React implementation"
+  titles={{ react: 'React', css: 'CSS' }}
+  client:load
+>
+  <TabsPanel value="react" client:load>
+    <ServerCode code={generateReactComponent('minimal')} lang="tsx" />
+  </TabsPanel>
+  <TabsPanel value="css" client:load>
+    <ServerCode code={generateReactCSS('minimal')} lang="css" />
+  </TabsPanel>
+</TabsRoot>
+
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+
+<TabsRoot
+  aria-label="Minimal HTML implementation"
+  titles={{ html: 'HTML', js: 'JS', css: 'CSS' }}
+  client:load
+>
+  <TabsPanel value="html" client:load>
+    <ServerCode code={generateHTMLMarkup('minimal')} lang="html" />
+  </TabsPanel>
+  <TabsPanel value="js" client:load>
+    <ServerCode code={generateHTMLJS('minimal')} lang="typescript" />
+  </TabsPanel>
+  <TabsPanel value="css" client:load>
+    <ServerCode code={generateHTMLCSS('minimal')} lang="css" />
+  </TabsPanel>
+</TabsRoot>
+
+</FrameworkCase>

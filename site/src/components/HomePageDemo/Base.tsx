@@ -1,71 +1,59 @@
-import type { Media, Skin } from '@/stores/homePageDemos';
+import type { Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
 import { TabsPanel, TabsRoot } from '@/components/Tabs';
-import { framework, media, skin } from '@/stores/homePageDemos';
+import { framework, skin } from '@/stores/homePageDemos';
 import ClientCode from '../Code/ClientCode';
 
-function generateHTMLCode(skin: Skin, media: Media): string {
+function generateHTMLCode(skin: Skin): string {
   const skinTag = `${skin}-skin`;
-  const mediaTag = media;
-  const videoExtension = media === 'hls-video' ? 'm3u8' : 'mp4';
 
   return `<video-provider>
   <${skinTag}>
-    <${mediaTag} src="https://example.com/video.${videoExtension}"></${mediaTag}>
+    <video src="https://example.com/video.mp4"></video>
   </${skinTag}>
 </video-provider>`;
 }
 
-function generateReactCode(skin: Skin, media: Media): string {
+function generateReactCode(skin: Skin): string {
   const skinComponent = skin === 'frosted' ? 'FrostedSkin' : 'MinimalSkin';
-  const mediaComponent = media === 'video' ? 'Video' : 'HLSVideo';
   const skinImport = skin === 'frosted' ? 'frosted' : 'minimal';
-  const videoExtension = media === 'hls-video' ? 'm3u8' : 'mp4';
 
-  return `import { VideoProvider, ${mediaComponent} } from '@videojs/react';
+  return `import { VideoProvider, Video } from '@videojs/react';
 import { ${skinComponent} } from '@videojs/react/skins/${skinImport}';
 
 export const VideoPlayer = () => {
   return (
     <VideoProvider>
       <${skinComponent}>
-        <${mediaComponent} src="https://example.com/video.${videoExtension}" />
+        <Video src="https://example.com/video.mp4" />
       </${skinComponent}>
     </VideoProvider>
   );
 };`;
 }
 
-function generateCSS(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
-}
-
-function generateJS(_skin: Skin, _media: Media): string {
-  return 'Coming soon';
+function generateJS(_skin: Skin): string {
+  return `import '@videojs/html/skins/frosted';`;
 }
 
 export default function BaseDemo({ className }: { className?: string }) {
   const $framework = useStore(framework);
   const $skin = useStore(skin);
-  const $media = useStore(media);
 
   if ($framework === 'html') {
     return (
       <TabsRoot
         id="base-html"
         aria-label="HTML implementation"
-        titles={{ html: 'HTML', css: 'CSS', javascript: 'JavaScript' }}
+        titles={{ html: 'HTML', javascript: 'JavaScript' }}
         className={className}
         maxWidth={false}
       >
         <TabsPanel tabsId="base-html" value="html">
-          <ClientCode code={generateHTMLCode($skin, $media)} lang="html" />
-        </TabsPanel>
-        <TabsPanel tabsId="base-html" value="css">
-          <ClientCode code={generateCSS($skin, $media)} lang="css" />
+          <ClientCode code={generateHTMLCode($skin)} lang="html" />
         </TabsPanel>
         <TabsPanel tabsId="base-html" value="javascript">
-          <ClientCode code={generateJS($skin, $media)} lang="javascript" />
+          <ClientCode code={generateJS($skin)} lang="javascript" />
         </TabsPanel>
       </TabsRoot>
     );
@@ -80,7 +68,7 @@ export default function BaseDemo({ className }: { className?: string }) {
       maxWidth={false}
     >
       <TabsPanel tabsId="base-react" value="react">
-        <ClientCode code={generateReactCode($skin, $media)} lang="tsx" />
+        <ClientCode code={generateReactCode($skin)} lang="tsx" />
       </TabsPanel>
     </TabsRoot>
   );

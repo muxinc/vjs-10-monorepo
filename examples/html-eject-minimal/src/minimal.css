@@ -1,0 +1,352 @@
+media-container * {
+  box-sizing: border-box;
+}
+
+media-container {
+  position: relative;
+  isolation: isolate;
+  container: root / inline-size;
+  overflow: clip;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  border-radius: inherit;
+  background: oklab(0 0 0);
+}
+media-container::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 10;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px oklab(0 0 0 / 0.2);
+}
+@media (prefers-color-scheme: dark) {
+  media-container::after {
+    box-shadow: inset 0 0 0 1px oklab(1 0 0 / 0.2);
+  }
+}
+
+/* Fullscreen */
+media-container:fullscreen {
+  border-radius: 0;
+}
+
+media-container > ::slotted([slot='media']),
+media-container > video,
+media-container > audio {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Media Container UI Overlay Styling */
+media-container > .overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: start;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: linear-gradient(to top, oklab(0 0 0 / 0.7), oklab(0 0 0 / 0.5) 7.5rem, rgba(0, 0, 0, 0));
+  transform: translateY(100%);
+  transition-property: transform, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+  transition-delay: 500ms;
+  opacity: 0;
+}
+media-container:hover > .overlay,
+media-container:has([data-paused]) > .overlay,
+media-container:has([aria-expanded='true']) > .overlay {
+  opacity: 1;
+  transform: translateY(0);
+  transition-duration: 100ms;
+  transition-delay: 0ms;
+}
+
+/* Media Control Bar UI/Styles */
+.control-bar {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  padding: 2.5rem 0.75rem 0.75rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  will-change: transform, filter, opacity;
+  transform: translateY(100%);
+  opacity: 0;
+  filter: blur(8px);
+  transition-property: transform, filter, opacity;
+  transition-delay: 500ms;
+  transition-duration: 300ms;
+  transition-timing-function: ease-out;
+  color: oklab(1 0 0);
+}
+media-container:hover > .control-bar,
+media-container:has([data-paused]) > .control-bar,
+media-container:has([aria-expanded='true']) > .control-bar {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+  transition-delay: 0ms;
+  transition-duration: 100ms;
+}
+
+/* Time Display Styling */
+.time-display-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.duration-display {
+  display: contents;
+  color: oklab(1 0 0 / 0.5);
+}
+media-current-time-display,
+media-duration-display {
+  text-shadow: 0 1px 0 oklab(0 0 0 / 0.2);
+  font-variant-numeric: tabular-nums;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* Generic Media Button Styling */
+.button {
+  display: grid;
+  flex-shrink: 0;
+  padding: 0.625rem;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 0.375rem;
+  color: oklab(1 0 0);
+  user-select: none;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition-property: background-color, color, outline-offset;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+.button:hover,
+.button:focus-visible,
+.button[aria-expanded='true'] {
+  color: oklab(1 0 0 / 0.8);
+  text-decoration: none;
+}
+.button:focus-visible {
+  outline-color: oklab(1 0 0);
+  outline-offset: 2px;
+}
+.button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.button .icon {
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 1px 0 oklab(0 0 0 / 0.4));
+}
+
+/* Media Play Button UI/Styles */
+media-play-button .icon {
+  opacity: 0;
+  transition: opacity 150ms linear;
+}
+
+media-play-button:not([data-paused]) .pause-icon,
+media-play-button[data-paused] .play-icon {
+  opacity: 1;
+}
+
+/* Media Fullscreen Button UI/Styles */
+media-fullscreen-button .icon {
+  display: none;
+}
+media-fullscreen-button:not([data-fullscreen]) .fullscreen-enter-icon,
+media-fullscreen-button[data-fullscreen] .fullscreen-exit-icon {
+  display: inline;
+}
+
+/* One way to define the "default visible" icon (CJP) */
+media-mute-button .icon {
+  display: none;
+}
+media-mute-button:not([data-volume-level]) .volume-low-icon,
+media-mute-button[data-volume-level='high'] .volume-high-icon,
+media-mute-button[data-volume-level='low'] .volume-low-icon,
+media-mute-button[data-volume-level='medium'] .volume-low-icon,
+media-mute-button[data-volume-level='off'] .volume-off-icon {
+  display: inline;
+}
+
+/* TimeSlider Component Styles */
+.slider {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: calc(infinity * 1px);
+  outline: none;
+}
+
+/* Horizontal orientation styles */
+.slider[data-orientation='horizontal'] {
+  min-width: 5rem;
+  width: 100%;
+  height: 1.25rem;
+}
+
+/* Vertical orientation styles */
+.slider[data-orientation='vertical'] {
+  height: 4.5rem;
+  width: 1.25rem;
+}
+
+.slider-track {
+  position: relative;
+  isolation: isolate;
+  background-color: oklab(1 0 0 / 0.2);
+  border-radius: inherit;
+  overflow: hidden;
+  user-select: none;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: outline-offset 150ms ease-out;
+  box-shadow: 0 0 0 1px oklab(0 0 0 / 0.05);
+}
+
+/* Horizontal track styles */
+.slider-track[data-orientation='horizontal'] {
+  width: 100%;
+  height: 0.1875rem;
+}
+
+/* Vertical track styles */
+.slider-track[data-orientation='vertical'] {
+  width: 0.1875rem;
+  height: 100%;
+}
+
+.slider:focus-visible .slider-track {
+  outline-color: oklab(1 0 0);
+  outline-offset: 6px;
+}
+
+.slider-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: oklab(1 0 0);
+  border-radius: calc(infinity * 1px);
+  user-select: none;
+  z-index: 10;
+  box-shadow:
+    0 0 0 1px oklab(0 0 0 / 0.1),
+    0 1px 3px 0 oklab(0 0 0 / 0.15),
+    0 1px 2px -1px oklab(0 0 0 / 0.15);
+  opacity: 0;
+  scale: 0.7;
+  transform-origin: center;
+  transition-property: opacity, scale;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+.slider:hover .slider-thumb,
+.slider:focus-within .slider-thumb {
+  opacity: 1;
+  scale: 1;
+}
+.slider-track[data-orientation='horizontal'] .slider-thumb {
+  cursor: ew-resize;
+}
+.slider-track[data-orientation='vertical'] .slider-thumb {
+  cursor: ns-resize;
+}
+
+.slider-pointer {
+  display: none;
+}
+
+.slider-progress {
+  background-color: oklab(1 0 0);
+  border-radius: inherit;
+}
+
+media-preview-time-display {
+  font-variant-numeric: tabular-nums;
+}
+
+.popup-animation {
+  transition-property: transform, scale, opacity, filter;
+  transition-duration: 200ms;
+  transform: scale(1);
+  transform-origin: bottom;
+  opacity: 1;
+  filter: blur(0px);
+}
+.popup-animation[data-starting-style],
+.popup-animation[data-ending-style] {
+  transform: scale(0);
+  opacity: 0;
+  filter: blur(8px);
+}
+.popup-animation[data-instant] {
+  transition-duration: 0ms;
+}
+
+media-popover {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0.75rem 0.25rem;
+  border-radius: calc(infinity * 1px);
+}
+
+/* Tooltip Component Styles */
+media-tooltip-popup {
+  color: oklab(1 0 0);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  background-color: oklab(1 0 0 / 0.1);
+  backdrop-filter: blur(64px) brightness(0.9) saturate(1.5);
+  box-shadow:
+    0 4px 6px -1px oklab(0 0 0 / 0.1),
+    0 2px 4px -2px oklab(0 0 0 / 0.1);
+}
+@media (prefers-reduced-transparency: reduce) {
+  media-tooltip-popup {
+    background-color: oklab(0 0 0 / 0.7);
+  }
+}
+@media (prefers-contrast: more) {
+  media-tooltip-popup {
+    background-color: oklab(0 0 0 / 0.9);
+  }
+}
+
+.tooltip {
+  display: none;
+  white-space: nowrap;
+}
+
+media-tooltip-popup[data-paused] .play-tooltip,
+media-tooltip-popup:not([data-paused]) .pause-tooltip {
+  display: block;
+}
+
+media-tooltip-popup[data-fullscreen] .fullscreen-exit-tooltip,
+media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
+  display: block;
+}
