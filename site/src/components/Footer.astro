@@ -9,12 +9,10 @@ type NavLink = {
   href: string;
   label: string;
   external?: boolean;
-  prefetch?: boolean;
 };
 const navLinks: NavLink[] = [
   { href: '/', label: 'Home' },
-  // docs require a redirect, so, let's prefetch them to hide that latency
-  { href: '/docs', label: 'Docs', prefetch: true },
+  { href: '/docs', label: 'Docs' },
   // { href: '/blog', label: 'Blog' },
   { href: '/privacy', label: 'Privacy' },
 ];
@@ -31,11 +29,7 @@ const { class: className } = Astro.props;
       <div class="flex justify-center sm:justify-start">
         {
           navLinks.map((link) => (
-            <a
-              href={link.href}
-              class="intent:underline px-3 py-2 inline-flex gap-1 items-center"
-              data-astro-prefetch={link.prefetch ? '' : undefined}
-            >
+            <a href={link.href} class="intent:underline px-3 py-2 inline-flex gap-1 items-center">
               {link.label} {link.external ? <ArrowUpRight size="1em" /> : null}
             </a>
           ))

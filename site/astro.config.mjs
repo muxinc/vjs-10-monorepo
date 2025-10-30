@@ -28,7 +28,9 @@ export default defineConfig({
       },
     }),
   ],
-  prefetch: true,
+  prefetch: {
+    prefetchAll: true,
+  },
 
   markdown: {
     // a lot of these are defaults but I'm setting them just to be explicit

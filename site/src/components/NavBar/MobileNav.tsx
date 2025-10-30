@@ -1,8 +1,14 @@
-import type { NavLink } from './NavBar.astro';
 import { Dialog } from '@base-ui-components/react/dialog';
 import clsx from 'clsx';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { DISCORD_INVITE_URL, GITHUB_REPO_URL } from '@/consts';
+
+interface NavLink {
+  href: string;
+  label: string;
+  matchPath: string | null;
+  external?: boolean;
+}
 
 export interface MobileNavProps {
   navLinks: NavLink[];
@@ -52,7 +58,6 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
                 href={link.href}
                 className={clsx('text-lg px-6 py-3', link.matchPath && currentPath.startsWith(link.matchPath) ? 'underline' : 'intent:underline')}
                 aria-current={link.matchPath && currentPath.startsWith(link.matchPath) ? 'page' : undefined}
-                data-astro-prefetch={link.prefetch ? '' : undefined}
               >
                 {link.label}
                 {' '}
