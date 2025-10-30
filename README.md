@@ -11,9 +11,9 @@ Modern, modular, and composable media player framework for Web and React.
 Thanks for checking out the project! It's in its early stages and currently a mix of protoyping
 and early structure pointing in the direction we want to go with Video.js v10 (so be kind 🙏).
 
+- Read our early [architecture goals](./docs/architecture.md).
 - Read the [v10 discussion topic](https://github.com/videojs/video.js/discussions/9035)
 - Watch [Heff's recent presentation](https://players.brightcove.net/3737230800001/eyILA5XG7K_default/index.html?videoId=6379311036112)
-- More roadmap and architecture docs to come...
 
 ## Documentation
 
