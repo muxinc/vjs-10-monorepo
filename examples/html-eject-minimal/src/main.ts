@@ -1,7 +1,8 @@
 import './minimal.css';
 import '@videojs/html/icons';
-import '@videojs/html/define/media-container';
+// be sure to import media-provider first
 import '@videojs/html/define/media-provider';
+import '@videojs/html/define/media-container';
 import '@videojs/html/define/media-play-button';
 import '@videojs/html/define/media-mute-button';
 import '@videojs/html/define/media-volume-slider';

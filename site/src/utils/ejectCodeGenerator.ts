@@ -974,6 +974,7 @@ export function generateHTMLMarkup(skin: Skin): string {
     return `<media-provider>
   <media-container>
     <video
+      slot="media"
       src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
       playsinline
       poster="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.webp"
@@ -1072,6 +1073,7 @@ export function generateHTMLMarkup(skin: Skin): string {
     return `<media-provider>
   <media-container>
     <video
+      slot="media"
       src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
       playsinline
       poster="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.webp"
@@ -1904,8 +1906,9 @@ media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
 export function generateHTMLJS(skin: Skin): string {
   return `import './${skin}.css';
 import '@videojs/html/icons';
-import '@videojs/html/define/media-container';
+// be sure to import media-provider first
 import '@videojs/html/define/media-provider';
+import '@videojs/html/define/media-container';
 import '@videojs/html/define/media-play-button';
 import '@videojs/html/define/media-mute-button';
 import '@videojs/html/define/media-volume-slider';
