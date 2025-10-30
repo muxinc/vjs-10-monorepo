@@ -1,185 +1,130 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for **Claude Code** (claude.ai/code) and other AI agents working with this repository.
 
-## Architecture Overview
+## Overview
 
-This is a Video.js 10 monorepo organized by platform/runtime with a clear dependency hierarchy:
+**Video.js 10** is a **Turborepo‑managed monorepo**, organized by runtime and platform.
+Refer to **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** for setup, development, and lint/test instructions.
 
-### Package Structure
+## Package Layout
 
-- **Core package** (`packages/core`) - Runtime-agnostic packages that form the foundation
-- **HTML package** (`packages/html`) - DOM/Browser-specific implementation
-- **React package** (`packages/react`) - React-specific implementation
-- **React Native package** (`packages/react-native`) - React Native implementation
-- **Examples** (`examples/*`) - Demo applications for different platforms
-- **Website** (`site/`) - Astro-based website, including documentation and blog
+| Package Path            | Purpose                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `packages/core`         | Core runtime‑agnostic logic and state.               |
+| `packages/html`         | DOM/Browser‑specific implementations.                |
+| `packages/react`        | React package—adapts core state to React components. |
+| `packages/react-native` | React Native integration layer.                      |
+| `packages/utils`        | Shared utilities.                                    |
+| `examples/*`            | Demo apps for various runtimes.                      |
+| `site/`                 | Astro‑based docs and website.                        |
 
 ### Dependency Hierarchy
 
-- Core packages have no dependencies on other vjs-10 packages
-- HTML packages depend only on core packages
-- React packages depend only on core packages (with React peer deps)
-- React Native packages depend only on core packages (with React Native peer deps)
+- Core → (no internal deps)
+- HTML / React / React‑Native → depend only on Core
+- Prevents circular dependencies and maximizes reusability.
 
-This prevents circular dependencies and ensures maximum reusability.
+## Workspace
 
-## Common Development Commands
+Uses **PNPM workspaces** + **Turbo** for task orchestration.
+Internal deps are linked with `workspace:*`.
 
-### Monorepo Commands (run from root)
-
-```bash
-# Install all dependencies
-pnpm install
-
-# Build all packages
-pnpm build
-
-# Build only library packages (excludes examples)
-pnpm build:packages
-
-# Run tests across all packages
-pnpm test
-
-# Type checking across all packages
-pnpm typecheck
-
-# Lint all packages
-pnpm lint
-
-# Clean all packages
-pnpm clean
-```
-
-### Development Servers
+### Common Root Commands
 
 ```bash
-# Run HTML demo
-pnpm dev:html
-
-# Run React demo
-pnpm dev:react
-
-# Run website
-pnpm dev:site
-
-# Run all dev servers in parallel
-pnpm dev
+pnpm install        # Install workspace deps
+pnpm build          # Build all packages/apps
+pnpm build:packages # Build library packages (no app)
+pnpm dev            # Run all demos/sites in parallel
+pnpm test           # Run tests across all packages
+pnpm lint           # Lint all workspace packages
+pnpm clean          # Remove all dist outputs
 ```
 
-### Working with Specific Packages
+To build or test a specific package:
 
 ```bash
-# Build specific package
-pnpm --filter @videojs/core build
-
-# Run website independently
-cd site
-pnpm dev
-
-# Work in specific package directory
-cd packages/core
-pnpm build
+pnpm -F core build
+pnpm -F react test
 ```
 
-## TypeScript Configuration
+## TypeScript
 
-The monorepo uses TypeScript project references for efficient compilation:
+- Uses **project references** for incremental builds.
+- Strict mode enabled (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`).
+- Common base config: `tsconfig.base.json`.
+- `@videojs/*` path mappings resolve to each package’s `src` directory.
 
-- `tsconfig.base.json` - Shared compiler options with strict settings
-- `tsconfig.json` - Root config with path mappings and project references
-- Each package has its own `tsconfig.json` extending the base
+## Git & Commits
 
-Key TypeScript features:
-
-- Strict mode enabled with additional checks (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
-- Path mappings for all `@videojs/*` packages point to source directories
-- Composite builds for incremental compilation
-
-## Package Development
-
-### Individual Package Scripts
-
-Most packages follow this pattern:
+Follow **Conventional Commits** for automation compatibility:
 
 ```bash
-npm run build    # Compile TypeScript (tsc)
-npm run test     # Currently placeholder "No tests yet"
-npm run clean    # Remove dist directory
+<type>(<scope>): <description>
 ```
 
-### Package Types
+Examples:
 
-- **Core packages** - Pure TypeScript, no external dependencies
-- **HTML packages** - May include DOM-specific code, depend on core packages
-- **React packages** - Include React peer dependencies, depend on core packages
-- **React Native packages** - Include React Native peer dependencies (react-native-video, react-native-svg)
-
-## Workspace Management
-
-This uses pnpm workspaces with the following workspace patterns:
-
-- `packages/core` - Core library package
-- `packages/html` - HTML/DOM package
-- `packages/react` - React package
-- `packages/react-native` - React Native package
-- `examples/*` - Demo applications
-- `site` - Website (Astro)
-
-Internal dependencies use `workspace:*` protocol for linking between packages.
-
-### Website
-
-The `site/` directory contains an Astro-based website with its own dependencies and build process. It's integrated into the monorepo workspace but can be developed independently:
-
-```bash
-# From root - runs via Turbo
-pnpm dev:site
-
-# From site directory - runs directly
-cd site && pnpm dev
-```
-
-The website uses Astro with MDX support for content authoring.
-
-## Git Workflow
-
-This project uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit messages.
-
-### Commit Message Format
-
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-### Common Types
-
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation changes
-- `style:` - Code style changes (formatting, semicolons, etc.)
-- `refactor:` - Code refactoring without feature changes
-- `test:` - Adding or updating tests
-- `chore:` - Maintenance tasks, dependency updates
-
-### Scope Examples
-
-Use package names or areas of the codebase:
-
+- `chore(root): update typescript to 5.9.2`
 - `feat(core): add pause state management`
-- `fix(icons): resolve SVG rendering issue`
-- `docs(readme): update installation instructions`
-- `chore(deps): update typescript to 5.4.0`
+- `fix(html): correct fullscreen API handling`
 
-### Breaking Changes
-
-For breaking changes, add `!` after the type/scope:
+Breaking changes use `!`:
 
 ```
-feat!: remove deprecated playback API
-feat(media-store)!: change state interface structure
+feat(core)!: remove deprecated playback API
 ```
+
+## Guidelines
+
+When generating or editing code in this repository, follow these rules to ensure safe, high‑quality contributions:
+
+1. **Edit Precisely**
+   - Modify only the relevant lines or files.
+   - Never overwrite large sections or regenerate entire files.
+   - Preserve comments, type signatures, and existing code style.
+
+2. **Match Existing Conventions**
+   - Follow the repo’s Prettier, ESLint, and TypeScript settings automatically.
+   - Use consistent naming (camelCase for variables, PascalCase for components).
+   - Prefer imports ordered and sorted as per `@antfu/eslint-config`.
+
+3. **Type Safety First**
+   - Never remove or bypass TypeScript types.
+   - Avoid `any`; use `unknown` and proper narrowing if needed.
+   - Always ensure edits pass `pnpm typecheck`.
+
+4. **Framework‑Agnostic Mindset**
+   - Core modules must remain DOM‑ and framework‑independent.
+   - Place platform‑specific logic in the appropriate adapter (HTML, React, RN).
+
+5. **A11y, Styling & Performance**
+   - Maintain accessibility: ARIA roles, keyboard interactions, focus management.
+   - Use data‑attributes and CSS variables for style hooks—no inline animation JS.
+   - Ensure logic runs at 60 FPS; prefer CSS transitions over manual DOM mutations.
+
+6. **Testing Discipline**
+   - Write or update matching tests for each new or modified behavior.
+   - Follow the pattern: `act → assert`.
+   - Use Vitest and Testing Library idioms.
+
+7. **Commit Scope**
+   - Use semantic commit messages (enforced by `commitlint`).
+   - One focused change per commit—no mixed updates.
+
+8. **Before You Push**
+
+   ```bash
+   pnpm lint
+   pnpm test
+   pnpm typecheck
+   pnpm build:packages
+   ```
+
+   All must pass cleanly before creating a PR.
+
+## Notes
+
+- The Astro‑based docs site is standalone but integrated via Turborepo pipelines.
+- For contribution, testing, and PR flow details, see [`CONTRIBUTING.md`](./CONTRIBUTING.md).
