@@ -6,7 +6,7 @@ import { currentTimeDisplayStateDefinition } from '@videojs/core/store';
 import { formatDisplayTime } from '@videojs/utils';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-export class CurrentTimeDisplayBase extends HTMLElement {
+export class CurrentTimeDisplay extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
@@ -24,7 +24,7 @@ export class CurrentTimeDisplayBase extends HTMLElement {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow((this.constructor as typeof CurrentTimeDisplayBase).shadowRootOptions);
+      this.attachShadow((this.constructor as typeof CurrentTimeDisplay).shadowRootOptions);
     }
   }
 
@@ -81,16 +81,9 @@ export const getCurrentTimeDisplayProps: PropsHook<{
   return baseProps;
 };
 
-export const CurrentTimeDisplay: ConnectedComponentConstructor<CurrentTimeDisplayState> = toConnectedHTMLComponent(
-  CurrentTimeDisplayBase,
+export const CurrentTimeDisplayElement: ConnectedComponentConstructor<CurrentTimeDisplayState> = toConnectedHTMLComponent(
+  CurrentTimeDisplay,
   useCurrentTimeDisplayState,
   getCurrentTimeDisplayProps,
   'CurrentTimeDisplay',
 );
-
-// Register the custom element
-if (!globalThis.customElements.get('media-current-time-display')) {
-  globalThis.customElements.define('media-current-time-display', CurrentTimeDisplay);
-}
-
-export default CurrentTimeDisplay;

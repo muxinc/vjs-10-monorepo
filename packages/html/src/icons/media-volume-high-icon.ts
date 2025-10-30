@@ -1,5 +1,6 @@
 import { SVG_ICONS } from '@videojs/icons';
 
+import { defineCustomElement } from '@/utils/custom-element';
 import { MediaChromeIcon } from './media-chrome-icon';
 
 export function getTemplateHTML() {
@@ -14,8 +15,8 @@ export function getTemplateHTML() {
   `;
 }
 
-export class MediaVolumeHighIcon extends MediaChromeIcon {
+export class MediaVolumeHighIconElement extends MediaChromeIcon {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('media-volume-high-icon', MediaVolumeHighIcon);
+defineCustomElement('media-volume-high-icon', MediaVolumeHighIconElement);

@@ -1,4 +1,4 @@
-import '@videojs/html';
+import '@videojs/html/define/media-fullscreen-button';
 import '@videojs/html/icons';
 
 // The web components will automatically register themselves

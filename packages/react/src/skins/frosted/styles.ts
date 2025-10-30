@@ -123,7 +123,7 @@ const styles: FrostedSkinStyles = {
   TimeControls: cn('vjs:flex-1 vjs:flex vjs:items-center vjs:gap-3 vjs:px-1.5'),
   TimeDisplay: cn('vjs:tabular-nums vjs:text-shadow-2xs/25'),
   SliderRoot: cn(
-    'vjs:group/slider-root vjs:outline-0 vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:relative vjs:rounded-full',
+    'vjs:group/slider vjs:outline-0 vjs:flex vjs:items-center vjs:justify-center vjs:flex-1 vjs:relative vjs:rounded-full',
     'vjs:[&[data-orientation="horizontal"]]:h-5 vjs:[&[data-orientation="horizontal"]]:min-w-20',
     'vjs:[&[data-orientation="vertical"]]:w-5 vjs:[&[data-orientation="vertical"]]:h-20',
   ),
@@ -131,15 +131,15 @@ const styles: FrostedSkinStyles = {
     'vjs:relative vjs:select-none vjs:transition-[outline-offset] vjs:rounded-[inherit] vjs:bg-white/20 vjs:ring-1 vjs:ring-black/5',
     'vjs:[&[data-orientation="horizontal"]]:w-full vjs:[&[data-orientation="horizontal"]]:h-1',
     'vjs:[&[data-orientation="vertical"]]:w-1',
-    'vjs:-outline-offset-2 vjs:group-focus-visible/slider-root:outline-2 vjs:group-focus-visible/slider-root:outline-offset-6 vjs:group-focus-visible/slider-root:outline-blue-500',
+    'vjs:-outline-offset-2 vjs:group-focus-visible/slider:outline-2 vjs:group-focus-visible/slider:outline-offset-6 vjs:group-focus-visible/slider:outline-blue-500',
   ),
   SliderProgress: cn('vjs:bg-white vjs:rounded-[inherit]'),
   // TODO: Work out what we want to do here.
   SliderPointer: cn('vjs:bg-white/20 vjs:rounded-[inherit]'),
   SliderThumb: cn(
     'vjs:bg-white vjs:z-10 vjs:select-none vjs:ring vjs:ring-black/10 vjs:rounded-full vjs:shadow-sm vjs:shadow-black/15 vjs:opacity-0 vjs:transition-[opacity,height,width] vjs:ease-out',
-    'vjs:group-hover/slider-root:opacity-100 vjs:group-focus-within/slider-root:opacity-100',
-    'vjs:size-2.5 vjs:active:size-3 vjs:group-active/slider-root:size-3',
+    'vjs:group-hover/slider:opacity-100 vjs:group-focus-within/slider:opacity-100',
+    'vjs:size-2.5 vjs:active:size-3 vjs:group-active/slider:size-3',
     'vjs:[&[data-orientation="horizontal"]]:hover:cursor-ew-resize',
     'vjs:[&[data-orientation="vertical"]]:hover:cursor-ns-resize',
   ),

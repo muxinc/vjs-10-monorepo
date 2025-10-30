@@ -8,7 +8,7 @@ import { namedNodeMapToObject } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
 export function getTemplateHTML(
-  this: typeof DurationDisplayBase,
+  this: typeof DurationDisplay,
   _attrs: Record<string, string>,
   _props: Record<string, any> = {},
 ) {
@@ -17,7 +17,7 @@ export function getTemplateHTML(
   `;
 }
 
-export class DurationDisplayBase extends HTMLElement {
+export class DurationDisplay extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
@@ -34,10 +34,10 @@ export class DurationDisplayBase extends HTMLElement {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow((this.constructor as typeof DurationDisplayBase).shadowRootOptions);
+      this.attachShadow((this.constructor as typeof DurationDisplay).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-      const html = (this.constructor as typeof DurationDisplayBase).getTemplateHTML(attrs);
+      const html = (this.constructor as typeof DurationDisplay).getTemplateHTML(attrs);
       const shadowRoot = this.shadowRoot as unknown as ShadowRoot;
       shadowRoot.setHTMLUnsafe ? shadowRoot.setHTMLUnsafe(html) : (shadowRoot.innerHTML = html);
     }
@@ -75,16 +75,9 @@ export const getDurationDisplayProps: PropsHook<{
   return baseProps;
 };
 
-export const DurationDisplay: ConnectedComponentConstructor<DurationDisplayState> = toConnectedHTMLComponent(
-  DurationDisplayBase,
+export const DurationDisplayElement: ConnectedComponentConstructor<DurationDisplayState> = toConnectedHTMLComponent(
+  DurationDisplay,
   useDurationDisplayState,
   getDurationDisplayProps,
   'DurationDisplay',
 );
-
-// Register the custom element
-if (!globalThis.customElements.get('media-duration-display')) {
-  globalThis.customElements.define('media-duration-display', DurationDisplay);
-}
-
-export default DurationDisplay;

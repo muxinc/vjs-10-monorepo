@@ -1,9 +1,9 @@
-export * as MediaFullscreenEnterAltIcon from './media-fullscreen-enter-alt-icon';
-export * as MediaFullscreenEnterIcon from './media-fullscreen-enter-icon';
-export * as MediaFullscreenExitAltIcon from './media-fullscreen-exit-alt-icon';
-export * as MediaFullscreenExitIcon from './media-fullscreen-exit-icon';
-export * as MediaPauseIcon from './media-pause-icon';
-export * as MediaPlayIcon from './media-play-icon';
-export * as MediaVolumeHighIcon from './media-volume-high-icon';
-export * as MediaVolumeLowIcon from './media-volume-low-icon';
-export * as MediaVolumeOffIcon from './media-volume-off-icon';
+import './media-fullscreen-enter-alt-icon';
+import './media-fullscreen-enter-icon';
+import './media-fullscreen-exit-alt-icon';
+import './media-fullscreen-exit-icon';
+import './media-pause-icon';
+import './media-play-icon';
+import './media-volume-high-icon';
+import './media-volume-low-icon';
+import './media-volume-off-icon';

@@ -1,23 +1,24 @@
-import { MediaSkin } from '@/media/media-skin';
+import { MediaSkinElement } from '@/media/media-skin';
+import { defineCustomElement } from '@/utils/custom-element';
 import styles from './styles.css';
-import '@/media/media-container';
-import '@/media/media-provider';
-import '@/components/media-play-button';
-import '@/components/media-mute-button';
-import '@/components/media-volume-slider';
-import '@/components/media-time-slider';
-import '@/components/media-fullscreen-button';
-import '@/components/media-duration-display';
-import '@/components/media-current-time-display';
-import '@/components/media-preview-time-display';
-import '@/components/media-popover';
-import '@/components/media-tooltip';
+import '@/define/media-container';
+import '@/define/media-provider';
+import '@/define/media-play-button';
+import '@/define/media-mute-button';
+import '@/define/media-volume-slider';
+import '@/define/media-time-slider';
+import '@/define/media-fullscreen-button';
+import '@/define/media-duration-display';
+import '@/define/media-current-time-display';
+import '@/define/media-preview-time-display';
+import '@/define/media-popover';
 
+import '@/define/media-tooltip';
 import '@/icons';
 
 export function getTemplateHTML() {
   return /* html */`
-    ${MediaSkin.getTemplateHTML()}
+    ${MediaSkinElement.getTemplateHTML()}
     <style>${styles}</style>
 
     <media-container>
@@ -27,7 +28,7 @@ export function getTemplateHTML() {
 
       <div class="control-bar">
         <!-- NOTE: We can decide if we further want to provide a further, "themed" media-play-button that comes with baked in default styles and icons. (CJP) -->
-        <media-tooltip-root delay="500" close-delay="0">
+        <media-tooltip delay="500" close-delay="0">
           <media-tooltip-trigger>
             <media-play-button class="button">
               <media-play-icon class="icon play-icon"></media-play-icon>
@@ -42,7 +43,7 @@ export function getTemplateHTML() {
               </media-tooltip-popup>
             </media-tooltip-positioner>
           </media-tooltip-portal>
-        </media-tooltip-root>
+        </media-tooltip>
 
         <div class="time-display-group">
           <!-- Use the show-remaining attribute to show count down/remaining time -->
@@ -54,24 +55,24 @@ export function getTemplateHTML() {
           </span>
         </div>
 
-        <media-tooltip-root track-cursor-axis="x">
+        <media-tooltip track-cursor-axis="x">
           <media-tooltip-trigger>
-            <media-time-slider-root class="slider-root">
+            <media-time-slider class="slider">
               <media-time-slider-track class="slider-track">
                 <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
                 <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
               </media-time-slider-track>
               <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
-            </media-time-slider-root>
+            </media-time-slider>
           </media-tooltip-trigger>
           <media-tooltip-portal>
             <media-tooltip-positioner side="top" side-offset="12" collision-padding="12">
               <media-tooltip-popup class="popup-animation">
-                <preview-time-display></preview-time-display>
+                <media-preview-time-display></media-preview-time-display>
               </media-tooltip-popup>
             </media-tooltip-positioner>
           </media-tooltip-portal>
-        </media-tooltip-root>
+        </media-tooltip>
 
         <div class="button-group">
           <media-mute-button popovertarget="volume-slider-popover" class="button">
@@ -90,15 +91,15 @@ export function getTemplateHTML() {
             side-offset="2"
             collision-padding="12"
           >
-            <media-volume-slider-root class="slider-root" orientation="vertical">
+            <media-volume-slider class="slider" orientation="vertical">
               <media-volume-slider-track class="slider-track">
-                <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
+                <media-volume-slider-indicator class="slider-progress"></media-volume-slider-indicator>
               </media-volume-slider-track>
               <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
-            </media-volume-slider-root>
+            </media-volume-slider>
           </media-popover>
 
-          <media-tooltip-root delay="500" close-delay="0">
+          <media-tooltip delay="500" close-delay="0">
             <media-tooltip-trigger>
               <media-fullscreen-button class="button">
                 <media-fullscreen-enter-alt-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-alt-icon>
@@ -113,15 +114,15 @@ export function getTemplateHTML() {
                 </media-tooltip-popup>
               </media-tooltip-positioner>
             </media-tooltip-portal>
-          </media-tooltip-root>
+          </media-tooltip>
         </div>
       </div>
     </media-container>
   `;
 }
 
-export class MediaSkinMinimal extends MediaSkin {
+export class MediaSkinMinimalElement extends MediaSkinElement {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('media-skin-minimal', MediaSkinMinimal);
+defineCustomElement('media-skin-minimal', MediaSkinMinimalElement);

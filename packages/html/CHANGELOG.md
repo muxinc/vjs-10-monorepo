@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0-preview.4](https://github.com/videojs/v10/compare/@videojs/html@0.1.0-preview.3...@videojs/html@0.1.0-preview.4) (2025-10-30)
+
+
+### Features
+
+* **html:** add element registrations ([eaaa03c](https://github.com/videojs/v10/commit/eaaa03c284f9fc3c9069bedb74d95c8a951c1b56))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.4
+    * @videojs/icons bumped to 0.1.0-preview.4
+    * @videojs/utils bumped to 0.1.0-preview.4
+
 ## [0.1.0-preview.3](https://github.com/videojs/v10/compare/@videojs/html@0.1.0-preview.2...@videojs/html@0.1.0-preview.3) (2025-10-29)
 
 

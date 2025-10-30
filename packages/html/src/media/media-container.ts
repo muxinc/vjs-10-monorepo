@@ -13,9 +13,9 @@ export function getTemplateHTML() {
   `;
 }
 
-const CustomElementConsumer: Constructor<CustomElement> = ConsumerMixin(HTMLElement);
+const CustomElementConsumer: Constructor<CustomElement & HTMLElement> = ConsumerMixin(HTMLElement);
 
-export class MediaContainer extends CustomElementConsumer {
+export class MediaContainerElement extends CustomElementConsumer {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML: () => string = getTemplateHTML;
 
@@ -35,8 +35,8 @@ export class MediaContainer extends CustomElementConsumer {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow((this.constructor as typeof MediaContainer).shadowRootOptions);
-      this.shadowRoot!.innerHTML = (this.constructor as typeof MediaContainer).getTemplateHTML();
+      this.attachShadow((this.constructor as typeof MediaContainerElement).shadowRootOptions);
+      this.shadowRoot!.innerHTML = (this.constructor as typeof MediaContainerElement).getTemplateHTML();
     }
 
     this._mediaSlot = this.shadowRoot!.querySelector('slot[name=media]') as HTMLSlotElement;
@@ -91,9 +91,4 @@ export class MediaContainer extends CustomElementConsumer {
       this._paused = state.paused ?? true;
     });
   };
-}
-
-if (!globalThis.customElements.get('media-container')) {
-  // @ts-expect-error ts(2345)
-  globalThis.customElements.define('media-container', MediaContainer);
 }

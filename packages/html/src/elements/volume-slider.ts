@@ -46,7 +46,7 @@ interface VolumeSliderRootState {
   core: CoreVolumeSlider | null;
 }
 
-export class VolumeSliderRootBase extends HTMLElement {
+export class VolumeSliderRoot extends HTMLElement {
   static readonly observedAttributes: readonly string[] = ['orientation'];
 
   _state: VolumeSliderRootState | undefined;
@@ -103,14 +103,14 @@ export class VolumeSliderRootBase extends HTMLElement {
 /**
  * VolumeSlider Track component - Track element that captures pointer events
  */
-export class VolumeSliderTrackBase extends HTMLElement {
+export class VolumeSliderTrack extends HTMLElement {
   constructor() {
     super();
   }
 
   connectedCallback(): void {
     // Set this element as the track element in the core VolumeSlider
-    const rootElement = this.closest('media-volume-slider-root') as any;
+    const rootElement = this.closest('media-volume-slider') as any;
     if (rootElement?._state?.core) {
       rootElement._state.core.setState({ _trackElement: this });
     }
@@ -132,7 +132,7 @@ export class VolumeSliderTrackBase extends HTMLElement {
 /**
  * VolumeSlider Progress component - Shows current progress
  */
-export class VolumeSliderProgressBase extends HTMLElement {
+export class VolumeSliderIndicatorElement extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -160,7 +160,7 @@ export class VolumeSliderProgressBase extends HTMLElement {
 /**
  * VolumeSlider Thumb component - Draggable thumb element
  */
-export class VolumeSliderThumbBase extends HTMLElement {
+export class VolumeSliderThumb extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -205,7 +205,7 @@ export const useVolumeSliderRootState: StateHook<{
  * VolumeSlider Track props hook
  */
 export const getVolumeSliderTrackProps: PropsHook<Record<string, never>> = (_state, element) => {
-  const rootElement = element.closest('media-volume-slider-root') as any;
+  const rootElement = element.closest('media-volume-slider') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
   };
@@ -215,7 +215,7 @@ export const getVolumeSliderTrackProps: PropsHook<Record<string, never>> = (_sta
  * VolumeSlider Progress props hook
  */
 export const getVolumeSliderProgressProps: PropsHook<Record<string, never>> = (_state, element) => {
-  const rootElement = element.closest('media-volume-slider-root') as any;
+  const rootElement = element.closest('media-volume-slider') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
   };
@@ -225,7 +225,7 @@ export const getVolumeSliderProgressProps: PropsHook<Record<string, never>> = (_
  * VolumeSlider Thumb props hook
  */
 export const getVolumeSliderThumbProps: PropsHook<Record<string, never>> = (_state, element) => {
-  const rootElement = element.closest('media-volume-slider-root') as any;
+  const rootElement = element.closest('media-volume-slider') as any;
   return {
     'data-orientation': rootElement?.orientation || 'horizontal',
   };
@@ -234,19 +234,19 @@ export const getVolumeSliderThumbProps: PropsHook<Record<string, never>> = (_sta
 /**
  * Connected VolumeSlider Root component using hook-style architecture
  */
-export const VolumeSliderRoot: ConnectedComponentConstructor<{
+export const VolumeSliderRootElement: ConnectedComponentConstructor<{
   volume: number;
   muted: boolean;
   volumeLevel: string;
   requestVolumeChange: (volume: number) => void;
   core: CoreVolumeSlider | null;
-}> = toConnectedHTMLComponent(VolumeSliderRootBase, useVolumeSliderRootState, getVolumeSliderRootProps, 'VolumeSliderRoot');
+}> = toConnectedHTMLComponent(VolumeSliderRoot, useVolumeSliderRootState, getVolumeSliderRootProps, 'VolumeSliderRoot');
 
 /**
  * Connected VolumeSlider Track component
  */
-export const VolumeSliderTrack: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeSliderTrackBase,
+export const VolumeSliderTrackElement: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderTrack,
   { keys: [], transform: () => ({}) },
   getVolumeSliderTrackProps,
   'VolumeSliderTrack',
@@ -255,8 +255,8 @@ export const VolumeSliderTrack: ConnectedComponentConstructor<any> = toConnected
 /**
  * Connected VolumeSlider Progress component
  */
-export const VolumeSliderProgress: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeSliderProgressBase,
+export const VolumeSliderProgressElement: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderIndicatorElement,
   { keys: [], transform: () => ({}) },
   getVolumeSliderProgressProps,
   'VolumeSliderProgress',
@@ -265,8 +265,8 @@ export const VolumeSliderProgress: ConnectedComponentConstructor<any> = toConnec
 /**
  * Connected VolumeSlider Thumb component
  */
-export const VolumeSliderThumb: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeSliderThumbBase,
+export const VolumeSliderThumbElement: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderThumb,
   { keys: [], transform: () => ({}) },
   getVolumeSliderThumbProps,
   'VolumeSliderThumb',
@@ -275,35 +275,17 @@ export const VolumeSliderThumb: ConnectedComponentConstructor<any> = toConnected
 /**
  * Compound VolumeSlider component object
  */
-export const VolumeSlider = Object.assign(
+export const VolumeSliderElement = Object.assign(
   {},
   {
-    Root: VolumeSliderRoot,
-    Track: VolumeSliderTrack,
-    Progress: VolumeSliderProgress,
-    Thumb: VolumeSliderThumb,
+    Root: VolumeSliderRootElement,
+    Track: VolumeSliderTrackElement,
+    Progress: VolumeSliderProgressElement,
+    Thumb: VolumeSliderThumbElement,
   },
 ) as {
-  Root: typeof VolumeSliderRoot;
-  Track: typeof VolumeSliderTrack;
-  Progress: typeof VolumeSliderProgress;
-  Thumb: typeof VolumeSliderThumb;
+  Root: typeof VolumeSliderRootElement;
+  Track: typeof VolumeSliderTrackElement;
+  Progress: typeof VolumeSliderProgressElement;
+  Thumb: typeof VolumeSliderThumbElement;
 };
-
-if (!globalThis.customElements.get('media-volume-slider-root')) {
-  globalThis.customElements.define('media-volume-slider-root', VolumeSliderRoot);
-}
-
-if (!globalThis.customElements.get('media-volume-slider-track')) {
-  globalThis.customElements.define('media-volume-slider-track', VolumeSliderTrack);
-}
-
-if (!globalThis.customElements.get('media-volume-slider-progress')) {
-  globalThis.customElements.define('media-volume-slider-progress', VolumeSliderProgress);
-}
-
-if (!globalThis.customElements.get('media-volume-slider-thumb')) {
-  globalThis.customElements.define('media-volume-slider-thumb', VolumeSliderThumb);
-}
-
-export default VolumeSlider;

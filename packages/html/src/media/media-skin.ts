@@ -15,7 +15,7 @@ export function getTemplateHTML() {
   `;
 }
 
-export class MediaSkin extends HTMLElement {
+export class MediaSkinElement extends HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML: () => string = getTemplateHTML;
 
@@ -23,12 +23,8 @@ export class MediaSkin extends HTMLElement {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow((this.constructor as typeof MediaSkin).shadowRootOptions);
-      this.shadowRoot!.innerHTML = (this.constructor as typeof MediaSkin).getTemplateHTML();
+      this.attachShadow((this.constructor as typeof MediaSkinElement).shadowRootOptions);
+      this.shadowRoot!.innerHTML = (this.constructor as typeof MediaSkinElement).getTemplateHTML();
     }
   }
-}
-
-if (!customElements.get('media-skin')) {
-  customElements.define('media-skin', MediaSkin);
 }

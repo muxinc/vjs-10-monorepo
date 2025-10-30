@@ -1,7 +1,7 @@
 {
   "name": "@videojs/html",
   "type": "module",
-  "version": "0.1.0-preview.3",
+  "version": "0.1.0-preview.4",
   "description": "HTML library for building media players",
   "license": "Apache-2.0",
   "keywords": [
@@ -32,6 +32,10 @@
     "./skins/minimal": {
       "types": "./dist/skins/minimal.d.ts",
       "default": "./dist/skins/minimal.js"
+    },
+    "./define/*": {
+      "types": "./dist/define/*.d.ts",
+      "default": "./dist/define/*.js"
     }
   },
   "main": "dist/index.js",

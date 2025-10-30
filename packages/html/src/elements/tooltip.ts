@@ -1,10 +1,10 @@
 import type { Placement } from '@floating-ui/dom';
-import type { MediaContainer } from '@/media/media-container';
+import type { MediaContainerElement } from '@/media/media-container';
 
 import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { uniqueId } from '@videojs/utils';
 
-export class MediaTooltipRoot extends HTMLElement {
+export class TooltipRootElement extends HTMLElement {
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
@@ -61,20 +61,20 @@ export class MediaTooltipRoot extends HTMLElement {
     return value === 'x' || value === 'y' || value === 'both' ? value : undefined;
   }
 
-  get #triggerElement(): MediaTooltipTrigger | null {
-    return this.querySelector('media-tooltip-trigger') as MediaTooltipTrigger | null;
+  get #triggerElement(): TooltipTriggerElement | null {
+    return this.querySelector('media-tooltip-trigger') as TooltipTriggerElement | null;
   }
 
-  get #portalElement(): MediaTooltipPortal | null {
-    return this.querySelector('media-tooltip-portal') as MediaTooltipPortal | null;
+  get #portalElement(): TooltipPortalElement | null {
+    return this.querySelector('media-tooltip-portal') as TooltipPortalElement | null;
   }
 
-  get #positionerElement(): MediaTooltipPositioner | null {
-    return this.#portalElement?.querySelector('media-tooltip-positioner') as MediaTooltipPositioner | null;
+  get #positionerElement(): TooltipPositionerElement | null {
+    return this.#portalElement?.querySelector('media-tooltip-positioner') as TooltipPositionerElement | null;
   }
 
-  get #popupElement(): MediaTooltipPopup | null {
-    return this.#portalElement?.querySelector('media-tooltip-popup') as MediaTooltipPopup | null;
+  get #popupElement(): TooltipPopupElement | null {
+    return this.#portalElement?.querySelector('media-tooltip-popup') as TooltipPopupElement | null;
   }
 
   #setOpen(open: boolean): void {
@@ -132,7 +132,7 @@ export class MediaTooltipRoot extends HTMLElement {
     const placement = this.#positionerElement?.side ?? 'top';
     const sideOffset = this.#positionerElement?.sideOffset ?? 0;
     const collisionPadding = this.#positionerElement?.collisionPadding ?? 0;
-    const mediaContainer = this.closest('media-container') as MediaContainer;
+    const mediaContainer = this.closest('media-container') as MediaContainerElement;
 
     this.#arrowElement = popup.querySelector('media-tooltip-arrow') as HTMLElement;
 
@@ -260,7 +260,7 @@ export class MediaTooltipRoot extends HTMLElement {
   }
 }
 
-export class MediaTooltipTrigger extends HTMLElement {
+export class TooltipTriggerElement extends HTMLElement {
   connectedCallback(): void {
     this.style.display = 'contents';
 
@@ -269,16 +269,16 @@ export class MediaTooltipTrigger extends HTMLElement {
       const mutationObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.type === 'attributes') {
-            const rootElement = this.closest('media-tooltip-root') as MediaTooltipRoot;
-            let popupElement = rootElement.querySelector('media-tooltip-popup') as MediaTooltipPopup;
+            const rootElement = this.closest('media-tooltip') as TooltipRootElement;
+            let popupElement = rootElement.querySelector('media-tooltip-popup') as TooltipPopupElement;
 
             if (!popupElement) {
-              const portalElement = rootElement.querySelector('media-tooltip-portal') as MediaTooltipPortal;
+              const portalElement = rootElement.querySelector('media-tooltip-portal') as TooltipPortalElement;
               if (!portalElement) {
                 return;
               }
 
-              popupElement = portalElement.querySelector('media-tooltip-popup') as MediaTooltipPopup;
+              popupElement = portalElement.querySelector('media-tooltip-popup') as TooltipPopupElement;
               if (!popupElement) {
                 return;
               }
@@ -306,7 +306,7 @@ export class MediaTooltipTrigger extends HTMLElement {
   }
 }
 
-export class MediaTooltipPortal extends HTMLElement {
+export class TooltipPortalElement extends HTMLElement {
   #portal: HTMLElement | null = null;
 
   connectedCallback(): void {
@@ -356,7 +356,7 @@ export class MediaTooltipPortal extends HTMLElement {
   }
 }
 
-export class MediaTooltipPositioner extends HTMLElement {
+export class TooltipPositionerElement extends HTMLElement {
   connectedCallback(): void {
     this.style.display = 'contents';
 
@@ -383,56 +383,30 @@ export class MediaTooltipPositioner extends HTMLElement {
   }
 }
 
-export class MediaTooltipPopup extends HTMLElement {
+export class TooltipPopupElement extends HTMLElement {
   connectedCallback(): void {
     this.setAttribute('role', 'tooltip');
   }
 }
 
-export class MediaTooltipArrow extends HTMLElement {
+export class TooltipArrowElement extends HTMLElement {
   connectedCallback(): void {
     this.setAttribute('aria-hidden', 'true');
   }
 }
 
-if (!globalThis.customElements.get('media-tooltip-root')) {
-  globalThis.customElements.define('media-tooltip-root', MediaTooltipRoot);
-}
-
-if (!globalThis.customElements.get('media-tooltip-trigger')) {
-  globalThis.customElements.define('media-tooltip-trigger', MediaTooltipTrigger);
-}
-
-if (!globalThis.customElements.get('media-tooltip-portal')) {
-  globalThis.customElements.define('media-tooltip-portal', MediaTooltipPortal);
-}
-
-if (!globalThis.customElements.get('media-tooltip-positioner')) {
-  globalThis.customElements.define('media-tooltip-positioner', MediaTooltipPositioner);
-}
-
-if (!globalThis.customElements.get('media-tooltip-popup')) {
-  globalThis.customElements.define('media-tooltip-popup', MediaTooltipPopup);
-}
-
-if (!globalThis.customElements.get('media-tooltip-arrow')) {
-  globalThis.customElements.define('media-tooltip-arrow', MediaTooltipArrow);
-}
-
-export const Tooltip: {
-  Root: typeof MediaTooltipRoot;
-  Trigger: typeof MediaTooltipTrigger;
-  Portal: typeof MediaTooltipPortal;
-  Positioner: typeof MediaTooltipPositioner;
-  Popup: typeof MediaTooltipPopup;
-  Arrow: typeof MediaTooltipArrow;
+export const TooltipElement: {
+  Root: typeof TooltipRootElement;
+  Trigger: typeof TooltipTriggerElement;
+  Portal: typeof TooltipPortalElement;
+  Positioner: typeof TooltipPositionerElement;
+  Popup: typeof TooltipPopupElement;
+  Arrow: typeof TooltipArrowElement;
 } = {
-  Root: MediaTooltipRoot,
-  Trigger: MediaTooltipTrigger,
-  Portal: MediaTooltipPortal,
-  Positioner: MediaTooltipPositioner,
-  Popup: MediaTooltipPopup,
-  Arrow: MediaTooltipArrow,
+  Root: TooltipRootElement,
+  Trigger: TooltipTriggerElement,
+  Portal: TooltipPortalElement,
+  Positioner: TooltipPositionerElement,
+  Popup: TooltipPopupElement,
+  Arrow: TooltipArrowElement,
 };
-
-export default Tooltip;
