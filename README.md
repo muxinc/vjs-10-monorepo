@@ -6,14 +6,23 @@
 
 Modern, modular, and composable media player framework for Web and React.
 
-🚧 Techincal Preview - not recommended for production. 🚧
+🚧 Technical Preview - not recommended for production. 🚧
 
-Thanks for checking out the project! It's in its early stages and currently a mix of protoyping
+Thanks for checking out the project! It's in its early stages and currently a mix of prototyping
 and early structure pointing in the direction we want to go with Video.js v10 (so be kind 🙏).
 
 - Read our early [architecture goals](./docs/architecture.md).
 - Read the [v10 discussion topic](https://github.com/videojs/video.js/discussions/9035)
 - Watch [Heff's recent presentation](https://players.brightcove.net/3737230800001/eyILA5XG7K_default/index.html?videoId=6379311036112)
+
+## Timeline
+
+🚧 Detailed roadmap coming soon. 🚧
+
+- **Technical Preview (current):** Initial showcase for Demuxed.
+- **Beta (Feb 2026):** Core goals accomplished, stable core, adoption in real projects.
+- **GA (Mid 2026):** Stable APIs. Feature parity w/ Media Chrome, Vidstack, and Plyr.
+- **Video.js (End of 2026):** Video.js core/contrib parity and supported plugins migrated.
 
 ## Documentation
 
@@ -42,12 +51,6 @@ would help us:
 - Package structure and exports
 - Repo, workspace, contributor guides
 - Component structures and APIs
-
-## License
-
-[Apache-2.0](./LICENSE)
-
-Copyright (c) Video.js Contributors
 
 [site]: http://v10.videojs.org
 [docs]: http://v10.videojs.org/docs
