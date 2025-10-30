@@ -2,11 +2,12 @@
 import { isValidFramework, isValidStyleForFramework } from '@/types/docs';
 import { resolveDocsLinkUrl } from '@/utils/docs/routing';
 import type { HTMLAttributes } from 'astro/types';
+import A from '../typography/A.astro';
 
 interface Props extends Omit<HTMLAttributes<'a'>, 'href'> {
   slug: string;
 }
-const { slug, ...rest } = Astro.props;
+const { slug } = Astro.props;
 
 const { framework: paramFramework, style: paramStyle } = Astro.params;
 if (!paramFramework || !isValidFramework(paramFramework)) {
@@ -23,6 +24,6 @@ const { url: href } = resolveDocsLinkUrl({
 });
 ---
 
-<a href={href} {...rest}>
+<A href={href}>
   <slot />
-</a>
+</A>

@@ -1,0 +1,33 @@
+---
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Minimal frame component for wrapping documentation demos.
+ *
+ * Provides a styled container with rounded borders and background
+ * matching the site's Tabs component aesthetic.
+ *
+ * Usage:
+ * ```mdx
+ * import Minimal from '@/components/frames/Minimal.astro';
+ *
+ * <MinimalFrame>
+ *   <MyDemo client:load />
+ * </MinimalFrame>
+ * ```
+ */
+
+type Props = {
+  class?: string;
+};
+const { class: className } = Astro.props;
+---
+
+<div
+  class={twMerge(
+    'w-full max-w-3xl mx-auto flex rounded-lg overflow-hidden border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110',
+    className,
+  )}
+>
+  <slot />
+</div>

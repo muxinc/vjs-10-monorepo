@@ -2,6 +2,7 @@
 import NavBar from '@/components/NavBar/NavBar.astro';
 import Footer from '@/components/Footer.astro';
 import Base from './Base.astro';
+import FooterEasterEgg from '@/components/FooterEasterEgg.astro';
 
 interface Props {
   title: string | string[];
@@ -20,4 +21,5 @@ const { title, description } = Astro.props;
     </main>
     <Footer class="mt-auto" />
   </div>
+  <FooterEasterEgg />
 </Base>

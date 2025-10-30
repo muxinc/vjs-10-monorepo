@@ -1,27 +1,26 @@
 ---
-title: VolumeSlider
+title: TimeSlider
 frameworkTitle:
-  html: volume-slider
-description: A slider component for controlling media volume
+  html: time-slider
+description: A slider component for seeking through media content
 ---
 
-import { VolumeSliderDemo } from '@/examples/react/VolumeSlider/VolumeSliderDemo';
-import componentModuleStr from '@/examples/react/VolumeSlider/BasicVolumeSlider.tsx?raw';
-import cssModuleStr from '@/examples/react/VolumeSlider/VolumeSlider.module.css?raw';
-import htmlHorizontalStr from '@/examples/html/volume-slider/snippet-horizontal.html?raw';
-import htmlVerticalStr from '@/examples/html/volume-slider/snippet-vertical.html?raw';
-import htmlCssStr from '@/examples/html/volume-slider/volume-slider.css?raw';
+import { TimeSliderDemo } from '@/examples/react/TimeSlider/TimeSliderDemo';
+import componentModuleStr from '@/examples/react/TimeSlider/BasicTimeSlider.tsx?raw';
+import cssModuleStr from '@/examples/react/TimeSlider/TimeSlider.module.css?raw';
+import htmlHorizontalStr from '@/examples/html/time-slider/snippet-horizontal.html?raw';
+import htmlVerticalStr from '@/examples/html/time-slider/snippet-vertical.html?raw';
+import htmlCssStr from '@/examples/html/time-slider/time-slider.css?raw';
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
-import Container from '@/components/docs/Container.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
 import { TabsRoot, TabsPanel } from '@/components/Tabs';
 
 ## Features
 
 - Supports both horizontal and vertical orientations
-- Displays current volume level
-- Reflects muted state
-- Keyboard accessible (Arrow keys for volume adjustment)
+- Displays current playback position
+- Shows preview position on hover
+- Keyboard accessible (Arrow keys for seeking)
 - Touch-friendly drag interaction
 
 ## Example
@@ -40,7 +39,7 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
       <ServerCode code={cssModuleStr} lang="css" />
     </TabsPanel>
 
-    <VolumeSliderDemo client:load />
+    <TimeSliderDemo client:load />
   </TabsRoot>
 </FrameworkCase>
 
@@ -62,7 +61,7 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
       <ServerCode code={htmlCssStr} lang="css" />
     </TabsPanel>
 
-    <VolumeSliderDemo client:load />
+    <TimeSliderDemo client:load />
   </TabsRoot>
 </FrameworkCase>
 
@@ -70,33 +69,36 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
 
 ## Compound Components
 
-VolumeSlider is composed of multiple sub-components:
+TimeSlider is composed of multiple sub-components:
 
-### VolumeSlider.Root
+### TimeSlider.Root
 The container component that manages state and interactions.
 
 **Props:**
 - `orientation?: 'horizontal' | 'vertical'` - Slider orientation (default: 'horizontal')
 - All standard div props
 
-### VolumeSlider.Track
-The background track element that contains the progress indicator.
+### TimeSlider.Track
+The background track element that contains progress and pointer indicators.
 
-### VolumeSlider.Progress
-Visual indicator showing the current volume level.
+### TimeSlider.Progress
+Visual indicator showing how much of the media has been played.
 
-### VolumeSlider.Thumb
-The draggable handle that indicates and controls the current volume level.
+### TimeSlider.Pointer
+Shows the hover/preview position when user moves cursor over the slider.
+
+### TimeSlider.Thumb
+The draggable handle that indicates and controls the current playback position.
 
 </FrameworkCase>
 
 ## Data Attributes
 
-The VolumeSlider automatically sets data attributes:
+The TimeSlider automatically sets data attributes:
 
 - `data-orientation` - Current orientation ('horizontal' or 'vertical')
-- `data-muted` - Present when volume is muted
-- `data-volume-level` - Volume level category: 'high' (>50%), 'medium' (25-50%), 'low' (1-24%), or 'off' (0%)
+- `data-current-time` - Current playback time in seconds
+- `data-duration` - Total media duration in seconds
 
 Use these attributes for state-based styling in your CSS.
 
@@ -104,12 +106,12 @@ Use these attributes for state-based styling in your CSS.
 
 The component exposes CSS variables for positioning:
 
-- `--slider-fill` - Percentage of volume level (0-100%)
+- `--slider-fill` - Percentage of progress (0-100%)
 - `--slider-pointer` - Percentage of pointer position (0-100%)
 
 ## Accessibility
 
 - Includes proper ARIA role (`slider`)
 - Keyboard accessible (Arrow keys, Home, End)
-- Screen reader announcements for volume values
+- Screen reader announcements for time values
 - Proper aria-valuemin, aria-valuemax, aria-valuenow attributes

@@ -5,9 +5,10 @@ description: 'A guide on writing documentation for the Video.js project, and a t
 
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import StyleCase from '@/components/docs/StyleCase.astro';
-import Container from '@/components/docs/Container.astro';
+import Minimal from '@/components/frames/Minimal.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
 import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
+import DocsLink from '@/components/docs/DocsLink.astro';
 
 ## What kind of guide are you writing?
 I haven't written this section yet, but when I do, it'll rehash [Diátaxis](https://diataxis.fr/).
@@ -354,17 +355,16 @@ function Component() {
 
 There are two main patterns for displaying live demos, depending on whether you want to show code alongside the demo.
 
-### Option 1: Standalone Demo with Container
+### Option 1: Standalone Demo with Minimal Frame
 
-Use the `<Container>` component to constrain standalone demos to a readable width:
+Use the `<MinimalFrame>` frame component to wrap standalone demos with a styled border and background:
 
 ```mdx
 import { MyDemo } from '@/examples/react/MyDemo';
-import Container from '@/components/docs/Container.astro';
-
-<Container>
+import MinimalFrame from '@/components/frames/Minimal.astro';
+<MinimalFrame>
   <MyDemo client:load />
-</Container>
+</MinimalFrame>
 ```
 
 This is best for demos that don't need accompanying code, or when the code is shown separately elsewhere on the page.
@@ -397,4 +397,4 @@ import ServerCode from '@/components/Code/ServerCode.astro';
 </TabsRoot>
 ```
 
-The demo will appear at the bottom of the tabs component, creating a cohesive unit of code and preview. This pattern is used throughout our resource documentation (see [PlayButton](/docs/framework/react/style/css/resources/play-button) for an example).
+The demo will appear at the bottom of the tabs component, creating a cohesive unit of code and preview. This pattern is used throughout our resource documentation (see <DocsLink slug="reference/play-button">PlayButton</DocsLink> for an example).

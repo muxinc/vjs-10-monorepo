@@ -1,27 +1,26 @@
 ---
-title: PlayButton
+title: FullscreenButton
 frameworkTitle:
-  html: play-button
-description: A button component for playing and pausing media playback
+  html: fullscreen-button
+description: A button component for toggling fullscreen mode
 ---
 
-import { PlayButtonDemo } from '@/examples/react/PlayButton/PlayButtonDemo';
-import componentModuleStr from '@/examples/react/PlayButton/BasicPlayButton.tsx?raw';
-import cssModuleStr from '@/examples/react/PlayButton/PlayButton.module.css?raw';
-import htmlStr from '@/examples/html/play-button/snippet.html?raw';
-import htmlCssStr from '@/examples/html/play-button/play-button.css?raw';
-import htmlJsStr from '@/examples/html/play-button/play-button.js?raw';
+import { FullscreenButtonDemo } from '@/examples/react/FullscreenButton/FullscreenButtonDemo';
+import componentModuleStr from '@/examples/react/FullscreenButton/BasicFullscreenButton.tsx?raw';
+import cssModuleStr from '@/examples/react/FullscreenButton/FullscreenButton.module.css?raw';
+import htmlStr from '@/examples/html/fullscreen-button/snippet.html?raw';
+import htmlCssStr from '@/examples/html/fullscreen-button/fullscreen-button.css?raw';
+import htmlJsStr from '@/examples/html/fullscreen-button/fullscreen-button.js?raw';
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
-import Container from '@/components/docs/Container.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
 import { TabsRoot, TabsPanel } from '@/components/Tabs';
 
 ## Features
 
-- Automatically switches icons based on playback state
-- Uses data attributes for state-based styling
+- Automatically switches icons based on fullscreen state
+- Works with browser Fullscreen API
+- Falls back gracefully when fullscreen not supported
 - Accessible keyboard navigation
-- Works with any media element
 
 ## Example
 
@@ -39,7 +38,7 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
       <ServerCode code={cssModuleStr} lang="css" />
     </TabsPanel>
 
-    <PlayButtonDemo client:load />
+    <FullscreenButtonDemo client:load />
   </TabsRoot>
 </FrameworkCase>
 
@@ -61,15 +60,15 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
       <ServerCode code={htmlJsStr} lang="js" />
     </TabsPanel>
 
-    <PlayButtonDemo client:load />
+    <FullscreenButtonDemo client:load />
   </TabsRoot>
 </FrameworkCase>
 
 ## Data Attributes
 
-The PlayButton automatically sets data attributes based on media state:
+The FullscreenButton automatically sets data attributes based on fullscreen state:
 
-- `data-paused` - Present when media is paused, absent when playing
+- `data-fullscreen` - Present when in fullscreen, absent when not
 
 Use these attributes for state-based styling in your CSS.
 
@@ -90,4 +89,8 @@ All standard button props are supported, plus:
 
 - Automatically includes proper ARIA labels
 - Keyboard accessible (Space/Enter)
-- Announces state changes to screen readers
+- Announces fullscreen state changes to screen readers
+
+## Browser Support
+
+The FullscreenButton uses the standard Fullscreen API, which is supported in all modern browsers.

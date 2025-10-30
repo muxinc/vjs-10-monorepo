@@ -1,4 +1,5 @@
 import { MediaContainer, MediaProvider, Video } from '@videojs/react';
+import { VJS8_DEMO_VIDEO } from '@/consts';
 import { BasicVolumeSlider } from './BasicVolumeSlider';
 
 /**
@@ -11,8 +12,8 @@ export function VolumeSliderDemo() {
     <MediaProvider>
       <MediaContainer style={{ position: 'relative' }}>
         <Video
-          src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
-          poster="https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp"
+          src={VJS8_DEMO_VIDEO.hls}
+          poster={VJS8_DEMO_VIDEO.poster}
           muted
         />
         <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', zIndex: 10 }}>

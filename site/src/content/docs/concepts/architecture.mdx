@@ -1,0 +1,128 @@
+---
+title: Architecture
+description: Understanding the three-tier architecture of Video.js v10 - State, UI, and Renderers
+---
+
+import FrameworkCase from '@/components/docs/FrameworkCase.astro';
+import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import DocsLink from '@/components/docs/DocsLink.astro';
+
+Video.js v10 is built around a three-tier architecture that separates concerns and maximizes flexibility. Each tier is designed to work independently or together, allowing you to use as much or as little of Video.js as you need.
+
+## The Three Tiers
+
+### 1. State Management
+
+<FrameworkCase frameworks={["react"]}>
+State is handled by `MediaProvider`, which creates a central store that all components can access. When you wrap your player in a `MediaProvider`, components automatically connect to the state.
+</FrameworkCase>
+<FrameworkCase frameworks={["html"]}>
+State is handled by `media-provider`, which creates a central store that all components can access. When you wrap your player in a `media-provider`, components automatically connect to the state.
+</FrameworkCase>
+
+<FrameworkCase frameworks={["react"]}>
+```tsx
+<MediaProvider>
+  {/* All components inside automatically connect to state */}
+</MediaProvider>
+```
+</FrameworkCase>
+<FrameworkCase frameworks={["html"]}>
+```html
+<media-provider>
+  <!-- All components inside automatically connect to state -->
+</media-provider>
+```
+</FrameworkCase>
+
+### 2. User Interface
+
+#### Skins
+Complete, pre-designed player UIs that package components and styles together:
+- Frosted (glassy design)
+- Minimal (clean, simple design)
+
+Want to learn more? <DocsLink slug="concepts/skins">Read the skins guide →</DocsLink>
+
+#### Components
+Most should use a skin as a starting point. However, if you want more control, you have two options.
+
+First, you can use eject a skin to customize it. <DocsLink slug="how-to/customize-skins">to learn more, check out our guide on customizing skins →</DocsLink>
+
+Next, you can use the individual, unstyled UI primitives, standalone or composed into custom designs:
+- Buttons (Play, Mute, Fullscreen)
+- Sliders (Time, Volume)
+- Displays (CurrentTime, Duration)
+- Compound components (Tooltip, Popover)
+
+Want to dive deeper? <DocsLink slug="concepts/ui-components">Explore UI components →</DocsLink>
+
+### 3. Media Renderers
+
+Media renderers are the components that actually display your media. They're essentially "players with no UI". They handle the video/audio rendering and expose a consistent API.
+
+<FrameworkCase frameworks={["react"]}>
+For now, we're starting with just a `<Video />` component, but we're looking forward to adding more in the future. From engines like HLS and DASH, to services like YouTube and Vimeo.
+</FrameworkCase>
+<FrameworkCase frameworks={["html"]}>
+For now, we're starting with just the native HTML5 `<video />` component, but we're looking forward to adding more in the future. From engines like HLS and DASH, to services like YouTube and Vimeo.
+</FrameworkCase>
+
+## How It All Works Together
+
+Here's a complete example showing all three tiers:
+
+<FrameworkCase frameworks={["react"]}>
+```tsx
+import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
+import '@videojs/react/skins/frosted.css';
+
+function Player() {
+  return (
+    // Tier 1: State Management
+    <MediaProvider>
+      {/* Tier 2: User Interface (Skin with components) */}
+      <FrostedSkin>
+        {/* Tier 3: Media Renderer */}
+        <Video src="video.mp4" />
+      </FrostedSkin>
+    </MediaProvider>
+  );
+}
+```
+</FrameworkCase>
+
+<FrameworkCase frameworks={["html"]}>
+<TabsRoot
+  aria-label="HTML implementation"
+  titles={{  html: 'HTML', javascript: 'JavaScript' }}
+  client:load
+>
+    <TabsPanel value="html" client:load>
+
+```html
+<!-- Tier 1: State Management -->
+<media-provider>
+  <!-- Tier 2: User Interface (Skin with components) -->
+  <media-skin-frosted>
+    <!-- Tier 3: Media Renderer -->
+    <video slot="media" src="video.mp4"></video>
+  </media-skin-frosted>
+</media-provider>
+```
+
+  </TabsPanel>
+
+  <TabsPanel value="javascript" client:load>
+
+```ts
+import { defineVjsPlayer } from '@videojs/html';
+import '@videojs/html/skins/frosted';
+
+defineVjsPlayer();
+```
+
+  </TabsPanel>
+
+</TabsRoot>
+</FrameworkCase>

@@ -10,6 +10,7 @@ import Footer from '@/components/Footer.astro';
 import Base from './Base.astro';
 import { Selectors } from '@/components/docs/Selectors';
 import { getDocTitle } from '@/utils/docs/title';
+import FooterEasterEgg from '@/components/FooterEasterEgg.astro';
 
 type Props<F extends SupportedFramework = SupportedFramework> = {
   doc: CollectionEntry<'docs'>;
@@ -42,9 +43,12 @@ const docTitles = new Map(allDocs.map((d) => [d.id, getDocTitle(d, framework)]))
         <Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
       </DocsSidebar>
     </aside>
-    <div class="flex flex-col">
-      <slot />
-      <Footer class="mt-auto" />
+    <div>
+      <div class="flex flex-col" style="min-height:calc(100vh - var(--nav-h));">
+        <slot />
+        <Footer class="mt-auto" />
+      </div>
+      <FooterEasterEgg class="lg:col-start-2" />
     </div>
   </div>
 </Base>
