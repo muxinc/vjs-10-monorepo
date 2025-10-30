@@ -10,14 +10,16 @@ export interface Props {
   class?: string;
 }
 
-type NavLink = {
+export type NavLink = {
   href: string;
   label: string;
   matchPath: string | null;
   external?: boolean;
+  prefetch?: boolean;
 };
 const navLinks: NavLink[] = [
-  { href: '/docs', label: 'Docs', matchPath: '/docs' },
+  // docs require a redirect, so, let's prefetch them to hide that latency
+  { href: '/docs', label: 'Docs', matchPath: '/docs', prefetch: true },
   // { href: '/blog', label: 'Blog', matchPath: '/blog' },
 ];
 
@@ -51,6 +53,7 @@ const { class: className, dark = false } = Astro.props;
               : 'border-transparent intent:border-current',
           ]}
           aria-current={link.matchPath && currentPath.startsWith(link.matchPath) ? 'page' : undefined}
+          data-astro-prefetch={link.prefetch ? '' : undefined}
         >
           {link.label} {link.external ? <ArrowUpRight size="1em" /> : null}
         </a>
