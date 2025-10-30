@@ -7,7 +7,7 @@ import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
 import DocsLink from '@/components/docs/DocsLink.astro';
 
-Welcome to Video.js v10! This guide will help you get up and running. You'll make three key choices:
+Welcome to Video.js v10! This guide will help you get up and running. In it, you'll make three key choices:
 
 1. **Framework** - React or HTML (vanilla JavaScript)
 2. **Skin** - The pre-built UI design you'll use, and how it's applied in your project
@@ -15,26 +15,21 @@ Welcome to Video.js v10! This guide will help you get up and running. You'll mak
 
 ## 1. Pick Your Framework
 
-Video.js v10 supports both React and vanilla JavaScript/HTML through Web Components.
+Video.js v10 supports both React and vanilla JavaScript/HTML through Web Components. 
+
+First, select your preferred framework in the framework selector at the top of the <span class="hidden lg:inline">sidebar</span><span class="lg:hidden">page</span>.
+
+Then, install the appropriate package:
 
 <FrameworkCase frameworks={["react"]}>
-
-Install the React package:
-
 ```bash
 npm install @videojs/react
 ```
-
 </FrameworkCase>
-
 <FrameworkCase frameworks={["html"]}>
-
-Install the HTML package:
-
 ```bash
 npm install @videojs/html
 ```
-
 </FrameworkCase>
 
 ## 2. Pick Your Skin
@@ -44,28 +39,23 @@ Skins are packaged sets of UI components and styles. Video.js v10 includes two b
 - **Frosted** - Modern glassy design with backdrop blur effects
 - **Minimal** - Clean, simple design with straightforward controls
 
-Learn more about skins in the <DocsLink slug="concepts/skins">Skins concept guide</DocsLink>.
+Learn more about skins <DocsLink slug="concepts/skins">in the guide →</DocsLink>
 
-Currently, Video.js v10 uses CSS for styling these skins. More styling approaches (e.g, Tailwind) are coming soon.
+Currently, Video.js v10 uses CSS for styling these skins. More styling approaches (e.g, Tailwind CSS) are coming soon.
 
 <FrameworkCase frameworks={["react"]}>
-
 ```tsx
 import '@videojs/react/skins/frosted.css';
 // or
 import '@videojs/react/skins/minimal.css';
 ```
-
 </FrameworkCase>
-
 <FrameworkCase frameworks={["html"]}>
-
 ```ts
 import '@videojs/html/skins/frosted';
 // or
 import '@videojs/html/skins/minimal';
 ```
-
 </FrameworkCase>
 
 ## 3. Pick Your Renderer
@@ -82,7 +72,6 @@ More renderers for formats like DASH, and services like YouTube and Vimeo are pl
 ## Basic Example
 
 <FrameworkCase frameworks={["react"]}>
-
 ```tsx
 import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/frosted.css';
@@ -101,11 +90,8 @@ export default function App() {
   );
 }
 ```
-
 </FrameworkCase>
-
 <FrameworkCase frameworks={["html"]}>
-
 ```ts
 import { defineVjsPlayer } from '@videojs/html';
 import '@videojs/html/skins/frosted';
@@ -125,7 +111,6 @@ document.body.innerHTML = `
   </media-provider>
 `;
 ```
-
 </FrameworkCase>
 
 That's it! You now have a fully functional Video.js player. Go forth and play.

@@ -14,7 +14,7 @@ import '@videojs/react/skins/minimal.css';
 export function MinimalSkinDemo() {
   return (
     <MediaProvider>
-      <MinimalSkin className="w-full aspect-video rounded-lg">
+      <MinimalSkin className="w-full aspect-video">
         <Video
           src={VJS8_DEMO_VIDEO.hls}
           poster={VJS8_DEMO_VIDEO.poster}

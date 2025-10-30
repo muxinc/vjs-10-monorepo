@@ -6,7 +6,7 @@ description: Understanding Video.js v10's primitive-based component architecture
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import DocsLink from '@/components/docs/DocsLink.astro';
 
-Video.js v10 components are built from **unstyled UI primitives**, taking inspiration from projects like [shadcn/ui](https://ui.shadcn.com/) and [Base UI](https://base-ui.com/). This approach gives you complete control over styling and behavior while handling the complex interactions for you.
+Video.js v10 components are built from **unstyled UI primitives**, taking inspiration from projects like [shadcn/ui](https://ui.shadcn.com/) and [Base UI](https://base-ui.com/). This approach gives you control over styling and behavior while handling the complex interactions for you.
 
 ## Core Principles
 
@@ -17,11 +17,11 @@ Each primitive represents at most **one HTML element**, without internal element
 <FrameworkCase frameworks={["react"]}>
 ```tsx
 <TimeSlider.Root>
-  <TimeSlider.Track>       {/* One element: the track */}
+  <TimeSlider.Track>        {/* One element: the track */}
     <TimeSlider.Progress /> {/* One element: the progress bar */}
     <TimeSlider.Pointer />  {/* One element: hover indicator */}
   </TimeSlider.Track>
-  <TimeSlider.Thumb />       {/* One element: the draggable thumb */}
+  <TimeSlider.Thumb />      {/* One element: the draggable thumb */}
 </TimeSlider.Root>
 ```
 </FrameworkCase>
@@ -84,9 +84,9 @@ Common data attributes:
 
 Single-element components that handle one piece of UI:
 
-- **PlayButton** - Play/pause toggle
-- **MuteButton** - Audio mute toggle
-- **FullscreenButton** - Fullscreen toggle
+- <DocsLink slug="reference/play-button">**PlayButton**</DocsLink> - Play/pause toggle
+- <DocsLink slug="reference/mute-button">**MuteButton**</DocsLink> - Audio mute toggle
+- <DocsLink slug="reference/fullscreen-button">**FullscreenButton**</DocsLink> - Fullscreen toggle
 - **CurrentTimeDisplay** - Current playback time
 - **DurationDisplay** - Total media duration
 - **PreviewTimeDisplay** - Time at hover position
@@ -95,9 +95,7 @@ Single-element components that handle one piece of UI:
 
 Multi-element components for complex interactions:
 
-- **TimeSlider** - Seekable timeline with progress
-- **VolumeSlider** - Volume control slider
+- <DocsLink slug="reference/time-slider">**TimeSlider**</DocsLink> - Seekable timeline with progress
+- <DocsLink slug="reference/volume-slider">**VolumeSlider**</DocsLink> - Volume control slider
 - **Tooltip** - Hover tooltips with positioning
 - **Popover** - Click/hover popovers with collision detection
-
-Ready to dive in? <DocsLink slug="reference/play-button">Browse all component documentation →</DocsLink>

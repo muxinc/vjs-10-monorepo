@@ -1,4 +1,6 @@
 ---
+import { twMerge } from 'tailwind-merge';
+
 /**
  * Minimal frame component for wrapping documentation demos.
  *
@@ -14,10 +16,18 @@
  * </MinimalFrame>
  * ```
  */
+
+type Props = {
+  class?: string;
+};
+const { class: className } = Astro.props;
 ---
 
 <div
-  class="w-full max-w-3xl mx-auto rounded-lg border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110"
+  class={twMerge(
+    'w-full max-w-3xl mx-auto flex rounded-lg overflow-hidden border border-light-40 dark:border-dark-80 bg-light-100 dark:bg-dark-110',
+    className,
+  )}
 >
   <slot />
 </div>

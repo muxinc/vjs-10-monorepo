@@ -56,6 +56,7 @@ export default function BaseDemo({ className }: { className?: string }) {
         aria-label="HTML implementation"
         titles={{ html: 'HTML', css: 'CSS', javascript: 'JavaScript' }}
         className={className}
+        maxWidth={false}
       >
         <TabsPanel tabsId="base-html" value="html">
           <ClientCode code={generateHTMLCode($skin, $media)} lang="html" />
@@ -76,6 +77,7 @@ export default function BaseDemo({ className }: { className?: string }) {
       aria-label="React implementation"
       titles={{ react: 'React' }}
       className={className}
+      maxWidth={false}
     >
       <TabsPanel tabsId="base-react" value="react">
         <ClientCode code={generateReactCode($skin, $media)} lang="tsx" />

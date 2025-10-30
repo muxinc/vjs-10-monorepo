@@ -36,6 +36,7 @@ export default function EjectDemo({ className }: { className?: string }) {
         aria-label="HTML implementation"
         titles={{ html: 'HTML', css: 'CSS', javascript: 'JavaScript' }}
         className={className}
+        maxWidth={false}
       >
         <TabsPanel tabsId="eject-html" value="html">
           <ClientCode code={generateHTMLCode($skin, $media)} lang="html" />
@@ -56,6 +57,7 @@ export default function EjectDemo({ className }: { className?: string }) {
       aria-label="React implementation"
       titles={{ react: 'React', css: 'CSS Module' }}
       className={className}
+      maxWidth={false}
     >
       <TabsPanel tabsId="eject-react" value="react">
         <ClientCode code={generateReactCode($skin, $media)} lang="tsx" />

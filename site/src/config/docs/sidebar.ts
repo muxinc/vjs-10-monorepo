@@ -20,7 +20,7 @@ export const sidebar: Sidebar = [
   {
     sidebarLabel: 'How to',
     contents: [
-      { slug: 'how-to/customize-the-skin' },
+      { slug: 'how-to/customize-skins' },
     ],
   },
   {

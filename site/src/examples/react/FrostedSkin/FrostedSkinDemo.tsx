@@ -15,7 +15,7 @@ import '@videojs/react/skins/frosted.css';
 export function FrostedSkinDemo() {
   return (
     <MediaProvider>
-      <FrostedSkin className="w-full aspect-video rounded-lg">
+      <FrostedSkin className="w-full aspect-video rounded-3xl">
         <Video
           src={VJS8_DEMO_VIDEO.hls}
           poster={VJS8_DEMO_VIDEO.poster}

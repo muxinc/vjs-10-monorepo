@@ -28,10 +28,9 @@ In Video.js v10, skins are **complete, packaged player designs** that include bo
 
 ### Frosted
 
-A modern glassy design with backdrop blur effects and polished interactions.
+A modern, glassy design with backdrop blur effects and polished interactions.
 
 <FrameworkCase frameworks={["react"]}>
-
 ```tsx
 import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/frosted.css';
@@ -42,11 +41,8 @@ import '@videojs/react/skins/frosted.css';
   </FrostedSkin>
 </MediaProvider>
 ```
-
 </FrameworkCase>
-
 <FrameworkCase frameworks={["html"]}>
-
 ```html
 <media-provider>
   <media-skin-frosted>
@@ -54,10 +50,9 @@ import '@videojs/react/skins/frosted.css';
   </media-skin-frosted>
 </media-provider>
 ```
-
 </FrameworkCase>
 
-<MinimalFrame>
+<MinimalFrame class="rounded-3xl">
   <FrostedSkinDemo client:load />
 </MinimalFrame>
 
@@ -66,7 +61,6 @@ import '@videojs/react/skins/frosted.css';
 A clean, straightforward design that focuses on simplicity and clarity.
 
 <FrameworkCase frameworks={["react"]}>
-
 ```tsx
 import { MediaProvider, MinimalSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/minimal.css';
@@ -77,11 +71,8 @@ import '@videojs/react/skins/minimal.css';
   </MinimalSkin>
 </MediaProvider>
 ```
-
 </FrameworkCase>
-
 <FrameworkCase frameworks={["html"]}>
-
 ```html
 <media-provider>
   <media-skin-minimal>
@@ -89,7 +80,6 @@ import '@videojs/react/skins/minimal.css';
   </media-skin-minimal>
 </media-provider>
 ```
-
 </FrameworkCase>
 
 <MinimalFrame>
@@ -98,9 +88,9 @@ import '@videojs/react/skins/minimal.css';
 
 ## Customizing Skins
 
-Skins are designed to be copied and modified for your specific needs. The copy-paste approach (similar to shadcn/ui) gives you complete control.
+Skins are designed to be ejected and modified for your specific needs.
 
-Ready to make it your own? <DocsLink slug="how-to/customize-the-skin">Learn how to customize a skin →</DocsLink>
+Ready to make it your own? <DocsLink slug="how-to/customize-skins">Learn how to customize a skin →</DocsLink>
 
 ## Building Your Own Skin
 
@@ -157,6 +147,8 @@ export function CustomSkin({ children, className }) {
 </media-provider>
 ```
 </FrameworkCase>
+
+Read more about components <DocsLink slug="concepts/ui-components">in the components guide →</DocsLink>
 
 ## Coming Soon
 

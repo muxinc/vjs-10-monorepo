@@ -14,10 +14,10 @@ Video.js v10 is built around a three-tier architecture that separates concerns a
 ### 1. State Management
 
 <FrameworkCase frameworks={["react"]}>
-State is handled by `MediaProvider`, which creates a central store that all components can access. When you wrap your player in a `MediaProvider`, components automatically connect to the state, no manual wiring required.
+State is handled by `MediaProvider`, which creates a central store that all components can access. When you wrap your player in a `MediaProvider`, components automatically connect to the state.
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
-State is handled by `media-provider`, which creates a central store that all components can access. When you wrap your player in a `media-provider`, components automatically connect to the state, no manual wiring required.
+State is handled by `media-provider`, which creates a central store that all components can access. When you wrap your player in a `media-provider`, components automatically connect to the state.
 </FrameworkCase>
 
 <FrameworkCase frameworks={["react"]}>
@@ -44,10 +44,12 @@ Complete, pre-designed player UIs that package components and styles together:
 
 Want to learn more? <DocsLink slug="concepts/skins">Read the skins guide →</DocsLink>
 
-Most should use a skin as a starting point. However, if you want more control...
-
 #### Components
-Individual, unstyled UI primitives that can be used standalone or composed into custom designs:
+Most should use a skin as a starting point. However, if you want more control, you have two options.
+
+First, you can use eject a skin to customize it. <DocsLink slug="how-to/customize-skins">to learn more, check out our guide on customizing skins →</DocsLink>
+
+Next, you can use the individual, unstyled UI primitives, standalone or composed into custom designs:
 - Buttons (Play, Mute, Fullscreen)
 - Sliders (Time, Volume)
 - Displays (CurrentTime, Duration)
@@ -57,7 +59,7 @@ Want to dive deeper? <DocsLink slug="concepts/ui-components">Explore UI componen
 
 ### 3. Media Renderers
 
-Media renderers are the components that actually display your media. They're essentially "players with no UI" - they handle the video/audio rendering and expose a consistent API.
+Media renderers are the components that actually display your media. They're essentially "players with no UI". They handle the video/audio rendering and expose a consistent API.
 
 <FrameworkCase frameworks={["react"]}>
 For now, we're starting with just a `<Video />` component, but we're looking forward to adding more in the future. From engines like HLS and DASH, to services like YouTube and Vimeo.
@@ -71,7 +73,6 @@ For now, we're starting with just the native HTML5 `<video />` component, but we
 Here's a complete example showing all three tiers:
 
 <FrameworkCase frameworks={["react"]}>
-
 ```tsx
 import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/frosted.css';
@@ -89,11 +90,9 @@ function Player() {
   );
 }
 ```
-
 </FrameworkCase>
 
 <FrameworkCase frameworks={["html"]}>
-
 <TabsRoot
   aria-label="HTML implementation"
   titles={{  html: 'HTML', javascript: 'JavaScript' }}
@@ -126,5 +125,4 @@ defineVjsPlayer();
   </TabsPanel>
 
 </TabsRoot>
-
 </FrameworkCase>
