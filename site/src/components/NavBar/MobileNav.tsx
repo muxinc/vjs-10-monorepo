@@ -56,7 +56,7 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
               <a
                 key={link.href}
                 href={link.href}
-                className={clsx('text-md px-6 py-3', link.matchPath && currentPath.startsWith(link.matchPath) ? 'underline' : 'intent:underline')}
+                className={clsx('text-lg px-6 py-3', link.matchPath && currentPath.startsWith(link.matchPath) ? 'underline' : 'intent:underline')}
                 aria-current={link.matchPath && currentPath.startsWith(link.matchPath) ? 'page' : undefined}
               >
                 {link.label}
@@ -66,7 +66,7 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
             ))}
             <a
               href={GITHUB_REPO_URL}
-              className="text-md px-6 py-3 inline-flex items-center gap-1 intent:underline"
+              className="text-lg px-6 py-3 inline-flex items-center gap-1 intent:underline"
             >
               GitHub
               {' '}
@@ -74,7 +74,7 @@ export default function MobileNav({ navLinks, currentPath, dark = false, childre
             </a>
             <a
               href={DISCORD_INVITE_URL}
-              className="text-md px-6 py-3 inline-flex items-center gap-1 intent:underline"
+              className="text-lg px-6 py-3 inline-flex items-center gap-1 intent:underline"
             >
               Discord
               {' '}

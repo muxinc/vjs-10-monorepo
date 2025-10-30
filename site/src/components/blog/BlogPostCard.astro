@@ -18,8 +18,8 @@ const { post, authors, asLink } = Astro.props;
       <FormattedDate date={post.data.pubDate} />
     </time>
     <div class="mb-3">
-      <h2 class="text-md font-medium md:text-h4 group-intent:underline mb-1">{post.data.title}</h2>
-      <p class="font-medium md:text-md text-dark-40 dark:text-light-40">{post.data.description}</p>
+      <h2 class="text-lg font-medium md:text-h4 group-intent:underline mb-1">{post.data.title}</h2>
+      <p class="font-medium md:text-lg text-dark-40 dark:text-light-40">{post.data.description}</p>
     </div>
     {
       authors.length > 0 && (

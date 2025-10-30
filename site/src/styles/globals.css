@@ -71,6 +71,7 @@
   --color-orange: #f26222;
   --color-red: #ea3837;
   --color-purple: #a83b71;
+  --color-blue: #3870b7;
 
   /* Typography */
   --tracking-*: initial;
@@ -108,15 +109,19 @@
   --text-h5--letter-spacing: -0.02em;
   --text-h5--font-weight: var(--font-weight-medium);
 
-  --text-md: 1.25rem;
-  --text-md--line-height: calc(28 / 20);
+  --text-lg: 1.25rem; /* 20px */
+  --text-lg--line-height: calc(28 / 20);
+  --text-lg--letter-spacing: -0.02em;
+  --text-lg--font-weight: var(--font-weight-normal);
+  --text-md: 1.125rem; /* 18px */
+  --text-md--line-height: calc(26 / 18);
   --text-md--letter-spacing: -0.02em;
   --text-md--font-weight: var(--font-weight-normal);
-  --text-base: 1rem;
+  --text-base: 1rem; /* 16px */
   --text-base--line-height: calc(24 / 16);
   --text-base--letter-spacing: -0.02em;
   --text-base--font-weight: var(--font-weight-normal);
-  --text-sm: 0.875rem;
+  --text-sm: 0.875rem; /* 14px */
   --text-sm--line-height: calc(20 / 14);
   --text-sm--letter-spacing: -0.02em;
   --text-sm--font-weight: var(--font-weight-normal);

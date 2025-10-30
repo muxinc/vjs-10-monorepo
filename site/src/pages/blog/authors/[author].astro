@@ -61,7 +61,7 @@ const jsonLdSchema = createProfilePageSchema({
       )
     }
     <h1 class="text-h2 mb-1">{author.data.name}</h1>
-    {author.data.bio && <p class="text-md text-dark-80 dark:text-light-80 mb-4">{author.data.bio}</p>}
+    {author.data.bio && <p class="text-lg text-dark-80 dark:text-light-80 mb-4">{author.data.bio}</p>}
     {
       author.data.socialLinks && (
         <AuthorSocialLinks client:idle socialLinks={author.data.socialLinks} className="flex gap-2" />

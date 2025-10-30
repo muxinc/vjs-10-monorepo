@@ -1,0 +1,67 @@
+---
+import clsx from 'clsx';
+import { Info, Lightbulb, TriangleAlert, OctagonX } from 'lucide-react';
+import { twMerge } from 'tailwind-merge';
+
+type AsideType = 'note' | 'tip' | 'caution' | 'danger';
+
+type Props = {
+  type: AsideType;
+  title?: string;
+  class?: string;
+};
+
+const { type, title, class: className } = Astro.props;
+
+const icons: Record<AsideType, typeof Info> = {
+  note: Info,
+  tip: Lightbulb,
+  caution: TriangleAlert,
+  danger: OctagonX,
+};
+
+const defaultTitles: Record<AsideType, string> = {
+  note: 'Note',
+  tip: 'Tip',
+  caution: 'Caution',
+  danger: 'Danger',
+};
+
+const Icon = icons[type];
+const renderTitle = title ?? defaultTitles[type];
+---
+
+<aside
+  class={twMerge(
+    clsx(
+      'w-full max-w-3xl mx-auto my-6 border-l-2 pl-3',
+      type === 'note' && 'border-blue',
+      type === 'tip' && 'border-purple',
+      type === 'caution' && 'border-yellow',
+      type === 'danger' && 'border-red',
+    ),
+    className,
+  )}
+>
+  <div class="flex gap-3">
+    <div class="flex-shrink-0 mt-[3px]">
+      <Icon
+        size={18}
+        className={clsx(
+          clsx(
+            type === 'note' && 'text-blue',
+            type === 'tip' && ' text-purple',
+            type === 'caution' && 'text-yellow',
+            type === 'danger' && 'text-red',
+          ),
+        )}
+      />
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-md font-semibold mb-2 text-black dark:text-white">{renderTitle}</p>
+      <div class="prose prose-sm max-w-none text-black dark:text-white [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+        <slot />
+      </div>
+    </div>
+  </div>
+</aside>

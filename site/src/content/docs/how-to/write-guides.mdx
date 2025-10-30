@@ -9,6 +9,7 @@ import Minimal from '@/components/frames/Minimal.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
 import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
 import DocsLink from '@/components/docs/DocsLink.astro';
+import Aside from '@/components/Aside.astro';
 
 ## What kind of guide are you writing?
 I haven't written this section yet, but when I do, it'll rehash [Diátaxis](https://diataxis.fr/).
@@ -247,6 +248,35 @@ X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
 Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
 
 Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
+
+## Asides / Callouts / Admonitions
+
+Use the `<Aside>` component to highlight important information. It supports four types: `note`, `tip`, `caution`, and `danger`.
+
+```mdx
+{/* or type="tip" or "caution" or "danger" */}
+<Aside type="note" title="Custom Title">
+Your content. You can use **markdown** in here, too.
+</Aside>
+```
+
+Which will give you...
+
+<Aside type="note" title="Custom Title">
+Your content. You can use **markdown** in here, too.
+</Aside>
+
+<Aside type="tip">
+Your content. You can use **markdown** in here, too.
+</Aside>
+
+<Aside type="caution">
+Your content. You can use **markdown** in here, too.
+</Aside>
+
+<Aside type="danger">
+Your content. You can use **markdown** in here, too.
+</Aside>
 
 ## Code and Code Frames
 
