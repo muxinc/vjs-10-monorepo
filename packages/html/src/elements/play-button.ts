@@ -5,9 +5,9 @@ import { playButtonStateDefinition } from '@videojs/core/store';
 
 import { setAttributes } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { MediaChromeButton } from './media-chrome-button';
+import { ButtonElement } from './button';
 
-export class PlayButtonBase extends MediaChromeButton {
+export class PlayButton extends ButtonElement {
   _state: { paused: boolean; requestPlay: () => void; requestPause: () => void } | undefined;
 
   handleEvent(event: Event): void {
@@ -62,16 +62,9 @@ export const getPlayButtonProps: PropsHook<{ paused: boolean }> = (state, _eleme
   return baseProps;
 };
 
-export const PlayButton: ConnectedComponentConstructor<PlayButtonState> = toConnectedHTMLComponent(
-  PlayButtonBase,
+export const PlayButtonElement: ConnectedComponentConstructor<PlayButtonState> = toConnectedHTMLComponent(
+  PlayButton,
   getPlayButtonState,
   getPlayButtonProps,
   'PlayButton',
 );
-
-// NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
-if (!globalThis.customElements.get('media-play-button')) {
-  globalThis.customElements.define('media-play-button', PlayButton);
-}
-
-export default PlayButton;

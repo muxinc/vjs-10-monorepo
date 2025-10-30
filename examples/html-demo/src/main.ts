@@ -1,9 +1,5 @@
-import { defineVjsPlayer } from '@videojs/html';
-
 import '@videojs/html/skins/frosted';
 import '@videojs/html/skins/minimal';
-
-defineVjsPlayer();
 
 document.body.innerHTML = /* html */ `
   <div style="display: flex; flex-direction: column; justify-content: center; min-height: 100vh; gap: 2rem; padding: 1rem; ">

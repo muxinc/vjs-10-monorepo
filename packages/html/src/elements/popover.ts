@@ -14,7 +14,7 @@ type FloatingContext = Prettify<ComputePositionReturn> & {
   };
 };
 
-class Popover extends HTMLElement {
+export class PopoverElement extends HTMLElement {
   #open = false;
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -236,11 +236,3 @@ class Popover extends HTMLElement {
     this.#setOpen(false);
   };
 }
-
-if (!globalThis.customElements.get('media-popover')) {
-  globalThis.customElements.define('media-popover', Popover);
-}
-
-export { Popover };
-
-export default Popover;

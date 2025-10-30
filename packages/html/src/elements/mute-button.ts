@@ -5,9 +5,9 @@ import { muteButtonStateDefinition } from '@videojs/core/store';
 
 import { setAttributes } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { MediaChromeButton } from './media-chrome-button';
+import { ButtonElement } from './button';
 
-export class MuteButtonBase extends MediaChromeButton {
+export class MuteButton extends ButtonElement {
   _state:
     | {
       muted: boolean;
@@ -83,16 +83,9 @@ export const getMuteButtonProps: PropsHook<{
   return baseProps;
 };
 
-export const MuteButton: ConnectedComponentConstructor<MuteButtonState> = toConnectedHTMLComponent(
-  MuteButtonBase,
+export const MuteButtonElement: ConnectedComponentConstructor<MuteButtonState> = toConnectedHTMLComponent(
+  MuteButton,
   getMuteButtonState,
   getMuteButtonProps,
   'MuteButton',
 );
-
-// NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
-if (!globalThis.customElements.get('media-mute-button')) {
-  globalThis.customElements.define('media-mute-button', MuteButton);
-}
-
-export default MuteButton;

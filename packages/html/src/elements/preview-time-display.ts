@@ -6,7 +6,7 @@ import { previewTimeDisplayStateDefinition } from '@videojs/core/store';
 import { formatDisplayTime } from '@videojs/utils';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
 
-export class PreviewTimeDisplayBase extends HTMLElement {
+export class PreviewTimeDisplay extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
@@ -23,7 +23,7 @@ export class PreviewTimeDisplayBase extends HTMLElement {
     super();
 
     if (!this.shadowRoot) {
-      this.attachShadow((this.constructor as typeof PreviewTimeDisplayBase).shadowRootOptions);
+      this.attachShadow((this.constructor as typeof PreviewTimeDisplay).shadowRootOptions);
     }
   }
 
@@ -71,16 +71,9 @@ export const getPreviewTimeDisplayProps: PropsHook<{
   return baseProps;
 };
 
-export const PreviewTimeDisplay: ConnectedComponentConstructor<PreviewTimeDisplayState> = toConnectedHTMLComponent(
-  PreviewTimeDisplayBase,
+export const PreviewTimeDisplayElement: ConnectedComponentConstructor<PreviewTimeDisplayState> = toConnectedHTMLComponent(
+  PreviewTimeDisplay,
   usePreviewTimeDisplayState,
   getPreviewTimeDisplayProps,
   'PreviewTimeDisplay',
 );
-
-// Register the custom element
-if (!globalThis.customElements.get('preview-time-display')) {
-  globalThis.customElements.define('preview-time-display', PreviewTimeDisplay);
-}
-
-export default PreviewTimeDisplay;

@@ -1,5 +1,6 @@
 import { SVG_ICONS } from '@videojs/icons';
 
+import { defineCustomElement } from '@/utils/custom-element';
 import { MediaChromeIcon } from './media-chrome-icon';
 
 export function getTemplateHTML() {
@@ -14,8 +15,8 @@ export function getTemplateHTML() {
   `;
 }
 
-export class MediaFullscreenExitIcon extends MediaChromeIcon {
+export class MediaFullscreenExitIconElement extends MediaChromeIcon {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('media-fullscreen-exit-icon', MediaFullscreenExitIcon);
+defineCustomElement('media-fullscreen-exit-icon', MediaFullscreenExitIconElement);

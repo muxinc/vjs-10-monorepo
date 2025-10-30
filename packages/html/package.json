@@ -32,6 +32,10 @@
     "./skins/minimal": {
       "types": "./dist/skins/minimal.d.ts",
       "default": "./dist/skins/minimal.js"
+    },
+    "./define/*": {
+      "types": "./dist/define/*.d.ts",
+      "default": "./dist/define/*.js"
     }
   },
   "main": "dist/index.js",

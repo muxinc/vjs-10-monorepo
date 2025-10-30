@@ -1,5 +1,6 @@
 import { SVG_ICONS } from '@videojs/icons';
 
+import { defineCustomElement } from '@/utils/custom-element';
 import { MediaChromeIcon } from './media-chrome-icon';
 
 export function getTemplateHTML() {
@@ -14,8 +15,8 @@ export function getTemplateHTML() {
   `;
 }
 
-export class MediaVolumeOffIcon extends MediaChromeIcon {
+export class MediaVolumeOffIconElement extends MediaChromeIcon {
   static getTemplateHTML: () => string = getTemplateHTML;
 }
 
-customElements.define('media-volume-off-icon', MediaVolumeOffIcon);
+defineCustomElement('media-volume-off-icon', MediaVolumeOffIconElement);

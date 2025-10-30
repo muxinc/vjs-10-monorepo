@@ -1,7 +1,7 @@
 import { namedNodeMapToObject } from '@videojs/utils/dom';
 
 export function getTemplateHTML(
-  this: typeof MediaChromeButton,
+  this: typeof ButtonElement,
   _attrs: Record<string, string>,
   _props: Record<string, any> = {},
 ): string {
@@ -20,7 +20,7 @@ export function getTemplateHTML(
   `;
 }
 
-export class MediaChromeButton extends HTMLElement {
+export class ButtonElement extends HTMLElement {
   static shadowRootOptions = {
     mode: 'open' as ShadowRootMode,
   };
@@ -32,10 +32,10 @@ export class MediaChromeButton extends HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow((this.constructor as typeof MediaChromeButton).shadowRootOptions);
+      this.attachShadow((this.constructor as typeof ButtonElement).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-      const html = (this.constructor as typeof MediaChromeButton).getTemplateHTML(attrs);
+      const html = (this.constructor as typeof ButtonElement).getTemplateHTML(attrs);
       // From MDN: setHTMLUnsafe should be used instead of ShadowRoot.innerHTML
       // when a string of HTML may contain declarative shadow roots.
       const shadowRoot = this.shadowRoot as unknown as ShadowRoot;

@@ -1,4 +1,4 @@
-media-time-slider-root {
+media-time-slider {
   position: relative;
   display: flex;
   align-items: center;
@@ -6,14 +6,14 @@ media-time-slider-root {
 }
 
 /* Horizontal orientation */
-media-time-slider-root[data-orientation='horizontal'] {
+media-time-slider[data-orientation='horizontal'] {
   width: 100%;
   min-width: 100px;
   height: 20px;
 }
 
 /* Vertical orientation */
-media-time-slider-root[data-orientation='vertical'] {
+media-time-slider[data-orientation='vertical'] {
   width: 20px;
   height: 100px;
   flex-direction: column;
@@ -59,6 +59,6 @@ media-time-slider-thumb {
   transition: transform 150ms ease;
 }
 
-media-time-slider-root:hover media-time-slider-thumb {
+media-time-slider:hover media-time-slider-thumb {
   transform: scale(1.2);
 }

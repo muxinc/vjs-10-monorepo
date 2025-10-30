@@ -5,9 +5,9 @@ import { fullscreenButtonStateDefinition } from '@videojs/core/store';
 
 import { setAttributes } from '@videojs/utils/dom';
 import { toConnectedHTMLComponent } from '../utils/component-factory';
-import { MediaChromeButton } from './media-chrome-button';
+import { ButtonElement } from './button';
 
-export class FullscreenButtonBase extends MediaChromeButton {
+export class FullscreenButton extends ButtonElement {
   _state:
     | {
       fullscreen: boolean;
@@ -72,16 +72,9 @@ export const getFullscreenButtonProps: PropsHook<{ fullscreen: boolean }> = (sta
   return baseProps;
 };
 
-export const FullscreenButton: ConnectedComponentConstructor<FullscreenButtonState> = toConnectedHTMLComponent(
-  FullscreenButtonBase,
+export const FullscreenButtonElement: ConnectedComponentConstructor<FullscreenButtonState> = toConnectedHTMLComponent(
+  FullscreenButton,
   getFullscreenButtonState,
   getFullscreenButtonProps,
   'FullscreenButton',
 );
-
-// NOTE: In this architecture it will be important to decouple component class definitions from their registration in the CustomElementsRegistry. (CJP)
-if (!globalThis.customElements.get('media-fullscreen-button')) {
-  globalThis.customElements.define('media-fullscreen-button', FullscreenButton);
-}
-
-export default FullscreenButton;
