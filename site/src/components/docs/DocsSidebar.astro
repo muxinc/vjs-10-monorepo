@@ -4,6 +4,7 @@ import type { SupportedFramework, SupportedStyle } from '@/types/docs';
 import { PreferenceUpdater } from '@/components/docs/PreferenceUpdater';
 import SidebarItem from '@/components/docs/SidebarItem.astro';
 import { filterSidebar } from '@/utils/docs/sidebar';
+import FilmGrain from '../FilmGrain';
 
 type Props<F extends SupportedFramework = SupportedFramework> = {
   framework: F;
@@ -15,8 +16,14 @@ const { framework, style, docTitles } = Astro.props;
 const filteredSidebar = filterSidebar(framework, style);
 ---
 
-<slot />
-<PreferenceUpdater client:idle currentFramework={framework} currentStyle={style} />
-<nav class="p-6 text-dark-80 dark:text-light-40">
-  {filteredSidebar.map((item) => <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />)}
-</nav>
+<div class="bg-light-80 dark:bg-dark-100">
+  <slot />
+  <PreferenceUpdater client:idle currentFramework={framework} currentStyle={style} />
+  <nav class="p-6">
+    {
+      filteredSidebar.map((item) => (
+        <SidebarItem item={item} framework={framework} style={style} docTitles={docTitles} />
+      ))
+    }
+  </nav>
+</div>

@@ -4,6 +4,7 @@ import MobileNav from './MobileNav';
 import { ArrowUpRight } from 'lucide-react';
 import Discord from '@/components/icons/Discord';
 import GitHub from '@/components/icons/GitHub';
+import FilmGrain from '../FilmGrain';
 
 export interface Props {
   dark?: boolean;
@@ -35,10 +36,12 @@ const { class: className, dark = false } = Astro.props;
   ]}
   style="height: var(--nav-h);"
 >
-  <!-- Logo -->
+  {/* Grain */}
+  <FilmGrain currentPath={Astro.url.pathname} />
+  {/* Logo */}
   <a href="/" class="flex items-center px-3 text-h5">Video.js v10</a>
 
-  <!-- Desktop nav links -->
+  {/* Desktop nav links */}
   <div class="hidden sm:flex -mb-px pr-3">
     {
       navLinks.map((link) => (
@@ -76,7 +79,7 @@ const { class: className, dark = false } = Astro.props;
     </a>
   </div>
 
-  <!-- Mobile nav -->
+  {/* Mobile nav */}
   <MobileNav client:load navLinks={navLinks} currentPath={currentPath} dark={dark}>
     <slot name="mobile-nav" />
   </MobileNav>
