@@ -69,8 +69,12 @@ export function Selectors({
   }));
 
   return (
-    <div className="p-6 lg:py-2.5 xl:p-6 border-b border-light-40 dark:border-dark-80">
-      <div className="max-w-3xl mx-auto w-full grid gap-x-6 gap-y-2 items-center" style={{ gridTemplateColumns: 'auto minmax(0, 1fr)' }}>
+    // we switch to py-2.5 for a short time to match the table of contents in the body
+    <div className="px-6 pb-6 pt-2.5 lg:py-2.5 xl:p-6 border-b border-light-40 dark:border-dark-80">
+      <div
+        className="max-w-3xl mx-auto w-full grid grid-flow-col grid-cols-2 grid-rows-2 gap-x-2 lg:grid-flow-row lg:grid-cols-(--lg-grid-cols) lg:gap-x-6 lg:gap-y-2 items-center"
+        style={{ '--lg-grid-cols': 'auto minmax(0, 1fr)' } as React.CSSProperties}
+      >
         <span>Framework</span>
         <Select
           value={currentFramework}
