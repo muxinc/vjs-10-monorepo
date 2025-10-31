@@ -2,50 +2,63 @@ import type { Placement } from '@floating-ui/dom';
 import type { MediaContainerElement } from '@/media/media-container';
 
 import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { uniqueId } from '@videojs/utils';
+import { getDocumentOrShadowRoot } from '@videojs/utils/dom';
 
-export class TooltipRootElement extends HTMLElement {
+export class TooltipElement extends HTMLElement {
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
   #arrowElement: HTMLElement | null = null;
   #pointerPosition = { x: 0, y: 0 };
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
-
-  constructor() {
-    super();
-
-    if (globalThis.matchMedia?.('(hover: hover)')?.matches) {
-      this.addEventListener('pointerenter', this);
-      this.addEventListener('pointerleave', this);
-      this.addEventListener('pointermove', this);
-    }
-  }
-
-  handleEvent(event: Event): void {
-    if (event.type === 'pointerenter') {
-      this.#handlePointerEnter();
-    } else if (event.type === 'pointerleave') {
-      this.#handlePointerLeave(event as PointerEvent);
-    } else if (event.type === 'pointermove') {
-      this.#handlePointerMove(event as PointerEvent);
-    }
-  }
+  #abortController: AbortController | null = null;
 
   connectedCallback(): void {
+    this.setAttribute('role', 'tooltip');
+
+    this.#abortController ??= new AbortController();
+    const { signal } = this.#abortController;
+
+    const trigger = this.#triggerElement as HTMLElement;
+    if (trigger) {
+      if (globalThis.matchMedia?.('(hover: hover)')?.matches) {
+        trigger.addEventListener('pointerenter', this, { signal });
+        trigger.addEventListener('pointerleave', this, { signal });
+        trigger.addEventListener('pointermove', this, { signal });
+      }
+    }
+
     this.#updateVisibility();
   }
 
   disconnectedCallback(): void {
     this.#clearHoverTimeout();
     this.#cleanup?.();
+    this.#abortController?.abort();
+    this.#abortController = null;
 
     this.#transitionStatus = 'unmounted';
     this.#updateVisibility();
   }
 
+  handleEvent(event: Event): void {
+    switch (event.type) {
+      case 'pointerenter':
+        this.#handlePointerEnter();
+        break;
+      case 'pointerleave':
+        this.#handlePointerLeave(event as PointerEvent);
+        break;
+      case 'pointermove':
+        this.#handlePointerMove(event as PointerEvent);
+        break;
+      default:
+        break;
+    }
+  }
+
   static get observedAttributes(): string[] {
-    return ['delay', 'close-delay', 'track-cursor-axis'];
+    return ['delay', 'close-delay', 'track-cursor-axis', 'side', 'side-offset', 'collision-padding'];
   }
 
   get delay(): number {
@@ -61,20 +74,20 @@ export class TooltipRootElement extends HTMLElement {
     return value === 'x' || value === 'y' || value === 'both' ? value : undefined;
   }
 
-  get #triggerElement(): TooltipTriggerElement | null {
-    return this.querySelector('media-tooltip-trigger') as TooltipTriggerElement | null;
+  get side(): Placement {
+    return (this.getAttribute('side') as Placement) ?? 'top';
   }
 
-  get #portalElement(): TooltipPortalElement | null {
-    return this.querySelector('media-tooltip-portal') as TooltipPortalElement | null;
+  get sideOffset(): number {
+    return Number.parseInt(this.getAttribute('side-offset') ?? '0', 10);
   }
 
-  get #positionerElement(): TooltipPositionerElement | null {
-    return this.#portalElement?.querySelector('media-tooltip-positioner') as TooltipPositionerElement | null;
+  get collisionPadding(): number {
+    return Number.parseInt(this.getAttribute('collision-padding') ?? '0', 10);
   }
 
-  get #popupElement(): TooltipPopupElement | null {
-    return this.#portalElement?.querySelector('media-tooltip-popup') as TooltipPopupElement | null;
+  get #triggerElement(): HTMLElement | null {
+    return getDocumentOrShadowRoot(this)?.querySelector(`[commandfor="${this.id}"]`) as HTMLElement | null;
   }
 
   #setOpen(open: boolean): void {
@@ -83,58 +96,57 @@ export class TooltipRootElement extends HTMLElement {
     this.#open = open;
 
     if (open) {
+      this.#setupFloating();
+
       this.#transitionStatus = 'initial';
+      this.#updateVisibility();
+
+      this.showPopover();
+
       requestAnimationFrame(() => {
         this.#transitionStatus = 'open';
         this.#updateVisibility();
       });
     } else {
       this.#transitionStatus = 'close';
-    }
+      this.#updateVisibility();
 
-    this.#updateVisibility();
+      const transitions = this.getAnimations().filter(anim => anim instanceof CSSTransition);
+      if (transitions.length > 0) {
+        Promise.all(transitions.map(t => t.finished))
+          .then(() => this.hidePopover())
+          .catch(() => this.hidePopover());
+      } else {
+        this.hidePopover();
+      }
 
-    if (open) {
-      this.#setupFloating();
-    } else {
       this.#cleanup?.();
       this.#cleanup = null;
     }
   }
 
   #updateVisibility(): void {
-    this.style.display = 'contents';
+    this.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
+    this.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
+    this.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+    this.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
 
-    if (this.#popupElement) {
-      const placement = this.#positionerElement?.side ?? 'top';
-      this.#popupElement.setAttribute('data-side', placement);
-
-      this.#popupElement.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
-      this.#popupElement.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
-      this.#popupElement.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
-      this.#popupElement.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
-    }
-
-    const triggerElement = this.#triggerElement?.firstElementChild as HTMLElement;
+    const triggerElement = this.#triggerElement as HTMLElement;
     if (triggerElement) {
       triggerElement.toggleAttribute('data-popup-open', this.#open);
     }
   }
 
   #setupFloating(): void {
-    if (!this.#triggerElement || !this.#popupElement) return;
+    const trigger = this.#triggerElement as HTMLElement;
+    if (!trigger) return;
 
-    const trigger = this.#triggerElement.firstElementChild as HTMLElement;
-    const popup = this.#popupElement;
-
-    if (!trigger || !popup) return;
-
-    const placement = this.#positionerElement?.side ?? 'top';
-    const sideOffset = this.#positionerElement?.sideOffset ?? 0;
-    const collisionPadding = this.#positionerElement?.collisionPadding ?? 0;
+    const placement = this.side;
+    const sideOffset = this.sideOffset;
+    const collisionPadding = this.collisionPadding;
     const mediaContainer = this.closest('media-container') as MediaContainerElement;
 
-    this.#arrowElement = popup.querySelector('media-tooltip-arrow') as HTMLElement;
+    this.#arrowElement = this.querySelector('media-tooltip-arrow') as HTMLElement;
 
     const updatePosition = () => {
       const middleware = [
@@ -194,16 +206,15 @@ export class TooltipRootElement extends HTMLElement {
           }
         : trigger;
 
-      computePosition(referenceElement, popup, {
+      computePosition(referenceElement, this, {
         placement,
         middleware,
-      }).then(({ x, y, middlewareData, placement: computedPlacement }: { x: number; y: number; middlewareData: any; placement: Placement }) => {
-        Object.assign(popup.style, {
+        strategy: 'fixed',
+      }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
+        Object.assign(this.style, {
           left: `${x}px`,
           top: `${y}px`,
         });
-
-        popup.setAttribute('data-side', computedPlacement);
 
         if (this.#arrowElement && middlewareData.arrow) {
           const { x: arrowX, y: arrowY } = middlewareData.arrow;
@@ -218,7 +229,7 @@ export class TooltipRootElement extends HTMLElement {
     updatePosition();
 
     if (!this.trackCursorAxis) {
-      this.#cleanup = autoUpdate(trigger, popup, updatePosition);
+      this.#cleanup = autoUpdate(trigger, this, updatePosition);
     }
   }
 
@@ -230,7 +241,7 @@ export class TooltipRootElement extends HTMLElement {
 
   #clearHoverTimeout(): void {
     if (this.#hoverTimeout) {
-      clearTimeout(this.#hoverTimeout);
+      globalThis.clearTimeout(this.#hoverTimeout);
       this.#hoverTimeout = null;
     }
   }
@@ -259,154 +270,3 @@ export class TooltipRootElement extends HTMLElement {
     }
   }
 }
-
-export class TooltipTriggerElement extends HTMLElement {
-  connectedCallback(): void {
-    this.style.display = 'contents';
-
-    const triggerElement = this.firstElementChild as HTMLElement;
-    if (triggerElement) {
-      const mutationObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === 'attributes') {
-            const rootElement = this.closest('media-tooltip') as TooltipRootElement;
-            let popupElement = rootElement.querySelector('media-tooltip-popup') as TooltipPopupElement;
-
-            if (!popupElement) {
-              const portalElement = rootElement.querySelector('media-tooltip-portal') as TooltipPortalElement;
-              if (!portalElement) {
-                return;
-              }
-
-              popupElement = portalElement.querySelector('media-tooltip-popup') as TooltipPopupElement;
-              if (!popupElement) {
-                return;
-              }
-            }
-
-            const attributeName = mutation.attributeName;
-            if (!attributeName || !attributeName.startsWith('data-')) {
-              return;
-            }
-
-            const attributeValue = triggerElement.getAttribute(attributeName);
-            if (attributeValue !== null) {
-              popupElement.setAttribute(attributeName, attributeValue);
-            } else {
-              popupElement.removeAttribute(attributeName);
-            }
-          }
-        });
-      });
-
-      mutationObserver.observe(triggerElement, {
-        attributes: true,
-      });
-    }
-  }
-}
-
-export class TooltipPortalElement extends HTMLElement {
-  #portal: HTMLElement | null = null;
-
-  connectedCallback(): void {
-    this.style.display = 'contents';
-    this.#setupPortal();
-  }
-
-  disconnectedCallback(): void {
-    this.#cleanupPortal();
-  }
-
-  querySelector(selector: string): HTMLElement | null {
-    return this.#portal?.querySelector(selector) ?? null;
-  }
-
-  #setupPortal(): void {
-    const portalId = this.getAttribute('root-id') ?? '@default_portal_id';
-    if (!portalId) return;
-
-    /* @TODO We need to make sure portal logic is non-brittle longer term (CJP) */
-    // NOTE: Hacky solution in part to ensure styling propogates from skin to container's baked in portal (TL;DR - Shadow DOM vs. Light DOM CSS) (CJP)
-    const portalContainer
-      = ((this.getRootNode() as ShadowRoot | Document).getElementById(portalId)
-        ?? (this.getRootNode() as ShadowRoot | Document)
-          .querySelector('media-container')
-          ?.shadowRoot
-          ?.getElementById(portalId))
-        ? (this.getRootNode() as ShadowRoot | Document).querySelector('media-container')
-        : undefined;
-    if (!portalContainer) return;
-
-    this.#portal = document.createElement('div');
-    this.#portal.slot = 'portal';
-    this.#portal.id = uniqueId();
-    portalContainer.append(this.#portal);
-
-    this.#portal.append(...this.children);
-  }
-
-  #cleanupPortal(): void {
-    if (!this.#portal) return;
-
-    // Move children back to the portal element
-    this.append(...this.#portal.children);
-    this.#portal.remove();
-    this.#portal = null;
-  }
-}
-
-export class TooltipPositionerElement extends HTMLElement {
-  connectedCallback(): void {
-    this.style.display = 'contents';
-
-    const popup = this.firstElementChild as HTMLElement;
-    if (popup) {
-      Object.assign(popup.style, {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-      });
-    }
-  }
-
-  get side(): Placement {
-    return (this.getAttribute('side') as Placement) ?? 'top';
-  }
-
-  get sideOffset(): number {
-    return Number.parseInt(this.getAttribute('side-offset') ?? '0', 10);
-  }
-
-  get collisionPadding(): number {
-    return Number.parseInt(this.getAttribute('collision-padding') ?? '0', 10);
-  }
-}
-
-export class TooltipPopupElement extends HTMLElement {
-  connectedCallback(): void {
-    this.setAttribute('role', 'tooltip');
-  }
-}
-
-export class TooltipArrowElement extends HTMLElement {
-  connectedCallback(): void {
-    this.setAttribute('aria-hidden', 'true');
-  }
-}
-
-export const TooltipElement: {
-  Root: typeof TooltipRootElement;
-  Trigger: typeof TooltipTriggerElement;
-  Portal: typeof TooltipPortalElement;
-  Positioner: typeof TooltipPositionerElement;
-  Popup: typeof TooltipPopupElement;
-  Arrow: typeof TooltipArrowElement;
-} = {
-  Root: TooltipRootElement,
-  Trigger: TooltipTriggerElement,
-  Portal: TooltipPortalElement,
-  Positioner: TooltipPositionerElement,
-  Popup: TooltipPopupElement,
-  Arrow: TooltipArrowElement,
-};

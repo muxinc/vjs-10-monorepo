@@ -96,7 +96,7 @@ export class PopoverElement extends HTMLElement {
   }
 
   get #triggerElement(): HTMLElement | null {
-    return getDocumentOrShadowRoot(this)?.querySelector(`[popovertarget="${this.id}"]`) as HTMLElement | null;
+    return getDocumentOrShadowRoot(this)?.querySelector(`[commandfor="${this.id}"]`) as HTMLElement | null;
   }
 
   #setOpen(open: boolean): void {
@@ -128,6 +128,9 @@ export class PopoverElement extends HTMLElement {
       } else {
         this.hidePopover();
       }
+
+      this.#cleanup?.();
+      this.#cleanup = null;
     }
   }
 
