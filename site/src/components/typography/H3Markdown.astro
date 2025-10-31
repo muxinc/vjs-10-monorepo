@@ -1,8 +1,8 @@
 ---
 import H5 from './H5.astro';
-const props = Astro.props;
+const { class: className, ...props } = Astro.props;
 ---
 
-<H5 as="h3" {...props}>
+<H5 as="h3" class:list={['mt-12', className]} {...props}>
   <slot />
 </H5>
