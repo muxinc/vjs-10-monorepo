@@ -983,58 +983,58 @@ export function generateHTMLMarkup(skin: Skin): string {
     <div class="overlay"></div>
 
     <div class="control-bar surface">
-      <media-tooltip delay="500" close-delay="0">
-        <media-tooltip-trigger>
-          <media-play-button class="button">
-            <media-play-icon class="icon play-icon"></media-play-icon>
-            <media-pause-icon class="icon pause-icon"></media-pause-icon>
-          </media-play-button>
-        </media-tooltip-trigger>
-        <media-tooltip-portal>
-          <media-tooltip-positioner side="top" side-offset="12" collision-padding="12">
-            <media-tooltip-popup class="surface popup-animation">
-              <span class="tooltip play-tooltip">Play</span>
-              <span class="tooltip pause-tooltip">Pause</span>
-            </media-tooltip-popup>
-          </media-tooltip-positioner>
-        </media-tooltip-portal>
+      <media-play-button commandfor="play-tooltip" class="button">
+        <media-play-icon class="icon play-icon"></media-play-icon>
+        <media-pause-icon class="icon pause-icon"></media-pause-icon>
+      </media-play-button>
+      <media-tooltip
+        id="play-tooltip"
+        class="surface popup-animation"
+        popover="manual"
+        delay="500"
+        side="top"
+        side-offset="12"
+        collision-padding="12"
+      >
+        <span class="tooltip play-tooltip">Play</span>
+        <span class="tooltip pause-tooltip">Pause</span>
       </media-tooltip>
 
       <div class="time-controls">
         <!-- Use the show-remaining attribute to show count down/remaining time -->
         <media-current-time-display></media-current-time-display>
 
-        <media-tooltip track-cursor-axis="x">
-          <media-tooltip-trigger>
-            <media-time-slider class="slider">
-              <media-time-slider-track class="slider-track">
-                <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
-                <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
-              </media-time-slider-track>
-              <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
-            </media-time-slider>
-          </media-tooltip-trigger>
-          <media-tooltip-portal>
-            <media-tooltip-positioner side="top" side-offset="18" collision-padding="12">
-              <media-tooltip-popup class="surface popup-animation">
-                <media-preview-time-display></media-preview-time-display>
-              </media-tooltip-popup>
-            </media-tooltip-positioner>
-          </media-tooltip-portal>
+        <media-time-slider commandfor="time-slider-tooltip" class="slider">
+          <media-time-slider-track class="slider-track">
+            <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
+            <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
+          </media-time-slider-track>
+          <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
+        </media-time-slider>
+        <media-tooltip 
+          id="time-slider-tooltip"
+          class="surface popup-animation"
+          popover="manual"
+          track-cursor-axis="x"
+          side="top"
+          side-offset="18"
+          collision-padding="12"
+        >
+          <media-preview-time-display></media-preview-time-display>
         </media-tooltip>
 
         <media-duration-display></media-duration-display>
       </div>
 
-      <media-mute-button popovertarget="volume-slider-popover" class="button">
+      <media-mute-button commandfor="volume-slider-popover" command="toggle-popover" class="button">
         <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
         <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
         <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
       </media-mute-button>
-      <media-popover
-        id="volume-slider-popover"
-        class="surface popup-animation"
-        popover
+      <media-popover 
+        id="volume-slider-popover" 
+        class="surface popup-animation" 
+        popover="manual"
         open-on-hover
         delay="200"
         close-delay="100"
@@ -1044,27 +1044,27 @@ export function generateHTMLMarkup(skin: Skin): string {
       >
         <media-volume-slider class="slider" orientation="vertical">
           <media-volume-slider-track class="slider-track">
-            <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
+            <media-volume-slider-indicator class="slider-progress"></media-volume-slider-indicator>
           </media-volume-slider-track>
           <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
         </media-volume-slider>
       </media-popover>
 
-      <media-tooltip delay="500" close-delay="0">
-        <media-tooltip-trigger>
-          <media-fullscreen-button class="button">
-            <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
-            <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
-          </media-fullscreen-button>
-        </media-tooltip-trigger>
-        <media-tooltip-portal>
-          <media-tooltip-positioner side="top" side-offset="12" collision-padding="12">
-            <media-tooltip-popup class="surface popup-animation">
-              <span class="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
-              <span class="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
-            </media-tooltip-popup>
-          </media-tooltip-positioner>
-        </media-tooltip-portal>
+      <media-fullscreen-button commandfor="fullscreen-tooltip" class="button">
+        <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
+        <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
+      </media-fullscreen-button>
+      <media-tooltip 
+        id="fullscreen-tooltip"
+        class="surface popup-animation"
+        popover="manual"
+        delay="500"
+        side="top"
+        side-offset="12"
+        collision-padding="12"
+      >
+        <span class="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
+        <span class="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
       </media-tooltip>
     </div>
   </media-container>
@@ -1082,21 +1082,21 @@ export function generateHTMLMarkup(skin: Skin): string {
     <div class="overlay"></div>
 
     <div class="control-bar">
-      <media-tooltip delay="500" close-delay="0">
-        <media-tooltip-trigger>
-          <media-play-button class="button">
-            <media-play-icon class="icon play-icon"></media-play-icon>
-            <media-pause-icon class="icon pause-icon"></media-pause-icon>
-          </media-play-button>
-        </media-tooltip-trigger>
-        <media-tooltip-portal>
-          <media-tooltip-positioner side="top" side-offset="6" collision-padding="12">
-            <media-tooltip-popup class="popup-animation">
-              <span class="tooltip play-tooltip">Play</span>
-              <span class="tooltip pause-tooltip">Pause</span>
-            </media-tooltip-popup>
-          </media-tooltip-positioner>
-        </media-tooltip-portal>
+      <media-play-button commandfor="play-tooltip" class="button">
+        <media-play-icon class="icon play-icon"></media-play-icon>
+        <media-pause-icon class="icon pause-icon"></media-pause-icon>
+      </media-play-button>
+      <media-tooltip
+        id="play-tooltip"
+        class="popup-animation"
+        popover="manual"
+        delay="500"
+        side="top"
+        side-offset="6"
+        collision-padding="12"
+      >
+        <span class="tooltip play-tooltip">Play</span>
+        <span class="tooltip pause-tooltip">Pause</span>
       </media-tooltip>
 
       <div class="time-display-group">
@@ -1109,35 +1109,35 @@ export function generateHTMLMarkup(skin: Skin): string {
         </span>
       </div>
 
-      <media-tooltip track-cursor-axis="x">
-        <media-tooltip-trigger>
-          <media-time-slider class="slider">
-            <media-time-slider-track class="slider-track">
-              <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
-              <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
-            </media-time-slider-track>
-            <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
-          </media-time-slider>
-        </media-tooltip-trigger>
-        <media-tooltip-portal>
-          <media-tooltip-positioner side="top" side-offset="12" collision-padding="12">
-            <media-tooltip-popup class="popup-animation">
-              <media-preview-time-display></media-preview-time-display>
-            </media-tooltip-popup>
-          </media-tooltip-positioner>
-        </media-tooltip-portal>
+      <media-time-slider commandfor="time-slider-tooltip" class="slider">
+        <media-time-slider-track class="slider-track">
+          <media-time-slider-progress class="slider-progress"></media-time-slider-progress>
+          <media-time-slider-pointer class="slider-pointer"></media-time-slider-pointer>
+        </media-time-slider-track>
+        <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
+      </media-time-slider>
+      <media-tooltip 
+        id="time-slider-tooltip"
+        class="popup-animation"
+        popover="manual"
+        track-cursor-axis="x"
+        side="top"
+        side-offset="12"
+        collision-padding="12"
+      >
+        <media-preview-time-display></media-preview-time-display>
       </media-tooltip>
 
       <div class="button-group">
-        <media-mute-button popovertarget="volume-slider-popover" class="button">
+        <media-mute-button commandfor="volume-slider-popover" command="toggle-popover" class="button">
           <media-volume-high-icon class="icon volume-high-icon"></media-volume-high-icon>
           <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
           <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
         </media-mute-button>
-        <media-popover
-          id="volume-slider-popover"
+        <media-popover 
+          id="volume-slider-popover" 
           class="popup-animation"
-          popover
+          popover="manual"
           open-on-hover
           delay="200"
           close-delay="100"
@@ -1147,29 +1147,27 @@ export function generateHTMLMarkup(skin: Skin): string {
         >
           <media-volume-slider class="slider" orientation="vertical">
             <media-volume-slider-track class="slider-track">
-              <media-volume-slider-progress class="slider-progress"></media-volume-slider-progress>
+              <media-volume-slider-indicator class="slider-progress"></media-volume-slider-indicator>
             </media-volume-slider-track>
             <media-volume-slider-thumb class="slider-thumb"></media-volume-slider-thumb>
           </media-volume-slider>
         </media-popover>
 
-        <media-tooltip delay="500" close-delay="0">
-          <media-tooltip-trigger>
-            <media-fullscreen-button class="button">
-              <media-fullscreen-enter-alt-icon
-                class="icon fullscreen-enter-icon"
-              ></media-fullscreen-enter-alt-icon>
-              <media-fullscreen-exit-alt-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-alt-icon>
-            </media-fullscreen-button>
-          </media-tooltip-trigger>
-          <media-tooltip-portal>
-            <media-tooltip-positioner side="top" side-offset="6" collision-padding="12">
-              <media-tooltip-popup class="popup-animation">
-                <span class="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
-                <span class="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
-              </media-tooltip-popup>
-            </media-tooltip-positioner>
-          </media-tooltip-portal>
+        <media-fullscreen-button commandfor="fullscreen-tooltip" class="button">
+          <media-fullscreen-enter-alt-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-alt-icon>
+          <media-fullscreen-exit-alt-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-alt-icon>
+        </media-fullscreen-button>
+        <media-tooltip 
+          id="fullscreen-tooltip" 
+          class="popup-animation"
+          popover="manual"
+          delay="500"
+          side="top"
+          side-offset="6"
+          collision-padding="12"
+        >
+          <span class="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
+          <span class="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
         </media-tooltip>
       </div>
     </div>
@@ -1523,7 +1521,11 @@ media-popover {
 }
 
 /* Tooltip Component Styles */
-media-tooltip-popup {
+media-tooltip {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
   color: oklab(1 0 0);
   padding: 0.25rem 0.625rem;
   border-radius: calc(infinity * 1px);
@@ -1535,13 +1537,13 @@ media-tooltip-popup {
   white-space: nowrap;
 }
 
-media-tooltip-popup[data-paused] .play-tooltip,
-media-tooltip-popup:not([data-paused]) .pause-tooltip {
+[data-paused] + media-tooltip .play-tooltip,
+:not([data-paused]) + media-tooltip .pause-tooltip {
   display: block;
 }
 
-media-tooltip-popup[data-fullscreen] .fullscreen-exit-tooltip,
-media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
+[data-fullscreen] + media-tooltip .fullscreen-exit-tooltip,
+:not([data-fullscreen]) + media-tooltip .fullscreen-enter-tooltip {
   display: block;
 }`;
   } else {
@@ -1861,7 +1863,11 @@ media-popover {
 }
 
 /* Tooltip Component Styles */
-media-tooltip-popup {
+media-tooltip {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
   color: oklab(1 0 0);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -1873,12 +1879,12 @@ media-tooltip-popup {
     0 2px 4px -2px oklab(0 0 0 / 0.1);
 }
 @media (prefers-reduced-transparency: reduce) {
-  media-tooltip-popup {
+  media-tooltip {
     background-color: oklab(0 0 0 / 0.7);
   }
 }
 @media (prefers-contrast: more) {
-  media-tooltip-popup {
+  media-tooltip {
     background-color: oklab(0 0 0 / 0.9);
   }
 }
@@ -1888,13 +1894,13 @@ media-tooltip-popup {
   white-space: nowrap;
 }
 
-media-tooltip-popup[data-paused] .play-tooltip,
-media-tooltip-popup:not([data-paused]) .pause-tooltip {
+[data-paused] + media-tooltip .play-tooltip,
+:not([data-paused]) + media-tooltip .pause-tooltip {
   display: block;
 }
 
-media-tooltip-popup[data-fullscreen] .fullscreen-exit-tooltip,
-media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
+[data-fullscreen] + media-tooltip .fullscreen-exit-tooltip,
+:not([data-fullscreen]) + media-tooltip .fullscreen-enter-tooltip {
   display: block;
 }`;
   }

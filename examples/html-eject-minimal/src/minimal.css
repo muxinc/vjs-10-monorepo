@@ -314,7 +314,11 @@ media-popover {
 }
 
 /* Tooltip Component Styles */
-media-tooltip-popup {
+media-tooltip {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
   color: oklab(1 0 0);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -326,12 +330,12 @@ media-tooltip-popup {
     0 2px 4px -2px oklab(0 0 0 / 0.1);
 }
 @media (prefers-reduced-transparency: reduce) {
-  media-tooltip-popup {
+  media-tooltip {
     background-color: oklab(0 0 0 / 0.7);
   }
 }
 @media (prefers-contrast: more) {
-  media-tooltip-popup {
+  media-tooltip {
     background-color: oklab(0 0 0 / 0.9);
   }
 }
@@ -341,12 +345,12 @@ media-tooltip-popup {
   white-space: nowrap;
 }
 
-media-tooltip-popup[data-paused] .play-tooltip,
-media-tooltip-popup:not([data-paused]) .pause-tooltip {
+[data-paused] + media-tooltip .play-tooltip,
+:not([data-paused]) + media-tooltip .pause-tooltip {
   display: block;
 }
 
-media-tooltip-popup[data-fullscreen] .fullscreen-exit-tooltip,
-media-tooltip-popup:not([data-fullscreen]) .fullscreen-enter-tooltip {
+[data-fullscreen] + media-tooltip .fullscreen-exit-tooltip,
+:not([data-fullscreen]) + media-tooltip .fullscreen-enter-tooltip {
   display: block;
 }
