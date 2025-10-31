@@ -7,6 +7,7 @@ import { SITE_TITLE } from '@/consts';
 
 import '@/styles/globals.css';
 
+import FilmGrain from '@/components/FilmGrain';
 import Posthog from '@/components/Posthog.astro';
 import ThemeInit from '@/components/ThemeInit.astro';
 
@@ -18,6 +19,7 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image } = Astro.props;
+
 const fullTitle = Array.isArray(title)
   ? title.filter((t) => t !== SITE_TITLE).join(' | ') + ` | ${SITE_TITLE}`
   : title === SITE_TITLE
@@ -78,15 +80,21 @@ const fullTitle = Array.isArray(title)
   <body
     class:list={[
       'relative',
-      'bg-light-80 dark:bg-dark-100 text-dark-100 dark:text-light-100',
-      'font-sans antialiased text-pretty text-base',
+      'font-sans antialiased text-pretty text-base text-dark-100 dark:text-light-100',
       'min-w-80',
       '[--nav-h:calc(var(--spacing)*13)] sm:[--nav-h:calc(var(--spacing)*14)]',
       'selection:bg-yellow selection:text-dark-100',
     ]}
   >
-    {/* BaseUI requires body.relative and div.isolate */}
-    <div class="isolate">
+    <div
+      class:list={[
+        // BaseUI requires body.relative and div.isolate
+        'isolate',
+        // background colors are applied here for a more consistent FilmGrain blending
+        'bg-light-80 dark:bg-dark-100',
+      ]}
+    >
+      <FilmGrain currentPath={Astro.url.pathname} />
       <slot />
     </div>
   </body>
