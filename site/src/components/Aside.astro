@@ -33,17 +33,21 @@ const renderTitle = title ?? defaultTitles[type];
 
 <aside
   class={twMerge(
-    clsx(
-      'w-full max-w-3xl mx-auto my-6 border-l-2 pl-3',
-      type === 'note' && 'border-blue',
-      type === 'tip' && 'border-purple',
-      type === 'caution' && 'border-yellow',
-      type === 'danger' && 'border-red',
-    ),
+    clsx('w-full max-w-3xl mx-auto flex my-6 rounded-lg overflow-hidden border border-light-40 dark:border-dark-80 '),
     className,
   )}
 >
-  <div class="flex gap-3">
+  <div
+    class={clsx(
+      'w-2 self-stretch',
+      type === 'note' && 'bg-blue',
+      type === 'tip' && 'bg-purple',
+      type === 'caution' && 'bg-orange',
+      type === 'danger' && 'bg-red',
+    )}
+  >
+  </div>
+  <div class={clsx('flex-1 flex p-6 pl-4 gap-4')}>
     <div class="flex-shrink-0 mt-[3px]">
       <Icon
         size={18}
@@ -51,7 +55,7 @@ const renderTitle = title ?? defaultTitles[type];
           clsx(
             type === 'note' && 'text-blue',
             type === 'tip' && ' text-purple',
-            type === 'caution' && 'text-yellow',
+            type === 'caution' && 'text-orange',
             type === 'danger' && 'text-red',
           ),
         )}
