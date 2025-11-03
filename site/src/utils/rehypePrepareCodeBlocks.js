@@ -2,12 +2,9 @@
  * Adapted from https://mdxjs.com/guides/syntax-highlighting/
  *
  * This plugin:
- * 1. Generates stable IDs for <pre> blocks (for tabs)
- * 2. Tags <code> children of <pre> blocks so they know they're in a pre block
- * 3. Marks <pre> blocks with hasFrame based on whether they're inside a <TabsPanel> JSX component
+ * 1. Tags <code> children of <pre> blocks so they know they're in a pre block
+ * 2. Marks <pre> blocks with hasFrame based on whether they're inside a <TabsPanel> JSX component
  */
-
-let preBlockCounter = 0;
 
 export default function rehypePrepareCodeBlocks() {
   return (tree) => {
@@ -30,9 +27,6 @@ export default function rehypePrepareCodeBlocks() {
       if (node.type === 'element' && node.tagName === 'pre') {
         // Mark whether this pre block is inside tabs
         node.properties.hasFrame = context.hasFrame;
-
-        // Generate stable ID for this pre block
-        node.properties['data-tabs-id'] = `pre-${preBlockCounter++}`;
 
         // Tag <code> children
         node.children.forEach((child) => {

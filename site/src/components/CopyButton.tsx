@@ -36,8 +36,16 @@ export default function CopyButton({
         if (container) {
           // Find the target within that container
           const target = container.querySelector(copyFrom.target);
-          text = target?.textContent || '';
+          if (target) {
+            text = target?.textContent || '';
+          } else {
+            console.warn(`CopyButton: No target found for selector "${copyFrom.target}" within container "${copyFrom.container}"`);
+          }
+        } else {
+          console.warn(`CopyButton: No container found for selector "${copyFrom.container}"`);
         }
+      } else {
+        console.warn('CopyButton: buttonRef is null');
       }
       if (text) {
         await navigator.clipboard.writeText(text.trim());

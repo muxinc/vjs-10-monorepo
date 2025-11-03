@@ -1,6 +1,6 @@
 import type { Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
-import { TabsPanel, TabsRoot } from '@/components/Tabs';
+import { Tab, TabsList, TabsPanel, TabsRoot } from '@/components/Tabs';
 import { framework, skin } from '@/stores/homePageDemos';
 import {
   generateHTMLCSS,
@@ -37,20 +37,21 @@ export default function EjectDemo({ className }: { className?: string }) {
 
   if ($framework === 'html') {
     return (
-      <TabsRoot
-        id="eject-html"
-        aria-label="HTML implementation"
-        titles={{ html: 'HTML', css: 'CSS', javascript: 'JavaScript' }}
-        className={className}
-        maxWidth={false}
-      >
-        <TabsPanel tabsId="eject-html" value="html">
+      <TabsRoot key={$framework} className={className} maxWidth={false}>
+        <TabsList label="HTML implementation">
+          <Tab value="html" initial>
+            HTML
+          </Tab>
+          <Tab value="css">CSS</Tab>
+          <Tab value="javascript">JavaScript</Tab>
+        </TabsList>
+        <TabsPanel value="html" initial>
           <ClientCode code={generateHTMLCode($skin)} lang="html" />
         </TabsPanel>
-        <TabsPanel tabsId="eject-html" value="css">
+        <TabsPanel value="css">
           <ClientCode code={generateCSS($skin)} lang="css" />
         </TabsPanel>
-        <TabsPanel tabsId="eject-html" value="javascript">
+        <TabsPanel value="javascript">
           <ClientCode code={generateJS($skin)} lang="javascript" />
         </TabsPanel>
       </TabsRoot>
@@ -58,17 +59,17 @@ export default function EjectDemo({ className }: { className?: string }) {
   }
 
   return (
-    <TabsRoot
-      id="eject-react"
-      aria-label="React implementation"
-      titles={{ react: 'React', css: 'CSS' }}
-      className={className}
-      maxWidth={false}
-    >
-      <TabsPanel tabsId="eject-react" value="react">
+    <TabsRoot key={$framework} className={className} maxWidth={false}>
+      <TabsList label="React implementation">
+        <Tab value="react" initial>
+          React
+        </Tab>
+        <Tab value="css">CSS</Tab>
+      </TabsList>
+      <TabsPanel value="react" initial>
         <ClientCode code={generateReactCode($skin)} lang="tsx" />
       </TabsPanel>
-      <TabsPanel tabsId="eject-react" value="css">
+      <TabsPanel value="css">
         <ClientCode code={generateReactCSS($skin)} lang="css" />
       </TabsPanel>
     </TabsRoot>
