@@ -2,14 +2,14 @@ import type { Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
 import { Tab, TabsList, TabsPanel, TabsRoot } from '@/components/Tabs';
 import { framework, skin } from '@/stores/homePageDemos';
+import ClientCode from '../Code/ClientCode';
 import {
   generateHTMLCSS,
   generateHTMLJS,
   generateHTMLMarkup,
   generateReactComponent,
   generateReactCSS as genReactCSS,
-} from '@/utils/ejectCodeGenerator';
-import ClientCode from '../Code/ClientCode';
+} from './ejectCodeGenerator';
 
 function generateReactCode(skin: Skin): string {
   return generateReactComponent(skin);
