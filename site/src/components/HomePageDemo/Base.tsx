@@ -7,27 +7,27 @@ import ClientCode from '../Code/ClientCode';
 function generateHTMLCode(skin: Skin): string {
   const skinTag = `${skin}-skin`;
 
-  return `<video-provider>
+  return `<media-provider>
   <${skinTag}>
     <video src="https://example.com/video.mp4"></video>
   </${skinTag}>
-</video-provider>`;
+</media-provider>`;
 }
 
 function generateReactCode(skin: Skin): string {
   const skinComponent = skin === 'frosted' ? 'FrostedSkin' : 'MinimalSkin';
   const skinImport = skin === 'frosted' ? 'frosted' : 'minimal';
 
-  return `import { VideoProvider, Video } from '@videojs/react';
+  return `import { MediaProvider, Video } from '@videojs/react';
 import { ${skinComponent} } from '@videojs/react/skins/${skinImport}';
 
 export const VideoPlayer = () => {
   return (
-    <VideoProvider>
+    <MediaProvider>
       <${skinComponent}>
         <Video src="https://example.com/video.mp4" />
       </${skinComponent}>
-    </VideoProvider>
+    </MediaProvider>
   );
 };`;
 }
