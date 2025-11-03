@@ -153,5 +153,5 @@ To discuss larger ideas or prototypes, open a thread in:
 
 [vjs-gh]: https://github.com/videojs/v10
 [semantic-commit-style]: https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
-[discord]: https://discord.gg/b664Gq3pdy
+[discord]: https://discord.gg/zdrCwByt
 [gh-discussions]: https://github.com/videojs/v10/discussions
