@@ -1,6 +1,6 @@
 import type { Skin } from '@/stores/homePageDemos';
 import { useStore } from '@nanostores/react';
-import { TabsPanel, TabsRoot } from '@/components/Tabs';
+import { Tab, TabsList, TabsPanel, TabsRoot } from '@/components/Tabs';
 import { framework, skin } from '@/stores/homePageDemos';
 import ClientCode from '../Code/ClientCode';
 
@@ -42,17 +42,17 @@ export default function BaseDemo({ className }: { className?: string }) {
 
   if ($framework === 'html') {
     return (
-      <TabsRoot
-        id="base-html"
-        aria-label="HTML implementation"
-        titles={{ html: 'HTML', javascript: 'JavaScript' }}
-        className={className}
-        maxWidth={false}
-      >
-        <TabsPanel tabsId="base-html" value="html">
+      <TabsRoot key={$framework} className={className} maxWidth={false}>
+        <TabsList label="HTML implementation">
+          <Tab value="html" initial>
+            HTML
+          </Tab>
+          <Tab value="javascript">JavaScript</Tab>
+        </TabsList>
+        <TabsPanel value="html" initial>
           <ClientCode code={generateHTMLCode($skin)} lang="html" />
         </TabsPanel>
-        <TabsPanel tabsId="base-html" value="javascript">
+        <TabsPanel value="javascript">
           <ClientCode code={generateJS($skin)} lang="javascript" />
         </TabsPanel>
       </TabsRoot>
@@ -60,14 +60,13 @@ export default function BaseDemo({ className }: { className?: string }) {
   }
 
   return (
-    <TabsRoot
-      id="base-react"
-      aria-label="React implementation"
-      titles={{ react: 'React' }}
-      className={className}
-      maxWidth={false}
-    >
-      <TabsPanel tabsId="base-react" value="react">
+    <TabsRoot key={$framework} className={className} maxWidth={false}>
+      <TabsList label="React implementation">
+        <Tab value="react" initial>
+          React
+        </Tab>
+      </TabsList>
+      <TabsPanel value="react" initial>
         <ClientCode code={generateReactCode($skin)} lang="tsx" />
       </TabsPanel>
     </TabsRoot>

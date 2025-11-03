@@ -7,7 +7,7 @@ import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import StyleCase from '@/components/docs/StyleCase.astro';
 import Minimal from '@/components/frames/Minimal.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
-import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs.tsx';
 import DocsLink from '@/components/docs/DocsLink.astro';
 import Aside from '@/components/Aside.astro';
 
@@ -298,21 +298,20 @@ console.log('Hello, TypeScript!');
 
 ### Tabs
 
-Use `<TabsRoot>` and `<TabsPanel>` to show multiple code examples side-by-side:
+Use `<TabsRoot>`, `<Tab>`, and `<TabsPanel>` to show multiple code examples side-by-side:
 
 ````mdx
-<TabsRoot
-  aria-label="Code examples"
-  titles={{ typescript: 'TypeScript', javascript: 'JavaScript' }}
-  client:load
->
-  <TabsPanel value="typescript" client:load>
+<TabsRoot client:load>
+  <TabsList client:load label="Code examples">
+    <Tab client:load value="typescript" initial>TypeScript</Tab>
+    <Tab client:load value="javascript">JavaScript</Tab>
+  </TabsList>
+  <TabsPanel client:load value="typescript" initial>
     ```ts
     console.log('Hello, TypeScript!');
     ```
   </TabsPanel>
-
-  <TabsPanel value="javascript" client:load>
+  <TabsPanel client:load value="javascript">
     ```js
     console.log('Hello, JavaScript!');
     ```
@@ -320,18 +319,17 @@ Use `<TabsRoot>` and `<TabsPanel>` to show multiple code examples side-by-side:
 </TabsRoot>
 ````
 Which renders
-<TabsRoot
-  aria-label="Code examples"
-  titles={{ typescript: 'TypeScript', javascript: 'JavaScript' }}
-  client:load
->
-  <TabsPanel value="typescript" client:load>
+<TabsRoot client:load>
+  <TabsList client:load label="Code examples">
+    <Tab client:load value="typescript" initial>TypeScript</Tab>
+    <Tab client:load value="javascript">JavaScript</Tab>
+  </TabsList>
+  <TabsPanel client:load value="typescript" initial>
     ```ts
     console.log('Hello, TypeScript!');
     ```
   </TabsPanel>
-
-  <TabsPanel value="javascript" client:load>
+  <TabsPanel client:load value="javascript">
     ```js
     console.log('Hello, JavaScript!');
     ```
@@ -339,10 +337,10 @@ Which renders
 </TabsRoot>
 
 **Important notes:**
-- You might've noticed that elsewhere in the codebase, TabsRoot requires `id` and TabsPanel requires `tabsId`. In MDX, these are generated for you with a rehype plugin
-- Both `<TabsRoot>` and `<TabsPanel>` require `client:load` directive in MDX
-- The first key in `titles` will be the default active tab. Your panels should be in the same order as the keys in `titles`.
-- Use descriptive `aria-label` for accessibility
+- Use `<TabsList>` to wrap Tab components, and place TabsPanel components directly as children of TabsRoot
+- Set `initial` on the first Tab and first TabsPanel to make them active by default
+- All child components (`TabsList`, `Tab`, `TabsPanel`) require `client:load` directive in MDX
+- Use descriptive `label` prop on TabsList for accessibility
 
 
 ## Displaying Code from Files
@@ -353,15 +351,14 @@ Use the `<ServerCode>` component to display code imported from source files with
 
 ```mdx
 import componentCode from '@/examples/react/Component.tsx?raw';
-import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs';
 import ServerCode from '@/components/Code/ServerCode.astro';
 
-<TabsRoot
-  aria-label="Component implementation"
-  titles={{ component: 'Component', css: 'CSS Module' }}
-  client:load
->
-  <TabsPanel value="component" client:load>
+<TabsRoot client:load>
+  <TabsList client:load label="Component implementation">
+    <Tab client:load value="component" initial>Component</Tab>
+  </TabsList>
+  <TabsPanel client:load value="component" initial>
     <ServerCode code={componentCode} lang="tsx" />
   </TabsPanel>
 </TabsRoot>
@@ -369,12 +366,11 @@ import ServerCode from '@/components/Code/ServerCode.astro';
 
 Which will happily render
 
-<TabsRoot
-  aria-label="Component implementation"
-  titles={{ component: 'Component' }}
-  client:load
->
-  <TabsPanel value="component" client:load>
+<TabsRoot client:load>
+  <TabsList client:load label="Component implementation">
+    <Tab client:load value="component" initial>Component</Tab>
+  </TabsList>
+  <TabsPanel client:load value="component" initial>
     <ServerCode code={`import React from 'react';
 
 function Component() {
@@ -403,28 +399,26 @@ This is best for demos that don't need accompanying code, or when the code is sh
 
 ### Option 2: Demo with Code in TabsRoot
 
-Place the demo directly inside `<TabsRoot>` (as a sibling to `<TabsPanel>` elements) to keep code and demo together:
+Place the demo directly inside the `tabs-panels` Fragment (as a sibling to `<TabsPanel>` elements) to keep code and demo together:
 
 ```mdx
 import { MyDemo } from '@/examples/react/MyDemo';
 import componentCode from '@/examples/react/MyDemo.tsx?raw';
 import cssCode from '@/examples/react/MyDemo.module.css?raw';
-import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs';
 import ServerCode from '@/components/Code/ServerCode.astro';
 
-<TabsRoot
-  aria-label="MyDemo implementation"
-  titles={{ component: 'Component', css: 'CSS Module' }}
-  client:load
->
-  <TabsPanel value="component" client:load>
+<TabsRoot client:load>
+  <TabsList client:load label="MyDemo implementation">
+    <Tab client:load value="component" initial>Component</Tab>
+    <Tab client:load value="css">CSS Module</Tab>
+  </TabsList>
+  <TabsPanel client:load value="component" initial>
     <ServerCode code={componentCode} lang="tsx" />
   </TabsPanel>
-
-  <TabsPanel value="css" client:load>
+  <TabsPanel client:load value="css">
     <ServerCode code={cssCode} lang="css" />
   </TabsPanel>
-
   <MyDemo client:load />
 </TabsRoot>
 ```

@@ -4,7 +4,7 @@ description: Understanding the three-tier architecture of Video.js v10 - State, 
 ---
 
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
-import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs';
 import DocsLink from '@/components/docs/DocsLink.astro';
 
 Video.js v10 is built around a three-tier architecture that separates concerns and maximizes flexibility. Each tier is designed to work independently or together, allowing you to use as much or as little of Video.js as you need.
@@ -93,12 +93,12 @@ function Player() {
 </FrameworkCase>
 
 <FrameworkCase frameworks={["html"]}>
-<TabsRoot
-  aria-label="HTML implementation"
-  titles={{  html: 'HTML', javascript: 'JavaScript' }}
-  client:load
->
-    <TabsPanel value="html" client:load>
+<TabsRoot client:load>
+  <TabsList client:load label="HTML implementation">
+    <Tab client:load value="html" initial>HTML</Tab>
+    <Tab client:load value="javascript">JavaScript</Tab>
+  </TabsList>
+  <TabsPanel client:load value="html" initial>
 
 ```html
 <!-- Tier 1: State Management -->
@@ -112,14 +112,12 @@ function Player() {
 ```
 
   </TabsPanel>
-
-  <TabsPanel value="javascript" client:load>
+  <TabsPanel client:load value="javascript">
 
 ```ts
 import '@videojs/html/skins/frosted';
 ```
 
   </TabsPanel>
-
 </TabsRoot>
 </FrameworkCase>

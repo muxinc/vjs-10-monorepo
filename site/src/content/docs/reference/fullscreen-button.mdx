@@ -13,7 +13,7 @@ import htmlCssStr from '@/examples/html/fullscreen-button/fullscreen-button.css?
 import htmlJsStr from '@/examples/html/fullscreen-button/fullscreen-button.js?raw';
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
-import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs';
 
 ## Features
 
@@ -25,41 +25,37 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
 ## Example
 
 <FrameworkCase frameworks={["react"]}>
-  <TabsRoot
-    aria-label="React implementation"
-    titles={{ component: 'Component', css: 'CSS Module' }}
-    client:load
-  >
-    <TabsPanel value="component" client:load>
+  <TabsRoot client:load>
+    <TabsList client:load label="React implementation">
+      <Tab client:load value="component" initial>Component</Tab>
+      <Tab client:load value="css">CSS Module</Tab>
+    </TabsList>
+    <TabsPanel client:load value="component" initial>
       <ServerCode code={componentModuleStr} lang="tsx" />
     </TabsPanel>
-
-    <TabsPanel value="css" client:load>
+    <TabsPanel client:load value="css">
       <ServerCode code={cssModuleStr} lang="css" />
     </TabsPanel>
-
     <FullscreenButtonDemo client:load />
   </TabsRoot>
 </FrameworkCase>
 
 <FrameworkCase frameworks={["html"]}>
-  <TabsRoot
-    aria-label="HTML implementation"
-    titles={{ html: 'HTML', css: 'CSS', javascript: 'JS' }}
-    client:load
-  >
-    <TabsPanel value="html" client:load>
+  <TabsRoot client:load>
+    <TabsList client:load label="HTML implementation">
+      <Tab client:load value="html" initial>HTML</Tab>
+      <Tab client:load value="css">CSS</Tab>
+      <Tab client:load value="javascript">JS</Tab>
+    </TabsList>
+    <TabsPanel client:load value="html" initial>
       <ServerCode code={htmlStr} lang="html" />
     </TabsPanel>
-
-    <TabsPanel value="css" client:load>
+    <TabsPanel client:load value="css">
       <ServerCode code={htmlCssStr} lang="css" />
     </TabsPanel>
-
-    <TabsPanel value="javascript" client:load>
+    <TabsPanel client:load value="javascript">
       <ServerCode code={htmlJsStr} lang="js" />
     </TabsPanel>
-
     <FullscreenButtonDemo client:load />
   </TabsRoot>
 </FrameworkCase>

@@ -13,7 +13,7 @@ import htmlVerticalStr from '@/examples/html/volume-slider/snippet-vertical.html
 import htmlCssStr from '@/examples/html/volume-slider/volume-slider.css?raw';
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
-import { TabsRoot, TabsPanel } from '@/components/Tabs';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs';
 
 ## Features
 
@@ -26,41 +26,37 @@ import { TabsRoot, TabsPanel } from '@/components/Tabs';
 ## Example
 
 <FrameworkCase frameworks={["react"]}>
-  <TabsRoot
-    aria-label="React implementation"
-    titles={{ component: 'Component', css: 'CSS Module' }}
-    client:load
-  >
-    <TabsPanel value="component" client:load>
+  <TabsRoot client:load>
+    <TabsList client:load label="React implementation">
+      <Tab client:load value="component" initial>Component</Tab>
+      <Tab client:load value="css">CSS Module</Tab>
+    </TabsList>
+    <TabsPanel client:load value="component" initial>
       <ServerCode code={componentModuleStr} lang="tsx" />
     </TabsPanel>
-
-    <TabsPanel value="css" client:load>
+    <TabsPanel client:load value="css">
       <ServerCode code={cssModuleStr} lang="css" />
     </TabsPanel>
-
     <VolumeSliderDemo client:load />
   </TabsRoot>
 </FrameworkCase>
 
 <FrameworkCase frameworks={["html"]}>
-  <TabsRoot
-    aria-label="HTML implementation"
-    titles={{ 'html-horizontal': 'HTML (Horizontal)', 'html-vertical': 'HTML (Vertical)', css: 'CSS' }}
-    client:load
-  >
-    <TabsPanel value="html-horizontal" client:load>
+  <TabsRoot client:load>
+    <TabsList client:load label="HTML implementation">
+      <Tab client:load value="html-horizontal" initial>HTML (Horizontal)</Tab>
+      <Tab client:load value="html-vertical">HTML (Vertical)</Tab>
+      <Tab client:load value="css">CSS</Tab>
+    </TabsList>
+    <TabsPanel client:load value="html-horizontal" initial>
       <ServerCode code={htmlHorizontalStr} lang="html" />
     </TabsPanel>
-
-    <TabsPanel value="html-vertical" client:load>
+    <TabsPanel client:load value="html-vertical">
       <ServerCode code={htmlVerticalStr} lang="html" />
     </TabsPanel>
-
-    <TabsPanel value="css" client:load>
+    <TabsPanel client:load value="css">
       <ServerCode code={htmlCssStr} lang="css" />
     </TabsPanel>
-
     <VolumeSliderDemo client:load />
   </TabsRoot>
 </FrameworkCase>

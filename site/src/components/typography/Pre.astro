@@ -1,13 +1,12 @@
 ---
 import type { HTMLTag, Polymorphic } from 'astro/types';
-import { TabsRoot, TabsPanel } from '@/components/Tabs.tsx';
+import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs.tsx';
 
 type Props<Tag extends HTMLTag = 'pre'> = Polymorphic<{ as: Tag }> & {
   maxWidth?: boolean;
   class?: string;
   hasFrame?: boolean;
   title?: string;
-  'data-tabs-id'?: string;
 };
 
 const { as: Tag = 'pre', maxWidth = false, class: className, style: _style, title, hasFrame, ...props } = Astro.props;
@@ -15,11 +14,6 @@ const { as: Tag = 'pre', maxWidth = false, class: className, style: _style, titl
 const language = props['data-language'];
 const label = title || language || 'code';
 
-// Use stable ID from rehype plugin (generated at build time)
-const tabsId = props['data-tabs-id'] || '';
-if (tabsId === '' && !hasFrame) {
-  throw new Error('Pre component requires a stable "data-tabs-id" prop when not used inside tabs.');
-}
 const value = 'code';
 ---
 
@@ -29,8 +23,13 @@ const value = 'code';
       <slot />
     </Tag>
   ) : (
-    <TabsRoot id={tabsId} aria-label={`${label} code`} titles={{ [value]: label }} client:load>
-      <TabsPanel tabsId={tabsId} value={value} client:load>
+    <TabsRoot client:load>
+      <TabsList client:load label={`${label} code`}>
+        <Tab client:load value={value} initial>
+          {label}
+        </Tab>
+      </TabsList>
+      <TabsPanel client:load value={value} initial>
         <Tag class={className} {...props}>
           <slot />
         </Tag>
