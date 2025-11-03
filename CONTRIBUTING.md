@@ -25,10 +25,10 @@ You’ll need the following installed:
 2. Clone your fork locally and set up upstream tracking:
 
 ```bash
-git clone https://github.com/{your-github-username}/vjs-10-monorepo.git
-cd vjs-10-monorepo
+git clone https://github.com/{your-github-username}/v10.git
+cd v10
 
-git remote add upstream git@github.com:videojs/vjs-10-monorepo.git
+git remote add upstream git@github.com:videojs/v10.git
 git fetch upstream
 git branch --set-upstream-to=upstream/main main
 ```
@@ -151,7 +151,7 @@ To discuss larger ideas or prototypes, open a thread in:
 - [Discord][discord]
 - [GitHub Discussions][gh-discussions]
 
-[vjs-gh]: https://github.com/videojs/vjs-10-monorepo
+[vjs-gh]: https://github.com/videojs/v10
 [semantic-commit-style]: https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
 [discord]: https://discord.gg/b664Gq3pdy
-[gh-discussions]: https://github.com/videojs/vjs-10-monorepo/discussions
+[gh-discussions]: https://github.com/videojs/v10/discussions
