@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-preview.5](https://github.com/videojs/v10/compare/@videojs/utils@0.1.0-preview.4...@videojs/utils@0.1.0-preview.5) (2025-11-03)
+
+
+### Miscellaneous Chores
+
+* **@videojs/utils:** Synchronize videojs versions
+
 ## [0.1.0-preview.4](https://github.com/videojs/v10/compare/@videojs/utils@0.1.0-preview.3...@videojs/utils@0.1.0-preview.4) (2025-10-30)
 
 

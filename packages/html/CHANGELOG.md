@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0-preview.5](https://github.com/videojs/v10/compare/@videojs/html@0.1.0-preview.4...@videojs/html@0.1.0-preview.5) (2025-11-03)
+
+
+### Features
+
+* update html tooltip API / use command attr ([#151](https://github.com/videojs/v10/issues/151)) ([1e7c8ae](https://github.com/videojs/v10/commit/1e7c8ae82e317bada5b7bc2346d5b73b5f9bf5b7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.5
+    * @videojs/icons bumped to 0.1.0-preview.5
+    * @videojs/utils bumped to 0.1.0-preview.5
+
 ## [0.1.0-preview.4](https://github.com/videojs/v10/compare/@videojs/html@0.1.0-preview.3...@videojs/html@0.1.0-preview.4) (2025-10-30)
 
 
