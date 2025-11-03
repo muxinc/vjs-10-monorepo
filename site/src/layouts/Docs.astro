@@ -37,11 +37,11 @@ const docTitles = new Map(allDocs.map((d) => [d.id, getDocTitle(d, framework)]))
       <DocsSidebar slot="mobile-nav" framework={framework} style={style} docTitles={docTitles} />
     </NavBar>
     <aside
-      class="hidden lg:block lg:border-r border-light-40 dark:border-dark-80 z-10 sticky overflow-y-scroll"
+      class="hidden lg:flex flex-col lg:border-r border-light-40 dark:border-dark-80 z-10 sticky overflow-y-scroll"
       style="top: var(--nav-h); max-height: calc(100vh - var(--nav-h));"
     >
       <FilmGrain currentPath={Astro.url.pathname} />
-      <DocsSidebar framework={framework} style={style} docTitles={docTitles}>
+      <DocsSidebar framework={framework} style={style} docTitles={docTitles} class="flex-1">
         <Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
       </DocsSidebar>
     </aside>
