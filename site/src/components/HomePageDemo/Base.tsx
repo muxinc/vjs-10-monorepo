@@ -18,7 +18,8 @@ function generateReactCode(skin: Skin): string {
   const skinComponent = skin === 'frosted' ? 'FrostedSkin' : 'MinimalSkin';
   const skinImport = skin === 'frosted' ? 'frosted' : 'minimal';
 
-  return `import { MediaProvider, Video } from '@videojs/react';
+  return `// npm install @videojs/react@next
+import { MediaProvider, Video } from '@videojs/react';
 import { ${skinComponent} } from '@videojs/react/skins/${skinImport}';
 
 export const VideoPlayer = () => {
@@ -33,7 +34,8 @@ export const VideoPlayer = () => {
 }
 
 function generateJS(skin: Skin): string {
-  return `import '@videojs/html/skins/${skin}';`;
+  return `// npm install @videojs/html@next
+import '@videojs/html/skins/${skin}';`;
 }
 
 export default function BaseDemo({ className }: { className?: string }) {
