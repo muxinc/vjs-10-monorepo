@@ -22,7 +22,7 @@ interface TabsRootProps {
   className?: string;
   id?: string;
 }
-export function TabsRoot({ children, maxWidth, className, id: propId }: TabsRootProps) {
+export function TabsRoot({ children, maxWidth = true, className, id: propId }: TabsRootProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHydrated = useIsHydrated();
   /**
