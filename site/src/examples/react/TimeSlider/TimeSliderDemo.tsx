@@ -10,7 +10,7 @@ import { BasicTimeSlider } from './BasicTimeSlider';
 export function TimeSliderDemo() {
   return (
     <MediaProvider>
-      <MediaContainer style={{ position: 'relative' }}>
+      <MediaContainer style={{ position: 'relative', zIndex: 10 }}>
         <Video
           src={VJS8_DEMO_VIDEO.hls}
           poster={VJS8_DEMO_VIDEO.poster}
