@@ -3,14 +3,16 @@ import type { ChangeEventHandler } from 'react';
 import { FrostedSkin, MinimalSkin, Video, VideoProvider } from '@videojs/react';
 import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@videojs/react/icons';
 import clsx from 'clsx';
-
-// import FrostedSkin from './skins/frosted/FrostedSkin';
-// import MinimalSkin from './skins/toasted/MinimalSkin';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { useFullscreen } from './hooks/useFullscreen';
 
 // NOTE: Commented out imports are for testing locally/externally defined skins.
 // import { VideoProvider, Video } from '@videojs/react';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { useFullscreen } from './hooks/useFullscreen';
+// import FrostedSkin from './skins/frosted/FrostedSkin';
+// import MinimalSkin from './skins/toasted/MinimalSkin';
+
+import FrostedEjectedSkin from './skins/frosted-eject/FrostedSkin';
+import MinimalEjectedSkin from './skins/minimal-eject/MinimalSkin';
 import '@videojs/react/skins/frosted.css';
 import '@videojs/react/skins/minimal.css';
 import './globals.css';
@@ -18,13 +20,23 @@ import './globals.css';
 const skins = [
   {
     key: 'frosted',
-    name: 'Frosted',
+    name: 'Frosted (imported)',
     component: FrostedSkin,
   },
   {
+    key: 'frosted-eject',
+    name: 'Frosted (ejected)',
+    component: FrostedEjectedSkin,
+  },
+  {
     key: 'minimal',
-    name: 'Minimal',
+    name: 'Minimal (imported)',
     component: MinimalSkin,
+  },
+  {
+    key: 'minimal-eject',
+    name: 'Minimal (ejected)',
+    component: MinimalEjectedSkin,
   },
 ] as const;
 
@@ -111,9 +123,11 @@ export default function App(): JSX.Element {
   const skinClassName = useMemo(() => {
     switch (skinKey) {
       case 'frosted':
-        return 'aspect-video rounded-4xl shadow shadow-lg shadow-black/15';
+      case 'frosted-eject':
+        return 'aspect-video !rounded-4xl shadow shadow-lg shadow-black/15';
       case 'minimal':
-        return 'aspect-video rounded-2xl shadow shadow-lg shadow-black/15';
+      case 'minimal-eject':
+        return 'aspect-video !rounded-2xl shadow shadow-lg shadow-black/15';
       default:
         return '';
     }

@@ -94,32 +94,6 @@ importers:
         specifier: ^7.1.6
         version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
 
-  examples/html-eject-frosted:
-    dependencies:
-      '@videojs/html':
-        specifier: workspace:*
-        version: link:../../packages/html
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.6
-        version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
-
-  examples/html-eject-minimal:
-    dependencies:
-      '@videojs/html':
-        specifier: workspace:*
-        version: link:../../packages/html
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.6
-        version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
-
   examples/next-demo:
     dependencies:
       next:
@@ -196,86 +170,6 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
-      vite:
-        specifier: ^7.1.6
-        version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
-
-  examples/react-eject-frosted:
-    dependencies:
-      '@videojs/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-      screenfull:
-        specifier: ^6.0.2
-        version: 6.0.2
-      tailwindcss:
-        specifier: ^4.1.13
-        version: 4.1.14
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.1.0
-        version: 4.1.14(vite@7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
-      '@types/react':
-        specifier: ^18.0.0
-        version: 18.3.24
-      '@types/react-dom':
-        specifier: ^18.0.0
-        version: 18.3.7(@types/react@18.3.24)
-      '@vitejs/plugin-react':
-        specifier: ^5.0.3
-        version: 5.0.3(vite@7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.6
-        version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
-
-  examples/react-eject-minimal:
-    dependencies:
-      '@videojs/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-      screenfull:
-        specifier: ^6.0.2
-        version: 6.0.2
-      tailwindcss:
-        specifier: ^4.1.13
-        version: 4.1.14
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.1.0
-        version: 4.1.14(vite@7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
-      '@types/react':
-        specifier: ^18.0.0
-        version: 18.3.24
-      '@types/react-dom':
-        specifier: ^18.0.0
-        version: 18.3.7(@types/react@18.3.24)
-      '@vitejs/plugin-react':
-        specifier: ^5.0.3
-        version: 5.0.3(vite@7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
       vite:
         specifier: ^7.1.6
         version: 7.1.6(@types/node@22.18.6)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
