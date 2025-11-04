@@ -19,8 +19,8 @@ function generateReactCode(skin: Skin): string {
   const skinImport = skin === 'frosted' ? 'frosted' : 'minimal';
 
   return `// npm install @videojs/react@next
-import { MediaProvider, Video } from '@videojs/react';
-import { ${skinComponent} } from '@videojs/react/skins/${skinImport}';
+import { MediaProvider, ${skinComponent}, Video } from '@videojs/react';
+import '@videojs/react/skins/${skinImport}.css';
 
 export const VideoPlayer = () => {
   return (
