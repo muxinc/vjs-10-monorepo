@@ -2,6 +2,7 @@
 import type { Guide, Section, SupportedFramework, SupportedStyle } from '@/types/docs';
 import { isSection } from '@/types/docs';
 import { ChevronDown } from 'lucide-react';
+import GithubSlugger from 'github-slugger';
 
 type Props<F extends SupportedFramework = SupportedFramework> = {
   item: Guide | Section;
@@ -13,6 +14,7 @@ type Props<F extends SupportedFramework = SupportedFramework> = {
 
 const { item, framework, style, docTitles, depth = 0 } = Astro.props;
 const currentPath = Astro.url.pathname;
+const slugger = new GithubSlugger();
 
 // Helper to check if this item or any of its children contains the active path
 function containsActivePath(item: Guide | Section): boolean {
@@ -29,7 +31,12 @@ const isActive = containsActivePath(item);
 
 {
   isSection(item) ? (
-    <details open class="group my-4 first:mt-0" style={`padding-left: calc(var(--spacing) * ${depth * 4})`}>
+    <details
+      id={slugger.slug(item.sidebarLabel)}
+      open
+      class="group my-4 first:mt-0"
+      style={depth ? `padding-left: calc(var(--spacing) * ${depth * 4})` : ``}
+    >
       <summary
         class:list={[
           'py-2 flex items-center gap-4 ',
@@ -50,6 +57,7 @@ const isActive = containsActivePath(item);
     </details>
   ) : (
     <a
+      aria-current={isActive ? 'page' : undefined}
       class:list={[
         'py-2 flex items-center gap-4 ',
         'intent:text-dark-100 dark:intent:text-light-100 cursor-pointer',
