@@ -31,7 +31,10 @@ const docsSidebarId = 'docs-sidebar';
 ---
 
 <Base title={[getDocTitle(doc, framework), 'Docs']} description={doc.data.description}>
-  <slot name="head" slot="head" />
+  <Fragment slot="head">
+    <DocsSidebarRestoration docsSidebarId={docsSidebarId} />
+    <slot name="head" slot="head" />
+  </Fragment>
   <div
     class="grid grid-cols-1 lg:grid-cols-(--lg-grid-cols) min-h-screen"
     style="--lg-grid-cols: calc(var(--spacing) * 75) 1fr;grid-template-rows:auto minmax(0,1fr);"
@@ -49,7 +52,6 @@ const docsSidebarId = 'docs-sidebar';
         <Selectors client:load currentFramework={framework} currentStyle={style} currentSlug={slug} />
       </DocsSidebar>
     </aside>
-    <DocsSidebarRestoration docsSidebarId={docsSidebarId} />
     <div>
       <div class="flex flex-col" style="min-height:calc(100vh - var(--nav-h));">
         <slot />

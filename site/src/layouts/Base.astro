@@ -43,19 +43,6 @@ const fullTitle = Array.isArray(title)
     {/* Important stuff */}
     <slot name="priority-head" />
 
-    {/* Native view transitions */}
-    <style is:global>
-      @view-transition {
-        navigation: auto;
-      }
-
-      /* For now, we don't want these visually applying. We just want access to the pageswap event. */
-      ::view-transition-old(root),
-      ::view-transition-new(root) {
-        animation: none;
-      }
-    </style>
-
     {/* Font preloads */}
     <Font cssVariable="--font-instrument-sans" preload />
     <Font cssVariable="--font-ibm-plex-mono" preload />

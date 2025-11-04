@@ -12,60 +12,79 @@ const { docsSidebarId } = Astro.props;
 
 <script is:inline define:vars={{ docsSidebarId }}>
   const STORAGE_KEY = 'vjs-sidebar-state';
-  const aside = document.getElementById(docsSidebarId);
 
-  if (aside) {
-    window.addEventListener('pagereveal', () => {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
+  window.addEventListener('pagereveal', () => {
+    const aside = document.getElementById(docsSidebarId);
+    if (!aside) return;
+    const stored = sessionStorage.getItem(STORAGE_KEY);
 
-      if (stored) {
-        try {
-          const state = JSON.parse(stored);
-
-          if (state.sidebarScroll !== undefined) {
-            aside.scrollTop = state.sidebarScroll;
-          }
-
-          if (state.detailsState) {
-            document.querySelectorAll(`#${docsSidebarId} details[id]`).forEach((details) => {
-              const savedState = state.detailsState[details.id];
-              if (savedState !== undefined) {
-                details.open = savedState;
-              }
-            });
-          }
-        } catch (e) {
-          console.error('[Sidebar] Failed to restore state', e);
-        }
-      }
-
-      // Auto-expand sections containing active link (override saved state)
-      const activeLink = aside.querySelector('a[aria-current="page"]');
-      if (activeLink) {
-        let parent = activeLink.closest('details');
-        while (parent && aside.contains(parent)) {
-          parent.open = true;
-          parent = parent.parentElement?.closest('details') ?? null;
-        }
-      }
-    });
-
-    window.addEventListener('pageswap', () => {
-      const detailsState = {};
-      document.querySelectorAll(`#${docsSidebarId} details[id]`).forEach((details) => {
-        detailsState[details.id] = details.open;
-      });
-
-      const state = {
-        sidebarScroll: aside.scrollTop,
-        detailsState,
-      };
-
+    if (stored) {
       try {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        const state = JSON.parse(stored);
+
+        if (state.sidebarScroll !== undefined) {
+          aside.scrollTop = state.sidebarScroll;
+        }
+
+        if (state.detailsState) {
+          document.querySelectorAll(`#${docsSidebarId} details[id]`).forEach((details) => {
+            const savedState = state.detailsState[details.id];
+            if (savedState !== undefined) {
+              details.open = savedState;
+            }
+          });
+        }
       } catch (e) {
-        console.error('[Sidebar] Failed to save state', e);
+        console.error('[Sidebar] Failed to restore state', e);
       }
+    }
+
+    // Auto-expand sections containing active link (override saved state)
+    const activeLink = aside.querySelector('a[aria-current="page"]');
+    if (activeLink) {
+      let parent = activeLink.closest('details');
+      while (parent && aside.contains(parent)) {
+        parent.open = true;
+        parent = parent.parentElement?.closest('details') ?? null;
+      }
+    }
+  });
+
+  window.addEventListener('pageswap', () => {
+    const aside = document.getElementById(docsSidebarId);
+    if (!aside) return;
+    const detailsState = {};
+    document.querySelectorAll(`#${docsSidebarId} details[id]`).forEach((details) => {
+      detailsState[details.id] = details.open;
     });
-  }
+
+    const state = {
+      sidebarScroll: aside.scrollTop,
+      detailsState,
+    };
+
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.error('[Sidebar] Failed to save state', e);
+    }
+  });
 </script>
+
+{
+  /*
+  We need to enable view transitions to get access to pageswap and pagereveal
+  However, something in our app is causing Safari to get all flickery during transitions,
+  so that's where view-transition-name: none comes in.
+  (btw, I think it's related to FilmGrain. Stuff doesn't seem to flicker when that's not present)
+*/
+}
+<style is:global>
+  @view-transition {
+    navigation: auto;
+  }
+  html,
+  body {
+    view-transition-name: none;
+  }
+</style>
