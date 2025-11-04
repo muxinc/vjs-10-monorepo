@@ -1,3 +1,5 @@
+'use client';
+
 export { MediaContext } from './context';
 export {
   useMediaDispatch,
