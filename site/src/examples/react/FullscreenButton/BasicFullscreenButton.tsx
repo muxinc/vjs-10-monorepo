@@ -8,7 +8,7 @@ import styles from './FullscreenButton.module.css';
  * - Data attribute state selectors
  * - Enter/exit fullscreen functionality
  *
- * Note: This component must be used within a MediaProvider context.
+ * Note: This component must be used within a VideoProvider context.
  * See the usage example in the documentation.
  */
 export function BasicFullscreenButton() {

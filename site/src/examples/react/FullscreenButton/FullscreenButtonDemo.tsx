@@ -1,15 +1,15 @@
-import { MediaContainer, MediaProvider, Video } from '@videojs/react';
+import { MediaContainer, Video, VideoProvider } from '@videojs/react';
 import { VJS8_DEMO_VIDEO } from '@/consts';
 import { BasicFullscreenButton } from './BasicFullscreenButton';
 
 /**
- * Demo showing proper MediaProvider usage with FullscreenButton.
+ * Demo showing proper VideoProvider usage with FullscreenButton.
  * The FullscreenButton automatically toggles fullscreen mode for
  * the containing MediaContainer.
  */
 export function FullscreenButtonDemo() {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <MediaContainer style={{ position: 'relative', zIndex: 10 }}>
         <Video
           src={VJS8_DEMO_VIDEO.hls}
@@ -20,6 +20,6 @@ export function FullscreenButtonDemo() {
           <BasicFullscreenButton />
         </div>
       </MediaContainer>
-    </MediaProvider>
+    </VideoProvider>
   );
 }

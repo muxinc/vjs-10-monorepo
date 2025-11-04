@@ -32,23 +32,23 @@ A modern, glassy design with backdrop blur effects and polished interactions.
 
 <FrameworkCase frameworks={["react"]}>
 ```tsx
-import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
+import { VideoProvider, FrostedSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/frosted.css';
 
-<MediaProvider>
+<VideoProvider>
   <FrostedSkin>
     <Video src="video.mp4" />
   </FrostedSkin>
-</MediaProvider>
+</VideoProvider>
 ```
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
 ```html
-<media-provider>
+<video-provider>
   <media-skin-frosted>
     <video slot="media" src="video.mp4"></video>
   </media-skin-frosted>
-</media-provider>
+</video-provider>
 ```
 </FrameworkCase>
 
@@ -62,23 +62,23 @@ A clean, straightforward design that focuses on simplicity and clarity.
 
 <FrameworkCase frameworks={["react"]}>
 ```tsx
-import { MediaProvider, MinimalSkin, Video } from '@videojs/react';
+import { VideoProvider, MinimalSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/minimal.css';
 
-<MediaProvider>
+<VideoProvider>
   <MinimalSkin>
     <Video src="video.mp4" />
   </MinimalSkin>
-</MediaProvider>
+</VideoProvider>
 ```
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
 ```html
-<media-provider>
+<video-provider>
   <media-skin-minimal>
     <video slot="media" src="video.mp4"></video>
   </media-skin-minimal>
-</media-provider>
+</video-provider>
 ```
 </FrameworkCase>
 
@@ -134,7 +134,7 @@ export function CustomSkin({ children, className }) {
 
 <FrameworkCase frameworks={["html"]}>
 ```html
-<media-provider>
+<video-provider>
   <media-container class="custom-skin">
     <slot></slot>
     <div class="controls">
@@ -144,7 +144,7 @@ export function CustomSkin({ children, className }) {
       </media-time-slider>
     </div>
   </media-container>
-</media-provider>
+</video-provider>
 ```
 </FrameworkCase>
 

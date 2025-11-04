@@ -2,7 +2,7 @@ import { MediaSkinElement } from '@/media/media-skin';
 import { defineCustomElement } from '@/utils/custom-element';
 import styles from './styles.css';
 import '@/define/media-container';
-import '@/define/media-provider';
+import '@/define/video-provider';
 import '@/define/media-play-button';
 import '@/define/media-mute-button';
 import '@/define/media-volume-slider';
@@ -63,7 +63,7 @@ export function getTemplateHTML() {
           </media-time-slider-track>
           <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
         </media-time-slider>
-        <media-tooltip 
+        <media-tooltip
           id="time-slider-tooltip"
           class="popup-animation"
           popover="manual"
@@ -81,8 +81,8 @@ export function getTemplateHTML() {
             <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
             <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
           </media-mute-button>
-          <media-popover 
-            id="volume-slider-popover" 
+          <media-popover
+            id="volume-slider-popover"
             class="popup-animation"
             popover="manual"
             open-on-hover
@@ -104,8 +104,8 @@ export function getTemplateHTML() {
             <media-fullscreen-enter-alt-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-alt-icon>
             <media-fullscreen-exit-alt-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
           </media-fullscreen-button>
-          <media-tooltip 
-            id="fullscreen-tooltip" 
+          <media-tooltip
+            id="fullscreen-tooltip"
             class="popup-animation"
             popover="manual"
             delay="500"

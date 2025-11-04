@@ -973,7 +973,7 @@ export function generateReactCSS(skin: Skin): string {
  */
 export function generateHTMLMarkup(skin: Skin): string {
   if (skin === 'frosted') {
-    return `<media-provider>
+    return `<video-provider>
   <media-container>
     <video
       slot="media"
@@ -1013,7 +1013,7 @@ export function generateHTMLMarkup(skin: Skin): string {
           </media-time-slider-track>
           <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
         </media-time-slider>
-        <media-tooltip 
+        <media-tooltip
           id="time-slider-tooltip"
           class="surface popup-animation"
           popover="manual"
@@ -1033,9 +1033,9 @@ export function generateHTMLMarkup(skin: Skin): string {
         <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
         <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
       </media-mute-button>
-      <media-popover 
-        id="volume-slider-popover" 
-        class="surface popup-animation" 
+      <media-popover
+        id="volume-slider-popover"
+        class="surface popup-animation"
         popover="manual"
         open-on-hover
         delay="200"
@@ -1056,7 +1056,7 @@ export function generateHTMLMarkup(skin: Skin): string {
         <media-fullscreen-enter-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-icon>
         <media-fullscreen-exit-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-icon>
       </media-fullscreen-button>
-      <media-tooltip 
+      <media-tooltip
         id="fullscreen-tooltip"
         class="surface popup-animation"
         popover="manual"
@@ -1070,9 +1070,9 @@ export function generateHTMLMarkup(skin: Skin): string {
       </media-tooltip>
     </div>
   </media-container>
-</media-provider>`;
+</video-provider>`;
   } else {
-    return `<media-provider>
+    return `<video-provider>
   <media-container>
     <video
       slot="media"
@@ -1118,7 +1118,7 @@ export function generateHTMLMarkup(skin: Skin): string {
         </media-time-slider-track>
         <media-time-slider-thumb class="slider-thumb"></media-time-slider-thumb>
       </media-time-slider>
-      <media-tooltip 
+      <media-tooltip
         id="time-slider-tooltip"
         class="popup-animation"
         popover="manual"
@@ -1136,8 +1136,8 @@ export function generateHTMLMarkup(skin: Skin): string {
           <media-volume-low-icon class="icon volume-low-icon"></media-volume-low-icon>
           <media-volume-off-icon class="icon volume-off-icon"></media-volume-off-icon>
         </media-mute-button>
-        <media-popover 
-          id="volume-slider-popover" 
+        <media-popover
+          id="volume-slider-popover"
           class="popup-animation"
           popover="manual"
           open-on-hover
@@ -1159,8 +1159,8 @@ export function generateHTMLMarkup(skin: Skin): string {
           <media-fullscreen-enter-alt-icon class="icon fullscreen-enter-icon"></media-fullscreen-enter-alt-icon>
           <media-fullscreen-exit-alt-icon class="icon fullscreen-exit-icon"></media-fullscreen-exit-alt-icon>
         </media-fullscreen-button>
-        <media-tooltip 
-          id="fullscreen-tooltip" 
+        <media-tooltip
+          id="fullscreen-tooltip"
           class="popup-animation"
           popover="manual"
           delay="500"
@@ -1174,7 +1174,7 @@ export function generateHTMLMarkup(skin: Skin): string {
       </div>
     </div>
   </media-container>
-</media-provider>`;
+</video-provider>`;
   }
 }
 
@@ -1916,8 +1916,8 @@ export function generateHTMLJS(skin: Skin): string {
 
 // npm install @videojs/html@next
 import '@videojs/html/icons';
-// be sure to import media-provider first
-import '@videojs/html/define/media-provider';
+// be sure to import video-provider first
+import '@videojs/html/define/video-provider';
 import '@videojs/html/define/media-container';
 import '@videojs/html/define/media-play-button';
 import '@videojs/html/define/media-mute-button';

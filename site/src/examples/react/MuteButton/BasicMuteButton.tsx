@@ -8,7 +8,7 @@ import styles from './MuteButton.module.css';
  * - Volume level data attributes
  * - Smooth icon transitions
  *
- * Note: This component must be used within a MediaProvider context.
+ * Note: This component must be used within a VideoProvider context.
  * See the usage example in the documentation.
  */
 export function BasicMuteButton() {

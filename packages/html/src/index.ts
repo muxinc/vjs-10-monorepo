@@ -9,5 +9,5 @@ export { TimeSliderElement } from './elements/time-slider';
 export { TooltipElement } from './elements/tooltip';
 export { VolumeSliderElement } from './elements/volume-slider';
 export { MediaContainerElement } from './media/media-container';
-export { MediaProviderElement } from './media/media-provider';
 export { MediaSkinElement } from './media/media-skin';
+export { VideoProviderElement } from './media/video-provider';

@@ -1,4 +1,4 @@
-import { MediaProvider, Video } from '@videojs/react';
+import { Video, VideoProvider } from '@videojs/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -6,7 +6,7 @@ import FrostedSkin from './FrostedSkin';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MediaProvider>
+    <VideoProvider>
       <FrostedSkin>
         <Video
           // @ts-expect-error -- types are incorrect
@@ -15,6 +15,6 @@ createRoot(document.getElementById('root')!).render(
           playsInline
         />
       </FrostedSkin>
-    </MediaProvider>
+    </VideoProvider>
   </StrictMode>,
 );

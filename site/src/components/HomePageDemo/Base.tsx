@@ -7,11 +7,11 @@ import ClientCode from '../Code/ClientCode';
 function generateHTMLCode(skin: Skin): string {
   const skinTag = `${skin}-skin`;
 
-  return `<media-provider>
+  return `<video-provider>
   <${skinTag}>
     <video src="https://example.com/video.mp4"></video>
   </${skinTag}>
-</media-provider>`;
+</video-provider>`;
 }
 
 function generateReactCode(skin: Skin): string {
@@ -19,16 +19,16 @@ function generateReactCode(skin: Skin): string {
   const skinImport = skin === 'frosted' ? 'frosted' : 'minimal';
 
   return `// npm install @videojs/react@next
-import { MediaProvider, ${skinComponent}, Video } from '@videojs/react';
+import { VideoProvider, ${skinComponent}, Video } from '@videojs/react';
 import '@videojs/react/skins/${skinImport}.css';
 
 export const VideoPlayer = () => {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <${skinComponent}>
         <Video src="https://example.com/video.mp4" />
       </${skinComponent}>
-    </MediaProvider>
+    </VideoProvider>
   );
 };`;
 }

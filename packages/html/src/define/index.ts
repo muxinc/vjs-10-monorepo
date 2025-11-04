@@ -1,5 +1,5 @@
 import './media-container';
-import './media-provider';
+import './video-provider';
 import './media-play-button';
 import './media-mute-button';
 import './media-volume-slider';

@@ -14,24 +14,24 @@ Video.js v10 is built around a three-tier architecture that separates concerns a
 ### 1. State Management
 
 <FrameworkCase frameworks={["react"]}>
-State is handled by `MediaProvider`, which creates a central store that all components can access. When you wrap your player in a `MediaProvider`, components automatically connect to the state.
+State is handled by `VideoProvider`, which creates a central store that all components can access. When you wrap your player in a `VideoProvider`, components automatically connect to the state.
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
-State is handled by `media-provider`, which creates a central store that all components can access. When you wrap your player in a `media-provider`, components automatically connect to the state.
+State is handled by `video-provider`, which creates a central store that all components can access. When you wrap your player in a `video-provider`, components automatically connect to the state.
 </FrameworkCase>
 
 <FrameworkCase frameworks={["react"]}>
 ```tsx
-<MediaProvider>
+<VideoProvider>
   {/* All components inside automatically connect to state */}
-</MediaProvider>
+</VideoProvider>
 ```
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
 ```html
-<media-provider>
+<video-provider>
   <!-- All components inside automatically connect to state -->
-</media-provider>
+</video-provider>
 ```
 </FrameworkCase>
 
@@ -74,19 +74,19 @@ Here's a complete example showing all three tiers:
 
 <FrameworkCase frameworks={["react"]}>
 ```tsx
-import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
+import { VideoProvider, FrostedSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/frosted.css';
 
 function Player() {
   return (
     // Tier 1: State Management
-    <MediaProvider>
+    <VideoProvider>
       {/* Tier 2: User Interface (Skin with components) */}
       <FrostedSkin>
         {/* Tier 3: Media Renderer */}
         <Video src="video.mp4" />
       </FrostedSkin>
-    </MediaProvider>
+    </VideoProvider>
   );
 }
 ```
@@ -102,13 +102,13 @@ function Player() {
 
 ```html
 <!-- Tier 1: State Management -->
-<media-provider>
+<video-provider>
   <!-- Tier 2: User Interface (Skin with components) -->
   <media-skin-frosted>
     <!-- Tier 3: Media Renderer -->
     <video slot="media" src="video.mp4"></video>
   </media-skin-frosted>
-</media-provider>
+</video-provider>
 ```
 
   </TabsPanel>

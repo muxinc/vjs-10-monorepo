@@ -6,7 +6,7 @@ import { createMediaStore } from '@videojs/core/store';
 
 const ProviderHTMLElement: Constructor<CustomElement & HTMLElement> = ProviderMixin(HTMLElement);
 
-export class MediaProviderElement extends ProviderHTMLElement {
+export class VideoProviderElement extends ProviderHTMLElement {
   contexts = {
     mediaStore: (): MediaStore => {
       return createMediaStore();
