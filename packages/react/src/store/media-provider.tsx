@@ -1,5 +1,3 @@
-'use client';
-
 /** @TODO !!! Revisit for SSR (CJP) */
 import type { ReactNode } from 'react';
 

@@ -1,3 +1,5 @@
+'use client';
+
 export { CurrentTimeDisplay } from './components/CurrentTimeDisplay';
 export { DurationDisplay } from './components/DurationDisplay';
 export { FullscreenButton } from './components/FullscreenButton';

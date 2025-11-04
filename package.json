@@ -24,6 +24,7 @@
     "dev:html": "turbo run dev --filter=html-demo...",
     "dev:react": "turbo run dev --filter=react-demo...",
     "dev:site": "turbo run dev --filter=site",
+    "dev:next": "turbo run dev --filter=next-demo...",
     "dev": "turbo run dev --parallel",
     "generate:icons": "turbo run generate:icons",
     "lint": "eslint . --cache",
