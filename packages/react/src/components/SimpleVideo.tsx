@@ -20,16 +20,16 @@ export type SimpleVideoProps = PropsWithChildren<
  * without using a playback engine. Use this for simple MP4 files. For HLS/DASH streaming, use the
  * regular Video component instead.
  *
- * This component connects to MediaProvider for play/pause state but sets the src directly on the
+ * This component connects to VideoProvider for play/pause state but sets the src directly on the
  * video element without going through HLS.js or other playback engines.
  *
  * @example
  * ```tsx
- * <MediaProvider>
+ * <VideoProvider>
  *   <MediaSkin>
  *     <SimpleVideo src="video.mp4" />
  *   </MediaSkin>
- * </MediaProvider>
+ * </VideoProvider>
  * ```
  */
 export const SimpleVideo: React.ForwardRefExoticComponent<

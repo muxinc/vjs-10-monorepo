@@ -1,6 +1,6 @@
 import type { ChangeEventHandler } from 'react';
 
-import { FrostedSkin, MediaProvider, MinimalSkin, Video } from '@videojs/react';
+import { FrostedSkin, MinimalSkin, Video, VideoProvider } from '@videojs/react';
 import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@videojs/react/icons';
 import clsx from 'clsx';
 
@@ -8,7 +8,7 @@ import clsx from 'clsx';
 // import MinimalSkin from './skins/toasted/MinimalSkin';
 
 // NOTE: Commented out imports are for testing locally/externally defined skins.
-// import { MediaProvider, Video } from '@videojs/react';
+// import { VideoProvider, Video } from '@videojs/react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useFullscreen } from './hooks/useFullscreen';
 import '@videojs/react/skins/frosted.css';
@@ -182,12 +182,12 @@ export default function App(): JSX.Element {
       )}
       >
         <div className="w-full max-w-5xl mx-auto p-6">
-          <MediaProvider key={key}>
+          <VideoProvider key={key}>
             <Skin className={skinClassName}>
               {/* @ts-expect-error -- types are incorrect */}
               <Video src={mediaSource} poster={poster} playsInline />
             </Skin>
-          </MediaProvider>
+          </VideoProvider>
         </div>
       </main>
     </div>

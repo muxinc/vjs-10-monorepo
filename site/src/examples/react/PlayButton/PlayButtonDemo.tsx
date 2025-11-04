@@ -1,15 +1,15 @@
-import { MediaContainer, MediaProvider, Video } from '@videojs/react';
+import { MediaContainer, Video, VideoProvider } from '@videojs/react';
 import { VJS8_DEMO_VIDEO } from '@/consts';
 import { BasicPlayButton } from './BasicPlayButton';
 
 /**
- * Demo showing proper MediaProvider usage with PlayButton.
- * The MediaProvider wraps the entire media experience and provides
+ * Demo showing proper VideoProvider usage with PlayButton.
+ * The VideoProvider wraps the entire media experience and provides
  * the necessary context for all media components.
  */
 export function PlayButtonDemo() {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <MediaContainer style={{ position: 'relative', zIndex: 10 }}>
         <Video
           src={VJS8_DEMO_VIDEO.hls}
@@ -20,6 +20,6 @@ export function PlayButtonDemo() {
           <BasicPlayButton />
         </div>
       </MediaContainer>
-    </MediaProvider>
+    </VideoProvider>
   );
 }

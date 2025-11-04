@@ -1,4 +1,4 @@
-import { MediaProvider, Video } from '@videojs/react';
+import { Video, VideoProvider } from '@videojs/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -6,7 +6,7 @@ import MinimalSkin from './MinimalSkin';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MediaProvider>
+    <VideoProvider>
       <MinimalSkin>
         <Video
           // @ts-expect-error -- types are incorrect
@@ -15,6 +15,6 @@ createRoot(document.getElementById('root')!).render(
           playsInline
         />
       </MinimalSkin>
-    </MediaProvider>
+    </VideoProvider>
   </StrictMode>,
 );

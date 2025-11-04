@@ -8,8 +8,8 @@ export {
   useMediaStore,
 } from './hooks';
 export {
-  MediaProvider,
-} from './media-provider';
+  VideoProvider,
+} from './video-provider';
 
 export type MediaStore = any;
 export type MediaState = any;

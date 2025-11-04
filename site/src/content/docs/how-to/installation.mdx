@@ -20,7 +20,7 @@ Welcome to Video.js v10! This guide will help you get up and running. In it, you
 
 ## 1. Pick Your Framework
 
-Video.js v10 supports both React and vanilla JavaScript/HTML through Web Components. 
+Video.js v10 supports both React and vanilla JavaScript/HTML through Web Components.
 
 First, select your preferred framework in the framework selector at the top of the <span class="hidden lg:inline">sidebar</span><span class="lg:hidden">page</span>.
 
@@ -78,12 +78,12 @@ More renderers for formats like DASH, and services like YouTube and Vimeo are pl
 
 <FrameworkCase frameworks={["react"]}>
 ```tsx
-import { MediaProvider, FrostedSkin, Video } from '@videojs/react';
+import { VideoProvider, FrostedSkin, Video } from '@videojs/react';
 import '@videojs/react/skins/frosted.css';
 
 export default function App() {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <FrostedSkin>
         <Video
           src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
@@ -91,7 +91,7 @@ export default function App() {
           playsInline
         />
       </FrostedSkin>
-    </MediaProvider>
+    </VideoProvider>
   );
 }
 ```
@@ -101,7 +101,7 @@ export default function App() {
 import '@videojs/html/skins/frosted';
 
 document.body.innerHTML = `
-  <media-provider>
+  <video-provider>
     <media-skin-frosted>
       <video
         slot="media"
@@ -110,7 +110,7 @@ document.body.innerHTML = `
         playsinline
       ></video>
     </media-skin-frosted>
-  </media-provider>
+  </video-provider>
 `;
 ```
 </FrameworkCase>

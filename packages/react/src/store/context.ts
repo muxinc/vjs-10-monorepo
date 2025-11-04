@@ -6,7 +6,7 @@ import { createContext } from 'react';
  * used "under the hood" for media ui state updates, state change requests, and the hooks and providers that integrate with this context.
  * It is unlikely that you will/should be using `MediaContext` directly.
  *
- * @see {@link MediaProvider}
+ * @see {@link VideoProvider}
  * @see {@link useMediaDispatch}
  * @see {@link useMediaSelector}
  */

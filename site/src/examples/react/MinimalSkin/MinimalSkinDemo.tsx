@@ -1,4 +1,4 @@
-import { MediaProvider, MinimalSkin, Video } from '@videojs/react';
+import { MinimalSkin, Video, VideoProvider } from '@videojs/react';
 import { VJS8_DEMO_VIDEO } from '@/consts';
 import '@videojs/react/skins/minimal.css';
 
@@ -13,7 +13,7 @@ import '@videojs/react/skins/minimal.css';
  */
 export function MinimalSkinDemo() {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <MinimalSkin className="w-full aspect-video">
         <Video
           src={VJS8_DEMO_VIDEO.hls}
@@ -21,6 +21,6 @@ export function MinimalSkinDemo() {
           playsInline
         />
       </MinimalSkin>
-    </MediaProvider>
+    </VideoProvider>
   );
 }

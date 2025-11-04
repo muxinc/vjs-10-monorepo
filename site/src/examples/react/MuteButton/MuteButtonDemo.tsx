@@ -1,15 +1,15 @@
-import { MediaContainer, MediaProvider, Video } from '@videojs/react';
+import { MediaContainer, Video, VideoProvider } from '@videojs/react';
 import { VJS8_DEMO_VIDEO } from '@/consts';
 import { BasicMuteButton } from './BasicMuteButton';
 
 /**
- * Demo showing proper MediaProvider usage with MuteButton.
+ * Demo showing proper VideoProvider usage with MuteButton.
  * The MuteButton automatically reflects the current volume state
  * and toggles mute/unmute on click.
  */
 export function MuteButtonDemo() {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <MediaContainer style={{ position: 'relative', zIndex: 10 }}>
         <Video
           src={VJS8_DEMO_VIDEO.hls}
@@ -20,6 +20,6 @@ export function MuteButtonDemo() {
           <BasicMuteButton />
         </div>
       </MediaContainer>
-    </MediaProvider>
+    </VideoProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { FrostedSkin, MediaProvider, Video } from '@videojs/react';
+import { FrostedSkin, Video, VideoProvider } from '@videojs/react';
 import { VJS8_DEMO_VIDEO } from '@/consts';
 import '@videojs/react/skins/frosted.css';
 
@@ -14,7 +14,7 @@ import '@videojs/react/skins/frosted.css';
  */
 export function FrostedSkinDemo() {
   return (
-    <MediaProvider>
+    <VideoProvider>
       <FrostedSkin className="w-full aspect-video rounded-3xl">
         <Video
           src={VJS8_DEMO_VIDEO.hls}
@@ -22,6 +22,6 @@ export function FrostedSkinDemo() {
           playsInline
         />
       </FrostedSkin>
-    </MediaProvider>
+    </VideoProvider>
   );
 }
