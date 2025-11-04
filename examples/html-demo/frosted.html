@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>React Minimal Ejected</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VJS HTML Demo</title>
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <style>
@@ -17,8 +18,10 @@
       }
     </style>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body style="display: flex; flex-direction: column; min-height: 100vh; max-width: 960px; padding: 1rem">
+    <h1>Frosted Skin</h1>
+    <a href="/">&larr; Back to index</a>
+    <div id="app"></div>
+    <script type="module" src="/src/frosted.ts"></script>
   </body>
 </html>

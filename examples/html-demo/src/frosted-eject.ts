@@ -1,4 +1,4 @@
-import './frosted.css';
+import './frosted-eject.css';
 import '@videojs/html/icons';
 // be sure to import video-provider first
 import '@videojs/html/define/video-provider';
