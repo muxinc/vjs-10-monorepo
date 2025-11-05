@@ -26,6 +26,6 @@ const shouldRender = !styles || styles.includes(style as AnySupportedStyle);
     So, while I debug those... let's do this
   */
 }
-<div class="contents" hidden={!shouldRender}>
+<div class="contents" hidden={!shouldRender} data-pagefind-ignore={shouldRender ? undefined : 'all'}>
   <slot />
 </div>
