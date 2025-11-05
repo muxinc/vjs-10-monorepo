@@ -1,4 +1,9 @@
 ---
+/**
+ * We wrap Search.tsx in an .astro entry point for
+ * 1. easy CSS support, since we can't use Tailwind on pagefind-ui
+ * 2. a synchronous script to set the meta key (ctrl or cmd) without FOUC or hydration errors
+ */
 import SearchClient from './Search';
 import { join } from 'node:path/posix';
 import SearchIcon from './searchIcon.svg';
@@ -59,7 +64,7 @@ const { class: className, dark } = Astro.props;
 
   #pagefind-ui {
     --pagefind-ui-scale: 1;
-    /* --pagefind-ui-primary: var(--color-orange); */
+    --pagefind-ui-primary: var(--color-yellow);
     --pagefind-ui-text: var(--color-dark-100);
     --pagefind-ui-background: var(--color-light-100);
     --pagefind-ui-border: var(--color-light-40);
