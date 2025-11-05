@@ -5,6 +5,7 @@ import {
   findFirstGuide,
   findGuideBySlug,
   getAllGuideSlugs,
+  getSectionsForGuide,
   getValidStylesForGuide,
 } from '../sidebar';
 
@@ -251,6 +252,95 @@ describe('sidebar utilities', () => {
       const result = findGuideBySlug('guide-1', nestedSidebar);
 
       expect(result).toEqual(mockGuide1);
+    });
+  });
+
+  describe('getSectionsForGuide', () => {
+    it('should return empty array for top-level guide', () => {
+      const result = getSectionsForGuide('guide-3', mockSidebar);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return section label for guide nested in one section', () => {
+      const result = getSectionsForGuide('guide-1', mockSidebar);
+
+      expect(result).toEqual(['Section 1']);
+    });
+
+    it('should return all ancestor section labels in order', () => {
+      const nestedSidebar: Sidebar = [
+        {
+          sidebarLabel: 'Parent',
+          contents: [
+            {
+              sidebarLabel: 'Child',
+              contents: [mockGuide1],
+            },
+            mockGuide2,
+          ],
+        },
+      ];
+
+      const result = getSectionsForGuide('guide-1', nestedSidebar);
+      expect(result).toEqual(['Parent', 'Child']);
+
+      const result2 = getSectionsForGuide('guide-2', nestedSidebar);
+      expect(result2).toEqual(['Parent']);
+    });
+
+    it('should return empty array if guide is not found', () => {
+      const result = getSectionsForGuide('non-existent', mockSidebar);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should handle deeply nested guides', () => {
+      const deeplyNestedSidebar: Sidebar = [
+        {
+          sidebarLabel: 'Level 1',
+          contents: [
+            {
+              sidebarLabel: 'Level 2',
+              contents: [
+                {
+                  sidebarLabel: 'Level 3',
+                  contents: [mockGuide1],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const result = getSectionsForGuide('guide-1', deeplyNestedSidebar);
+      expect(result).toEqual(['Level 1', 'Level 2', 'Level 3']);
+    });
+
+    it('should return empty array for empty sidebar', () => {
+      const result = getSectionsForGuide('guide-1', []);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should work with sidebar containing mixed top-level and nested guides', () => {
+      const mixedSidebar: Sidebar = [
+        mockGuide3, // top level
+        {
+          sidebarLabel: 'Getting Started',
+          contents: [
+            mockGuide1,
+            {
+              sidebarLabel: 'Advanced',
+              contents: [mockGuide2],
+            },
+          ],
+        },
+      ];
+
+      expect(getSectionsForGuide('guide-3', mixedSidebar)).toEqual([]);
+      expect(getSectionsForGuide('guide-1', mixedSidebar)).toEqual(['Getting Started']);
+      expect(getSectionsForGuide('guide-2', mixedSidebar)).toEqual(['Getting Started', 'Advanced']);
     });
   });
 

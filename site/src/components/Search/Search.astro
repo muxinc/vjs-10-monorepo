@@ -1,0 +1,106 @@
+---
+import SearchClient from './Search';
+import { join } from 'node:path/posix';
+import SearchIcon from './searchIcon.svg';
+import searchIconString from './searchIcon.svg?raw';
+import clsx from 'clsx';
+
+const baseUrl = import.meta.env.BASE_URL || '/';
+const bundlePath = join(baseUrl, 'pagefind/');
+
+interface Props {
+  class?: string;
+  dark: boolean;
+}
+const { class: className, dark } = Astro.props;
+---
+
+<SearchClient
+  client:load
+  className={clsx(
+    'inline-flex items-center gap-2 cursor-pointer min-h-6 px-2 sm:border intent:border-current rounded-full',
+    dark ? 'border-dark-80' : 'border-light-40 dark:border-dark-80',
+    className,
+  )}
+  baseUrl={baseUrl}
+  bundlePath={bundlePath}
+  searchId="pagefind-ui"
+  searchStyle={{
+    '--search-icon-url': `url('data:image/svg+xml;utf8,${encodeURIComponent(searchIconString)}')`,
+  } as React.CSSProperties}
+>
+  <SearchIcon class="w-4 h-4 sm:w-3 sm:h-3" />
+  <kbd data-platform-key="default" class="font-sans text-sm hidden sm:inline">Ctrl K</kbd>
+  <kbd data-platform-key="mac" class="font-sans text-sm hidden sm:inline">⌘K</kbd>
+</SearchClient>
+
+{
+  /**
+   * Adapted from https://github.com/withastro/starlight/blob/8a72a19e2cfec235941b4e1401b69b44e6695068/packages/starlight/components/Search.astro#L55C1-L75C1
+   * This is intentionally inlined to avoid briefly showing an invalid shortcut.
+   * Purposely using the deprecated `navigator.platform` property to detect Apple devices, as the
+   * user agent is spoofed by some browsers when opening the devtools.
+   */
+}
+<script is:inline>
+  (() => {
+    const defaultPlatformKey = document.querySelector('kbd[data-platform-key="default"]');
+    const macPlatformKey = document.querySelector('kbd[data-platform-key="mac"]');
+    if (/Mac|iPhone|iPod|iPad/i.test(navigator.platform)) {
+      if (defaultPlatformKey) defaultPlatformKey.style.display = 'none';
+    } else {
+      if (macPlatformKey) macPlatformKey.style.display = 'none';
+    }
+  })();
+</script>
+
+<style is:global>
+  @import url('@pagefind/default-ui/css/ui.css');
+
+  #pagefind-ui {
+    --pagefind-ui-scale: 1;
+    /* --pagefind-ui-primary: var(--color-orange); */
+    --pagefind-ui-text: var(--color-dark-100);
+    --pagefind-ui-background: var(--color-light-100);
+    --pagefind-ui-border: var(--color-light-40);
+    --pagefind-ui-tag: green;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius-lg);
+    --pagefind-ui-font: inherit;
+  }
+
+  .dark #pagefind-ui {
+    --pagefind-ui-text: var(--color-light-80);
+    --pagefind-ui-background: var(--color-dark-100);
+    --pagefind-ui-border: var(--color-dark-80);
+  }
+
+  #pagefind-ui .pagefind-ui__form::before {
+    -webkit-mask-image: var(--search-icon-url);
+    mask-image: var(--search-icon-url);
+  }
+  #pagefind-ui .pagefind-ui__search-input {
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
+    letter-spacing: var(--text-lg--letter-spacing);
+    font-weight: var(--text-lg--font-weight);
+  }
+  #pagefind-ui .pagefind-ui__filter-block {
+    border-bottom: solid 1px var(--pagefind-ui-border);
+  }
+  #pagefind-ui .pagefind-ui__message {
+    font-weight: var(--font-weight-normal);
+  }
+  #pagefind-ui .pagefind-ui__result-title,
+  #pagefind-ui .pagefind-ui__filter-name {
+    font-weight: var(--font-weight-semibold);
+  }
+  #pagefind-ui .pagefind-ui__result-nested .pagefind-ui__result-link::before {
+    font-weight: var(--font-weight-normal);
+    font-size: 0.9em;
+  }
+  #pagefind-ui mark {
+    background-color: var(--color-yellow);
+    color: var(--color-dark-100);
+  }
+</style>

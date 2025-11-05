@@ -24,6 +24,16 @@
 [id] {
   scroll-margin-top: calc(var(--nav-h) + var(--spacing) * 5 + var(--scroll-mt, 0px));
 }
+/* misc */
+b,
+strong {
+  font-weight: var(--font-weight-semibold);
+}
+mark {
+  background-color: var(--color-yellow);
+  color: var(--color-dark-100);
+}
+
 /* Ok, now let's do some tailwind stuff */
 @custom-variant intent (&:hover, &:focus-within);
 @custom-variant supports-container {

@@ -1,12 +1,14 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends Omit<HTMLAttributes<'time'>, 'datetime'> {
   date: Date;
 }
 
-const { date } = Astro.props;
+const { date, ...rest } = Astro.props;
 ---
 
-<time datetime={date.toISOString()}>
+<time {...rest} datetime={date.toISOString()}>
   {
     date.toLocaleDateString('en-us', {
       year: 'numeric',

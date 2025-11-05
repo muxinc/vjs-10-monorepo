@@ -8,5 +8,4 @@ not comprehensive. just the things I'm worried about forgetting
 - animations
 - docs features
   - /docs/[slug] redirect ("share this guide")
-- search
 - update READMEs following dev
