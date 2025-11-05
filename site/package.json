@@ -20,6 +20,7 @@
     "@astrojs/vercel": "^8.2.9",
     "@base-ui-components/react": "1.0.0-beta.4",
     "@nanostores/react": "^1.0.0",
+    "@pagefind/default-ui": "^1.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@videojs/html": "workspace:*",
     "@videojs/react": "workspace:*",
@@ -53,6 +54,7 @@
     "@vitest/ui": "^3.2.4",
     "babel-plugin-react-compiler": "1.0.0",
     "jsdom": "^27.0.0",
+    "sirv": "^3.0.2",
     "vitest": "^3.2.4"
   }
 }

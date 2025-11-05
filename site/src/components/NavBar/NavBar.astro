@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 import Discord from '@/components/icons/Discord';
 import GitHub from '@/components/icons/GitHub';
 import FilmGrain from '../FilmGrain';
+import Search from '@/components/Search';
 
 export interface Props {
   dark?: boolean;
@@ -40,6 +41,8 @@ const { class: className, dark = false } = Astro.props;
   <FilmGrain currentPath={Astro.url.pathname} />
   {/* Logo */}
   <a href="/" class="flex items-center px-3 text-h5">Video.js v10</a>
+
+  <Search dark={dark} class="ml-auto mr-4 sm:self-center" />
 
   {/* Desktop nav links */}
   <div class="hidden sm:flex -mb-px pr-3">

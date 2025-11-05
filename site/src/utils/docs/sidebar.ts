@@ -159,6 +159,34 @@ export function findGuideBySlug(slug: string, sidebarToSearch: Sidebar = sidebar
 }
 
 /**
+ * Get the ancestor section labels for a guide by its slug.
+ * Returns an array of sidebarLabel strings for all ancestor sections,
+ * in order from outermost to innermost. If the guide has no ancestors
+ * (i.e., it's at the top level) or if the guide is not found, returns an empty array.
+ *
+ * @param slug - The slug of the guide to find
+ * @param sidebarToSearch - Optional sidebar to search (defaults to main sidebar config)
+ * @returns An array of ancestor section labels, or empty array if none or guide not found
+ */
+export function getSectionsForGuide(slug: string, sidebarToSearch: Sidebar = sidebar): string[] {
+  function findInSidebar(items: Sidebar, path: string[]): string[] | null {
+    for (const item of items) {
+      if (isSection(item)) {
+        // Recursively search section contents with updated path
+        const result = findInSidebar(item.contents, [...path, item.sidebarLabel]);
+        if (result !== null) return result;
+      } else if (item.slug === slug) {
+        // Found the guide, return the accumulated path
+        return path;
+      }
+    }
+    return null;
+  }
+
+  return findInSidebar(sidebarToSearch, []) ?? [];
+}
+
+/**
  * Get valid styles for a guide, optionally filtered by framework.
  *
  * When framework is provided:

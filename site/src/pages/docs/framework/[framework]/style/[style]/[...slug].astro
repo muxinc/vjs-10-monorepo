@@ -6,7 +6,7 @@ import { getCollection, render } from 'astro:content';
 
 import DocsLayout from '@/layouts/Docs.astro';
 import { ALL_FRAMEWORK_STYLE_COMBINATIONS } from '@/types/docs';
-import { filterSidebar, getAllGuideSlugs, getAdjacentGuides } from '@/utils/docs/sidebar';
+import { filterSidebar, getAllGuideSlugs, getAdjacentGuides, getSectionsForGuide } from '@/utils/docs/sidebar';
 import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
 import { TableOfContents } from '@/components/docs/TableOfContents';
 import H3 from '@/components/typography/H3.astro';
@@ -80,6 +80,9 @@ const { prev, next } = getAdjacentGuides(slug, framework, style);
 const allDocs = await getCollection('docs');
 const docTitles = new Map(allDocs.map((d) => [d.id, getDocTitle(d, framework)]));
 
+// Get the section hierarchy for this guide
+const sections = getSectionsForGuide(slug, filterSidebar(framework, style));
+
 // Build JSON-LD schema for TechArticle
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const jsonLdSchema = createTechArticleSchema({
@@ -88,6 +91,7 @@ const jsonLdSchema = createTechArticleSchema({
   url: pageUrl,
   updatedDate: doc.data.updatedDate,
   readingTime: remarkPluginFrontmatter.readingTimeMinutes,
+  articleSection: sections.length > 0 ? sections.join(' > ') : undefined,
 });
 ---
 
@@ -119,7 +123,15 @@ const jsonLdSchema = createTechArticleSchema({
       <TableOfContents client:idle headings={filteredHeadings} />
     </div>
     <div class="@container px-6 lg:px-12 flex flex-col" style="grid-area: article;">
-      <article class="mb-18 flex-1">
+      <article
+        class="mb-18 flex-1"
+        data-pagefind-body
+        data-framework={framework}
+        data-style={style}
+        data-site="docs"
+        data-category={sections[0]}
+        data-pagefind-filter="framework[data-framework], style[data-style], section[data-site]"
+      >
         <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto py-8 mb-8">
           <H3 as="h1" class="mt-0 mb-2">{getDocTitle(doc, framework)}</H3>
           <p class="@lg:font-medium">{doc.data.description}</p>

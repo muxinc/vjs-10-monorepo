@@ -25,6 +25,7 @@ export function createTechArticleSchema(params: {
   updatedDate?: Date;
   wordCount?: number;
   readingTime?: number;
+  articleSection?: string;
 }): WithContext<TechArticle> {
   return {
     '@context': 'https://schema.org',
@@ -35,6 +36,7 @@ export function createTechArticleSchema(params: {
     ...(params.updatedDate && { dateModified: params.updatedDate.toISOString() }),
     ...(params.wordCount && { wordCount: params.wordCount }),
     ...(params.readingTime && { timeRequired: `PT${params.readingTime}M` }),
+    ...(params.articleSection && { articleSection: params.articleSection }),
     author: {
       '@type': 'Organization',
       name: 'Video.js',

@@ -1,6 +1,6 @@
 import type { SupportedFramework, SupportedStyle } from '@/types/docs';
 import { useEffect } from 'react';
-import { setPreferenceClient } from '@/utils/docs/preferences';
+import { currentFramework as frameworkStore, currentStyle as styleStore } from '@/stores/preferences';
 
 interface PreferenceUpdaterProps<F extends SupportedFramework = SupportedFramework> {
   currentFramework: F;
@@ -8,13 +8,15 @@ interface PreferenceUpdaterProps<F extends SupportedFramework = SupportedFramewo
 }
 
 /**
- * PreferenceUpdater component updates user preferences in cookies.
- * This component is loaded with client:idle directive, making it non-blocking.
- * It renders nothing but updates cookies whenever framework or style changes.
+ * PreferenceUpdater component updates the preference nanostore based on URL params.
+ * This component is loaded with client:idle directive on docs pages, making it non-blocking.
+ * It updates the nanostore whenever framework or style from URL changes.
+ * PreferenceSync handles persisting to cookies.
  */
 export function PreferenceUpdater<F extends SupportedFramework = SupportedFramework>({ currentFramework, currentStyle }: PreferenceUpdaterProps<F>) {
   useEffect(() => {
-    setPreferenceClient(currentFramework, currentStyle);
+    frameworkStore.set(currentFramework);
+    styleStore.set(currentStyle);
   }, [currentFramework, currentStyle]);
 
   return <></>;
