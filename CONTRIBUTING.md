@@ -5,7 +5,7 @@ Your input helps shape the next generation of open web media players.
 There are a variety of ways you can help out.
 
 > [!NOTE]
-> If you're looking to contribute to the current version of Video.js (v8), please refer to its [contributing guildelines](https://github.com/videojs/admin/blob/main/CONTRIBUTING.md) instead.
+> If you're looking to contribute to the current version of Video.js (v8), please refer to its [contributor guide][vjs-contributor-guide] instead.
 
 ## Table of Contents
 
@@ -56,7 +56,7 @@ Guidelines for bug reports:
 
 A good bug report should be as detailed as possible, so that others won't have to follow up for the essential details.
 
-**[File a bug report](https://github.com/videojs/v10/issues/new)**
+**[File a bug report](https://github.com/videojs/v10/issues/new?template=1.bug_report.yml)**
 
 ### Requesting a Feature
 
@@ -64,8 +64,16 @@ A good bug report should be as detailed as possible, so that others won't have t
 1. If no previous requests exist, create a new issue. Please be as clear as possible about why the feature is needed and the intended use case.
 1. Once again, be as detailed as possible and follow the issue template.
 
-**[Request a smaller feature](https://github.com/videojs/v10/issues/new)**
+**[Request a smaller feature](https://github.com/videojs/v10/issues/new?template=2.feature_request.yml)**
 **[Propose a larger feature](https://github.com/videojs/v10/discussions/new?category=ideas)**
+
+### Providing Docs Feedback
+
+1. [Search the issues](https://github.com/videojs/v10/issues) for any potential overlapping docs feedback, and give a thumbs up or +1 on existing requests.
+1. If no previous requests exist, create a new issue. Please be as clear as possible about your docs feedback.
+1. Once again, be as detailed as possible and follow the issue template.
+
+**[Provide docs feedback](https://github.com/videojs/v10/issues/new?template=3.docs_feedback.yml)**
 
 ## 🎒 Contributing code
 
@@ -306,7 +314,7 @@ To discuss larger ideas or prototypes, or to help out with ongoing discussions, 
 - [Discord][discord]
 - [GitHub Discussions][gh-discussions]
 
-## [Developer's Certificate of Origin 1.1](https://github.com/nodejs/node/blob/main/CONTRIBUTING.md#developers-certificate-of-origin-11)
+## Developer's Certificate of Origin 1.1
 
 By making a contribution to this project, I certify that:
 
@@ -334,9 +342,10 @@ By making a contribution to this project, I certify that:
 
 ## Doc Credit
 
-This doc was heavily inspired by the [contribution guidelines for the current (v8) version of Video.js](https://github.com/videojs/admin/blob/main/CONTRIBUTING.md)
+This doc was heavily inspired by the [contributor guide][vjs-contributor-guide] for the current (v8) version of Video.js.
 
 [vjs-gh]: https://github.com/videojs/v10
 [conventional-commit-style]: https://www.conventionalcommits.org/en/v1.0.0/#summary
 [discord]: https://discord.gg/zdrCwByt
 [gh-discussions]: https://github.com/videojs/v10/discussions
+[vjs-contributor-guide]: https://github.com/videojs/admin/blob/main/CONTRIBUTING.md
