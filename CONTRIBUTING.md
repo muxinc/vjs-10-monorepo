@@ -64,8 +64,8 @@ A good bug report should be as detailed as possible, so that others won't have t
 1. If no previous requests exist, create a new issue. Please be as clear as possible about why the feature is needed and the intended use case.
 1. Once again, be as detailed as possible and follow the issue template.
 
-**[Request a smaller feature](https://github.com/videojs/v10/issues/new?template=2.feature_request.yml)**
-**[Propose a larger feature](https://github.com/videojs/v10/discussions/new?category=ideas)**
+- **[Request a smaller feature](https://github.com/videojs/v10/issues/new?template=2.feature_request.yml)**
+- **[Propose a larger feature](https://github.com/videojs/v10/discussions/new?category=ideas)**
 
 ### Providing Docs Feedback
 
@@ -267,7 +267,7 @@ One helpful naming convention approximates [conventional commits](conventional-c
 
 #### Step 4: Commits
 
-We follow **[conventional commits semantics][semantic-commit-style]** to enable automated releases.
+We follow **[conventional commits semantics][conventional-commit-style]** to enable automated releases.
 
 Examples:
 
