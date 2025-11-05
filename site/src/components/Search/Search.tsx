@@ -33,7 +33,6 @@ export default function Search({ children, className, baseUrl, bundlePath, searc
         bundlePath,
         showImages: false,
         showSubResults: true,
-        openFilters: ['framework', 'style', 'section'],
         autofocus: true,
       });
       search.triggerFilters({
