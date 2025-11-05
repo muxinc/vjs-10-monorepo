@@ -56,7 +56,7 @@ Guidelines for bug reports:
 
 A good bug report should be as detailed as possible, so that others won't have to follow up for the essential details.
 
-**[File a bug report](https://github.com/videojs/v10/issues/new)**
+**[File a bug report](https://github.com/videojs/v10/issues/new?template=1.bug_report.yml)**
 
 ### Requesting a Feature
 
@@ -64,8 +64,16 @@ A good bug report should be as detailed as possible, so that others won't have t
 1. If no previous requests exist, create a new issue. Please be as clear as possible about why the feature is needed and the intended use case.
 1. Once again, be as detailed as possible and follow the issue template.
 
-**[Request a smaller feature](https://github.com/videojs/v10/issues/new)**
+**[Request a smaller feature](https://github.com/videojs/v10/issues/new?template=2.feature_request.yml)**
 **[Propose a larger feature](https://github.com/videojs/v10/discussions/new?category=ideas)**
+
+### Providing Docs Feedback
+
+1. [Search the issues](https://github.com/videojs/v10/issues) for any potential overlapping docs feedback, and give a thumbs up or +1 on existing requests.
+1. If no previous requests exist, create a new issue. Please be as clear as possible about your docs feedback.
+1. Once again, be as detailed as possible and follow the issue template.
+
+**[Provide docs feedback](https://github.com/videojs/v10/issues/new?template=3.docs_feedback.yml)**
 
 ## 🎒 Contributing code
 
