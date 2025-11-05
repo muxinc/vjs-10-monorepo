@@ -1,7 +1,36 @@
-# Contributing
+# Contributor Guide
 
 First off, thank you for taking the time to contribute to **Video.js 10** ❤️
 Your input helps shape the next generation of open web media players.
+There are a variety of ways you can help out.
+
+## Project Structure
+
+This project is organized as a monorepo. Here's an overview:
+
+- **Packages** - publicly published packages that make up the Video.js 10 media player framework
+  - [core](./packages/core/) - shared platform/framework agnostic functionality, including
+    - media store compositional definitions
+    - media renderer and playback Engine functionality
+    - common core component behaviors and functionality
+  - [icons](./packages/icons/) - core (svg) icon set definitions used by platform/framework-specific implementations
+  - [html](./packages/html/) - web component implementations of
+    - media UI components
+    - media icons
+    - media renderers
+    - media (state) providers
+  - [react](./packages/react/) - React implementations of
+    - media UI components
+    - media icons
+    - media renderers
+    - media (state) providers
+  - [utils](./packages/utils/) - various platform agnostic (shared) and platform specific (dom) utility functions
+- **Examples** - example applications for using Video.js 10.
+  - [html-demo](./examples/html-demo/) - an example application for using and smoke testing [@videojs/html](./packages/html/)
+  - [react-demo](./examples/html-demo/) - an example application for using and smoke testing [@videojs/react](./packages/react/)
+  - [next-demo](./examples/html-demo/) - an example application for using and smoke testing [@videojs/react](./packages/react/) (Useful for validating things like SSR or other complexities not surfaced by [react-demo](./examples/html-demo/)
+- **Other**
+  - [site](./site) - the codebase for the [Video.js 10 website](http://v10.videojs.org)
 
 ## 🎒 Getting Started
 

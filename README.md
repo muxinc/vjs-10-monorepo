@@ -39,6 +39,19 @@ members:
 - [Join Discord Server][discord]
 - [See GitHub Discussions][gh-discussions]
 
+## Contributing
+
+Video.js is a free and open source library, and we appreciate any help you're willing to give - whether it's fixing bugs, improving documentation, or suggesting new features. Check out the [contributing guide](./CONTRIBUTING.md) for more! Contributions and project decisions are overseen by the
+[Video.js Technical Steering Committee (TSC)](https://github.com/videojs/admin/blob/main/GOVERNANCE.md).
+
+By submitting a pull request, you agree that your contribution is provided under the
+[Apache 2.0 License](./LICENSE) and may be included in future releases. No contributor license agreement (CLA) has ever been required for contributions to Video.js. See the [Developer's Certificate of Origin 1.1
+](https://github.com/videojs/admin/blob/main/CONTRIBUTING.md#developers-certificate-of-origin-11).
+
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](https://github.com/videojs/video.js/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 ### How can I help?
 
 Join our community channels above and give us feedback! Keep in mind this is a technical preview
