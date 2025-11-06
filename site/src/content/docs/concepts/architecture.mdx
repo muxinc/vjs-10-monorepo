@@ -62,7 +62,7 @@ Want to dive deeper? <DocsLink slug="concepts/ui-components">Explore UI componen
 Media renderers are the components that actually display your media. They're essentially "players with no UI". They handle the video/audio rendering and expose a consistent API.
 
 <FrameworkCase frameworks={["react"]}>
-For now, we're starting with just a `<Video />` component, but we're looking forward to adding more in the future. From engines like HLS and DASH, to services like YouTube and Vimeo.
+For now, we'll have a default `<Video />` component, which supports MP4 and other natively-supported streams and `<HlsVideo />`, which supports HLS. In the future, we'll be adding additional support for streaming standards like DASH and services like YouTube and Vimeo.
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
 For now, we're starting with just the native HTML5 `<video />` component, but we're looking forward to adding more in the future. From engines like HLS and DASH, to services like YouTube and Vimeo.
