@@ -16,8 +16,8 @@ interface VideoSource {
 }
 
 export const VJS8_DEMO_VIDEO: VideoSource = {
-  id: 'UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA',
-  hls: 'https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8',
-  mp4: 'https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/high.mp4',
-  poster: 'https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp',
+  id: 'lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4',
+  hls: 'https://stream.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4.m3u8',
+  mp4: 'https://stream.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4/highest.mp4',
+  poster: 'https://image.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4/thumbnail.webp',
 };
