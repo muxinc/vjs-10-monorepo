@@ -24,5 +24,5 @@ members:
 
 [package]: https://www.npmjs.com/package/@videojs/react
 [package-badge]: https://img.shields.io/npm/v/@videojs/react/next?label=@videojs/react@next
-[discord]: https://discord.gg/zdrCwByt
+[discord]: https://discord.gg/JBqHh485uF
 [gh-discussions]: https://github.com/videojs/v10/discussions

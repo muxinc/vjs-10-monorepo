@@ -22,5 +22,5 @@ members:
 
 [package]: https://www.npmjs.com/package/@videojs/html
 [package-badge]: https://img.shields.io/npm/v/@videojs/html/next?label=@videojs/html@next
-[discord]: https://discord.gg/zdrCwByt
+[discord]: https://discord.gg/JBqHh485uF
 [gh-discussions]: https://github.com/videojs/v10/discussions

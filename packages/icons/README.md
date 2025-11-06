@@ -24,5 +24,5 @@ members:
 
 [package]: https://www.npmjs.com/package/@videojs/icons
 [package-badge]: https://img.shields.io/npm/v/@videojs/icons/next?label=@videojs/icons@next
-[discord]: https://discord.gg/zdrCwByt
+[discord]: https://discord.gg/JBqHh485uF
 [gh-discussions]: https://github.com/videojs/v10/discussions
