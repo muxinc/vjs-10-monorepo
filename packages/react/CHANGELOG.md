@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.1.0-preview.6](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.5...@videojs/react@0.1.0-preview.6) (2025-11-06)
+
+
+### Features
+
+* **react:** use SimpleVideo as default Video and rename HLS version to HlsVideo ([#171](https://github.com/videojs/v10/issues/171)) ([1878a27](https://github.com/videojs/v10/commit/1878a271ba300919d1eff19dd2db79340e8714fa))
+
+
+### Bug Fixes
+
+* **react, html:** rename MediaProvider (and related) to VideoProvider ([#159](https://github.com/videojs/v10/issues/159)) ([f285573](https://github.com/videojs/v10/commit/f28557359c7dda0282f9d532fa4b2fce19766e40))
+* **react:** update use client usage in react package modules for next.js use ([#157](https://github.com/videojs/v10/issues/157)) ([16cfde1](https://github.com/videojs/v10/commit/16cfde138d5a8c9fb919c49f49240ebacb1d0639))
+* **site:** update discord link ([#170](https://github.com/videojs/v10/issues/170)) ([bb10294](https://github.com/videojs/v10/commit/bb10294419439fb02df650f3e7f7c5496ecc3a73))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.6
+    * @videojs/icons bumped to 0.1.0-preview.6
+    * @videojs/utils bumped to 0.1.0-preview.6
+
 ## [0.1.0-preview.5](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.4...@videojs/react@0.1.0-preview.5) (2025-11-03)
 
 
