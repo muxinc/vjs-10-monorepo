@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.0-preview.6](https://github.com/videojs/v10/compare/@videojs/core@0.1.0-preview.5...@videojs/core@0.1.0-preview.6) (2025-11-06)
+
+
+### Bug Fixes
+
+* **site:** update discord link ([#170](https://github.com/videojs/v10/issues/170)) ([bb10294](https://github.com/videojs/v10/commit/bb10294419439fb02df650f3e7f7c5496ecc3a73))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/utils bumped to 0.1.0-preview.6
+
 ## [0.1.0-preview.5](https://github.com/videojs/v10/compare/@videojs/core@0.1.0-preview.4...@videojs/core@0.1.0-preview.5) (2025-11-03)
 
 
