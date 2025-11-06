@@ -1,7 +1,15 @@
-import type { ComputePositionReturn } from '@floating-ui/core';
-import type { Placement } from '@floating-ui/dom';
-import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { contains, getDocument, getDocumentOrShadowRoot, safePolygon } from '@videojs/utils/dom';
+import type { ComputePositionReturn, Placement } from '@videojs/utils/dom';
+
+import {
+  autoUpdate,
+  computePosition,
+  contains,
+  getDocument,
+  getDocumentOrShadowRoot,
+  offset,
+  safePolygon,
+  shift,
+} from '@videojs/utils/dom';
 
 type Prettify<T> = {
   [K in keyof T]: T[K];
@@ -105,12 +113,11 @@ export class PopoverElement extends HTMLElement {
     this.#open = open;
 
     if (open) {
-      this.#setupFloating();
-
       this.#transitionStatus = 'initial';
       this.#updateVisibility();
 
       this.showPopover();
+      this.#setupFloating();
 
       requestAnimationFrame(() => {
         this.#transitionStatus = 'open';
@@ -151,7 +158,7 @@ export class PopoverElement extends HTMLElement {
     const updatePosition = () => {
       computePosition(trigger, this, {
         placement,
-        middleware: [offset(sideOffset), flip(), shift()],
+        middleware: [offset(sideOffset), shift()],
         strategy: 'fixed',
       }).then((data: ComputePositionReturn) => {
         this.#floatingContext = {

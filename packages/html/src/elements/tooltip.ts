@@ -1,14 +1,12 @@
-import type { Placement } from '@floating-ui/dom';
+import type { Placement } from '@videojs/utils/dom';
 import type { MediaContainerElement } from '@/media/media-container';
 
-import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { getDocumentOrShadowRoot } from '@videojs/utils/dom';
+import { autoUpdate, computePosition, getDocumentOrShadowRoot, offset, shift } from '@videojs/utils/dom';
 
 export class TooltipElement extends HTMLElement {
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
-  #arrowElement: HTMLElement | null = null;
   #pointerPosition = { x: 0, y: 0 };
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
   #abortController: AbortController | null = null;
@@ -96,12 +94,11 @@ export class TooltipElement extends HTMLElement {
     this.#open = open;
 
     if (open) {
-      this.#setupFloating();
-
       this.#transitionStatus = 'initial';
       this.#updateVisibility();
 
       this.showPopover();
+      this.#setupFloating();
 
       requestAnimationFrame(() => {
         this.#transitionStatus = 'open';
@@ -128,7 +125,10 @@ export class TooltipElement extends HTMLElement {
   #updateVisibility(): void {
     this.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
     this.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
-    this.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+    this.toggleAttribute(
+      'data-ending-style',
+      this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted',
+    );
     this.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
 
     const triggerElement = this.#triggerElement as HTMLElement;
@@ -146,21 +146,14 @@ export class TooltipElement extends HTMLElement {
     const collisionPadding = this.collisionPadding;
     const mediaContainer = this.closest('media-container') as MediaContainerElement;
 
-    this.#arrowElement = this.querySelector('media-tooltip-arrow') as HTMLElement;
-
     const updatePosition = () => {
       const middleware = [
         offset(sideOffset),
-        flip(),
         shift({
           boundary: mediaContainer,
           padding: collisionPadding,
         }),
       ];
-
-      if (this.#arrowElement) {
-        middleware.push(arrow({ element: this.#arrowElement }));
-      }
 
       const referenceElement = this.trackCursorAxis
         ? {
@@ -210,19 +203,11 @@ export class TooltipElement extends HTMLElement {
         placement,
         middleware,
         strategy: 'fixed',
-      }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
+      }).then(({ x, y }: { x: number; y: number }) => {
         Object.assign(this.style, {
           left: `${x}px`,
           top: `${y}px`,
         });
-
-        if (this.#arrowElement && middlewareData.arrow) {
-          const { x: arrowX, y: arrowY } = middlewareData.arrow;
-          Object.assign(this.#arrowElement.style, {
-            left: arrowX != null ? `${arrowX}px` : undefined,
-            top: arrowY != null ? `${arrowY}px` : undefined,
-          });
-        }
       });
     };
 
