@@ -18,5 +18,5 @@ members:
 
 [package]: https://www.npmjs.com/package/@videojs/utils
 [package-badge]: https://img.shields.io/npm/v/@videojs/react/utils?label=@videojs/react@utils
-[discord]: https://discord.gg/zdrCwByt
+[discord]: https://discord.gg/JBqHh485uF
 [gh-discussions]: https://github.com/videojs/v10/discussions

@@ -112,6 +112,6 @@ would help us:
 [docs]: http://v10.videojs.org/docs
 [package]: https://www.npmjs.com/package/@videojs/core
 [package-badge]: https://img.shields.io/npm/v/@videojs/core/next?label=@videojs/core@next
-[discord]: https://discord.gg/zdrCwByt
+[discord]: https://discord.gg/JBqHh485uF
 [discord-badge]: https://img.shields.io/discord/507627062434070529?color=%235865F2&label=%20&logo=discord&logoColor=white
 [gh-discussions]: https://github.com/videojs/v10/discussions

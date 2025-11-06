@@ -346,6 +346,6 @@ This doc was heavily inspired by the [contributor guide][vjs-contributor-guide] 
 
 [vjs-gh]: https://github.com/videojs/v10
 [conventional-commit-style]: https://www.conventionalcommits.org/en/v1.0.0/#summary
-[discord]: https://discord.gg/zdrCwByt
+[discord]: https://discord.gg/JBqHh485uF
 [gh-discussions]: https://github.com/videojs/v10/discussions
 [vjs-contributor-guide]: https://github.com/videojs/admin/blob/main/CONTRIBUTING.md
