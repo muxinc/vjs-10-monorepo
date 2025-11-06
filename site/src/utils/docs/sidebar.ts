@@ -1,6 +1,6 @@
 import type { AnySupportedStyle, Guide, Section, Sidebar, SupportedFramework, SupportedStyle } from '@/types/docs';
 
-import { sidebar } from '../../config/docs/sidebar';
+import { sidebar } from '../../docs.config';
 import { FRAMEWORK_STYLES, isSection, isValidStyleForFramework } from '../../types/docs';
 
 /**

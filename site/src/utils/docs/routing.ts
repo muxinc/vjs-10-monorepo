@@ -1,5 +1,5 @@
 import type { AnySupportedStyle, Sidebar, SupportedFramework } from '@/types/docs';
-import { sidebar as defaultSidebar } from '@/config/docs/sidebar';
+import { sidebar as defaultSidebar } from '@/docs.config';
 import { DEFAULT_FRAMEWORK, getDefaultStyle, isValidFramework, isValidStyleForFramework } from '@/types/docs';
 import { findFirstGuide, findGuideBySlug, getValidFrameworksForGuide, getValidStylesForGuide, isItemVisible } from './sidebar';
 

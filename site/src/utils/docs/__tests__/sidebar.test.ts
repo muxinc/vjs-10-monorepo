@@ -422,7 +422,7 @@ describe('sidebar utilities', () => {
   describe('findFirstGuide with real sidebar config', () => {
     it('should return a guide for every valid framework/style combination', async () => {
       // Import the real sidebar config
-      const { sidebar: realSidebar } = await import('../../../config/docs/sidebar');
+      const { sidebar: realSidebar } = await import('../../../docs.config');
       const { ALL_FRAMEWORK_STYLE_COMBINATIONS } = await import('../../../types/docs');
 
       // Test each valid combination
@@ -437,7 +437,7 @@ describe('sidebar utilities', () => {
   describe('sidebar config validation', () => {
     it('should not have duplicate slugs in sidebar config', async () => {
       // Import the real sidebar config
-      const { sidebar: realSidebar } = await import('../../../config/docs/sidebar');
+      const { sidebar: realSidebar } = await import('../../../docs.config');
 
       const allSlugs = getAllGuideSlugs(realSidebar);
       const uniqueSlugs = new Set(allSlugs);

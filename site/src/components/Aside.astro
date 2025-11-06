@@ -13,6 +13,10 @@ type Props = {
 
 const { type, title, class: className } = Astro.props;
 
+if (!['note', 'tip', 'caution', 'danger'].includes(type)) {
+  throw new Error(`Invalid aside type: ${type}`);
+}
+
 const icons: Record<AsideType, typeof Info> = {
   note: Info,
   tip: Lightbulb,
@@ -48,7 +52,7 @@ const renderTitle = title ?? defaultTitles[type];
   >
   </div>
   <div class={clsx('flex-1 flex p-6 pl-4 gap-4')}>
-    <div class="flex-shrink-0 mt-[3px]">
+    <div class="shrink-0 mt-[3px]">
       <Icon
         size={18}
         className={clsx(
