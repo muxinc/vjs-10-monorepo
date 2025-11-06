@@ -1,6 +1,3 @@
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme) prefix(vjs);
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(vjs);
-.vjs {
-  font-family: inherit;
-}

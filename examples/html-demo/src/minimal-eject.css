@@ -7,10 +7,11 @@ media-container {
   isolation: isolate;
   container: root / inline-size;
   overflow: clip;
+  border-radius: var(--vjs-border-radius, 2rem);
+  background: oklab(0 0 0);
+  font-family: var(--vjs-font-family, InterVariable, Inter, ui-sans-serif, system-ui, sans-serif);
   font-size: 0.8125rem;
   line-height: 1.5;
-  border-radius: inherit;
-  background: oklab(0 0 0);
 }
 media-container::after {
   content: '';
@@ -19,11 +20,11 @@ media-container::after {
   border-radius: inherit;
   z-index: 10;
   inset: 0;
-  box-shadow: inset 0 0 0 1px oklab(0 0 0 / 0.2);
+  box-shadow: inset 0 0 0 1px oklab(0 0 0 / 0.15);
 }
 @media (prefers-color-scheme: dark) {
   media-container::after {
-    box-shadow: inset 0 0 0 1px oklab(1 0 0 / 0.2);
+    box-shadow: inset 0 0 0 1px oklab(1 0 0 / 0.15);
   }
 }
 
@@ -183,8 +184,8 @@ media-mute-button .icon {
 }
 media-mute-button:not([data-volume-level]) .volume-low-icon,
 media-mute-button[data-volume-level='high'] .volume-high-icon,
+media-mute-button[data-volume-level='medium'] .volume-high-icon,
 media-mute-button[data-volume-level='low'] .volume-low-icon,
-media-mute-button[data-volume-level='medium'] .volume-low-icon,
 media-mute-button[data-volume-level='off'] .volume-off-icon {
   display: inline;
 }

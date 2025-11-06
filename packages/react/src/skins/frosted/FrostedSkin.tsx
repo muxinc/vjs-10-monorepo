@@ -33,12 +33,12 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
 
       <div className={styles.Overlay} />
 
-      <div className={`${styles.Surface} ${styles.Controls}`} data-testid="media-controls">
+      <div className={`${styles.Surface} ${styles.Controls}`}>
         <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
-            <PlayButton className={`${styles.Button} ${styles.IconButton} ${styles.PlayButton}`}>
-              <PlayIcon className={`${styles.PlayIcon} ${styles.Icon}`} />
-              <PauseIcon className={`${styles.PauseIcon} ${styles.Icon}`} />
+            <PlayButton className={`${styles.Button} ${styles.IconButton}`}>
+              <PlayIcon className={`${styles.Icon} ${styles.PlayIcon}`} />
+              <PauseIcon className={`${styles.Icon} ${styles.PauseIcon}`} />
             </PlayButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
@@ -82,10 +82,10 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
 
         <Popover.Root openOnHover delay={200} closeDelay={100}>
           <Popover.Trigger>
-            <MuteButton className={`${styles.Button} ${styles.IconButton} ${styles.MuteButton}`}>
-              <VolumeHighIcon className={`${styles.VolumeHighIcon} ${styles.Icon}`} />
-              <VolumeLowIcon className={`${styles.VolumeLowIcon} ${styles.Icon}`} />
-              <VolumeOffIcon className={`${styles.VolumeOffIcon} ${styles.Icon}`} />
+            <MuteButton className={`${styles.Button} ${styles.IconButton}`}>
+              <VolumeHighIcon className={`${styles.Icon} ${styles.VolumeHighIcon}`} />
+              <VolumeLowIcon className={`${styles.Icon} ${styles.VolumeLowIcon}`} />
+              <VolumeOffIcon className={`${styles.Icon} ${styles.VolumeOffIcon}`} />
             </MuteButton>
           </Popover.Trigger>
           <Popover.Portal>
@@ -104,9 +104,9 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
 
         <Tooltip.Root delay={500}>
           <Tooltip.Trigger>
-            <FullscreenButton className={`${styles.Button} ${styles.IconButton} ${styles.FullscreenButton}`}>
-              <FullscreenEnterIcon className={`${styles.FullscreenEnterIcon} ${styles.Icon}`} />
-              <FullscreenExitIcon className={`${styles.FullscreenExitIcon} ${styles.Icon}`} />
+            <FullscreenButton className={`${styles.Button} ${styles.IconButton}`}>
+              <FullscreenEnterIcon className={`${styles.Icon} ${styles.FullscreenEnterIcon} `} />
+              <FullscreenExitIcon className={`${styles.Icon} ${styles.FullscreenExitIcon}`} />
             </FullscreenButton>
           </Tooltip.Trigger>
           <Tooltip.Portal>
