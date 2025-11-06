@@ -1,6 +1,6 @@
 ---
 title: 'Writing guides for Video.js'
-description: 'A guide on writing documentation for the Video.js project, and a test bed for all our MDX components'
+description: 'A guide on writing documentation, and a test bed for all our MDX components'
 ---
 
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
@@ -11,40 +11,75 @@ import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs.tsx';
 import DocsLink from '@/components/docs/DocsLink.astro';
 import Aside from '@/components/Aside.astro';
 
-## What kind of guide are you writing?
-I haven't written this section yet, but when I do, it'll rehash [Diátaxis](https://diataxis.fr/).
+## 1. Create a guide in the correct content folder
 
-## Framework-Specific Content
+First, read and understand [Diátaxis](https://diataxis.fr/).
 
-Use the `<FrameworkCase>` component to show content only for specific frameworks. For example,
+Next, know that our [MDX](https://mdxjs.com) guides are separated into two categories:
+1. How-to guides: Focused on achieving a specific outcome. Place these in `src/content/docs/how-to/[slug].mdx`
+2. Concept guides: Focused on understanding a topic. Place these in `src/content/docs/concepts/[slug].mdx`
+
+(You might also notice that we've written some `src/content/docs/reference` guides, but soon those will be auto-generated from source code.)
+
+## 2. Add that guide to the sidebar
+Next, open `src/docs.config.ts` and add your guide to the appropriate section of the sidebar. For example, to add a how-to guide on "Writing guides", you would add:
+
+```ts
+{
+  slug: 'how-to/write-guides',
+  title: 'Writing guides'
+}
+```
+
+If you want the guide to only apply to specific frameworks or styles, you can specify those as well:
+
+```ts
+{
+  slug: 'how-to/write-guides',
+  title: 'Writing guides',
+  frameworks: ['react'], // Only for React
+  styles: ['css'] // Only for CSS
+}
+```
+
+## 3. Understand MDX and our components
+
+### `<FrameworkCase>` and `<StyleCase>`
+First, understand that the guide you write will be rendered for every framework / style combination (e.g., HTML + CSS, React + CSS) unless you restrict it in the sidebar config as shown above.
+
+Use the `<FrameworkCase>` and `<StyleCase>` components to conditionally show content to just one framework or style:
+
 ```mdx
 <FrameworkCase frameworks={["react"]}>
   React-only content
 </FrameworkCase>
 ```
 
-will render:
 
 <FrameworkCase frameworks={["react"]}>
   React-only content
 </FrameworkCase>
 
-
-## Style-Specific Content
+<Aside type="note">
+If you see nothing, that means you probably don't have React selected as your framework. Cool! It's working!
+</Aside>
 
 Use the `<StyleCase>` component to show content only for specific styling approaches. For example,
 
 ```mdx
 <StyleCase styles={["css"]}>
-  Css-only content
+  CSS-only content
 </StyleCase>  
 ``` 
 
-will render:
 
 <StyleCase styles={["css"]}>
-  Css-only content
+  CSS-only content
 </StyleCase>
+
+<Aside type="note">
+If you see nothing, that means you probably don't have CSS selected as your style. Cool! It's working!
+</Aside>
 
 ## Use Github-Flavored Markdown
 
@@ -55,15 +90,11 @@ Don't use H1 (or in markdown, `# H1`). We already have an H1 at the top of the p
 
 ## H2 with `code`
 
-
 ### H3 with `code`
-
 
 #### H4 with `code`
 
-
 ##### H5 with `code`
-
 
 ###### H6 with `code`
 
@@ -81,30 +112,20 @@ We don't actually support images yet, lol.
 
 The blockquote element represents content that is quoted from another source, optionally with a citation which must be within a `footer` or `cite` element, and optionally with in-line changes such as annotations and abbreviations.
 
-#### Blockquote without attribution
-
-##### Syntax
-
 ```markdown
 > Tiam, ad mint andaepu dandae nostion secatur sequo quae.
 > **Note** that you can use _Markdown syntax_ within a blockquote.
 ```
 
-##### Output
-
 > Tiam, ad mint andaepu dandae nostion secatur sequo quae.
 > **Note** that you can use _Markdown syntax_ within a blockquote.
 
-#### Blockquote with attribution
-
-##### Syntax
+### Footnotes
 
 ```markdown
 > Don't communicate by sharing memory, share memory by communicating.<br/>
 > — <cite>Rob Pike[^1]</cite>
 ```
-
-##### Output
 
 > Don't communicate by sharing memory, share memory by communicating.<br/>
 > — <cite>Rob Pike[^1]</cite>
@@ -113,23 +134,18 @@ The blockquote element represents content that is quoted from another source, op
 
 ### Tables
 
-#### Syntax
-
 ```markdown
 | Italics   | Bold     | Code   |
 | --------- | -------- | ------ |
 | _italics_ | **bold** | `code` |
 ```
 
-#### Output
 
 | Italics   | Bold     | Code   |
 | --------- | -------- | ------ |
 | _italics_ | **bold** | `code` |
 
 ### Code Blocks
-
-#### Syntax
 
 we can use 3 backticks ``` in new line and write snippet and close with 3 backticks on new line and to highlight language specific syntax, write one word of language name after first 3 backticks, for eg. html, javascript, css, markdown, typescript, txt, bash
 
@@ -148,7 +164,6 @@ we can use 3 backticks ``` in new line and write snippet and close with 3 backti
 ```
 ````
 
-#### Output
 
 ```html
 <!doctype html>
@@ -167,15 +182,11 @@ we can use 3 backticks ``` in new line and write snippet and close with 3 backti
 
 #### Ordered List
 
-##### Syntax
-
 ```markdown
 1. First item
 2. Second item
 3. Third item
 ```
-
-##### Output
 
 1. First item
 2. Second item
@@ -183,15 +194,11 @@ we can use 3 backticks ``` in new line and write snippet and close with 3 backti
 
 #### Unordered List
 
-##### Syntax
-
 ```markdown
 - List item
 - Another item
 - And another item
 ```
-
-##### Output
 
 - List item
 - Another item
@@ -199,8 +206,6 @@ we can use 3 backticks ``` in new line and write snippet and close with 3 backti
 
 #### Nested list
 
-##### Syntax
-
 ```markdown
 - Fruit
   - Apple
@@ -211,7 +216,7 @@ we can use 3 backticks ``` in new line and write snippet and close with 3 backti
   - Cheese
 ```
 
-##### Output
+Which looks like:
 
 - Fruit
   - Apple
@@ -221,9 +226,9 @@ we can use 3 backticks ``` in new line and write snippet and close with 3 backti
   - Milk
   - Cheese
 
-### Other Elements — abbr, sub, sup, kbd, mark
+### HTML elements, like abbr, sub, sup, kbd, mark
 
-#### Syntax
+You can also write raw HTML within your markdown. This is useful for elements like...
 
 ```markdown
 <abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
@@ -237,7 +242,7 @@ Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
 Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
 ```
 
-#### Output
+Which would output:
 
 <abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
 
@@ -249,7 +254,9 @@ Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
 
 Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
 
-## Asides / Callouts / Admonitions
+
+## Other custom components
+### Asides / Callouts / Admonitions
 
 Use the `<Aside>` component to highlight important information. It supports four types: `note`, `tip`, `caution`, and `danger`.
 
@@ -280,25 +287,16 @@ Of course it works with longer content as well. Even things that have multiple e
 The elements have a gross Tailwind class that manages their margins which makes them tighter in this context. Neat!
 </Aside>
 
-## Code and Code Frames
-
-### Default frame
-
-Regular markdown code blocks automatically get wrapped in tabs with a copy button:
-
-````markdown
-```ts
-console.log('Hello, TypeScript!');
-```
-````
-Renders
-```ts
-console.log('Hello, TypeScript!');
-```
-
 ### Tabs
 
-Use `<TabsRoot>`, `<Tab>`, and `<TabsPanel>` to show multiple code examples side-by-side:
+Use `<TabsRoot>`, `<TabsList>`, `<Tab>`, and `<TabsPanel>` to show multiple items side-by-side. 
+
+<Aside type="note">
+- Set `initial` on your first `<Tab>` and first `<TabsPanel>` to make them active by default
+- All `<Tab* >` components require `client:load` directive so Astro knows to hydrate them
+- Use descriptive `label` prop on `<TabsList>` for accessibility
+</Aside>
+
 
 ````mdx
 <TabsRoot client:load>
@@ -318,7 +316,8 @@ Use `<TabsRoot>`, `<Tab>`, and `<TabsPanel>` to show multiple code examples side
   </TabsPanel>
 </TabsRoot>
 ````
-Which renders
+
+
 <TabsRoot client:load>
   <TabsList client:load label="Code examples">
     <Tab client:load value="typescript" initial>TypeScript</Tab>
@@ -336,18 +335,26 @@ Which renders
   </TabsPanel>
 </TabsRoot>
 
-**Important notes:**
-- Use `<TabsList>` to wrap Tab components, and place TabsPanel components directly as children of TabsRoot
-- Set `initial` on the first Tab and first TabsPanel to make them active by default
-- All child components (`TabsList`, `Tab`, `TabsPanel`) require `client:load` directive in MDX
-- Use descriptive `label` prop on TabsList for accessibility
 
+### `<ServerCode />`, for showing code from a `{variable}` or `?raw` imported file
 
-## Displaying Code from Files
+While MDX supports inline variables like `{someVariable}`, this doesn't work inside of markdown code blocks.
+If you tried
+````mdx
+```tsx
+{someVariable}
+```
+````
+You would just get
+```tsx
+{someVariable}
+```
 
-Use the `<ServerCode>` component to display code imported from source files with syntax highlighting. Supports any language that [Shiki supports](https://shiki.style/languages).
+To work around this, use `<ServerCode />` instead of triple backticks.
 
-**Important:** Unlike regular markdown code blocks, `<ServerCode>` does **not** automatically get wrapped in a frame. You should use `TabsRoot` with a single `TabPanel` to make it look pretty
+<Aside type="caution">
+Unlike regular markdown code blocks, `<ServerCode>` does **not** automatically get wrapped in a frame. You should use `TabsRoot` with a single `TabPanel` to make it look pretty
+</Aside>
 
 ```mdx
 import componentCode from '@/examples/react/Component.tsx?raw';
@@ -379,11 +386,12 @@ function Component() {
   </TabsPanel>
 </TabsRoot>
 
-## Wrapping Live Demos
+## Literally any other component
 
-There are two main patterns for displaying live demos, depending on whether you want to show code alongside the demo.
+This is just MDX, so you can import any old component and use it. To make that imported component look pretty, you might consider wrapping it in `<MinimalFrame>` or placing it inside of a `<TabsRoot>` alongside code, as shown below.
 
-### Option 1: Standalone Demo with Minimal Frame
+
+### `<MinimalFrame>` to limit max width and provide a nice border
 
 Use the `<MinimalFrame>` frame component to wrap standalone demos with a styled border and background:
 
@@ -395,11 +403,9 @@ import MinimalFrame from '@/components/frames/Minimal.astro';
 </MinimalFrame>
 ```
 
-This is best for demos that don't need accompanying code, or when the code is shown separately elsewhere on the page.
+### `<TabsRoot>` supports arbitrary content, too
 
-### Option 2: Demo with Code in TabsRoot
-
-Place the demo directly inside the `tabs-panels` Fragment (as a sibling to `<TabsPanel>` elements) to keep code and demo together:
+You can place any old content underneath `<TabsPanel>`, and it'll show alongside whatever tabbed content you're showing. This is a pattern we've used so far to display code alongside a rendered example (e.g., <DocsLink slug="reference/play-button">PlayButton</DocsLink>).
 
 ```mdx
 import { MyDemo } from '@/examples/react/MyDemo';
@@ -422,5 +428,3 @@ import ServerCode from '@/components/Code/ServerCode.astro';
   <MyDemo client:load />
 </TabsRoot>
 ```
-
-The demo will appear at the bottom of the tabs component, creating a cohesive unit of code and preview. This pattern is used throughout our resource documentation (see <DocsLink slug="reference/play-button">PlayButton</DocsLink> for an example).
