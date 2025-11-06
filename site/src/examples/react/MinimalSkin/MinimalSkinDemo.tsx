@@ -16,7 +16,7 @@ export function MinimalSkinDemo() {
     <VideoProvider>
       <MinimalSkin className="w-full aspect-video">
         <Video
-          src={VJS8_DEMO_VIDEO.hls}
+          src={VJS8_DEMO_VIDEO.mp4}
           poster={VJS8_DEMO_VIDEO.poster}
           playsInline
         />

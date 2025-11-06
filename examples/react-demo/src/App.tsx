@@ -1,6 +1,6 @@
 import type { ChangeEventHandler } from 'react';
 
-import { FrostedSkin, MinimalSkin, Video, VideoProvider } from '@videojs/react';
+import { FrostedSkin, HlsVideo, MinimalSkin, VideoProvider } from '@videojs/react';
 import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@videojs/react/icons';
 import clsx from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -199,7 +199,7 @@ export default function App(): JSX.Element {
           <VideoProvider key={key}>
             <Skin className={skinClassName}>
               {/* @ts-expect-error -- types are incorrect */}
-              <Video src={mediaSource} poster={poster} playsInline />
+              <HlsVideo src={mediaSource} poster={poster} playsInline />
             </Skin>
           </VideoProvider>
         </div>

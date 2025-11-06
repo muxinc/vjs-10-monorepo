@@ -66,7 +66,7 @@ import '@videojs/html/skins/minimal';
 ## 3. Pick Your Renderer
 
 <FrameworkCase frameworks={["react"]}>
-Media renderers display your video and audio content. For now, Video.js v10 includes `<Video />`, which supports HLS streams.
+Media renderers display your video and audio content. For now, Video.js v10 includes `<Video />`, which supports MP4 and other natively-supported streams and `<HlsVideo />`, which supports HLS.
 </FrameworkCase>
 <FrameworkCase frameworks={["html"]}>
 Media renderers display your video and audio content. For now, you should use the native HTML5 `<video>` element.
@@ -86,8 +86,8 @@ export default function App() {
     <VideoProvider>
       <FrostedSkin>
         <Video
-          src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
-          poster="https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp"
+          src="https://stream.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4/highest.mp4"
+          poster="https://image.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4/thumbnail.webp"
           playsInline
         />
       </FrostedSkin>
@@ -105,8 +105,8 @@ document.body.innerHTML = `
     <media-skin-frosted>
       <video
         slot="media"
-        src="https://stream.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA.m3u8"
-        poster="https://image.mux.com/UZMwOY6MgmhFNXLbSFXAuPKlRPss5XNA/thumbnail.webp"
+        src="https://stream.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4/highest.mp4"
+        poster="https://image.mux.com/lhnU49l1VGi3zrTAZhDm9LUUxSjpaPW9BL4jY25Kwo4/thumbnail.webp"
         playsinline
       ></video>
     </media-skin-frosted>

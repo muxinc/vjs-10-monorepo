@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/react';
-import { FrostedSkin, MinimalSkin, Video, VideoProvider } from '@videojs/react';
+import { FrostedSkin, HlsVideo, MinimalSkin, VideoProvider } from '@videojs/react';
 import { VJS8_DEMO_VIDEO } from '@/consts';
 import { skin } from '@/stores/homePageDemos';
 import '@videojs/react/skins/frosted.css';
@@ -13,7 +13,7 @@ export default function HeroVideo({ className, poster }: { className?: string; p
   return (
     <VideoProvider>
       <SkinComponent className={className}>
-        <Video
+        <HlsVideo
           // @ts-expect-error -- types are incorrect
           src={VJS8_DEMO_VIDEO.hls}
           poster={poster}

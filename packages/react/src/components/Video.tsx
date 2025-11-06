@@ -1,115 +1,52 @@
 import type {
   CSSProperties,
   DetailedHTMLProps,
-  ElementType,
-  FC,
   PropsWithChildren,
-  Ref,
   VideoHTMLAttributes,
 } from 'react';
 
-import { createMediaPlaybackController } from '@videojs/core/media';
-
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import { useMediaRef } from '@/store';
 
-export interface MuxVideoProps {
-  'playback-id'?: string;
-}
-
-type MediaStateOwner = NonNullable<Parameters<ReturnType<typeof useMediaRef>>[0]>;
-
-/** @TODO Improve type inference and narrowing/widening for different use cases (CJP) */
-type ComponentType = ElementType<
-  Omit<DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> & {
-    ref: Ref<MediaStateOwner>;
+export type VideoProps = PropsWithChildren<
+  DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement> & {
+    className?: string | undefined;
+    style?: CSSProperties | undefined;
   }
 >;
 
-// These are the first steps/WIP POC of decoupling the Media State Owner from the DOM.
-// Note that everything will still work if you use:
-// 1. an audio/video element directly
-// 2. a custom element a la media-elements
-type CreateMediaStateOwner = typeof createMediaPlaybackController;
-
-function useMediaStateOwner(ref: Ref<any>, createMediaPlaybackController: CreateMediaStateOwner) {
-  const mediaStateOwnerRef = useRef(createMediaPlaybackController(/* props? */));
-  useImperativeHandle(ref, () => mediaStateOwnerRef.current, []);
-  /** @TODO Parameterize this (CJP) */
-  type ComponentProps = DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
-  return {
-    updateMediaElement(mediaEl: HTMLMediaElement | null, props: ComponentProps) {
-      // NOTE: The details here will almost definitely change for a less "bare bones"/"POC" implementation of Media State Owner impl. (CJP)
-      mediaStateOwnerRef.current.mediaElement = mediaEl ?? undefined;
-      mediaStateOwnerRef.current.src = props.src as string;
-      if (props.muted) {
-        mediaStateOwnerRef.current.muted = props.muted;
-      }
-    },
-  };
-}
-
-const DefaultVideoComponent: ElementType<
-  Omit<DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> & { ref: Ref<any> }
-> = forwardRef<any, any>(({ children, ...props }, ref) => {
-  const { updateMediaElement } = useMediaStateOwner(ref, createMediaPlaybackController);
-  return (
-    // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video
-      {...props}
-      ref={(mediaEl) => {
-        /** @TODO In later iterations/non-POC, we should be able to have a function that can be used directly for the `ref` prop (CJP) */
-        updateMediaElement(mediaEl, props);
-      }}
-    >
-      {children}
-    </video>
-  );
-});
-
 /**
- * @description This is a "thin wrapper" around the media component whose primary responsibility is to wire up the element
- * to the <VideoProvider/>'s MediaStore for the media state.
- * @param props - Identical to both a <video/>'s props and the <Player/> props, with one addition that may be familiar to
- * MUI users: a `component` prop that allows you to use something other than the <video/> element under the hood.
- * @returns A media react component (e.g. <video/>), wired up as the media element.
+ * Video - A basic video component that works with native HTML5 video formats (MP4, WebM, etc.)
+ * without using a playback engine. Use this for simple MP4 files. For HLS/DASH streaming, use the
+ * regular Video component instead.
+ *
+ * This component connects to VideoProvider for play/pause state but sets the src directly on the
+ * video element without going through HLS.js or other playback engines.
+ *
+ * @example
+ * ```tsx
+ * <VideoProvider>
+ *   <MediaSkin>
+ *     <Video src="video.mp4" />
+ *   </MediaSkin>
+ * </VideoProvider>
+ * ```
  */
-function ConnectedVideo({
-  component,
-  children,
-  ...props
-}: PropsWithChildren<{
-  component: ComponentType;
-  className?: string | undefined;
-  style?: CSSProperties | undefined;
-}>) {
-  const Component = component;
-  const mediaRefCallback = useMediaRef();
-  // NOTE: While this may feel like magic to folks, in the "default" use case, you can think of it as:
-  // return (<video ref={mediaRefCallback} {...restProps} >{children}</video>);
-  return (
-    <Component {...props} ref={mediaRefCallback}>
-      {children}
-    </Component>
-  );
-}
+export const Video: React.ForwardRefExoticComponent<
+  VideoProps & React.RefAttributes<HTMLVideoElement>
+> = forwardRef<HTMLVideoElement, VideoProps>(
+  ({ children, ...props }, _ref) => {
+    const mediaRefCallback = useMediaRef();
 
-export type VideoProps = PropsWithChildren<{
-  component?: ComponentType;
-  className?: string | undefined;
-  style?: CSSProperties | undefined;
-}>;
+    return (
+      // eslint-disable-next-line jsx-a11y/media-has-caption
+      <video {...props} ref={mediaRefCallback}>
+        {children}
+      </video>
+    );
+  },
+);
 
-// Main Video component with default component
-export function Video({ component = DefaultVideoComponent, children, ...props }: VideoProps): JSX.Element {
-  return (
-    <ConnectedVideo {...props} component={component}>
-      {children}
-    </ConnectedVideo>
-  );
-}
-
-// MediaElementVideo export (same as Video but for backwards compatibility)
-export const MediaElementVideo: FC<VideoProps> = Video;
+Video.displayName = 'Video';
 
 export default Video;

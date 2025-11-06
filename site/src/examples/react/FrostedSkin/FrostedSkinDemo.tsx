@@ -17,7 +17,7 @@ export function FrostedSkinDemo() {
     <VideoProvider>
       <FrostedSkin className="w-full aspect-video rounded-3xl">
         <Video
-          src={VJS8_DEMO_VIDEO.hls}
+          src={VJS8_DEMO_VIDEO.mp4}
           poster={VJS8_DEMO_VIDEO.poster}
           playsInline
         />

@@ -12,7 +12,7 @@ export function PlayButtonDemo() {
     <VideoProvider>
       <MediaContainer style={{ position: 'relative', zIndex: 10 }}>
         <Video
-          src={VJS8_DEMO_VIDEO.hls}
+          src={VJS8_DEMO_VIDEO.mp4}
           poster={VJS8_DEMO_VIDEO.poster}
           muted
         />
