@@ -1,17 +1,41 @@
-import type { Placement } from '@floating-ui/dom';
 import type { MediaContainerElement } from '@/media/media-container';
 
-import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { getDocumentOrShadowRoot } from '@videojs/utils/dom';
+import { getBoundingClientRectWithoutTransform, getDocumentOrShadowRoot } from '@videojs/utils/dom';
+
+type Placement = 'top' | 'bottom' | 'left' | 'right';
 
 export class TooltipElement extends HTMLElement {
+  static get observedAttributes(): string[] {
+    return ['id', 'delay', 'close-delay', 'track-cursor-axis', 'side', 'side-offset', 'collision-padding'];
+  }
+
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
-  #cleanup: (() => void) | null = null;
-  #arrowElement: HTMLElement | null = null;
   #pointerPosition = { x: 0, y: 0 };
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
   #abortController: AbortController | null = null;
+
+  constructor() {
+    super();
+
+    const resizeObserver = new ResizeObserver(() => this.#checkCollision());
+    resizeObserver.observe(this);
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+    if (name === 'id') {
+      this.style.setProperty('position-anchor', `--${newValue}`);
+    }
+
+    this.style.setProperty('top', `calc(anchor(${this.side}) - ${this.sideOffset}px)`);
+
+    if (this.trackCursorAxis) {
+      this.style.setProperty('translate', `-50% -100%`);
+    } else {
+      this.style.setProperty('translate', `0 -100%`);
+      this.style.setProperty('justify-self', 'anchor-center');
+    }
+  }
 
   connectedCallback(): void {
     this.setAttribute('role', 'tooltip');
@@ -33,7 +57,6 @@ export class TooltipElement extends HTMLElement {
 
   disconnectedCallback(): void {
     this.#clearHoverTimeout();
-    this.#cleanup?.();
     this.#abortController?.abort();
     this.#abortController = null;
 
@@ -55,10 +78,6 @@ export class TooltipElement extends HTMLElement {
       default:
         break;
     }
-  }
-
-  static get observedAttributes(): string[] {
-    return ['delay', 'close-delay', 'track-cursor-axis', 'side', 'side-offset', 'collision-padding'];
   }
 
   get delay(): number {
@@ -96,8 +115,6 @@ export class TooltipElement extends HTMLElement {
     this.#open = open;
 
     if (open) {
-      this.#setupFloating();
-
       this.#transitionStatus = 'initial';
       this.#updateVisibility();
 
@@ -106,6 +123,8 @@ export class TooltipElement extends HTMLElement {
       requestAnimationFrame(() => {
         this.#transitionStatus = 'open';
         this.#updateVisibility();
+        // Check collision after tooltip is shown and positioned
+        this.#checkCollision();
       });
     } else {
       this.#transitionStatus = 'close';
@@ -119,9 +138,6 @@ export class TooltipElement extends HTMLElement {
       } else {
         this.hidePopover();
       }
-
-      this.#cleanup?.();
-      this.#cleanup = null;
     }
   }
 
@@ -137,105 +153,72 @@ export class TooltipElement extends HTMLElement {
     }
   }
 
-  #setupFloating(): void {
-    const trigger = this.#triggerElement as HTMLElement;
-    if (!trigger) return;
-
-    const placement = this.side;
-    const sideOffset = this.sideOffset;
-    const collisionPadding = this.collisionPadding;
-    const mediaContainer = this.closest('media-container') as MediaContainerElement;
-
-    this.#arrowElement = this.querySelector('media-tooltip-arrow') as HTMLElement;
-
-    const updatePosition = () => {
-      const middleware = [
-        offset(sideOffset),
-        flip(),
-        shift({
-          boundary: mediaContainer,
-          padding: collisionPadding,
-        }),
-      ];
-
-      if (this.#arrowElement) {
-        middleware.push(arrow({ element: this.#arrowElement }));
-      }
-
-      const referenceElement = this.trackCursorAxis
-        ? {
-            getBoundingClientRect: () => {
-              const triggerRect = trigger.getBoundingClientRect();
-
-              if (this.trackCursorAxis === 'x') {
-                return {
-                  width: 0,
-                  height: 0,
-                  top: triggerRect.top,
-                  right: this.#pointerPosition.x,
-                  bottom: triggerRect.bottom,
-                  left: this.#pointerPosition.x,
-                  x: this.#pointerPosition.x,
-                  y: triggerRect.top,
-                };
-              } else if (this.trackCursorAxis === 'y') {
-                return {
-                  width: 0,
-                  height: 0,
-                  top: this.#pointerPosition.y,
-                  right: triggerRect.right,
-                  bottom: this.#pointerPosition.y,
-                  left: triggerRect.left,
-                  x: triggerRect.left,
-                  y: this.#pointerPosition.y,
-                };
-              } else {
-                // Track both axes (trackCursorAxis === 'both')
-                return {
-                  width: 0,
-                  height: 0,
-                  top: this.#pointerPosition.y,
-                  right: this.#pointerPosition.x,
-                  bottom: this.#pointerPosition.y,
-                  left: this.#pointerPosition.x,
-                  x: this.#pointerPosition.x,
-                  y: this.#pointerPosition.y,
-                };
-              }
-            },
-          }
-        : trigger;
-
-      computePosition(referenceElement, this, {
-        placement,
-        middleware,
-        strategy: 'fixed',
-      }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
-        Object.assign(this.style, {
-          left: `${x}px`,
-          top: `${y}px`,
-        });
-
-        if (this.#arrowElement && middlewareData.arrow) {
-          const { x: arrowX, y: arrowY } = middlewareData.arrow;
-          Object.assign(this.#arrowElement.style, {
-            left: arrowX != null ? `${arrowX}px` : undefined,
-            top: arrowY != null ? `${arrowY}px` : undefined,
-          });
-        }
-      });
-    };
-
-    updatePosition();
-
-    if (!this.trackCursorAxis) {
-      this.#cleanup = autoUpdate(trigger, this, updatePosition);
+  #updatePosition(): void {
+    if (this.#open && this.trackCursorAxis) {
+      this.style.setProperty('left', `${this.#pointerPosition.x}px`);
+      this.#checkCollision();
     }
   }
 
-  #updatePosition(): void {
-    if (this.#open && this.trackCursorAxis) {
-      this.#setupFloating();
+  #checkCollision(): void {
+    const mediaContainer = this.closest('media-container') as MediaContainerElement;
+    if (!mediaContainer || !this.#open) return;
+
+    const collisionPadding = this.collisionPadding;
+    const tooltipRect = getBoundingClientRectWithoutTransform(this);
+    const containerRect = mediaContainer.getBoundingClientRect();
+
+    // Calculate bounds with collision padding
+    const containerBounds = {
+      top: containerRect.top + collisionPadding,
+      right: containerRect.right - collisionPadding,
+      bottom: containerRect.bottom - collisionPadding,
+      left: containerRect.left + collisionPadding,
+    };
+
+    // Calculate adjustments needed to keep tooltip within bounds
+    let adjustX = 0;
+    let adjustY = 0;
+
+    // Check horizontal overflow
+    if (tooltipRect.left < containerBounds.left) {
+      adjustX = containerBounds.left - tooltipRect.left;
+    } else if (tooltipRect.right > containerBounds.right) {
+      adjustX = containerBounds.right - tooltipRect.right;
+    }
+
+    // Check vertical overflow
+    if (tooltipRect.top < containerBounds.top) {
+      adjustY = containerBounds.top - tooltipRect.top;
+    } else if (tooltipRect.bottom > containerBounds.bottom) {
+      adjustY = containerBounds.bottom - tooltipRect.bottom;
+    }
+
+    // Apply adjustments
+    if (adjustX !== 0 || adjustY !== 0) {
+      if (this.trackCursorAxis) {
+        // When tracking cursor, adjust left position for X and translate for Y
+        const currentLeft = Number.parseFloat(this.style.left || '0');
+        if (!Number.isNaN(currentLeft) && adjustX !== 0) {
+          this.style.setProperty('left', `${currentLeft + adjustX}px`);
+        }
+        // Adjust Y using translate
+        if (adjustY !== 0) {
+          this.style.setProperty('translate', `-50% calc(-100% + ${adjustY}px)`);
+        }
+      } else {
+        // When not tracking cursor, adjust using translate for both axes
+        const baseX = adjustX !== 0 ? `${adjustX}px` : '0';
+        const baseY = adjustY !== 0 ? `calc(-100% + ${adjustY}px)` : '-100%';
+        this.style.setProperty('translate', `${baseX} ${baseY}`);
+      }
+    } else {
+      // Reset adjustments if no collision - restore original positioning
+      if (this.trackCursorAxis) {
+        this.style.setProperty('translate', '-50% -100%');
+      } else {
+        this.style.setProperty('translate', '0 -100%');
+      }
     }
   }
 

@@ -132,7 +132,7 @@ export class VolumeSliderTrack extends HTMLElement {
 /**
  * VolumeSlider Progress component - Shows current progress
  */
-export class VolumeSliderIndicatorElement extends HTMLElement {
+export class VolumeSliderIndicator extends HTMLElement {
   constructor() {
     super();
     this.style.position = 'absolute';
@@ -255,8 +255,8 @@ export const VolumeSliderTrackElement: ConnectedComponentConstructor<any> = toCo
 /**
  * Connected VolumeSlider Progress component
  */
-export const VolumeSliderProgressElement: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
-  VolumeSliderIndicatorElement,
+export const VolumeSliderIndicatorElement: ConnectedComponentConstructor<any> = toConnectedHTMLComponent(
+  VolumeSliderIndicator,
   { keys: [], transform: () => ({}) },
   getVolumeSliderProgressProps,
   'VolumeSliderProgress',
@@ -280,12 +280,12 @@ export const VolumeSliderElement = Object.assign(
   {
     Root: VolumeSliderRootElement,
     Track: VolumeSliderTrackElement,
-    Progress: VolumeSliderProgressElement,
+    Indicator: VolumeSliderIndicatorElement,
     Thumb: VolumeSliderThumbElement,
   },
 ) as {
   Root: typeof VolumeSliderRootElement;
   Track: typeof VolumeSliderTrackElement;
-  Progress: typeof VolumeSliderProgressElement;
+  Indicator: typeof VolumeSliderIndicatorElement;
   Thumb: typeof VolumeSliderThumbElement;
 };

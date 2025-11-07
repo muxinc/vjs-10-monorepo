@@ -121,3 +121,26 @@ export function getNodeChildren(
     ...getNodeChildren(nodes, child.id, onlyOpenChildren),
   ]);
 }
+
+export function getBoundingClientRectWithoutTransform(element: HTMLElement): DOMRect {
+  let el = element;
+  let left = 0;
+  let top = 0;
+
+  do {
+    left += el.offsetLeft;
+    top += el.offsetTop;
+    el = el.offsetParent as HTMLElement;
+  } while (el);
+
+  return {
+    x: left,
+    y: top,
+    left,
+    top,
+    bottom: top + element.offsetHeight,
+    right: left + element.offsetWidth,
+    width: element.offsetWidth,
+    height: element.offsetHeight,
+  } as DOMRect;
+}

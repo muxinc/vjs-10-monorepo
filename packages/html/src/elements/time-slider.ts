@@ -50,7 +50,7 @@ export const getTimeSliderRootProps: PropsHook<{
 };
 
 export class TimeSliderRoot extends HTMLElement {
-  static readonly observedAttributes: readonly string[] = ['orientation'];
+  static readonly observedAttributes: readonly string[] = ['commandfor', 'orientation'];
 
   _state: TimeSliderRootState | undefined;
   _core: CoreTimeSlider | null = null;
@@ -67,9 +67,11 @@ export class TimeSliderRoot extends HTMLElement {
     return (this.getAttribute('orientation') as 'horizontal' | 'vertical') || 'horizontal';
   }
 
-  attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null): void {
+  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
     if (name === 'orientation' && this._state) {
       this._render(getTimeSliderRootProps(this._state, this), this._state);
+    } else if (name === 'commandfor') {
+      this.style.setProperty('anchor-name', `--${newValue}`);
     }
   }
 
