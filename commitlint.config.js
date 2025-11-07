@@ -26,6 +26,7 @@ export default {
       'skins',
       'test',
       'utils',
+      'compiler',
     ]],
   },
 };
