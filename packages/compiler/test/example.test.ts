@@ -6,7 +6,7 @@ import { compileFormatted } from '../src';
 describe('example: Minimal Skin', () => {
   it('compiles example-minimal.tsx successfully', () => {
     const source = readFileSync(
-      join(__dirname, 'example-minimal.tsx'),
+      join(__dirname, 'fixtures/example-minimal.tsx'),
       'utf-8',
     );
 
