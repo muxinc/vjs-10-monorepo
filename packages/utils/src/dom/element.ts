@@ -3,9 +3,7 @@
  *
  * @param root - The root node to search for the active element.
  */
-export function activeElement(
-  root: Document = document,
-): Element | null {
+export function activeElement(root: Document = document): Element | null {
   let element = root.activeElement;
 
   while (element?.shadowRoot?.activeElement != null) {
@@ -20,9 +18,7 @@ export function activeElement(
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/getRootNode#return_value
  * @param node - The node to get the root node from.
  */
-export function getDocumentOrShadowRoot(
-  node: Node,
-): Document | ShadowRoot | null {
+export function getDocumentOrShadowRoot(node: Node): Document | ShadowRoot | null {
   const rootNode = node?.getRootNode?.();
   if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
     return rootNode;
@@ -85,9 +81,7 @@ export function isShadowRoot(value: unknown): value is ShadowRoot {
     return false;
   }
 
-  return (
-    value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot
-  );
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
 }
 
 function hasWindow() {
@@ -102,7 +96,7 @@ export interface FloatingNodeType {
   id: string;
   parentId: string | null;
   context: FloatingContext;
-};
+}
 
 interface FloatingContext {
   open: boolean;
@@ -113,13 +107,8 @@ export function getNodeChildren(
   id: string | undefined,
   onlyOpenChildren = true,
 ): Array<FloatingNodeType> {
-  const directChildren = nodes.filter(
-    node => node.parentId === id && (!onlyOpenChildren || node.context?.open),
-  );
-  return directChildren.flatMap(child => [
-    child,
-    ...getNodeChildren(nodes, child.id, onlyOpenChildren),
-  ]);
+  const directChildren = nodes.filter(node => node.parentId === id && (!onlyOpenChildren || node.context?.open));
+  return directChildren.flatMap(child => [child, ...getNodeChildren(nodes, child.id, onlyOpenChildren)]);
 }
 
 export function getBoundingClientRectWithoutTransform(element: HTMLElement): DOMRect {
@@ -143,4 +132,34 @@ export function getBoundingClientRectWithoutTransform(element: HTMLElement): DOM
     width: element.offsetWidth,
     height: element.offsetHeight,
   } as DOMRect;
+}
+
+export function getInBoundsAdjustments(
+  popupRect: DOMRect,
+  containerRect: DOMRect,
+  collisionPadding: number,
+): { x: number; y: number } {
+  const bounds = {
+    top: containerRect.top + collisionPadding,
+    right: containerRect.right - collisionPadding,
+    bottom: containerRect.bottom - collisionPadding,
+    left: containerRect.left + collisionPadding,
+  };
+
+  let x = 0;
+  let y = 0;
+
+  if (popupRect.left < bounds.left) {
+    x = bounds.left - popupRect.left;
+  } else if (popupRect.right > bounds.right) {
+    x = bounds.right - popupRect.right;
+  }
+
+  if (popupRect.top < bounds.top) {
+    y = bounds.top - popupRect.top;
+  } else if (popupRect.bottom > bounds.bottom) {
+    y = bounds.bottom - popupRect.bottom;
+  }
+
+  return { x, y };
 }

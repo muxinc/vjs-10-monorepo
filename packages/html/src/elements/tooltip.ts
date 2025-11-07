@@ -1,6 +1,10 @@
 import type { MediaContainerElement } from '@/media/media-container';
 
-import { getBoundingClientRectWithoutTransform, getDocumentOrShadowRoot } from '@videojs/utils/dom';
+import {
+  getBoundingClientRectWithoutTransform,
+  getDocumentOrShadowRoot,
+  getInBoundsAdjustments,
+} from '@videojs/utils/dom';
 
 type Placement = 'top' | 'bottom' | 'left' | 'right';
 
@@ -123,7 +127,6 @@ export class TooltipElement extends HTMLElement {
       requestAnimationFrame(() => {
         this.#transitionStatus = 'open';
         this.#updateVisibility();
-        // Check collision after tooltip is shown and positioned
         this.#checkCollision();
       });
     } else {
@@ -144,7 +147,10 @@ export class TooltipElement extends HTMLElement {
   #updateVisibility(): void {
     this.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
     this.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
-    this.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+    this.toggleAttribute(
+      'data-ending-style',
+      this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted',
+    );
     this.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
 
     const triggerElement = this.#triggerElement as HTMLElement;
@@ -164,56 +170,18 @@ export class TooltipElement extends HTMLElement {
     const mediaContainer = this.closest('media-container') as MediaContainerElement;
     if (!mediaContainer || !this.#open) return;
 
-    const collisionPadding = this.collisionPadding;
-    const tooltipRect = getBoundingClientRectWithoutTransform(this);
-    const containerRect = mediaContainer.getBoundingClientRect();
+    const popupRect = getBoundingClientRectWithoutTransform(this);
+    const boundsRect = getBoundingClientRectWithoutTransform(mediaContainer);
+    const { x } = getInBoundsAdjustments(popupRect, boundsRect, this.collisionPadding);
 
-    // Calculate bounds with collision padding
-    const containerBounds = {
-      top: containerRect.top + collisionPadding,
-      right: containerRect.right - collisionPadding,
-      bottom: containerRect.bottom - collisionPadding,
-      left: containerRect.left + collisionPadding,
-    };
-
-    // Calculate adjustments needed to keep tooltip within bounds
-    let adjustX = 0;
-    let adjustY = 0;
-
-    // Check horizontal overflow
-    if (tooltipRect.left < containerBounds.left) {
-      adjustX = containerBounds.left - tooltipRect.left;
-    } else if (tooltipRect.right > containerBounds.right) {
-      adjustX = containerBounds.right - tooltipRect.right;
-    }
-
-    // Check vertical overflow
-    if (tooltipRect.top < containerBounds.top) {
-      adjustY = containerBounds.top - tooltipRect.top;
-    } else if (tooltipRect.bottom > containerBounds.bottom) {
-      adjustY = containerBounds.bottom - tooltipRect.bottom;
-    }
-
-    // Apply adjustments
-    if (adjustX !== 0 || adjustY !== 0) {
+    if (x !== 0) {
       if (this.trackCursorAxis) {
-        // When tracking cursor, adjust left position for X and translate for Y
         const currentLeft = Number.parseFloat(this.style.left || '0');
-        if (!Number.isNaN(currentLeft) && adjustX !== 0) {
-          this.style.setProperty('left', `${currentLeft + adjustX}px`);
-        }
-        // Adjust Y using translate
-        if (adjustY !== 0) {
-          this.style.setProperty('translate', `-50% calc(-100% + ${adjustY}px)`);
-        }
+        this.style.setProperty('left', `${currentLeft + x}px`);
       } else {
-        // When not tracking cursor, adjust using translate for both axes
-        const baseX = adjustX !== 0 ? `${adjustX}px` : '0';
-        const baseY = adjustY !== 0 ? `calc(-100% + ${adjustY}px)` : '-100%';
-        this.style.setProperty('translate', `${baseX} ${baseY}`);
+        this.style.setProperty('translate', `${x}px -100%`);
       }
     } else {
-      // Reset adjustments if no collision - restore original positioning
       if (this.trackCursorAxis) {
         this.style.setProperty('translate', '-50% -100%');
       } else {
