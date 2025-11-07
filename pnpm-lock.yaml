@@ -198,6 +198,9 @@ importers:
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.24
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.24
       '@videojs/react':
         specifier: workspace:*
         version: link:../react

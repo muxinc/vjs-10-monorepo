@@ -134,15 +134,33 @@ pnpm typecheck
 pnpm build
 ```
 
+## Current Limitations (v0.1)
+
+1. **Template Literal classNames** - Not fully resolved
+   - `className={\`${styles.A} ${styles.B}\`}` won't extract properly
+   - **Workaround**: Use single className references
+
+2. **Tooltip/Popover Components** - Structural transformation not implemented
+   - React uses nested compound components (Tooltip.Root, Trigger, Portal, etc.)
+   - HTML uses flat structure with `commandfor` linking
+   - **Current**: Produces incorrect nested structure
+   - **Future**: Phase 2 (v0.2) will add transformation rules
+
+3. **Tailwind CSS** - Placeholder only
+   - Generates stub CSS rules
+   - **Future**: Phase 3 (v0.3) will add full Tailwind processing
+
+See [ROADMAP.md](./ROADMAP.md) for complete feature timeline.
+
 ## Development
 
 This is v0.1 - a minimal, incremental implementation focusing on JSX compilation only. Future iterations will add:
 
-- Full Tailwind CSS processing
-- Import path transformation
-- Advanced selectors (named groups, pseudo-elements, has selector)
-- Container query support
-- CLI for batch compilation
+- Tooltip/Popover structural transformations (v0.2)
+- Full Tailwind CSS processing (v0.3)
+- Import path transformation (v0.4)
+- Template literal resolution (v0.5)
+- CLI for batch compilation (v0.6)
 - Source maps
 
 ## License

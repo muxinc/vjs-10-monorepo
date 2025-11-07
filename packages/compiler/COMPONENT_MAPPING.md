@@ -102,19 +102,106 @@ function transformElementName(name) {
 
 ---
 
-## React-Only Components
+## Components Requiring Structural Transformation
 
-These React components use floating-ui and don't have direct HTML equivalents:
+These React components use floating-ui and require **structural transformation**, not just element name mapping.
 
-- `<Tooltip.Root>`, `<Tooltip.Trigger>`, `<Tooltip.Portal>`, `<Tooltip.Positioner>`, `<Tooltip.Popup>`
-- `<Popover.Root>`, `<Popover.Trigger>`, `<Popover.Portal>`, `<Popover.Positioner>`, `<Popover.Popup>`
+### Tooltip Pattern
 
-In the HTML package, these are simplified to single elements:
+**React version** (nested compound components):
 
-- React: `<Tooltip.Root><Tooltip.Trigger>...</Tooltip.Trigger></Tooltip.Root>`
-- HTML: `<media-tooltip>...</media-tooltip>`
+```tsx
+<Tooltip.Root delay={500}>
+  <Tooltip.Trigger>
+    <PlayButton>
+      <PlayIcon />
+    </PlayButton>
+  </Tooltip.Trigger>
+  <Tooltip.Portal>
+    <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
+      <Tooltip.Popup>
+        <span>Play</span>
+      </Tooltip.Popup>
+    </Tooltip.Positioner>
+  </Tooltip.Portal>
+</Tooltip.Root>
+```
 
-**For compilation**: These components will need special handling or replacement in future iterations.
+**HTML version** (flat with commandfor linking):
+
+```html
+<media-play-button commandfor="play-tooltip" class="button">
+  <media-play-icon class="icon"></media-play-icon>
+</media-play-button>
+<media-tooltip
+  id="play-tooltip"
+  popover="manual"
+  delay="500"
+  side="top"
+  side-offset="12"
+  collision-padding="12"
+>
+  <span>Play</span>
+</media-tooltip>
+```
+
+### Popover Pattern
+
+**React version**:
+
+```tsx
+<Popover.Root openOnHover delay={200} closeDelay={100}>
+  <Popover.Trigger>
+    <MuteButton>...</MuteButton>
+  </Popover.Trigger>
+  <Popover.Portal>
+    <Popover.Positioner side="top" sideOffset={12}>
+      <Popover.Popup>
+        <VolumeSlider.Root>...</VolumeSlider.Root>
+      </Popover.Popup>
+    </Popover.Positioner>
+  </Popover.Portal>
+</Popover.Root>
+```
+
+**HTML version**:
+
+```html
+<media-mute-button commandfor="volume-slider-popover" command="toggle-popover">
+  ...
+</media-mute-button>
+<media-popover
+  id="volume-slider-popover"
+  popover="manual"
+  open-on-hover
+  delay="200"
+  close-delay="100"
+  side="top"
+  side-offset="12"
+>
+  <media-volume-slider orientation="vertical">...</media-volume-slider>
+</media-popover>
+```
+
+### Required Transformations
+
+1. **Flatten nested structure** - Remove Root/Trigger/Portal/Positioner/Popup wrappers
+2. **Extract trigger element** - First child of Trigger becomes standalone
+3. **Generate IDs** - Create unique IDs for linking (e.g., `play-tooltip`)
+4. **Add commandfor attribute** - Link trigger to tooltip/popover
+5. **Merge attributes** - Combine attrs from Root/Positioner/Popup into single element
+6. **Move content** - Content from Popup becomes tooltip/popover children
+
+### Status
+
+**v0.1**: ❌ Not implemented - Tooltip/Popover will compile but produce incorrect structure
+**Future**: ⏳ Requires transformation rule system (Phase 2+)
+
+**Current behavior**: Naively transforms compound components
+
+- `<Tooltip.Root>` → `<media-tooltip>` (Root rule)
+- `<Tooltip.Trigger>` → `<media-tooltip-trigger>`
+- Result: Incorrect nested structure instead of flat HTML pattern
 
 ---
 
