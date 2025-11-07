@@ -2,6 +2,7 @@
  * Example: Minimal Skin
  *
  * Simple skin with basic controls for testing compilation
+ * Uses actual @videojs/react package exports
  */
 
 import { MediaContainer, PlayButton, TimeSlider } from '@videojs/react';
