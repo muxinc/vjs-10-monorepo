@@ -22,8 +22,9 @@ describe('jSX Transformation', () => {
       `;
 
       const result = compile(source);
+      // Root maps to base element name without -root suffix
       expect(result.html).toBe(
-        '<media-time-slider-root><media-time-slider-track></media-time-slider-track></media-time-slider-root>',
+        '<media-time-slider><media-time-slider-track></media-time-slider-track></media-time-slider>',
       );
     });
 
@@ -205,7 +206,7 @@ describe('jSX Transformation', () => {
       const result = compile(source);
 
       expect(result.html).toContain('<slot name="media" slot="media"></slot>');
-      expect(result.html).toContain('<media-time-slider-root class="root">');
+      expect(result.html).toContain('<media-time-slider class="root">');
       expect(result.html).toContain('<media-time-slider-track class="track">');
       expect(result.html).toContain('<media-time-slider-progress class="progress">');
       expect(result.classNames).toEqual(expect.arrayContaining(['root', 'track', 'progress']));
@@ -233,7 +234,7 @@ describe('jSX Transformation', () => {
       expect(result.html).toContain('<div class="wrapper">');
       expect(result.html).toContain('<media-play-button class="play-btn">');
       expect(result.html).toContain('<media-mute-button>');
-      expect(result.html).toContain('<media-volume-slider-root>');
+      expect(result.html).toContain('<media-volume-slider>');
       expect(result.classNames).toEqual(expect.arrayContaining(['wrapper', 'play-btn', 'controls']));
     });
   });

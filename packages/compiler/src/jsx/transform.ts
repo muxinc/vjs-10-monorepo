@@ -118,8 +118,18 @@ function getElementName(
   }
 
   if (t.isJSXMemberExpression(name)) {
-    // Flatten member expressions: TimeSlider.Root → TimeSliderRoot
-    const flattened = flattenMemberExpression(name, t);
+    // Get the object and property parts
+    const property = t.isJSXIdentifier(name.property) ? name.property.name : '';
+    const object = flattenMemberExpression(name.object as BabelTypes.JSXMemberExpression, t);
+
+    // Special case: .Root maps to base element name
+    // TimeSlider.Root → media-time-slider (not media-time-slider-root)
+    if (property === 'Root') {
+      return config.elementPrefix + pascalToKebab(object);
+    }
+
+    // Other properties: TimeSlider.Track → media-time-slider-track
+    const flattened = object + property;
     return config.elementPrefix + pascalToKebab(flattened);
   }
 

@@ -16,7 +16,7 @@ describe('example: Minimal Skin', () => {
     expect(output).toContain('<media-container class="container">');
     expect(output).toContain('<slot name="media" slot="media"></slot>');
     expect(output).toContain('<media-play-button class="play-button">');
-    expect(output).toContain('<media-time-slider-root class="slider-root">');
+    expect(output).toContain('<media-time-slider class="slider-root">');
     expect(output).toContain('<media-time-slider-track class="slider-track">');
     expect(output).toContain('<media-time-slider-progress class="slider-progress">');
 
