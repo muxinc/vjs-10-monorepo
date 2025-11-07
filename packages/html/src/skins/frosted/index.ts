@@ -1,8 +1,9 @@
 import { MediaSkinElement } from '@/media/media-skin';
 import { defineCustomElement } from '@/utils/custom-element';
 import styles from './styles.css';
-import '@/define/media-container';
+// be sure to import video-provider first for proper context initialization
 import '@/define/video-provider';
+import '@/define/media-container';
 import '@/define/media-play-button';
 import '@/define/media-mute-button';
 import '@/define/media-volume-slider';

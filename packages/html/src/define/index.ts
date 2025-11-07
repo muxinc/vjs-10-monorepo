@@ -1,5 +1,6 @@
-import './media-container';
+// be sure to import video-provider first for proper context initialization
 import './video-provider';
+import './media-container';
 import './media-play-button';
 import './media-mute-button';
 import './media-volume-slider';

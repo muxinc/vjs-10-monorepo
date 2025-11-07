@@ -1916,7 +1916,7 @@ export function generateHTMLJS(skin: Skin): string {
 
 // npm install @videojs/html@next
 import '@videojs/html/icons';
-// be sure to import video-provider first
+// be sure to import video-provider first for proper context initialization
 import '@videojs/html/define/video-provider';
 import '@videojs/html/define/media-container';
 import '@videojs/html/define/media-play-button';

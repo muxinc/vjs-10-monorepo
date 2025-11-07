@@ -1,26 +1,27 @@
-import type { ComputePositionReturn } from '@floating-ui/core';
-import type { Placement } from '@floating-ui/dom';
-import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { contains, getDocument, getDocumentOrShadowRoot, safePolygon } from '@videojs/utils/dom';
 
-type Prettify<T> = {
-  [K in keyof T]: T[K];
-};
-
-type FloatingContext = Prettify<ComputePositionReturn> & {
-  elements: {
-    domReference: HTMLElement;
-    floating: HTMLElement;
-  };
-};
+type Placement = 'top' | 'bottom' | 'left' | 'right';
 
 export class PopoverElement extends HTMLElement {
+  static get observedAttributes(): string[] {
+    return ['id', 'open-on-hover', 'delay', 'close-delay', 'side', 'side-offset'];
+  }
+
   #open = false;
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   #cleanup: (() => void) | null = null;
   #abortController: AbortController | null = null;
-  #floatingContext: FloatingContext | null = null;
+
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+    if (name === 'id') {
+      this.style.setProperty('position-anchor', `--${newValue}`);
+    }
+
+    this.style.setProperty('top', `calc(anchor(${this.side}) - ${this.sideOffset}px)`);
+    this.style.setProperty('translate', `0 -100%`);
+    this.style.setProperty('justify-self', 'anchor-center');
+  }
 
   connectedCallback(): void {
     this.#abortController ??= new AbortController();
@@ -71,10 +72,6 @@ export class PopoverElement extends HTMLElement {
     }
   }
 
-  static get observedAttributes(): string[] {
-    return ['open-on-hover', 'delay', 'close-delay', 'side', 'side-offset'];
-  }
-
   get openOnHover(): boolean {
     return this.hasAttribute('open-on-hover');
   }
@@ -105,8 +102,6 @@ export class PopoverElement extends HTMLElement {
     this.#open = open;
 
     if (open) {
-      this.#setupFloating();
-
       this.#transitionStatus = 'initial';
       this.#updateVisibility();
 
@@ -139,38 +134,6 @@ export class PopoverElement extends HTMLElement {
     this.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
     this.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
     this.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
-  }
-
-  #setupFloating(): void {
-    const trigger = this.#triggerElement as HTMLElement;
-    if (!trigger) return;
-
-    const placement = this.side ?? 'top';
-    const sideOffset = this.sideOffset;
-
-    const updatePosition = () => {
-      computePosition(trigger, this, {
-        placement,
-        middleware: [offset(sideOffset), flip(), shift()],
-        strategy: 'fixed',
-      }).then((data: ComputePositionReturn) => {
-        this.#floatingContext = {
-          ...data,
-          elements: {
-            domReference: trigger,
-            floating: this,
-          },
-        };
-
-        Object.assign(this.style, {
-          left: `${data.x}px`,
-          top: `${data.y}px`,
-        });
-      });
-    };
-
-    updatePosition();
-    this.#cleanup = autoUpdate(trigger, this, updatePosition);
   }
 
   #clearHoverTimeout(): void {
@@ -210,10 +173,14 @@ export class PopoverElement extends HTMLElement {
   }
 
   #handlePointerMove(event: PointerEvent): void {
-    if (!this.openOnHover || !this.#floatingContext) return;
+    if (!this.openOnHover || !this.#triggerElement) return;
 
     const close = safePolygon({ blockPointerEvents: true })({
-      ...this.#floatingContext,
+      placement: this.side,
+      elements: {
+        domReference: this.#triggerElement,
+        floating: this,
+      },
       x: event.clientX,
       y: event.clientY,
       onClose: () => {

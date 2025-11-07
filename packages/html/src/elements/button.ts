@@ -27,6 +27,8 @@ export class ButtonElement extends HTMLElement {
 
   static getTemplateHTML: typeof getTemplateHTML = getTemplateHTML;
 
+  static observedAttributes: string[] = ['commandfor'];
+
   constructor() {
     super();
 
@@ -44,6 +46,12 @@ export class ButtonElement extends HTMLElement {
 
     this.addEventListener('click', this);
     this.addEventListener('keydown', this);
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+    if (name === 'commandfor') {
+      this.style.setProperty('anchor-name', `--${newValue}`);
+    }
   }
 
   handleEvent(event: Event): void {

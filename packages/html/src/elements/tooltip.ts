@@ -1,17 +1,45 @@
-import type { Placement } from '@floating-ui/dom';
 import type { MediaContainerElement } from '@/media/media-container';
 
-import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { getDocumentOrShadowRoot } from '@videojs/utils/dom';
+import {
+  getBoundingClientRectWithoutTransform,
+  getDocumentOrShadowRoot,
+  getInBoundsAdjustments,
+} from '@videojs/utils/dom';
+
+type Placement = 'top' | 'bottom' | 'left' | 'right';
 
 export class TooltipElement extends HTMLElement {
+  static get observedAttributes(): string[] {
+    return ['id', 'delay', 'close-delay', 'track-cursor-axis', 'side', 'side-offset', 'collision-padding'];
+  }
+
   #open = false;
   #hoverTimeout: ReturnType<typeof setTimeout> | null = null;
-  #cleanup: (() => void) | null = null;
-  #arrowElement: HTMLElement | null = null;
   #pointerPosition = { x: 0, y: 0 };
   #transitionStatus: 'initial' | 'open' | 'close' | 'unmounted' = 'initial';
   #abortController: AbortController | null = null;
+
+  constructor() {
+    super();
+
+    const resizeObserver = new ResizeObserver(() => this.#checkCollision());
+    resizeObserver.observe(this);
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+    if (name === 'id') {
+      this.style.setProperty('position-anchor', `--${newValue}`);
+    }
+
+    this.style.setProperty('top', `calc(anchor(${this.side}) - ${this.sideOffset}px)`);
+
+    if (this.trackCursorAxis) {
+      this.style.setProperty('translate', `-50% -100%`);
+    } else {
+      this.style.setProperty('translate', `0 -100%`);
+      this.style.setProperty('justify-self', 'anchor-center');
+    }
+  }
 
   connectedCallback(): void {
     this.setAttribute('role', 'tooltip');
@@ -33,7 +61,6 @@ export class TooltipElement extends HTMLElement {
 
   disconnectedCallback(): void {
     this.#clearHoverTimeout();
-    this.#cleanup?.();
     this.#abortController?.abort();
     this.#abortController = null;
 
@@ -55,10 +82,6 @@ export class TooltipElement extends HTMLElement {
       default:
         break;
     }
-  }
-
-  static get observedAttributes(): string[] {
-    return ['delay', 'close-delay', 'track-cursor-axis', 'side', 'side-offset', 'collision-padding'];
   }
 
   get delay(): number {
@@ -96,8 +119,6 @@ export class TooltipElement extends HTMLElement {
     this.#open = open;
 
     if (open) {
-      this.#setupFloating();
-
       this.#transitionStatus = 'initial';
       this.#updateVisibility();
 
@@ -106,6 +127,7 @@ export class TooltipElement extends HTMLElement {
       requestAnimationFrame(() => {
         this.#transitionStatus = 'open';
         this.#updateVisibility();
+        this.#checkCollision();
       });
     } else {
       this.#transitionStatus = 'close';
@@ -119,16 +141,16 @@ export class TooltipElement extends HTMLElement {
       } else {
         this.hidePopover();
       }
-
-      this.#cleanup?.();
-      this.#cleanup = null;
     }
   }
 
   #updateVisibility(): void {
     this.toggleAttribute('data-starting-style', this.#transitionStatus === 'initial');
     this.toggleAttribute('data-open', this.#transitionStatus === 'initial' || this.#transitionStatus === 'open');
-    this.toggleAttribute('data-ending-style', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
+    this.toggleAttribute(
+      'data-ending-style',
+      this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted',
+    );
     this.toggleAttribute('data-closed', this.#transitionStatus === 'close' || this.#transitionStatus === 'unmounted');
 
     const triggerElement = this.#triggerElement as HTMLElement;
@@ -137,105 +159,34 @@ export class TooltipElement extends HTMLElement {
     }
   }
 
-  #setupFloating(): void {
-    const trigger = this.#triggerElement as HTMLElement;
-    if (!trigger) return;
-
-    const placement = this.side;
-    const sideOffset = this.sideOffset;
-    const collisionPadding = this.collisionPadding;
-    const mediaContainer = this.closest('media-container') as MediaContainerElement;
-
-    this.#arrowElement = this.querySelector('media-tooltip-arrow') as HTMLElement;
-
-    const updatePosition = () => {
-      const middleware = [
-        offset(sideOffset),
-        flip(),
-        shift({
-          boundary: mediaContainer,
-          padding: collisionPadding,
-        }),
-      ];
-
-      if (this.#arrowElement) {
-        middleware.push(arrow({ element: this.#arrowElement }));
-      }
-
-      const referenceElement = this.trackCursorAxis
-        ? {
-            getBoundingClientRect: () => {
-              const triggerRect = trigger.getBoundingClientRect();
-
-              if (this.trackCursorAxis === 'x') {
-                return {
-                  width: 0,
-                  height: 0,
-                  top: triggerRect.top,
-                  right: this.#pointerPosition.x,
-                  bottom: triggerRect.bottom,
-                  left: this.#pointerPosition.x,
-                  x: this.#pointerPosition.x,
-                  y: triggerRect.top,
-                };
-              } else if (this.trackCursorAxis === 'y') {
-                return {
-                  width: 0,
-                  height: 0,
-                  top: this.#pointerPosition.y,
-                  right: triggerRect.right,
-                  bottom: this.#pointerPosition.y,
-                  left: triggerRect.left,
-                  x: triggerRect.left,
-                  y: this.#pointerPosition.y,
-                };
-              } else {
-                // Track both axes (trackCursorAxis === 'both')
-                return {
-                  width: 0,
-                  height: 0,
-                  top: this.#pointerPosition.y,
-                  right: this.#pointerPosition.x,
-                  bottom: this.#pointerPosition.y,
-                  left: this.#pointerPosition.x,
-                  x: this.#pointerPosition.x,
-                  y: this.#pointerPosition.y,
-                };
-              }
-            },
-          }
-        : trigger;
-
-      computePosition(referenceElement, this, {
-        placement,
-        middleware,
-        strategy: 'fixed',
-      }).then(({ x, y, middlewareData }: { x: number; y: number; middlewareData: any }) => {
-        Object.assign(this.style, {
-          left: `${x}px`,
-          top: `${y}px`,
-        });
-
-        if (this.#arrowElement && middlewareData.arrow) {
-          const { x: arrowX, y: arrowY } = middlewareData.arrow;
-          Object.assign(this.#arrowElement.style, {
-            left: arrowX != null ? `${arrowX}px` : undefined,
-            top: arrowY != null ? `${arrowY}px` : undefined,
-          });
-        }
-      });
-    };
-
-    updatePosition();
-
-    if (!this.trackCursorAxis) {
-      this.#cleanup = autoUpdate(trigger, this, updatePosition);
+  #updatePosition(): void {
+    if (this.#open && this.trackCursorAxis) {
+      this.style.setProperty('left', `${this.#pointerPosition.x}px`);
+      this.#checkCollision();
     }
   }
 
-  #updatePosition(): void {
-    if (this.#open && this.trackCursorAxis) {
-      this.#setupFloating();
+  #checkCollision(): void {
+    const mediaContainer = this.closest('media-container') as MediaContainerElement;
+    if (!mediaContainer || !this.#open) return;
+
+    const popupRect = getBoundingClientRectWithoutTransform(this);
+    const boundsRect = getBoundingClientRectWithoutTransform(mediaContainer);
+    const { x } = getInBoundsAdjustments(popupRect, boundsRect, this.collisionPadding);
+
+    if (x !== 0) {
+      if (this.trackCursorAxis) {
+        const currentLeft = Number.parseFloat(this.style.left || '0');
+        this.style.setProperty('left', `${currentLeft + x}px`);
+      } else {
+        this.style.setProperty('translate', `${x}px -100%`);
+      }
+    } else {
+      if (this.trackCursorAxis) {
+        this.style.setProperty('translate', '-50% -100%');
+      } else {
+        this.style.setProperty('translate', '0 -100%');
+      }
     }
   }
 
