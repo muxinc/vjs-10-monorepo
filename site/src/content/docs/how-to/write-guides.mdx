@@ -5,7 +5,7 @@ description: 'A guide on writing documentation, and a test bed for all our MDX c
 
 import FrameworkCase from '@/components/docs/FrameworkCase.astro';
 import StyleCase from '@/components/docs/StyleCase.astro';
-import Minimal from '@/components/frames/Minimal.astro';
+import MinimalFrame from '@/components/frames/Minimal.astro';
 import ServerCode from '@/components/Code/ServerCode.astro';
 import { TabsRoot, TabsList, TabsPanel, Tab } from '@/components/Tabs.tsx';
 import DocsLink from '@/components/docs/DocsLink.astro';
@@ -106,7 +106,11 @@ Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sap
 
 ### Images
 
-We don't actually support images yet, lol.
+```mdx
+![alt text](../path/to/local/or/remote/image)
+```
+
+![All four Video.js themes](../../../assets/blog/2019-09-13-announcing-the-new-videojs-com/collage.png)
 
 ### Blockquotes
 
@@ -402,6 +406,20 @@ import MinimalFrame from '@/components/frames/Minimal.astro';
   <MyDemo client:load />
 </MinimalFrame>
 ```
+
+#### Using `iframe`s in `<MinimalFrame>`
+
+Imo `<MinimalFrame>` is a great tool for laying out `iframe`s. If you go down this path, note that `<MinimalFrame>` has `position: relative;`, which means that you can (and should) absolutely position your `iframe` within it. For example...
+
+```mdx
+<MinimalFrame class="aspect-video">
+  <iframe class="absolute top-0 left-0 w-full h-full" src="https://jsfiddle.net/ugnkw65y/1/embedded/result,html/light" frameBorder="0" allowFullScreen />
+</MinimalFrame>
+```
+
+<MinimalFrame class="aspect-video">
+  <iframe class="absolute top-0 left-0 w-full h-full" src="https://jsfiddle.net/ugnkw65y/1/embedded/result,html/light" frameBorder="0" allowFullScreen />
+</MinimalFrame>
 
 ### `<TabsRoot>` supports arbitrary content, too
 
