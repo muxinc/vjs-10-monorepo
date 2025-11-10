@@ -25,16 +25,16 @@ describe('frosted Skin Compilation', () => {
     // Controls container
     expect(result.html).toContain('data-testid="media-controls"');
 
-    // Tooltip components - Currently transforms naively (v0.1 limitation)
-    // NOTE: This produces incorrect nested structure. HTML version should be flat
-    // with commandfor linking. Requires transformation rules (Phase 2+)
-    // Current: <media-tooltip><media-tooltip-trigger>...</media-tooltip-trigger></media-tooltip>
-    // Target:  <button commandfor="id"><media-tooltip id="id">...</media-tooltip>
+    // Tooltip components - Now correctly flattens to commandfor pattern (Phase 2 ✅)
+    // Produces flat structure matching HTML package
     expect(result.html).toContain('<media-tooltip');
-    expect(result.html).toContain('<media-tooltip-trigger>');
-    expect(result.html).toContain('<media-tooltip-portal>');
-    expect(result.html).toContain('<media-tooltip-positioner');
-    expect(result.html).toContain('<media-tooltip-popup');
+    expect(result.html).toContain('commandfor');
+    expect(result.html).toContain('popover="manual"');
+
+    // Should NOT contain nested structure anymore
+    expect(result.html).not.toContain('<media-tooltip-trigger>');
+    expect(result.html).not.toContain('<media-tooltip-portal>');
+    expect(result.html).not.toContain('<media-tooltip-positioner');
 
     // Play button (wrapped in Tooltip)
     expect(result.html).toContain('<media-play-button');
@@ -53,14 +53,13 @@ describe('frosted Skin Compilation', () => {
     expect(result.html).toContain('<media-time-slider-pointer');
     expect(result.html).toContain('<media-time-slider-thumb');
 
-    // Popover components - Same limitation as Tooltip
-    // Current: Nested structure
-    // Target:  <button commandfor="id" command="toggle-popover"><media-popover id="id">
+    // Popover components - Now correctly flattens (Phase 2 ✅)
     expect(result.html).toContain('<media-popover');
-    expect(result.html).toContain('<media-popover-trigger>');
-    expect(result.html).toContain('<media-popover-portal>');
-    expect(result.html).toContain('<media-popover-positioner');
-    expect(result.html).toContain('<media-popover-popup');
+    expect(result.html).toContain('command="toggle-popover"');
+
+    // Should NOT contain nested structure
+    expect(result.html).not.toContain('<media-popover-trigger>');
+    expect(result.html).not.toContain('<media-popover-portal>');
 
     // Mute button (wrapped in Popover)
     expect(result.html).toContain('<media-mute-button');
@@ -78,8 +77,7 @@ describe('frosted Skin Compilation', () => {
     expect(result.html).toContain('<media-fullscreen-enter-icon');
     expect(result.html).toContain('<media-fullscreen-exit-icon');
 
-    // Note: classNames from template literals aren't extracted (known limitation)
-    // Note: Tooltip/Popover structure is incorrect (known limitation - see COMPONENT_MAPPING.md)
+    // Note: classNames from template literals aren't extracted (known limitation for v0.1)
   });
 
   it('handles template literal classNames correctly', () => {

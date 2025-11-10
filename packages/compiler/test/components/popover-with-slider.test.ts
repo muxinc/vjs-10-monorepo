@@ -10,7 +10,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { compile } from '../../src';
-import { parseElement, querySelector } from '../helpers/dom';
+import { getClasses, parseElement } from '../helpers/dom';
 
 describe('fixture: Popover - With Slider (v0.1 limitation)', () => {
   let result: CompileResult;
@@ -25,51 +25,66 @@ describe('fixture: Popover - With Slider (v0.1 limitation)', () => {
     root = parseElement(result.html);
   });
 
-  describe('current behavior (incorrect for HTML package)', () => {
-    it('the Popover.Root component transforms to media-popover (Root rule)', () => {
-      expect(root.tagName.toLowerCase()).toBe('media-popover');
+  describe('trigger element', () => {
+    it('button is extracted as first element', () => {
+      expect(root.tagName.toLowerCase()).toBe('media-mute-button');
     });
 
-    it('contains nested media-popover-trigger', () => {
-      const trigger = querySelector(root, 'media-popover-trigger');
-      expect(trigger).toBeDefined();
+    it('has commandfor attribute linking to popover', () => {
+      expect(root.getAttribute('commandfor')).toBe('mute-button-popover');
     });
 
-    it('button is nested inside trigger', () => {
-      const trigger = querySelector(root, 'media-popover-trigger');
-      const button = querySelector(trigger, 'media-mute-button');
-      expect(button).toBeDefined();
+    it('has command="toggle-popover" attribute', () => {
+      expect(root.getAttribute('command')).toBe('toggle-popover');
     });
 
-    it('contains media-popover-popup', () => {
-      const popup = querySelector(root, 'media-popover-popup');
-      expect(popup).toBeDefined();
-    });
-
-    it('slider is nested in popup', () => {
-      const popup = querySelector(root, 'media-popover-popup');
-      const slider = querySelector(popup, 'media-volume-slider');
-      expect(slider).toBeDefined();
-    });
-
-    it('openOnHover prop transforms to open-on-hover', () => {
-      // Boolean props become attributes with "true" value
-      expect(root.hasAttribute('open-on-hover')).toBe(true);
-    });
-
-    it('delay prop preserved', () => {
-      expect(root.getAttribute('delay')).toBe('200');
-    });
-
-    it('closeDelay prop preserved', () => {
-      expect(root.getAttribute('close-delay')).toBe('100');
+    it('preserves button className', () => {
+      expect(getClasses(root)).toContain('btn');
     });
   });
 
-  describe('pending TODO: Phase 2 target structure', () => {
-    it.todo('should extract button as sibling with commandfor and command attributes');
-    it.todo('should flatten to single media-popover element');
-    it.todo('should merge attributes from Root/Positioner/Popup');
-    it.todo('should generate unique ID for linking');
+  describe('popover element', () => {
+    let popover: Element;
+
+    beforeAll(() => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(result.html, 'text/html');
+      const popoverEl = doc.querySelector('media-popover');
+      if (!popoverEl) throw new Error('No popover found');
+      popover = popoverEl;
+    });
+
+    it('creates media-popover as second element', () => {
+      expect(popover.tagName.toLowerCase()).toBe('media-popover');
+    });
+
+    it('has matching ID for commandfor linking', () => {
+      expect(popover.getAttribute('id')).toBe('mute-button-popover');
+    });
+
+    it('has popover="manual" attribute', () => {
+      expect(popover.getAttribute('popover')).toBe('manual');
+    });
+
+    it('has open-on-hover attribute', () => {
+      expect(popover.hasAttribute('open-on-hover')).toBe(true);
+    });
+
+    it('preserves delay attribute', () => {
+      expect(popover.getAttribute('delay')).toBe('200');
+    });
+
+    it('preserves close-delay attribute', () => {
+      expect(popover.getAttribute('close-delay')).toBe('100');
+    });
+
+    it('preserves side attribute from Positioner', () => {
+      expect(popover.getAttribute('side')).toBe('top');
+    });
+
+    it('contains volume slider as direct child', () => {
+      const slider = popover.querySelector('media-volume-slider');
+      expect(slider).toBeDefined();
+    });
   });
 });

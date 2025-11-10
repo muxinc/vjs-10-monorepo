@@ -1,16 +1,9 @@
-/**
- * Tests for: tooltip-with-button.tsx
- *
- * NOTE: Documents v0.1 limitation - incorrect nested structure
- * Phase 2 will implement proper flat commandfor pattern
- */
-
 import type { CompileResult } from '../../src';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { compile } from '../../src';
-import { parseElement, querySelector } from '../helpers/dom';
+import { getClasses, parseElement, querySelector } from '../helpers/dom';
 
 describe('fixture: Tooltip - With Button (v0.1 limitation)', () => {
   let result: CompileResult;
@@ -25,47 +18,60 @@ describe('fixture: Tooltip - With Button (v0.1 limitation)', () => {
     root = parseElement(result.html);
   });
 
-  describe('current behavior (incorrect for HTML package)', () => {
-    it('the Tooltip.Root component transforms to media-tooltip (Root rule)', () => {
-      expect(root.tagName.toLowerCase()).toBe('media-tooltip');
+  describe('trigger element', () => {
+    it('button is extracted as first element', () => {
+      expect(root.tagName.toLowerCase()).toBe('media-play-button');
     });
 
-    it('contains nested media-tooltip-trigger', () => {
-      const trigger = querySelector(root, 'media-tooltip-trigger');
-      expect(trigger).toBeDefined();
+    it('has commandfor attribute linking to tooltip', () => {
+      expect(root.getAttribute('commandfor')).toBe('play-button-tooltip');
     });
 
-    it('button is nested inside trigger', () => {
-      const trigger = querySelector(root, 'media-tooltip-trigger');
-      const button = querySelector(trigger, 'media-play-button');
-      expect(button).toBeDefined();
+    it('preserves button className', () => {
+      expect(getClasses(root)).toContain('btn');
     });
 
-    it('contains media-tooltip-portal', () => {
-      const portal = querySelector(root, 'media-tooltip-portal');
-      expect(portal).toBeDefined();
-    });
-
-    it('contains media-tooltip-positioner', () => {
-      const positioner = querySelector(root, 'media-tooltip-positioner');
-      expect(positioner).toBeDefined();
-    });
-
-    it('contains media-tooltip-popup', () => {
-      const popup = querySelector(root, 'media-tooltip-popup');
-      expect(popup).toBeDefined();
-    });
-
-    it('delay prop preserved on root', () => {
-      expect(root.getAttribute('delay')).toBe('500');
+    it('contains play icon as child', () => {
+      const icon = querySelector(root, 'media-play-icon');
+      expect(icon).toBeDefined();
     });
   });
 
-  describe('pending TODO: Phase 2 target structure', () => {
-    it.todo('should extract button as sibling with commandfor');
-    it.todo('should flatten to single media-tooltip element');
-    it.todo('should merge attributes from Root/Positioner/Popup');
-    it.todo('should generate unique ID for linking');
-    it.todo('should add popover="manual" attribute');
+  describe('tooltip element', () => {
+    let tooltip: Element;
+
+    beforeAll(() => {
+      // Parse full HTML to get both elements
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(result.html, 'text/html');
+      const tooltipEl = doc.querySelector('media-tooltip');
+      if (!tooltipEl) throw new Error('No tooltip found');
+      tooltip = tooltipEl;
+    });
+
+    it('creates media-tooltip as second element', () => {
+      expect(tooltip.tagName.toLowerCase()).toBe('media-tooltip');
+    });
+
+    it('has matching ID for commandfor linking', () => {
+      expect(tooltip.getAttribute('id')).toBe('play-button-tooltip');
+    });
+
+    it('has popover="manual" attribute', () => {
+      expect(tooltip.getAttribute('popover')).toBe('manual');
+    });
+
+    it('preserves delay attribute from Root', () => {
+      expect(tooltip.getAttribute('delay')).toBe('500');
+    });
+
+    it('preserves side attribute from Positioner', () => {
+      expect(tooltip.getAttribute('side')).toBe('top');
+    });
+
+    it('contains popup content as direct children', () => {
+      const span = tooltip.querySelector('span');
+      expect(span?.textContent).toBe('Play');
+    });
   });
 });

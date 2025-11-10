@@ -3,9 +3,10 @@
  *
  * Transforms React JSX to HTML web component markup:
  * - <PlayButton> → <media-play-button>
- * - <TimeSlider.Root> → <media-time-slider-root>
+ * - <TimeSlider.Root> → <media-time-slider>
  * - className → class
  * - {children} → <slot name="media" slot="media"></slot>
+ * - Tooltip/Popover patterns → flat commandfor structure
  */
 
 import type * as BabelTypes from '@babel/types';
@@ -13,6 +14,8 @@ import type {
   TransformConfig,
   TransformResult,
 } from './types';
+import { detectPattern } from './patterns/detect';
+import { transformPattern } from './patterns/transform';
 
 const DEFAULT_CONFIG: Required<TransformConfig> = {
   elementPrefix: 'media-',
@@ -80,6 +83,28 @@ function transformElement(
   config: Required<TransformConfig>,
   classNames: Set<string>,
 ): string {
+  // Check for Tooltip/Popover pattern first
+  const pattern = detectPattern(element, t);
+
+  if (pattern) {
+    // Transform using pattern transformation
+    const patternResult = transformPattern(
+      pattern,
+      t,
+      el => ({
+        html: transformElement(el, t, config, classNames),
+        classNames,
+      }),
+    );
+
+    // Merge classNames
+    patternResult.classNames.forEach(cls => classNames.add(cls));
+
+    // Return both elements (trigger + tooltip/popover)
+    return patternResult.elements.join('');
+  }
+
+  // Standard element transformation
   const elementName = getElementName(element.openingElement.name, t, config);
   const attributes = transformAttributes(element.openingElement.attributes, t, classNames);
   const children = transformChildren(element.children, t, config, classNames);

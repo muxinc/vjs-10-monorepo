@@ -1,10 +1,3 @@
-/**
- * Popover - With VolumeSlider Content
- *
- * NOTE: This will compile but produce incorrect structure in v0.1
- * React uses nested compound components, HTML uses flat commandfor pattern
- */
-
 import { MuteButton, Popover, VolumeSlider } from '@videojs/react';
 
 export default function TestFixture() {
