@@ -9,49 +9,48 @@ interface Props {
 const { page } = Astro.props;
 ---
 
-<nav
-  aria-label="Blog pagination"
-  class="w-full max-w-3xl mx-auto mt-10 text-center text-sm flex items-center justify-center gap-3"
->
-  {
-    page.url.prev ? (
-      <a
-        href={page.url.prev}
-        aria-label={`Go to page ${page.currentPage - 1}`}
-        class="grid items-center p-2 border border-light-40 rounded-lg intent:border-dark-40"
-      >
-        <ChevronDown size={12} className="rotate-90" />
-      </a>
-    ) : (
-      <button
-        disabled
-        aria-label="Previous page (unavailable)"
-        class="grid items-center p-2 border border-light-40 rounded-lg opacity-40"
-      >
-        <ChevronDown size={12} className="rotate-90" />
-      </button>
-    )
-  }
+<nav aria-label="Blog pagination" class="w-full max-w-3xl mx-auto mt-10 flex items-center justify-end gap-4">
   <span>
     Page {page.currentPage} of {page.lastPage}
   </span>
-  {
-    page.url.next ? (
-      <a
-        href={page.url.next}
-        aria-label={`Go to page ${page.currentPage + 1}`}
-        class="grid items-center p-2 border border-light-40 rounded-lg intent:border-dark-40"
-      >
-        <ChevronDown size={12} className="-rotate-90" />
-      </a>
-    ) : (
-      <button
-        disabled
-        aria-label="Next page (unavailable)"
-        class="grid items-center p-2 border border-light-40 rounded-lg opacity-40"
-      >
-        <ChevronDown size={12} className="-rotate-90" />
-      </button>
-    )
-  }
+  <span class="grid grid-cols-2 gap-1">
+    {
+      page.url.prev ? (
+        <a
+          href={page.url.prev}
+          aria-label={`Go to page ${page.currentPage - 1}`}
+          class="grid items-center p-2 border border-light-40 rounded-lg intent:border-dark-40"
+        >
+          <ChevronDown size={12} className="rotate-90" />
+        </a>
+      ) : (
+        <button
+          disabled
+          aria-label="Previous page (unavailable)"
+          class="grid items-center p-2 border border-light-40 rounded-lg opacity-40"
+        >
+          <ChevronDown size={12} className="rotate-90" />
+        </button>
+      )
+    }
+    {
+      page.url.next ? (
+        <a
+          href={page.url.next}
+          aria-label={`Go to page ${page.currentPage + 1}`}
+          class="grid items-center p-2 border border-light-40 rounded-lg intent:border-dark-40"
+        >
+          <ChevronDown size={12} className="-rotate-90" />
+        </a>
+      ) : (
+        <button
+          disabled
+          aria-label="Next page (unavailable)"
+          class="grid items-center p-2 border border-light-40 rounded-lg opacity-40"
+        >
+          <ChevronDown size={12} className="-rotate-90" />
+        </button>
+      )
+    }
+  </span>
 </nav>

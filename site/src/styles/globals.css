@@ -138,7 +138,7 @@ mark {
 
   /* Notice the use of em, so that code scales with, say, headers */
   --text-code: 0.9375em;
-  --text-code--line-height: calc(28 / 16);
+  --text-code--line-height: inherit;
   --text-code--letter-spacing: -0.02em;
   --text-code--font-weight: var(--font-weight-code-normal);
   /* if you don't want this scaling, use text-base-code */

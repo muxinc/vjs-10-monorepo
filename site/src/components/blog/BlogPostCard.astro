@@ -19,7 +19,7 @@ const { post, authors, asLink } = Astro.props;
     </time>
     <div class="mb-3">
       <h2 class="text-lg font-medium md:text-h4 group-intent:underline mb-1">{post.data.title}</h2>
-      <p class="font-medium md:text-lg text-dark-40 dark:text-light-40">{post.data.description}</p>
+      <p class="font-medium text-dark-40 dark:text-light-40">{post.data.description}</p>
     </div>
     {
       authors.length > 0 && (
