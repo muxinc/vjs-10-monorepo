@@ -7,6 +7,7 @@
 import type { TransformConfig } from './jsx/types';
 import * as t from '@babel/types';
 import { generatePlaceholderCSS } from './css/placeholder';
+import { transformImports } from './imports/transform';
 import { parseComponent } from './jsx/parser';
 import { transformJSX } from './jsx/transform';
 
@@ -19,6 +20,10 @@ export interface CompileResult {
   css: string;
   /** Extracted class names */
   classNames: string[];
+  /** Transformed imports */
+  imports: string[];
+  /** Removed imports */
+  removedImports: string[];
 }
 
 export interface CompileOptions {
@@ -40,14 +45,17 @@ export function compile(
     throw new Error(`No JSX element found in component "${parsed.name}"`);
   }
 
-  // Step 2: Transform JSX to HTML
+  // Step 2: Transform imports
+  const importResult = transformImports(parsed.ast.program, t);
+
+  // Step 3: Transform JSX to HTML
   const transformResult = transformJSX(
     parsed.jsxElement,
     t,
     options.transform,
   );
 
-  // Step 3: Generate placeholder CSS
+  // Step 4: Generate placeholder CSS
   const cssResult = generatePlaceholderCSS(transformResult.classNames);
 
   return {
@@ -55,6 +63,8 @@ export function compile(
     html: transformResult.html,
     css: cssResult.css,
     classNames: cssResult.classNames,
+    imports: importResult.imports,
+    removedImports: importResult.removedImports,
   };
 }
 
@@ -71,6 +81,12 @@ export function compileFormatted(
 /**
  * Component: ${result.componentName}
  */
+
+/* Imports */
+${result.imports.length > 0 ? result.imports.join('\n') : '// None'}
+
+/* Removed Imports */
+${result.removedImports.length > 0 ? `// ${result.removedImports.join(', ')}` : '// None'}
 
 /* HTML Template */
 ${result.html}

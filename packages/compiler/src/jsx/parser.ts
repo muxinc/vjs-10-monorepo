@@ -17,6 +17,8 @@ export interface ParsedComponent {
   jsxElement: t.JSXElement | null;
   /** Source code */
   source: string;
+  /** Parsed AST */
+  ast: ReturnType<typeof parse>;
 }
 
 export function getSkinDataFromDefaultExport(path: NodePath<t.ExportDefaultDeclaration>): Pick<ParsedComponent, 'jsxElement' | 'name'> {
@@ -67,7 +69,7 @@ export function parseComponent(source: string): ParsedComponent {
   traverse(ast, {
     /** @TODO Create declarative model that can be passed in for better abstraction (CJP) */
     // Skin rule: Skin component must be the default export and must be a react functional component (CJP)
-    ExportDefaultDeclaration(path) {
+    ExportDefaultDeclaration(path: NodePath<t.ExportDefaultDeclaration>) {
       parsedComponent = getSkinDataFromDefaultExport(path);
     },
   });
@@ -79,6 +81,7 @@ export function parseComponent(source: string): ParsedComponent {
   return {
     ...parsedComponent,
     source,
+    ast,
   };
 }
 
