@@ -1,10 +1,7 @@
 import type { ChangeEventHandler } from 'react';
 
 import { FrostedSkin, HlsVideo, MinimalSkin, VideoProvider } from '@videojs/react';
-import { FullscreenEnterAltIcon, FullscreenExitAltIcon } from '@videojs/react/icons';
-import clsx from 'clsx';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { useFullscreen } from './hooks/useFullscreen';
+import { useCallback, useMemo, useState } from 'react';
 
 // NOTE: Commented out imports are for testing locally/externally defined skins.
 // import { VideoProvider, Video } from '@videojs/react';
@@ -45,22 +42,22 @@ type SkinKey = (typeof skins)[number]['key'];
 const mediaSources = [
   {
     key: '1',
-    name: 'Mux 1',
+    name: 'Mux 1 (HLS)',
     value: 'https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ.m3u8',
   },
   {
     key: '2',
-    name: 'Mux 2',
+    name: 'Mux 2 (HLS)',
     value: 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8',
   },
   {
     key: '3',
-    name: 'Mux 3',
+    name: 'Mux 3 (MP4)',
     value: 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4',
   },
   {
     key: '4',
-    name: 'Mux 4',
+    name: 'Mux 4 (HLS)',
     value: 'https://stream.mux.com/lyrKpPcGfqyzeI00jZAfW6MvP6GNPrkML.m3u8',
   },
 ] as const;
@@ -85,8 +82,6 @@ const DEFAULT_MEDIA_SOURCE: MediaSourceKey = '1';
 export default function App(): JSX.Element {
   const [skinKey, setSkinKey] = useState<SkinKey>(() => getParam('skin', DEFAULT_SKIN));
   const [mediaSourceKey, setMediaSourceKey] = useState<MediaSourceKey>(() => getParam('source', DEFAULT_MEDIA_SOURCE));
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(containerRef);
 
   const mediaSource = useMemo(() => {
     let match = mediaSources.find(m => m.key === mediaSourceKey);
@@ -120,37 +115,12 @@ export default function App(): JSX.Element {
   // Force a re-render on changes.
   const key = `${skinKey}-${mediaSourceKey}`;
 
-  const skinClassName = useMemo(() => {
-    switch (skinKey) {
-      case 'frosted':
-      case 'frosted-eject':
-        return 'aspect-video !rounded-4xl shadow shadow-lg shadow-black/15';
-      case 'minimal':
-      case 'minimal-eject':
-        return 'aspect-video !rounded-2xl shadow shadow-lg shadow-black/15';
-      default:
-        return '';
-    }
-  }, [skinKey]);
-
   const playbackId = mediaSource.match(/stream\.mux\.com\/([^./]+)/)?.[1];
   const poster = playbackId ? `https://image.mux.com/${playbackId}/thumbnail.webp` : undefined;
 
   return (
-    <div
-      ref={containerRef}
-      className={clsx('', {
-        'bg-black text-stone-200 h-screen': isFullscreen,
-        'min-h-screen bg-white text-stone-700 dark:bg-black dark:text-stone-200': !isFullscreen,
-      })}
-    >
-      <header className={clsx(
-        'fixed top-0 z-10 inset-x-0 bg-white dark:bg-stone-800 shadow shadow-black/10 after:h-px after:absolute after:inset-x-0 after:top-full after:bg-black/5 transition-transform',
-        {
-          '-translate-y-full': isFullscreen,
-        },
-      )}
-      >
+    <div className="min-h-screen bg-white text-stone-700 dark:bg-stone-900 dark:text-stone-200">
+      <header className="fixed top-0 z-10 inset-x-0 bg-white dark:bg-stone-800 shadow shadow-black/10 after:h-px after:absolute after:inset-x-0 after:top-full after:bg-black/5 transition-transform">
         <div className="grid grid-cols-5 h-2" aria-hidden="true">
           <div className="bg-yellow-500"></div>
           <div className="bg-orange-500"></div>
@@ -180,24 +150,14 @@ export default function App(): JSX.Element {
                 </option>
               ))}
             </select>
-            <button type="button" className="p-2" onClick={toggleFullscreen}>
-              {isFullscreen ? <FullscreenExitAltIcon /> : <FullscreenEnterAltIcon />}
-              <span className="sr-only">Toggle fullscreen</span>
-            </button>
           </nav>
         </div>
       </header>
 
-      <main className={clsx(
-        'min-h-screen flex justify-center items-center',
-        {
-          'bg-radial bg-size-[16px_16px] from-stone-300 dark:from-stone-700 via-10% via-transparent to-transparent': !isFullscreen,
-        },
-      )}
-      >
+      <main className="min-h-screen flex justify-center items-center bg-radial bg-size-[16px_16px] from-stone-300 dark:from-stone-700 via-10% via-transparent to-transparent">
         <div className="w-full max-w-5xl mx-auto p-6">
           <VideoProvider key={key}>
-            <Skin className={skinClassName}>
+            <Skin className="aspect-video shadow-lg shadow-black/15">
               {/* @ts-expect-error -- types are incorrect */}
               <HlsVideo src={mediaSource} poster={poster} playsInline />
             </Skin>

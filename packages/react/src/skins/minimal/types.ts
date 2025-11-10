@@ -6,17 +6,14 @@ export interface MinimalSkinStyles {
   readonly Button: string;
   readonly ButtonGroup: string;
   readonly IconButton: string;
-  readonly PlayButton: string;
   readonly PlayIcon: string;
   readonly PauseIcon: string;
   readonly PlayTooltipPopup: string;
   readonly PlayTooltip: string;
   readonly PauseTooltip: string;
-  readonly MuteButton: string;
   readonly VolumeHighIcon: string;
   readonly VolumeLowIcon: string;
   readonly VolumeOffIcon: string;
-  readonly FullscreenButton: string;
   readonly FullscreenEnterIcon: string;
   readonly FullscreenExitIcon: string;
   readonly FullscreenTooltipPopup: string;
