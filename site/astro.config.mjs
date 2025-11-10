@@ -8,6 +8,7 @@ import vercel from '@astrojs/vercel';
 
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
+import checkV8Urls from './integrations/check-v8-urls';
 import pagefind from './integrations/pagefind';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks';
 import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings';
@@ -19,10 +20,14 @@ export default defineConfig({
   site: 'https://v10.videojs.org',
   trailingSlash: 'never',
   adapter: vercel(),
+  redirects: {
+    // Redirects are configured in vercel.json
+  },
   integrations: [
     mdx({ extendMarkdownConfig: true }),
     sitemap(),
     pagefind(),
+    checkV8Urls(),
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler', { target: '18' }]],
