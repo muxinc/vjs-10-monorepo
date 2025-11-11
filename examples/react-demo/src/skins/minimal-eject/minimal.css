@@ -7,11 +7,13 @@
   isolation: isolate;
   container: root / inline-size;
   overflow: clip;
-  border-radius: var(--vjs-border-radius, 2rem);
+  border-radius: var(--minimal-border-radius, 2rem);
   background: oklab(0 0 0);
-  font-family: var(--vjs-font-family, InterVariable, Inter, ui-sans-serif, system-ui, sans-serif);
+  font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 0.8125rem;
   line-height: 1.5;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
 }
 .vjs-minimal-skin::after {
   content: '';
