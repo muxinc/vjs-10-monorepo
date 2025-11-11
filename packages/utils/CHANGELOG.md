@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-preview.7](https://github.com/videojs/v10/compare/@videojs/utils@0.1.0-preview.6...@videojs/utils@0.1.0-preview.7) (2025-11-11)
+
+
+### Features
+
+* use anchor API for html elements ([#174](https://github.com/videojs/v10/issues/174)) ([4a2d580](https://github.com/videojs/v10/commit/4a2d580bb3db35d17d89827326617d0bd2c54499))
+
 ## [0.1.0-preview.6](https://github.com/videojs/v10/compare/@videojs/utils@0.1.0-preview.5...@videojs/utils@0.1.0-preview.6) (2025-11-06)
 
 
