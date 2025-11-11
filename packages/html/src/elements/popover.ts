@@ -1,6 +1,6 @@
 import { contains, getDocument, getDocumentOrShadowRoot, safePolygon } from '@videojs/utils/dom';
 
-type Placement = 'top' | 'bottom' | 'left' | 'right';
+type Placement = 'top' | 'top-start' | 'top-end';
 
 export class PopoverElement extends HTMLElement {
   static get observedAttributes(): string[] {
@@ -18,9 +18,14 @@ export class PopoverElement extends HTMLElement {
       this.style.setProperty('position-anchor', `--${newValue}`);
     }
 
-    this.style.setProperty('top', `calc(anchor(${this.side}) - ${this.sideOffset}px)`);
+    const [side, alignment] = this.side.split('-');
+    this.style.setProperty('top', `calc(anchor(${side}) - ${this.sideOffset}px)`);
     this.style.setProperty('translate', `0 -100%`);
-    this.style.setProperty('justify-self', 'anchor-center');
+    this.style.setProperty('justify-self', alignment === 'start'
+      ? 'anchor-start'
+      : alignment === 'end'
+        ? 'anchor-end'
+        : 'anchor-center');
   }
 
   connectedCallback(): void {

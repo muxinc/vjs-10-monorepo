@@ -32,14 +32,12 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
               <PauseIcon className="icon pause-icon" />
             </PlayButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className="tooltip-popup surface popup-animation">
-                <span className="tooltip play-tooltip">Play</span>
-                <span className="tooltip pause-tooltip">Pause</span>
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
+          <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
+            <Tooltip.Popup className="tooltip-popup surface popup-animation">
+              <span className="tooltip play-tooltip">Play</span>
+              <span className="tooltip pause-tooltip">Pause</span>
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
         </Tooltip.Root>
 
         <div className="time-controls">
@@ -59,13 +57,11 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
                 <TimeSlider.Thumb className="slider-thumb" />
               </TimeSlider.Root>
             </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <Tooltip.Positioner side="top" sideOffset={18} collisionPadding={12}>
-                <Tooltip.Popup className="surface popup-animation tooltip-popup">
-                  <PreviewTimeDisplay className="time-display media-preview-time-display" />
-                </Tooltip.Popup>
-              </Tooltip.Positioner>
-            </Tooltip.Portal>
+            <Tooltip.Positioner side="top" sideOffset={18} collisionPadding={12}>
+              <Tooltip.Popup className="surface popup-animation tooltip-popup">
+                <PreviewTimeDisplay className="time-display media-preview-time-display" />
+              </Tooltip.Popup>
+            </Tooltip.Positioner>
           </Tooltip.Root>
 
           <DurationDisplay className="time-display" />
@@ -79,18 +75,16 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
               <VolumeOffIcon className="icon volume-off-icon" />
             </MuteButton>
           </Popover.Trigger>
-          <Popover.Portal>
-            <Popover.Positioner side="top" sideOffset={12}>
-              <Popover.Popup className="surface popup-animation popover-popup">
-                <VolumeSlider.Root className="slider" orientation="vertical">
-                  <VolumeSlider.Track className="slider-track">
-                    <VolumeSlider.Progress className="slider-progress" />
-                  </VolumeSlider.Track>
-                  <VolumeSlider.Thumb className="slider-thumb" />
-                </VolumeSlider.Root>
-              </Popover.Popup>
-            </Popover.Positioner>
-          </Popover.Portal>
+          <Popover.Positioner side="top" sideOffset={12}>
+            <Popover.Popup className="surface popup-animation popover-popup">
+              <VolumeSlider.Root className="slider" orientation="vertical">
+                <VolumeSlider.Track className="slider-track">
+                  <VolumeSlider.Progress className="slider-progress" />
+                </VolumeSlider.Track>
+                <VolumeSlider.Thumb className="slider-thumb" />
+              </VolumeSlider.Root>
+            </Popover.Popup>
+          </Popover.Positioner>
         </Popover.Root>
 
         <Tooltip.Root delay={500}>
@@ -100,14 +94,12 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
               <FullscreenExitIcon className="icon fullscreen-exit-icon" />
             </FullscreenButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className="surface popup-animation tooltip-popup">
-                <span className="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
-                <span className="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
+          <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
+            <Tooltip.Popup className="surface popup-animation tooltip-popup">
+              <span className="tooltip fullscreen-enter-tooltip">Enter Fullscreen</span>
+              <span className="tooltip fullscreen-exit-tooltip">Exit Fullscreen</span>
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
         </Tooltip.Root>
       </div>
     </MediaContainer>

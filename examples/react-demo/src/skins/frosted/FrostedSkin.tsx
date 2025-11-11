@@ -45,14 +45,12 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
               <PauseIcon className={styles.PauseIcon}></PauseIcon>
             </PlayButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
-                <span className={styles.PlayTooltip}>Play</span>
-                <span className={styles.PauseTooltip}>Pause</span>
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
+          <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
+            <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
+              <span className={styles.PlayTooltip}>Play</span>
+              <span className={styles.PauseTooltip}>Pause</span>
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
         </Tooltip.Root>
 
         <div className={styles.TimeControls}>
@@ -81,18 +79,16 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
               <VolumeOffIcon className={styles.VolumeOffIcon} />
             </MuteButton>
           </Popover.Trigger>
-          <Popover.Portal>
-            <Popover.Positioner side="top" sideOffset={12}>
-              <Popover.Popup className={styles.PopoverPopup}>
-                <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
-                  <VolumeSlider.Track className={styles.SliderTrack}>
-                    <VolumeSlider.Progress className={styles.SliderProgress} />
-                  </VolumeSlider.Track>
-                  <VolumeSlider.Thumb className={styles.SliderThumb} />
-                </VolumeSlider.Root>
-              </Popover.Popup>
-            </Popover.Positioner>
-          </Popover.Portal>
+          <Popover.Positioner side="top" sideOffset={12}>
+            <Popover.Popup className={styles.PopoverPopup}>
+              <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
+                <VolumeSlider.Track className={styles.SliderTrack}>
+                  <VolumeSlider.Progress className={styles.SliderProgress} />
+                </VolumeSlider.Track>
+                <VolumeSlider.Thumb className={styles.SliderThumb} />
+              </VolumeSlider.Root>
+            </Popover.Popup>
+          </Popover.Positioner>
         </Popover.Root>
 
         <Tooltip.Root delay={600} closeDelay={0}>
@@ -102,14 +98,12 @@ export default function FrostedSkin({ children, className = '' }: SkinProps): JS
               <FullscreenExitIcon className={styles.FullScreenExitIcon} />
             </FullscreenButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullScreenTooltipPopup}`}>
-                <span className={styles.FullScreenEnterTooltip}>Enter Fullscreen</span>
-                <span className={styles.FullScreenExitTooltip}>Exit Fullscreen</span>
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
+          <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
+            <Tooltip.Popup className={`${styles.TooltipPopup} ${styles.FullScreenTooltipPopup}`}>
+              <span className={styles.FullScreenEnterTooltip}>Enter Fullscreen</span>
+              <span className={styles.FullScreenExitTooltip}>Exit Fullscreen</span>
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
         </Tooltip.Root>
       </div>
     </MediaContainer>

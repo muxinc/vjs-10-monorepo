@@ -55,7 +55,6 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@floating-ui/react": "^0.27.16",
     "@videojs/core": "workspace:*",
     "@videojs/icons": "workspace:*",
     "@videojs/utils": "workspace:*"

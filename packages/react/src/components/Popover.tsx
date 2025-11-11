@@ -1,22 +1,6 @@
-import type { OpenChangeReason, Placement } from '@floating-ui/react';
-import type { MutableRefObject, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import {
-  autoUpdate,
-  flip,
-  FloatingFocusManager,
-  FloatingPortal,
-  offset,
-  safePolygon,
-  shift,
-  useDismiss,
-  useFloating,
-  useFocus,
-  useHover,
-  useInteractions,
-  useRole,
-  useTransitionStatus,
-} from '@floating-ui/react';
+import { contains, safePolygon } from '@videojs/utils/dom';
 
 import {
   Children,
@@ -26,20 +10,23 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
+
+type Placement = 'top' | 'top-start' | 'top-end';
+
+type TransitionStatus = 'initial' | 'open' | 'close' | 'unmounted';
 
 interface PopoverContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
-  openReason: OpenChangeReason | null;
-  refs: ReturnType<typeof useFloating>['refs'];
-  floatingStyles: ReturnType<typeof useFloating>['floatingStyles'];
-  getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
-  getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
-  context: ReturnType<typeof useFloating>['context'];
+  popupRef: React.RefObject<HTMLElement | null>;
+  triggerRef: React.RefObject<HTMLElement | null>;
   updatePositioning: (placement: Placement, sideOffset: number) => void;
-  transitionStatus: ReturnType<typeof useTransitionStatus>['status'];
+  transitionStatus: TransitionStatus;
+  placement: Placement;
+  sideOffset: number;
 }
 
 interface PopoverRootProps {
@@ -60,14 +47,9 @@ interface PopoverPositionerProps {
 }
 
 interface PopoverPopupProps {
+  id?: string;
   className?: string;
   children: ReactNode;
-}
-
-interface PopoverPortalProps {
-  children: ReactNode;
-  root?: HTMLElement | ShadowRoot | MutableRefObject<HTMLElement | ShadowRoot | null> | null;
-  rootId?: string;
 }
 
 const PopoverContext = createContext<PopoverContextType | null>(null);
@@ -84,125 +66,243 @@ function PopoverRoot({ openOnHover = false, delay = 0, closeDelay = 0, children 
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>('top');
   const [sideOffset, setSideOffset] = useState(5);
-  const [openReason, setOpenReason] = useState<OpenChangeReason | null>(null);
+  const [transitionStatus, setTransitionStatus] = useState<TransitionStatus>('initial');
+  const popupRef = useRef<HTMLElement | null>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pointerMoveHandlerRef = useRef<((event: MouseEvent) => void) | null>(null);
 
-  const { refs, floatingStyles, context } = useFloating({
-    open,
-    onOpenChange: (open, _event, reason) => {
-      setOpen(open);
-      setOpenReason(reason || null);
-    },
-    placement,
-    middleware: [offset(sideOffset), flip(), shift()],
-    whileElementsMounted: autoUpdate,
-  });
+  const clearHoverTimeout = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  }, []);
 
-  const { status: transitionStatus } = useTransitionStatus(context);
+  const setOpenState = useCallback((newOpen: boolean) => {
+    if (open === newOpen) return;
 
-  const hover = useHover(context, {
-    enabled: openOnHover,
-    mouseOnly: true,
-    move: false,
-    delay: {
-      open: delay,
-      close: closeDelay,
-    },
-    handleClose: safePolygon({ blockPointerEvents: true }),
-  });
-  const focus = useFocus(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context);
+    setOpen(newOpen);
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
+    if (newOpen) {
+      setTransitionStatus('initial');
+      if (popupRef.current) {
+        popupRef.current.showPopover();
+      }
+      requestAnimationFrame(() => {
+        setTransitionStatus('open');
+      });
+    } else {
+      setTransitionStatus('close');
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!popupRef.current || open) return;
+
+    const transitions = popupRef.current.getAnimations().filter(anim => anim instanceof CSSTransition);
+    if (transitions.length > 0) {
+      Promise.all(transitions.map(t => t.finished))
+        .then(() => popupRef.current?.hidePopover())
+        .catch(() => popupRef.current?.hidePopover());
+    } else {
+      popupRef.current.hidePopover();
+    }
+  }, [open, transitionStatus]);
 
   const updatePositioning = useCallback((newPlacement: Placement, newSideOffset: number) => {
     setPlacement(newPlacement);
     setSideOffset(newSideOffset);
   }, []);
 
+  useEffect(() => {
+    const trigger = triggerRef.current;
+    const popup = popupRef.current;
+    if (!trigger || !popup) return;
+
+    const abortController = new AbortController();
+    const { signal } = abortController;
+
+    const addPointerMoveListener = () => {
+      if (!globalThis.matchMedia?.('(hover: hover)')?.matches) return;
+
+      if (!pointerMoveHandlerRef.current) {
+        pointerMoveHandlerRef.current = safePolygon({ blockPointerEvents: true })({
+          placement,
+          elements: {
+            domReference: trigger,
+            floating: popup,
+          },
+          x: 0,
+          y: 0,
+          onClose: () => {
+            if (pointerMoveHandlerRef.current) {
+              document.documentElement.removeEventListener('pointermove', pointerMoveHandlerRef.current);
+            }
+            clearHoverTimeout();
+
+            hoverTimeoutRef.current = setTimeout(() => {
+              setOpenState(false);
+            }, closeDelay);
+          },
+        });
+      }
+
+      // Event listener is automatically removed when AbortController is aborted
+      document.documentElement.addEventListener('pointermove', pointerMoveHandlerRef.current, { signal });
+    };
+
+    const handlePointerEnter = (event: PointerEvent) => {
+      if (!openOnHover) return;
+
+      clearHoverTimeout();
+
+      if (event.currentTarget === popup) {
+        addPointerMoveListener();
+      }
+
+      if (open) {
+        return;
+      }
+
+      hoverTimeoutRef.current = setTimeout(() => {
+        setOpenState(true);
+      }, delay);
+    };
+
+    const handlePointerLeave = () => {
+      if (!openOnHover) return;
+      addPointerMoveListener();
+    };
+
+    if (globalThis.matchMedia?.('(hover: hover)')?.matches) {
+      // Event listeners are automatically removed when AbortController is aborted
+      trigger.addEventListener('pointerenter', handlePointerEnter, { signal });
+      trigger.addEventListener('pointerleave', handlePointerLeave, { signal });
+      popup.addEventListener('pointerenter', handlePointerEnter, { signal });
+    }
+
+    const handleFocusIn = () => {
+      setOpenState(true);
+    };
+
+    const handleFocusOut = (event: FocusEvent) => {
+      const relatedTarget = event.relatedTarget as HTMLElement;
+      if (relatedTarget && popup && contains(popup, relatedTarget)) return;
+      setOpenState(false);
+    };
+
+    // Event listeners are automatically removed when AbortController is aborted
+    trigger.addEventListener('focusin', handleFocusIn, { signal });
+    trigger.addEventListener('focusout', handleFocusOut, { signal });
+    popup.addEventListener('focusout', handleFocusOut, { signal });
+
+    return () => {
+      abortController.abort();
+      clearHoverTimeout();
+
+      if (pointerMoveHandlerRef.current) {
+        document.documentElement.removeEventListener('pointermove', pointerMoveHandlerRef.current);
+      }
+
+      pointerMoveHandlerRef.current = null;
+    };
+  }, [openOnHover, delay, closeDelay, open, placement, setOpenState, clearHoverTimeout]);
+
+  useEffect(() => {
+    if (!popupRef.current || !triggerRef.current) return;
+
+    const popup = popupRef.current;
+    const popupId = popup.id;
+    if (popupId) {
+      popup.style.setProperty('position-anchor', `--${popupId}`);
+    }
+
+    const [side, alignment] = placement.split('-');
+    popup.style.setProperty('top', `calc(anchor(${side}) - ${sideOffset}px)`);
+    popup.style.setProperty('translate', `0 -100%`);
+    popup.style.setProperty('justify-self', alignment === 'start'
+      ? 'anchor-start'
+      : alignment === 'end'
+        ? 'anchor-end'
+        : 'anchor-center');
+  }, [placement, sideOffset]);
+
   const value: PopoverContextType = useMemo(() => ({
     open,
-    setOpen,
-    openReason,
-    refs,
-    floatingStyles,
-    getReferenceProps,
-    getFloatingProps,
-    context,
+    setOpen: setOpenState,
+    popupRef,
+    triggerRef,
     updatePositioning,
     transitionStatus,
-  }), [open, openReason, refs, floatingStyles, getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus]);
+    placement,
+    sideOffset,
+  }), [open, setOpenState, updatePositioning, transitionStatus, placement, sideOffset]);
 
   return <PopoverContext.Provider value={value}>{children}</PopoverContext.Provider>;
 }
 
 function PopoverTrigger({ children }: PopoverTriggerProps): JSX.Element {
-  const { refs, getReferenceProps, open } = usePopoverContext();
+  const { triggerRef, open } = usePopoverContext();
 
   // eslint-disable-next-line react/no-clone-element, react/no-children-only
   return cloneElement(Children.only(children) as JSX.Element, {
-    ref: refs.setReference,
-    ...getReferenceProps(),
+    ref: triggerRef,
     'data-popup-open': open ? '' : undefined,
   });
 }
 
 function PopoverPositioner({ side = 'top', sideOffset = 5, children }: PopoverPositionerProps): JSX.Element | null {
-  const { refs, floatingStyles, updatePositioning } = usePopoverContext();
+  const { updatePositioning } = usePopoverContext();
 
   useEffect(() => {
     updatePositioning(side, sideOffset);
   }, [side, sideOffset, updatePositioning]);
 
-  return (
-    <div ref={refs.setFloating} style={floatingStyles}>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }
 
-function PopoverPopup({ className, children }: PopoverPopupProps): JSX.Element {
-  const { getFloatingProps, context, transitionStatus } = usePopoverContext();
-  const { refs, placement } = context;
-  const triggerElement = refs.reference.current as HTMLElement | null;
+function PopoverPopup({ id, className, children }: PopoverPopupProps): JSX.Element {
+  const { popupRef, triggerRef, transitionStatus, placement } = usePopoverContext();
+  const triggerElement = triggerRef.current;
+
+  const popupId = useMemo(() => id ?? `popover-${Math.random().toString(36).substring(2, 9)}`, [id]);
+
+  useEffect(() => {
+    if (!popupRef.current || !triggerRef.current) return;
+
+    const popup = popupRef.current;
+    const trigger = triggerRef.current;
+
+    popup.setAttribute('popover', 'manual');
+    trigger.setAttribute('commandfor', popupId);
+    trigger.style.setProperty('anchor-name', `--${popupId}`);
+  }, [popupId, popupRef, triggerRef]);
 
   // Copy data attributes from trigger element
-  const dataAttributes = triggerElement?.attributes
-    ? Object.fromEntries(
-        Array.from(triggerElement.attributes)
-          .filter(attr => attr.name.startsWith('data-'))
-          .map(attr => [attr.name, attr.value]),
-      )
-    : {};
+  const dataAttributes = useMemo(() => {
+    if (!triggerElement?.attributes) return {};
+    return Object.fromEntries(
+      Array.from(triggerElement.attributes)
+        .filter(attr => attr.name.startsWith('data-'))
+        .map(attr => [attr.name, attr.value]),
+    );
+  }, [triggerElement]);
 
   return (
-    <FloatingFocusManager
-      context={context}
-      modal={false}
-      initialFocus={-1}
-      returnFocus={false}
+    <div
+      ref={popupRef as React.RefObject<HTMLDivElement>}
+      id={popupId}
+      className={className}
+      {...dataAttributes}
+      data-side={placement}
+      data-starting-style={transitionStatus === 'initial' ? '' : undefined}
+      data-open={transitionStatus === 'initial' || transitionStatus === 'open' ? '' : undefined}
+      data-ending-style={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
+      data-closed={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
     >
-      <div
-        className={className}
-        {...getFloatingProps()}
-        {...dataAttributes}
-        data-side={placement}
-        data-starting-style={transitionStatus === 'initial' ? '' : undefined}
-        data-open={transitionStatus === 'initial' || transitionStatus === 'open' ? '' : undefined}
-        data-ending-style={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
-        data-closed={transitionStatus === 'close' || transitionStatus === 'unmounted' ? '' : undefined}
-      >
-        {children}
-      </div>
-    </FloatingFocusManager>
-  );
-}
-
-function PopoverPortal({ children, root, rootId = '@default_portal_id' }: PopoverPortalProps): JSX.Element {
-  return (
-    <FloatingPortal root={root as HTMLElement} id={rootId as string}>
       {children}
-    </FloatingPortal>
+    </div>
   );
 }
 
@@ -212,13 +312,11 @@ export const Popover: {
   Trigger: typeof PopoverTrigger;
   Positioner: typeof PopoverPositioner;
   Popup: typeof PopoverPopup;
-  Portal: typeof PopoverPortal;
 } = {
   Root: PopoverRoot,
   Trigger: PopoverTrigger,
   Positioner: PopoverPositioner,
   Popup: PopoverPopup,
-  Portal: PopoverPortal,
 };
 
 export default Popover;
