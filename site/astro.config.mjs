@@ -9,6 +9,7 @@ import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 import checkV8Urls from './integrations/check-v8-urls';
+import llmsMarkdown from './integrations/llms-markdown';
 import pagefind from './integrations/pagefind';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks';
 import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings';
@@ -27,6 +28,7 @@ export default defineConfig({
     mdx({ extendMarkdownConfig: true }),
     sitemap(),
     pagefind(),
+    llmsMarkdown(),
     checkV8Urls(),
     react({
       babel: {
