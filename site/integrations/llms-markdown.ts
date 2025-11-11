@@ -18,9 +18,9 @@ export default function llmsMarkdown(): AstroIntegration {
         });
 
         // Track all docs and blog pages for llms.txt index
-        const docsPages: Array<{ pathname: string; title: string }> = [];
-        const blogPages: Array<{ pathname: string; title: string }> = [];
-        const otherPages: Array<{ pathname: string; title: string }> = [];
+        const docsPages: Array<{ pathname: string; title: string; description?: string }> = [];
+        const blogPages: Array<{ pathname: string; title: string; description?: string }> = [];
+        const otherPages: Array<{ pathname: string; title: string; description?: string }> = [];
 
         logger.info('Generating LLM-optimized markdown files...');
 
@@ -57,9 +57,12 @@ export default function llmsMarkdown(): AstroIntegration {
             const combinedHtml = contentParts.join('\n\n');
             const markdown = turndown.turndown(combinedHtml);
 
-            // Extract title for llms.txt index
+            // Extract title and description for llms.txt index
             const titleElement = document.querySelector('h1');
             const title = titleElement?.textContent?.trim() || 'Untitled';
+
+            const descriptionAttr = contentElements[0]?.getAttribute('data-llms-description');
+            const description = descriptionAttr || undefined;
 
             // Write markdown file as sibling to the directory
             // docs/framework/html/style/css/slug -> docs/framework/html/style/css/slug.md
@@ -69,11 +72,11 @@ export default function llmsMarkdown(): AstroIntegration {
 
             // Track for llms.txt index (with leading slash for URLs)
             if (pathname.startsWith('docs/')) {
-              docsPages.push({ pathname: `/${pathname}`, title });
+              docsPages.push({ pathname: `/${pathname}`, title, description });
             } else if (pathname.startsWith('blog/')) {
-              blogPages.push({ pathname: `/${pathname}`, title });
+              blogPages.push({ pathname: `/${pathname}`, title, description });
             } else {
-              otherPages.push({ pathname: `/${pathname}`, title });
+              otherPages.push({ pathname: `/${pathname}`, title, description });
             }
           } catch (error) {
             logger.error(`Failed to process ${pathname}: ${error instanceof Error ? error.message : String(error)}`);
@@ -92,12 +95,12 @@ export default function llmsMarkdown(): AstroIntegration {
 }
 
 function generateLlmsTxt(
-  docsPages: Array<{ pathname: string; title: string }>,
-  blogPages: Array<{ pathname: string; title: string }>,
-  otherPages: Array<{ pathname: string; title: string }>,
+  docsPages: Array<{ pathname: string; title: string; description?: string }>,
+  blogPages: Array<{ pathname: string; title: string; description?: string }>,
+  otherPages: Array<{ pathname: string; title: string; description?: string }>,
 ): string {
   // Group docs by framework and style
-  const docsByFrameworkStyle = new Map<string, Array<{ pathname: string; title: string }>>();
+  const docsByFrameworkStyle = new Map<string, Array<{ pathname: string; title: string; description?: string }>>();
 
   for (const doc of docsPages) {
     // Extract framework and style from pathname
@@ -136,7 +139,11 @@ function generateLlmsTxt(
       docs.sort((a, b) => a.pathname.localeCompare(b.pathname));
 
       for (const doc of docs) {
-        content += `- [${doc.title}](${doc.pathname})\n`;
+        if (doc.description) {
+          content += `- [${doc.title}](${doc.pathname}): ${doc.description}\n`;
+        } else {
+          content += `- [${doc.title}](${doc.pathname})\n`;
+        }
       }
       content += `\n`;
     }
@@ -150,7 +157,11 @@ function generateLlmsTxt(
     const sortedBlogPages = [...blogPages].sort((a, b) => b.pathname.localeCompare(a.pathname));
 
     for (const post of sortedBlogPages) {
-      content += `- [${post.title}](${post.pathname})\n`;
+      if (post.description) {
+        content += `- [${post.title}](${post.pathname}): ${post.description}\n`;
+      } else {
+        content += `- [${post.title}](${post.pathname})\n`;
+      }
     }
     content += `\n`;
   }
@@ -163,7 +174,11 @@ function generateLlmsTxt(
     const sortedOtherPages = [...otherPages].sort((a, b) => a.pathname.localeCompare(b.pathname));
 
     for (const page of sortedOtherPages) {
-      content += `- [${page.title}](${page.pathname})\n`;
+      if (page.description) {
+        content += `- [${page.title}](${page.pathname}): ${page.description}\n`;
+      } else {
+        content += `- [${page.title}](${page.pathname})\n`;
+      }
     }
     content += `\n`;
   }
