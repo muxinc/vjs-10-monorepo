@@ -12,9 +12,9 @@ function cn(...classes: (string | undefined)[]): string {
 const styles: MinimalSkinStyles = {
   MediaContainer: cn(
     'vjs', // Scope preflight
-    'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black vjs:rounded-(--vjs-border-radius,0.75rem)',
+    'vjs:relative vjs:isolate vjs:@container/root vjs:group/root vjs:overflow-clip vjs:bg-black vjs:rounded-(--minimal-border-radius,0.75rem)',
     // Base typography
-    'vjs:text-[0.8125rem]',
+    'vjs:font-sans vjs:text-[0.8125rem] vjs:subpixel-antialiased',
     // Fancy borders
     'vjs:after:absolute vjs:after:inset-0 vjs:after:ring-black/15 vjs:after:ring-1 vjs:dark:after:ring-white/15 vjs:after:ring-inset vjs:after:z-10 vjs:after:pointer-events-none vjs:after:rounded-[inherit]',
     // Prevent rounded corners in fullscreen
