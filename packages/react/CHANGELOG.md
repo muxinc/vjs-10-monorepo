@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.1.0-preview.7](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.6...@videojs/react@0.1.0-preview.7) (2025-11-11)
+
+
+### Features
+
+* **react:** use popover and anchor position API ([#178](https://github.com/videojs/v10/issues/178)) ([f513c74](https://github.com/videojs/v10/commit/f513c74a6cebc09ac76512bb86af10a33350f900))
+
+
+### Bug Fixes
+
+* **skins:** remove vjs- prefixed CSS custom properties ([#179](https://github.com/videojs/v10/issues/179)) ([a62623b](https://github.com/videojs/v10/commit/a62623ba41d294edead981a1b468f7f486c91625))
+* **skins:** slightly more idiomatic Tailwind, added custom properties ([#175](https://github.com/videojs/v10/issues/175)) ([694afb7](https://github.com/videojs/v10/commit/694afb7de992edbd667bc3d895df8bf198ccabb3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.7
+    * @videojs/icons bumped to 0.1.0-preview.7
+    * @videojs/utils bumped to 0.1.0-preview.7
+
 ## [0.1.0-preview.6](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.5...@videojs/react@0.1.0-preview.6) (2025-11-06)
 
 
