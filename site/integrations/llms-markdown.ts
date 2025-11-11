@@ -18,9 +18,9 @@ export default function llmsMarkdown(): AstroIntegration {
         });
 
         // Track all docs and blog pages for llms.txt index
-        const docsPages: Array<{ pathname: string; title: string; description?: string }> = [];
-        const blogPages: Array<{ pathname: string; title: string; description?: string }> = [];
-        const otherPages: Array<{ pathname: string; title: string; description?: string }> = [];
+        const docsPages: Array<{ pathname: string; title: string; description?: string; sort?: string }> = [];
+        const blogPages: Array<{ pathname: string; title: string; description?: string; sort?: string }> = [];
+        const otherPages: Array<{ pathname: string; title: string; description?: string; sort?: string }> = [];
 
         logger.info('Generating LLM-optimized markdown files...');
 
@@ -64,6 +64,9 @@ export default function llmsMarkdown(): AstroIntegration {
             const descriptionAttr = contentElements[0]?.getAttribute('data-llms-description');
             const description = descriptionAttr || undefined;
 
+            const sortAttr = contentElements[0]?.getAttribute('data-llms-sort');
+            const sort = sortAttr || undefined;
+
             // Write markdown file as sibling to the directory
             // docs/framework/html/style/css/slug -> docs/framework/html/style/css/slug.md
             const mdPath = join(siteDir, `${pathname}.md`);
@@ -72,11 +75,11 @@ export default function llmsMarkdown(): AstroIntegration {
 
             // Track for llms.txt index (with leading slash for URLs)
             if (pathname.startsWith('docs/')) {
-              docsPages.push({ pathname: `/${pathname}`, title, description });
+              docsPages.push({ pathname: `/${pathname}`, title, description, sort });
             } else if (pathname.startsWith('blog/')) {
-              blogPages.push({ pathname: `/${pathname}`, title, description });
+              blogPages.push({ pathname: `/${pathname}`, title, description, sort });
             } else {
-              otherPages.push({ pathname: `/${pathname}`, title, description });
+              otherPages.push({ pathname: `/${pathname}`, title, description, sort });
             }
           } catch (error) {
             logger.error(`Failed to process ${pathname}: ${error instanceof Error ? error.message : String(error)}`);
@@ -95,12 +98,12 @@ export default function llmsMarkdown(): AstroIntegration {
 }
 
 function generateLlmsTxt(
-  docsPages: Array<{ pathname: string; title: string; description?: string }>,
-  blogPages: Array<{ pathname: string; title: string; description?: string }>,
-  otherPages: Array<{ pathname: string; title: string; description?: string }>,
+  docsPages: Array<{ pathname: string; title: string; description?: string; sort?: string }>,
+  blogPages: Array<{ pathname: string; title: string; description?: string; sort?: string }>,
+  otherPages: Array<{ pathname: string; title: string; description?: string; sort?: string }>,
 ): string {
   // Group docs by framework and style
-  const docsByFrameworkStyle = new Map<string, Array<{ pathname: string; title: string; description?: string }>>();
+  const docsByFrameworkStyle = new Map<string, Array<{ pathname: string; title: string; description?: string; sort?: string }>>();
 
   for (const doc of docsPages) {
     // Extract framework and style from pathname
@@ -153,8 +156,15 @@ function generateLlmsTxt(
   if (blogPages.length > 0) {
     content += `## Blog Posts\n\n`;
 
-    // Sort by pathname (which includes date) in reverse order (newest first)
-    const sortedBlogPages = [...blogPages].sort((a, b) => b.pathname.localeCompare(a.pathname));
+    // Sort by date using data-llms-sort attribute in reverse order (newest first)
+    const sortedBlogPages = [...blogPages].sort((a, b) => {
+      // If both have sort attributes, compare them (reverse for newest first)
+      if (a.sort && b.sort) {
+        return b.sort.localeCompare(a.sort);
+      }
+      // Fallback to pathname comparison if sort is missing
+      return b.pathname.localeCompare(a.pathname);
+    });
 
     for (const post of sortedBlogPages) {
       if (post.description) {
