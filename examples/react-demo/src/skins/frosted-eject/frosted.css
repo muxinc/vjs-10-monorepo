@@ -328,8 +328,6 @@
 .vjs-frosted-skin .popover-popup {
   margin: 0;
   border: none;
-  box-shadow: none;
-  background: transparent;
   padding: 0.75rem 0.25rem;
   border-radius: calc(infinity * 1px);
 }

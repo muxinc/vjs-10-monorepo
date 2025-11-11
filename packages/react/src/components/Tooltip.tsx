@@ -1,22 +1,6 @@
-import type { Placement } from '@floating-ui/react';
-import type { MutableRefObject, ReactNode, RefObject } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
-import {
-  arrow,
-  autoUpdate,
-  flip,
-  FloatingPortal,
-  offset,
-  shift,
-  useClientPoint,
-  useDismiss,
-  useFloating,
-  useFocus,
-  useHover,
-  useInteractions,
-  useRole,
-  useTransitionStatus,
-} from '@floating-ui/react';
+import { contains, getBoundingClientRectWithoutTransform, getInBoundsAdjustments } from '@videojs/utils/dom';
 
 import {
   Children,
@@ -30,20 +14,26 @@ import {
   useState,
 } from 'react';
 
+type Placement = 'top' | 'top-start' | 'top-end';
+
 interface UpdatePositioningProps {
   side: Placement;
   sideOffset: number;
   collisionPadding: number;
 }
 
+type TransitionStatus = 'initial' | 'open' | 'close' | 'unmounted';
+
 interface TooltipContextType {
-  arrowRef: MutableRefObject<HTMLElement | null>;
-  context: ReturnType<typeof useFloating>['context'];
-  transitionStatus: ReturnType<typeof useTransitionStatus>['status'];
-  getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
-  getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
+  popupRef: RefObject<HTMLElement | null>;
+  triggerRef: RefObject<HTMLElement | null>;
+  open: boolean;
+  transitionStatus: TransitionStatus;
   updatePositioning: (props: UpdatePositioningProps) => void;
   trackCursorAxis?: 'x' | 'y' | 'both' | undefined;
+  placement: Placement;
+  sideOffset: number;
+  collisionPadding: number;
 }
 
 interface TooltipRootProps {
@@ -65,28 +55,12 @@ interface TooltipPositionerProps {
 }
 
 interface TooltipPopupProps {
+  id?: string;
   className?: string;
   children: ReactNode;
-}
-
-interface TooltipArrowProps {
-  className?: string;
-  children: ReactNode;
-}
-
-interface TooltipPortalProps {
-  children: ReactNode;
-  root?: HTMLElement | ShadowRoot | MutableRefObject<HTMLElement | ShadowRoot | null> | null;
-  rootId?: string;
 }
 
 const TooltipContext = createContext<TooltipContextType | null>(null);
-
-interface TooltipPositionerContextType {
-  side: Placement;
-}
-
-const TooltipPositionerContext = createContext<TooltipPositionerContextType | null>(null);
 
 function useTooltipContext(): TooltipContextType {
   const context = useContext(TooltipContext);
@@ -96,61 +70,16 @@ function useTooltipContext(): TooltipContextType {
   return context;
 }
 
-function useTooltipPositionerContext(): TooltipPositionerContextType {
-  const context = useContext(TooltipPositionerContext);
-  if (!context) {
-    throw new Error('TooltipArrow must be used within TooltipPositioner');
-  }
-  return context;
-}
-
 function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: TooltipRootProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>('top');
   const [sideOffset, setSideOffset] = useState(0);
   const [collisionPadding, setCollisionPadding] = useState(0);
-  const arrowRef = useRef<HTMLElement | null>(null);
-
-  const { context } = useFloating({
-    open,
-    onOpenChange: setOpen,
-    placement,
-    middleware: [
-      offset(sideOffset),
-      flip(),
-      shift({ padding: collisionPadding }),
-      arrow({
-        element: arrowRef,
-      }),
-    ],
-    whileElementsMounted: autoUpdate,
-  });
-
-  const { status: transitionStatus } = useTransitionStatus(context);
-
-  const hover = useHover(context, {
-    // restMs: 300, // this broke the time slider tooltip, todo: find solution!
-    delay: {
-      open: delay,
-      close: closeDelay,
-    },
-  });
-  const focus = useFocus(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context, { role: 'tooltip' });
-
-  // Use client point hook when trackCursorAxis is enabled
-  const clientPoint = useClientPoint(context, {
-    axis: trackCursorAxis || 'both',
-    enabled: !!trackCursorAxis,
-  });
-
-  // Combine interactions based on whether cursor tracking is enabled
-  const interactions = trackCursorAxis
-    ? [hover, focus, dismiss, role, clientPoint]
-    : [hover, focus, dismiss, role];
-
-  const { getReferenceProps, getFloatingProps } = useInteractions(interactions);
+  const [transitionStatus, setTransitionStatus] = useState<TransitionStatus>('initial');
+  const popupRef = useRef<HTMLElement | null>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pointerPositionRef = useRef({ x: 0, y: 0 });
 
   const updatePositioning = useCallback(({ side, sideOffset, collisionPadding }: UpdatePositioningProps) => {
     setPlacement(side);
@@ -158,27 +87,203 @@ function TooltipRoot({ delay = 0, closeDelay = 0, trackCursorAxis, children }: T
     setCollisionPadding(collisionPadding);
   }, []);
 
-  const value: TooltipContextType = useMemo(() => ({
-    getReferenceProps,
-    getFloatingProps,
-    context,
-    updatePositioning,
-    arrowRef,
-    transitionStatus,
-    trackCursorAxis,
-  }), [getReferenceProps, getFloatingProps, context, updatePositioning, transitionStatus, trackCursorAxis]);
+  const clearHoverTimeout = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  }, []);
+
+  const checkCollision = useCallback(() => {
+    if (!popupRef.current || !triggerRef.current || !open) return;
+
+    const mediaContainer = popupRef.current.closest('[data-media-container]') as HTMLElement | null;
+    if (!mediaContainer) return;
+
+    const popupRect = getBoundingClientRectWithoutTransform(popupRef.current);
+    const boundsRect = getBoundingClientRectWithoutTransform(mediaContainer);
+    const { x } = getInBoundsAdjustments(popupRect, boundsRect, collisionPadding);
+
+    if (x !== 0) {
+      if (trackCursorAxis) {
+        const currentLeft = Number.parseFloat(popupRef.current.style.left || '0');
+        popupRef.current.style.setProperty('left', `${currentLeft + x}px`);
+      } else {
+        popupRef.current.style.setProperty('translate', `${x}px -100%`);
+      }
+    } else {
+      if (trackCursorAxis) {
+        popupRef.current.style.setProperty('translate', '-50% -100%');
+      } else {
+        popupRef.current.style.setProperty('translate', '0 -100%');
+      }
+    }
+  }, [open, collisionPadding, trackCursorAxis]);
+
+  const updatePosition = useCallback(() => {
+    if (open && trackCursorAxis && popupRef.current) {
+      popupRef.current.style.setProperty('left', `${pointerPositionRef.current.x}px`);
+      checkCollision();
+    }
+  }, [open, trackCursorAxis, checkCollision]);
+
+  const setOpenState = useCallback(
+    (newOpen: boolean) => {
+      if (open === newOpen) return;
+
+      setOpen(newOpen);
+
+      if (newOpen) {
+        setTransitionStatus('initial');
+        if (popupRef.current) {
+          popupRef.current.showPopover();
+        }
+        requestAnimationFrame(() => {
+          setTransitionStatus('open');
+          checkCollision();
+        });
+      } else {
+        setTransitionStatus('close');
+      }
+    },
+    [open, checkCollision],
+  );
+
+  useEffect(() => {
+    if (!popupRef.current || open) return;
+
+    const transitions = popupRef.current.getAnimations().filter(anim => anim instanceof CSSTransition);
+    if (transitions.length > 0) {
+      Promise.all(transitions.map(t => t.finished))
+        .then(() => popupRef.current?.hidePopover())
+        .catch(() => popupRef.current?.hidePopover());
+    } else {
+      popupRef.current.hidePopover();
+    }
+  }, [open, transitionStatus]);
+
+  useEffect(() => {
+    const trigger = triggerRef.current;
+    const popup = popupRef.current;
+    if (!trigger || !popup) return;
+
+    const abortController = new AbortController();
+    const { signal } = abortController;
+
+    const handlePointerEnter = () => {
+      clearHoverTimeout();
+
+      hoverTimeoutRef.current = setTimeout(() => {
+        setOpenState(true);
+      }, delay);
+    };
+
+    const handlePointerLeave = () => {
+      clearHoverTimeout();
+
+      hoverTimeoutRef.current = setTimeout(() => {
+        setOpenState(false);
+      }, closeDelay);
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (trackCursorAxis) {
+        pointerPositionRef.current = { x: event.clientX, y: event.clientY };
+        if (open) {
+          updatePosition();
+        }
+      }
+    };
+
+    const handleFocusIn = () => {
+      setOpenState(true);
+    };
+
+    const handleFocusOut = (event: FocusEvent) => {
+      const relatedTarget = event.relatedTarget as HTMLElement;
+      if (relatedTarget && popup && contains(popup, relatedTarget)) return;
+      setOpenState(false);
+    };
+
+    if (globalThis.matchMedia?.('(hover: hover)')?.matches) {
+      // Event listeners are automatically removed when AbortController is aborted
+      trigger.addEventListener('pointerenter', handlePointerEnter, { signal });
+      trigger.addEventListener('pointerleave', handlePointerLeave, { signal });
+
+      if (trackCursorAxis) {
+        trigger.addEventListener('pointermove', handlePointerMove, { signal });
+      }
+    }
+
+    // Event listeners are automatically removed when AbortController is aborted
+    trigger.addEventListener('focusin', handleFocusIn, { signal });
+    trigger.addEventListener('focusout', handleFocusOut, { signal });
+
+    return () => {
+      abortController.abort();
+      clearHoverTimeout();
+    };
+  }, [delay, closeDelay, trackCursorAxis, open, setOpenState, clearHoverTimeout, updatePosition]);
+
+  useEffect(() => {
+    if (!popupRef.current || !triggerRef.current) return;
+
+    const popup = popupRef.current;
+    const popupId = popup.id;
+    if (popupId) {
+      popup.style.setProperty('position-anchor', `--${popupId}`);
+    }
+
+    const [side, alignment] = placement.split('-');
+    popup.style.setProperty('top', `calc(anchor(${side}) - ${sideOffset}px)`);
+
+    if (trackCursorAxis) {
+      popup.style.setProperty('translate', `-50% -100%`);
+    } else {
+      popup.style.setProperty('translate', `0 -100%`);
+      popup.style.setProperty('justify-self', alignment === 'start'
+        ? 'anchor-start'
+        : alignment === 'end'
+          ? 'anchor-end'
+          : 'anchor-center');
+    }
+  }, [placement, sideOffset, trackCursorAxis]);
+
+  useEffect(() => {
+    if (!popupRef.current) return;
+
+    const resizeObserver = new ResizeObserver(checkCollision);
+    resizeObserver.observe(popupRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [checkCollision]);
+
+  const value: TooltipContextType = useMemo(
+    () => ({
+      popupRef,
+      triggerRef,
+      open,
+      transitionStatus,
+      updatePositioning,
+      trackCursorAxis,
+      placement,
+      sideOffset,
+      collisionPadding,
+    }),
+    [open, transitionStatus, updatePositioning, trackCursorAxis, placement, sideOffset, collisionPadding],
+  );
 
   return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
 }
 
 function TooltipTrigger({ children }: TooltipTriggerProps): JSX.Element {
-  const { context, getReferenceProps } = useTooltipContext();
-  const { refs, open } = context;
+  const { triggerRef, open } = useTooltipContext();
 
   // eslint-disable-next-line react/no-clone-element, react/no-children-only
   return cloneElement(Children.only(children) as JSX.Element, {
-    ref: refs.setReference,
-    ...getReferenceProps(),
+    ref: triggerRef,
     'data-popup-open': open ? '' : undefined,
   });
 }
@@ -189,51 +294,48 @@ function TooltipPositioner({
   collisionPadding = 0,
   children,
 }: TooltipPositionerProps): JSX.Element | null {
-  const { context, updatePositioning, trackCursorAxis } = useTooltipContext();
-  const { refs, floatingStyles } = context;
+  const { updatePositioning } = useTooltipContext();
 
-  // Update positioning when props change
   useEffect(() => {
     updatePositioning({ side, sideOffset, collisionPadding });
   }, [side, sideOffset, collisionPadding, updatePositioning]);
 
-  const positionerContextValue: TooltipPositionerContextType = useMemo(() => ({
-    side,
-  }), [side]);
-
-  return (
-    <TooltipPositionerContext.Provider value={positionerContextValue}>
-      <div
-        ref={refs.setFloating}
-        style={{
-          ...floatingStyles,
-          pointerEvents: trackCursorAxis ? 'none' : undefined,
-        }}
-      >
-        {children}
-      </div>
-    </TooltipPositionerContext.Provider>
-  );
+  return <>{children}</>;
 }
 
-function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Element | null {
-  const { context, getFloatingProps, transitionStatus } = useTooltipContext();
-  const { refs, placement } = context;
-  const triggerElement = refs.reference.current as HTMLElement | null;
+function TooltipPopup({ id, className = '', children }: TooltipPopupProps): JSX.Element | null {
+  const { popupRef, triggerRef, transitionStatus, placement } = useTooltipContext();
+  const triggerElement = triggerRef.current;
+
+  const popupId = useMemo(() => id ?? `tooltip-${Math.random().toString(36).substring(2, 9)}`, [id]);
+
+  useEffect(() => {
+    if (!popupRef.current || !triggerRef.current) return;
+
+    const popup = popupRef.current;
+    const trigger = triggerRef.current;
+
+    popup.setAttribute('popover', 'manual');
+    trigger.setAttribute('commandfor', popupId);
+    trigger.style.setProperty('anchor-name', `--${popupId}`);
+  }, [popupId, popupRef, triggerRef]);
 
   // Copy data attributes from trigger element
-  const dataAttributes = triggerElement?.attributes
-    ? Object.fromEntries(
-        Array.from(triggerElement.attributes)
-          .filter(attr => attr.name.startsWith('data-'))
-          .map(attr => [attr.name, attr.value]),
-      )
-    : {};
+  const dataAttributes = useMemo(() => {
+    if (!triggerElement?.attributes) return {};
+    return Object.fromEntries(
+      Array.from(triggerElement.attributes)
+        .filter(attr => attr.name.startsWith('data-'))
+        .map(attr => [attr.name, attr.value]),
+    );
+  }, [triggerElement]);
 
   return (
     <div
+      ref={popupRef as RefObject<HTMLDivElement>}
+      id={popupId}
       className={className}
-      {...getFloatingProps()}
+      role="tooltip"
       {...dataAttributes}
       data-side={placement}
       data-starting-style={transitionStatus === 'initial' ? '' : undefined}
@@ -246,53 +348,17 @@ function TooltipPopup({ className = '', children }: TooltipPopupProps): JSX.Elem
   );
 }
 
-function TooltipArrow({ className = '', children }: TooltipArrowProps): JSX.Element {
-  const { arrowRef, context } = useTooltipContext();
-  const { side } = useTooltipPositionerContext();
-
-  // Get arrow positioning data from floating-ui
-  const { x: arrowX, y: arrowY } = context.middlewareData.arrow || { x: 0, y: 0 };
-
-  return (
-    <div
-      ref={arrowRef as RefObject<HTMLDivElement>}
-      className={className}
-      aria-hidden="true"
-      data-side={side}
-      style={{
-        left: arrowX != null ? `${arrowX}px` : undefined,
-        top: arrowY != null ? `${arrowY}px` : undefined,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function TooltipPortal({ children, root, rootId = '@default_portal_id' }: TooltipPortalProps): JSX.Element {
-  return (
-    <FloatingPortal root={root as HTMLElement} id={rootId as string}>
-      {children}
-    </FloatingPortal>
-  );
-}
-
-// Export compound component
 // eslint-disable-next-line react-refresh/only-export-components
 export const Tooltip: {
   Root: typeof TooltipRoot;
   Trigger: typeof TooltipTrigger;
   Positioner: typeof TooltipPositioner;
   Popup: typeof TooltipPopup;
-  Arrow: typeof TooltipArrow;
-  Portal: typeof TooltipPortal;
 } = {
   Root: TooltipRoot,
   Trigger: TooltipTrigger,
   Positioner: TooltipPositioner,
   Popup: TooltipPopup,
-  Arrow: TooltipArrow,
-  Portal: TooltipPortal,
 };
 
 export default Tooltip;

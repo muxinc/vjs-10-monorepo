@@ -41,14 +41,12 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
               <PauseIcon className={`${styles.Icon} ${styles.PauseIcon}`} />
             </PlayButton>
           </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="top-start" sideOffset={6} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.PopupAnimation} ${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
-                <span className={styles.PlayTooltip}>Play</span>
-                <span className={styles.PauseTooltip}>Pause</span>
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
+          <Tooltip.Positioner side="top-start" sideOffset={6} collisionPadding={12}>
+            <Tooltip.Popup className={`${styles.PopupAnimation} ${styles.TooltipPopup} ${styles.PlayTooltipPopup}`}>
+              <span className={styles.PlayTooltip}>Play</span>
+              <span className={styles.PauseTooltip}>Pause</span>
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
         </Tooltip.Root>
 
         <div className={styles.TimeDisplayGroup}>
@@ -74,13 +72,11 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
               <TimeSlider.Thumb className={styles.SliderThumb} />
             </TimeSlider.Root>
           </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
-              <Tooltip.Popup className={`${styles.PopupAnimation} ${styles.TooltipPopup}`}>
-                <PreviewTimeDisplay className={styles.TimeDisplay} />
-              </Tooltip.Popup>
-            </Tooltip.Positioner>
-          </Tooltip.Portal>
+          <Tooltip.Positioner side="top" sideOffset={12} collisionPadding={12}>
+            <Tooltip.Popup className={`${styles.PopupAnimation} ${styles.TooltipPopup}`}>
+              <PreviewTimeDisplay className={styles.TimeDisplay} />
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
         </Tooltip.Root>
 
         <div className={styles.ButtonGroup}>
@@ -92,18 +88,16 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
                 <VolumeOffIcon className={`${styles.Icon} ${styles.VolumeOffIcon}`} />
               </MuteButton>
             </Popover.Trigger>
-            <Popover.Portal>
-              <Popover.Positioner side="top" sideOffset={2}>
-                <Popover.Popup className={`${styles.PopupAnimation} ${styles.PopoverPopup}`}>
-                  <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
-                    <VolumeSlider.Track className={styles.SliderTrack}>
-                      <VolumeSlider.Progress className={styles.SliderProgress} />
-                    </VolumeSlider.Track>
-                    <VolumeSlider.Thumb className={styles.SliderThumb} />
-                  </VolumeSlider.Root>
-                </Popover.Popup>
-              </Popover.Positioner>
-            </Popover.Portal>
+            <Popover.Positioner side="top" sideOffset={2}>
+              <Popover.Popup className={`${styles.PopupAnimation} ${styles.PopoverPopup}`}>
+                <VolumeSlider.Root className={styles.SliderRoot} orientation="vertical">
+                  <VolumeSlider.Track className={styles.SliderTrack}>
+                    <VolumeSlider.Progress className={styles.SliderProgress} />
+                  </VolumeSlider.Track>
+                  <VolumeSlider.Thumb className={styles.SliderThumb} />
+                </VolumeSlider.Root>
+              </Popover.Popup>
+            </Popover.Positioner>
           </Popover.Root>
 
           <Tooltip.Root delay={500} closeDelay={0}>
@@ -113,14 +107,12 @@ export default function MinimalSkin({ children, className = '' }: SkinProps): JS
                 <FullscreenExitAltIcon className={`${styles.Icon} ${styles.FullscreenExitIcon}`} />
               </FullscreenButton>
             </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <Tooltip.Positioner side="top-end" sideOffset={6} collisionPadding={12}>
-                <Tooltip.Popup className={`${styles.PopupAnimation} ${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
-                  <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
-                  <span className={styles.FullscreenExitTooltip}>Exit Fullscreen</span>
-                </Tooltip.Popup>
-              </Tooltip.Positioner>
-            </Tooltip.Portal>
+            <Tooltip.Positioner side="top-end" sideOffset={6} collisionPadding={12}>
+              <Tooltip.Popup className={`${styles.PopupAnimation} ${styles.TooltipPopup} ${styles.FullscreenTooltipPopup}`}>
+                <span className={styles.FullscreenEnterTooltip}>Enter Fullscreen</span>
+                <span className={styles.FullscreenExitTooltip}>Exit Fullscreen</span>
+              </Tooltip.Popup>
+            </Tooltip.Positioner>
           </Tooltip.Root>
         </div>
       </div>

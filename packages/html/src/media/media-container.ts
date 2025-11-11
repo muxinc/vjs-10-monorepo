@@ -2,14 +2,10 @@ import type { Constructor, CustomElement } from '@open-wc/context-protocol';
 
 import { ConsumerMixin } from '@open-wc/context-protocol';
 
-/* @TODO We need to make sure portal logic is non-brittle longer term (CJP) */
 export function getTemplateHTML() {
   return /* html */ `
     <slot name="media"></slot>
     <slot></slot>
-    <div id="@default_portal_id" style={ position: absolute; zIndex: 10; }>
-      <slot name="portal"></slot>
-    </div>
   `;
 }
 
