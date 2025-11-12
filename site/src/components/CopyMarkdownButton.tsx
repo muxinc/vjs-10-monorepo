@@ -1,9 +1,9 @@
+import clsx from 'clsx';
+import { CheckIcon } from 'lucide-react';
 import { useState } from 'react';
 import useIsHydrated from '@/utils/useIsHydrated';
 
 export interface CopyMarkdownButtonProps {
-  children: React.ReactNode;
-  copied: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
   timeout?: number;
@@ -16,8 +16,6 @@ type CopyState
     | { status: 'error'; message: string };
 
 export default function CopyMarkdownButton({
-  children,
-  copied,
   className,
   style,
 }: CopyMarkdownButtonProps) {
@@ -77,13 +75,6 @@ export default function CopyMarkdownButton({
     }
   };
 
-  const content
-    = state.status === 'success'
-      ? copied
-      : state.status === 'error'
-        ? 'Error'
-        : children;
-
   const ariaLabel
     = state.status === 'success'
       ? 'Copied'
@@ -94,11 +85,40 @@ export default function CopyMarkdownButton({
       type="button"
       disabled={disabled}
       onClick={handleCopy}
-      className={className}
+      className={clsx(
+        'relative border border-light-40 dark:border-dark-80 px-3 py-1 rounded-lg whitespace-nowrap text-sm',
+        state.status === 'idle' && 'intent:border-dark-40 dark:intent:border-dark-40',
+        state.status === 'loading' ? 'opacity-70' : 'cursor-100',
+        disabled ? 'cursor-wait' : 'cursor-pointer',
+        className,
+      )}
       style={style}
       aria-label={ariaLabel}
+      data-llms-ignore
     >
-      {content}
+      <span className={clsx(
+        state.status !== 'idle' && state.status !== 'loading' ? 'opacity-0 pointer-events-none' : 'opacity-100',
+        'inline-flex items-center justify-center',
+      )}
+      >
+        Copy page
+      </span>
+      <span className={clsx(
+        state.status !== 'success' ? 'opacity-0 pointer-events-none' : 'opacity-100',
+        'absolute inset-0 inline-flex items-center justify-center',
+      )}
+      >
+        Copied
+        {' '}
+        <CheckIcon className="ml-1 w-4 h-4" />
+      </span>
+      <span className={clsx(
+        state.status !== 'error' ? 'opacity-0 pointer-events-none' : 'opacity-100',
+        'absolute inset-0 inline-flex items-center justify-center',
+      )}
+      >
+        Error
+      </span>
     </button>
   );
 }

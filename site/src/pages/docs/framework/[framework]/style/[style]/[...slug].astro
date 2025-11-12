@@ -135,12 +135,17 @@ const jsonLdSchema = createTechArticleSchema({
         data-category={sections[0]}
         data-pagefind-filter="framework[data-framework], style[data-style], section[data-site]"
       >
-        <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto py-8 mb-8 relative">
-          <div data-llms-ignore style="position: absolute; top: 0; right: 0;">
-            <CopyMarkdownButton client:load>Copy Markdown</CopyMarkdownButton>
+        <header
+          class:list={[
+            'border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto py-8 mb-8',
+            'flex flex-col md:flex-row gap-4 items-start md:items-end justify-between',
+          ]}
+        >
+          <div>
+            <H3 as="h1" class="mt-0 mb-2">{getDocTitle(doc, framework)}</H3>
+            <p class="@lg:font-medium">{doc.data.description}</p>
           </div>
-          <H3 as="h1" class="mt-0 mb-2">{getDocTitle(doc, framework)}</H3>
-          <p class="@lg:font-medium">{doc.data.description}</p>
+          <CopyMarkdownButton client:load />
         </header>
         <Content components={{ ...defaultMarkdownComponents }} />
       </article>

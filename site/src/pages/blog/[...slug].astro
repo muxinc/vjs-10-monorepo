@@ -6,7 +6,6 @@ import { getCollection, getEntries, render } from 'astro:content';
 import JsonLd from '@/components/JsonLd.astro';
 import { createBlogPostingSchema } from '@/utils/jsonLd/schemas';
 import defaultMarkdownComponents from '@/components/typography/defaultMarkdownComponents';
-import CopyMarkdownButton from '@/components/CopyMarkdownButton';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -49,9 +48,6 @@ const jsonLdSchema = createBlogPostingSchema({
     data-pagefind-filter="site[data-site]"
   >
     <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto pb-10 mb-10 relative">
-      <div data-llms-ignore style="position: absolute; top: 0; right: 0;">
-        <CopyMarkdownButton client:load>Copy Markdown</CopyMarkdownButton>
-      </div>
       <div class="font-medium md:text-lg text-dark-40 dark:text-light-40 flex gap-4 mb-1">
         <FormattedDate data-pagefind-sort={`date:${post.data.pubDate.toISOString()}`} date={post.data.pubDate} />
         <span>&bull;</span>
