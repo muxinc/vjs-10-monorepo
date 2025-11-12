@@ -3,60 +3,93 @@ import useIsHydrated from '@/utils/useIsHydrated';
 
 export interface CopyMarkdownButtonProps {
   children: React.ReactNode;
-  copied?: React.ReactNode;
+  copied: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
   timeout?: number;
 }
+
+type CopyState
+  = | { status: 'idle' }
+    | { status: 'loading' }
+    | { status: 'success' }
+    | { status: 'error'; message: string };
 
 export default function CopyMarkdownButton({
   children,
   copied,
   className,
   style,
-  timeout = 2000,
 }: CopyMarkdownButtonProps) {
-  const [isCopied, setIsCopied] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<CopyState>({ status: 'idle' });
   const isHydrated = useIsHydrated();
-  const disabled = !isHydrated || isLoading;
+  const disabled = !isHydrated || state.status === 'loading';
 
   const handleCopy = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setState({ status: 'loading' });
 
       // Get current pathname and construct markdown URL
       const pathname = window.location.pathname;
       const mdUrl = `${pathname}.md`;
 
-      // Fetch the markdown file
-      const response = await fetch(mdUrl);
+      // Create fetch promise - in dev mode, return helpful message
+      const markdownBlobPromise = import.meta.env.DEV
+        ? Promise.resolve(new Blob([
+            'Markdown source files are only available in production builds.\n\n'
+            + 'Run `pnpm build` and `pnpm preview` to test this feature.',
+          ], { type: 'text/plain' }))
+        : fetch(mdUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch markdown: ${response.status} ${response.statusText}`);
+              }
+              return response.text();
+            })
+            .then(text => new Blob([text], { type: 'text/plain' }));
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch markdown: ${response.status} ${response.statusText}`);
+      // Feature detection: ClipboardItem required for Safari compatibility
+      if (typeof ClipboardItem === 'undefined') {
+        // Fallback for very old browsers (pre-2024)
+        const blob = await markdownBlobPromise;
+        const text = await blob.text();
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Safari requires passing async operation TO clipboard API
+        // (not awaiting first) to preserve user gesture context
+        const clipboardItem = new ClipboardItem({
+          'text/plain': markdownBlobPromise,
+        });
+        await navigator.clipboard.write([clipboardItem]);
       }
 
-      const markdown = await response.text();
-
-      // Copy to clipboard
-      await navigator.clipboard.writeText(markdown);
-
-      setIsCopied(true);
+      setState({ status: 'success' });
       setTimeout(() => {
-        setIsCopied(false);
-      }, timeout);
+        setState({ status: 'idle' });
+      }, 2000);
     } catch (err) {
       console.error('Failed to copy markdown:', err);
-      setError(err instanceof Error ? err.message : 'Failed to copy markdown');
+      const message = err instanceof Error ? err.message : 'Failed to copy markdown';
+      setState({ status: 'error', message });
       setTimeout(() => {
-        setError(null);
-      }, timeout);
-    } finally {
-      setIsLoading(false);
+        setState({ status: 'idle' });
+      }, 2000);
     }
   };
+
+  const content
+    = state.status === 'loading'
+      ? 'Loading...'
+      : state.status === 'success'
+        ? copied
+        : state.status === 'error'
+          ? 'Error'
+          : children;
+
+  const ariaLabel
+    = state.status === 'success'
+      ? 'Copied'
+      : 'Copy markdown to clipboard';
 
   return (
     <button
@@ -65,9 +98,9 @@ export default function CopyMarkdownButton({
       onClick={handleCopy}
       className={className}
       style={style}
-      aria-label={isCopied ? 'Copied' : 'Copy markdown to clipboard'}
+      aria-label={ariaLabel}
     >
-      {error ? 'Error' : isCopied ? (copied || children) : isLoading ? 'Loading...' : children}
+      {content}
     </button>
   );
 }
