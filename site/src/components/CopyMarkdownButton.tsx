@@ -78,13 +78,11 @@ export default function CopyMarkdownButton({
   };
 
   const content
-    = state.status === 'loading'
-      ? 'Loading...'
-      : state.status === 'success'
-        ? copied
-        : state.status === 'error'
-          ? 'Error'
-          : children;
+    = state.status === 'success'
+      ? copied
+      : state.status === 'error'
+        ? 'Error'
+        : children;
 
   const ariaLabel
     = state.status === 'success'
