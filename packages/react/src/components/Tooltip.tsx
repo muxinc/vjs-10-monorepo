@@ -9,6 +9,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -307,7 +308,8 @@ function TooltipPopup({ id, className = '', children }: TooltipPopupProps): JSX.
   const { popupRef, triggerRef, transitionStatus, placement } = useTooltipContext();
   const triggerElement = triggerRef.current;
 
-  const popupId = useMemo(() => id ?? `tooltip-${Math.random().toString(36).substring(2, 9)}`, [id]);
+  const uniqueId = useId();
+  const popupId = id ?? uniqueId;
 
   useEffect(() => {
     if (!popupRef.current || !triggerRef.current) return;
