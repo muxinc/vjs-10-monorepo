@@ -1,2 +1,4 @@
 User-agent: *
 Disallow: /blog/
+
+Sitemap: https://v10.videojs.org/sitemap-index.xml
