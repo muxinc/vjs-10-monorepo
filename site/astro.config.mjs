@@ -9,15 +9,18 @@ import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 import checkV8Urls from './integrations/check-v8-urls';
+import llmsMarkdown from './integrations/llms-markdown';
 import pagefind from './integrations/pagefind';
 import rehypePrepareCodeBlocks from './src/utils/rehypePrepareCodeBlocks';
 import remarkConditionalHeadings from './src/utils/remarkConditionalHeadings';
 import { remarkReadingTime } from './src/utils/remarkReadingTime.mjs';
 import shikiTransformMetadata from './src/utils/shikiTransformMetadata';
 
+const SITE_URL = 'https://v10.videojs.org';
+
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://v10.videojs.org',
+  site: SITE_URL,
   trailingSlash: 'never',
   adapter: vercel(),
   redirects: {
@@ -25,8 +28,11 @@ export default defineConfig({
   },
   integrations: [
     mdx({ extendMarkdownConfig: true }),
-    sitemap(),
+    sitemap({
+      customPages: [`${SITE_URL}/llms.txt`],
+    }),
     pagefind(),
+    llmsMarkdown(),
     checkV8Urls(),
     react({
       babel: {

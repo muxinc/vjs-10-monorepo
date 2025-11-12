@@ -5,7 +5,7 @@
   "scripts": {
     "dev": " astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "echo 'Preview server is not supported on with the Vercel adapter.'",
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -49,12 +49,14 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
+    "@types/turndown": "^5.0.6",
     "@vitejs/plugin-react": "^5.0.3",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "babel-plugin-react-compiler": "1.0.0",
     "jsdom": "^27.0.0",
     "sirv": "^3.0.2",
+    "turndown": "^7.2.2",
     "vitest": "^3.2.4"
   }
 }

@@ -16,6 +16,7 @@ import EditPageButton from '@/components/docs/EditPageButton.astro';
 import JsonLd from '@/components/JsonLd.astro';
 import { createTechArticleSchema } from '@/utils/jsonLd/schemas';
 import { getDocTitle } from '@/utils/docs/title';
+import CopyMarkdownButton from '@/components/CopyMarkdownButton';
 
 export async function getStaticPaths() {
   const docsCollection = await getCollection('docs');
@@ -126,15 +127,25 @@ const jsonLdSchema = createTechArticleSchema({
       <article
         class="mb-18 flex-1"
         data-pagefind-body
+        data-llms-content
+        data-llms-description={doc.data.description}
         data-framework={framework}
         data-style={style}
         data-site="docs"
         data-category={sections[0]}
         data-pagefind-filter="framework[data-framework], style[data-style], section[data-site]"
       >
-        <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto py-8 mb-8">
-          <H3 as="h1" class="mt-0 mb-2">{getDocTitle(doc, framework)}</H3>
-          <p class="@lg:font-medium">{doc.data.description}</p>
+        <header
+          class:list={[
+            'border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto py-8 mb-8',
+            'flex flex-col md:flex-row gap-4 items-start md:items-end justify-between',
+          ]}
+        >
+          <div>
+            <H3 as="h1" class="mt-0 mb-2">{getDocTitle(doc, framework)}</H3>
+            <p class="@lg:font-medium">{doc.data.description}</p>
+          </div>
+          <CopyMarkdownButton client:load />
         </header>
         <Content components={{ ...defaultMarkdownComponents }} />
       </article>

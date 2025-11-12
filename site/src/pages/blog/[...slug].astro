@@ -38,12 +38,20 @@ const jsonLdSchema = createBlogPostingSchema({
 
 <Blog title={[post.data.title, 'Blog']} description={post.data.description}>
   <JsonLd slot="head" schema={jsonLdSchema} />
-  <article class="@container" data-pagefind-body data-site="blog" data-pagefind-filter="site[data-site]">
-    <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto pb-10 mb-10">
+  <article
+    class="@container"
+    data-pagefind-body
+    data-llms-content
+    data-llms-description={post.data.description}
+    data-llms-sort={post.data.pubDate.toISOString()}
+    data-site="blog"
+    data-pagefind-filter="site[data-site]"
+  >
+    <header class="border-b border-light-40 dark:border-dark-80 max-w-3xl mx-auto pb-10 mb-10 relative">
       <div class="font-medium md:text-lg text-dark-40 dark:text-light-40 flex gap-4 mb-1">
         <FormattedDate data-pagefind-sort={`date:${post.data.pubDate.toISOString()}`} date={post.data.pubDate} />
         <span>&bull;</span>
-        <span data-pagefind-ignore>{remarkPluginFrontmatter.minutesRead}</span>
+        <span data-pagefind-ignore data-llms-ignore>{remarkPluginFrontmatter.minutesRead}</span>
       </div>
       <h1 class="text-h4 md:text-h2 mb-2">{post.data.title}</h1>
       <div class="font-medium md:text-lg text-dark-40 dark:text-light-40">

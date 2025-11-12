@@ -26,6 +26,11 @@ const shouldRender = !frameworks || frameworks.includes(framework as SupportedFr
     So, while I debug those... let's do this
   */
 }
-<div class="contents" hidden={!shouldRender} data-pagefind-ignore={shouldRender ? undefined : 'all'}>
+<div
+  class="contents"
+  hidden={!shouldRender}
+  data-pagefind-ignore={shouldRender ? undefined : 'all'}
+  data-llms-ignore={shouldRender ? undefined : 'all'}
+>
   <slot />
 </div>
