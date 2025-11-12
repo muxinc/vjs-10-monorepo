@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0-preview.8](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.7...@videojs/react@0.1.0-preview.8) (2025-11-12)
+
+
+### Bug Fixes
+
+* hydration mismatch in Tooltip and Popover ([#190](https://github.com/videojs/v10/issues/190)) ([8b868e9](https://github.com/videojs/v10/commit/8b868e95a3ffd92421ddb2846708d3a2ca8125e3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.8
+    * @videojs/icons bumped to 0.1.0-preview.8
+    * @videojs/utils bumped to 0.1.0-preview.8
+
 ## [0.1.0-preview.7](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.6...@videojs/react@0.1.0-preview.7) (2025-11-11)
 
 
