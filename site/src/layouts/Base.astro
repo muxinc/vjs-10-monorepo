@@ -73,9 +73,6 @@ const fullTitle = Array.isArray(title)
     {/* Whatever else */}
     <slot name="head" />
 
-    {/* Analytics */}
-    {import.meta.env.PROD && <Posthog />}
-
     <ThemeInit />
   </head>
   <body
