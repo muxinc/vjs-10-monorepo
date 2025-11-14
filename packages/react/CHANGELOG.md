@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0-preview.9](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.8...@videojs/react@0.1.0-preview.9) (2025-11-14)
+
+
+### Bug Fixes
+
+* anchor name in popover and tooltip ([#194](https://github.com/videojs/v10/issues/194)) ([d965858](https://github.com/videojs/v10/commit/d9658582f12f9745548bcb9461a3e365adc16339))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @videojs/core bumped to 0.1.0-preview.9
+    * @videojs/icons bumped to 0.1.0-preview.9
+    * @videojs/utils bumped to 0.1.0-preview.9
+
 ## [0.1.0-preview.8](https://github.com/videojs/v10/compare/@videojs/react@0.1.0-preview.7...@videojs/react@0.1.0-preview.8) (2025-11-12)
 
 
