@@ -309,7 +309,7 @@ function TooltipPopup({ id, className = '', children }: TooltipPopupProps): JSX.
   const triggerElement = triggerRef.current;
 
   const uniqueId = useId();
-  const popupId = id ?? CSS.escape(uniqueId);
+  const popupId = id ?? uniqueId.replace(/^:([^:]+):$/g, '«$1»');
 
   useEffect(() => {
     if (!popupRef.current || !triggerRef.current) return;
