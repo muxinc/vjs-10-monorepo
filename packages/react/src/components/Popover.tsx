@@ -268,7 +268,7 @@ function PopoverPopup({ id, className, children }: PopoverPopupProps): JSX.Eleme
   const triggerElement = triggerRef.current;
 
   const uniqueId = useId();
-  const popupId = id ?? uniqueId;
+  const popupId = id ?? CSS.escape(uniqueId);
 
   useEffect(() => {
     if (!popupRef.current || !triggerRef.current) return;
