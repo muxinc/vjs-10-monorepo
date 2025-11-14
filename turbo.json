@@ -10,8 +10,7 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "interactive": false,
-      "dependsOn": ["^build"]
+      "interactive": false
     },
     "clean": {
       "cache": false
